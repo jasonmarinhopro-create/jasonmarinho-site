@@ -38,10 +38,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Relire la boîte (14 jours)
+        id: boite
         run: |
           r=$(curl -sS --max-time 75 -X POST "$APP_URL/api/outreach/ops" -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d '{"op":"boite","jours":14}')
           echo "$r" | jq . || echo "$r"
           echo "::notice title=Boîte relue::$(echo "$r" | jq -c . 2>/dev/null || echo "$r" | head -c 300)"
+          echo "lus=$(echo "$r" | jq -r '.messages_lus // "?"' 2>/dev/null || echo '?')" >> "$GITHUB_OUTPUT"
       - name: Garder une réserve de contacts
         env:
           PAR_PASSAGE: ${{ inputs.villes_par_passage }}
@@ -66,7 +68,7 @@ jobs:
           for a in photographe menage depannage; do
             have=$(echo "$status" | jq -r --arg a "$a" '.contacts[$a].a_contacter // 0')
             echo "$a : $have contacts « À contacter » (seuil $SEUIL)"
-            if [ "$have" -ge "$SEUIL" ] && [ "${{ github.event_name }}" != push ]; then echo "  réserve suffisante"; continue; fi
+            if [ "$have" -ge "$SEUIL" ] && { [ "${{ github.event_name }}" != push ] || [ "$have" -ge 400 ]; }; then echo "  réserve suffisante"; continue; fi
             added_a=0
             for i in $(seq 0 $((n - 1))); do
               v="${CITIES[$(( (start + i) % ${#CITIES[@]} ))]}"
@@ -90,3 +92,14 @@ jobs:
           done
           after=$(call '{"op":"status"}' | jq -c '{photographe: .contacts.photographe.a_contacter, menage: .contacts.menage.a_contacter, depannage: .contacts.depannage.a_contacter}')
           echo "::notice title=Réserve après import::$total ajoutés · à contacter : $after"
+      # 10/11/2026 : pendant un mois, la boîte lue par l'app était vide (les
+      # messages relevés par Gmail étaient retirés du serveur) : 6 réponses de
+      # photographes jamais vues, leurs relances ont continué. Une boîte sans
+      # aucun message en 14 jours fait échouer la tâche pour que ça se voie.
+      - name: La boîte contient-elle des messages ?
+        if: always()
+        run: |
+          if [ "${{ steps.boite.outputs.lus }}" = "0" ]; then
+            echo "::error title=Boîte vide::Aucun message lu en 14 jours : les réponses des pros ne sont pas vues. Vérifier que la boîte garde une copie des messages sur le serveur (relève Gmail ou transfert)."
+            exit 1
+          fi

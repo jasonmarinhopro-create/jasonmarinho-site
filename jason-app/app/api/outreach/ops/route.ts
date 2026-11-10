@@ -170,30 +170,53 @@ async function importFromOsm(db: Db, audience: Audience | undefined, ville: stri
   // parlent de dépannage. Pas les magasins de bricolage ni les grandes
   // entreprises du bâtiment : ceux qui interviennent vite chez un hôte.
   const dep = 'd[ée]pann|multi.?services?|plomb|[ée]lectric|serrur|chauffag|bricolage [àa] domicile|petits travaux'
-  const sel = audience === 'depannage'
-    ? `nwr["craft"~"^(plumber|electrician|locksmith|hvac|handyman|heating_engineer)$"]["website"](area.a);nwr["craft"~"^(plumber|electrician|locksmith|hvac|handyman|heating_engineer)$"]["contact:website"](area.a);nwr["shop"="locksmith"]["website"](area.a);nwr["name"~"${dep}",i]["website"][!"shop"][!"amenity"](area.a);nwr["name"~"${dep}",i]["contact:website"][!"shop"][!"amenity"](area.a);`
+  // 10/11/2026 (Jason : « la partie dépannage est encore à 0 ») : la requête
+  // dépannage dépassait le délai à chaque ville depuis son lancement (aucun
+  // contact importé). Elle cherchait un nom parlant parmi TOUS les lieux de
+  // la ville qui ont un site. Découpée : d'abord les étiquettes de métier
+  // (recherche indexée, rapide), puis les noms parlants seulement s'il reste
+  // du temps ; un échec de la seconde ne fait plus perdre la première.
+  const CRAFTS = '^(plumber|electrician|locksmith|hvac|handyman|heating_engineer)$'
+  const parts: string[] = audience === 'depannage'
+    ? [
+      `nwr["craft"~"${CRAFTS}"]["website"](area.a);nwr["craft"~"${CRAFTS}"]["contact:website"](area.a);nwr["shop"="locksmith"]["website"](area.a);`,
+      `nwr["name"~"${dep}",i]["website"][!"shop"][!"amenity"](area.a);nwr["name"~"${dep}",i]["contact:website"][!"shop"][!"amenity"](area.a);`,
+    ]
     : audience === 'photographe'
     // 17/10/2026 : vidéastes aussi (nom parlant + site, sans les cinémas)
-    ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"photograph",i]["contact:website"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["website"][!"amenity"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["contact:website"][!"amenity"](area.a);`
-    : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);nwr["name"~"${re}|airbnb|location saisonnière|gestion locative",i]["website"](area.a);nwr["name"~"${re}|airbnb|gestion locative",i]["contact:website"](area.a);`
-  const ql = `[out:json][timeout:14];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
+    ? [`nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"photograph",i]["contact:website"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["website"][!"amenity"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["contact:website"][!"amenity"](area.a);`]
+    : [`nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);nwr["name"~"${re}|airbnb|location saisonnière|gestion locative",i]["website"](area.a);nwr["name"~"${re}|airbnb|gestion locative",i]["contact:website"](area.a);`]
   // Serveur principal souvent saturé (504, 429, 01/10/2026 : une ville sur deux
-  // en échec) : 4 serveurs essayés, 14 s chacun au plus, 32 s en tout
-  let res: Response | null = null
-  for (const endpoint of ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']) {
-    const left = 32_000 - (Date.now() - started)
-    if (left < 4_000) break
-    try {
-      res = await fetch(endpoint, {
-        method: 'POST', body: `data=${encodeURIComponent(ql)}`,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'JasonMarinhoBot/1.0 (+https://jasonmarinho.com)' },
-        cache: 'no-store', signal: AbortSignal.timeout(Math.min(14_000, left)),
-      })
-      if (res.ok) break
-    } catch { res = null }
+  // en échec) : 4 serveurs essayés, 14 s chacun au plus, 32 s en tout.
+  // Le message d'erreur dit ce que chaque serveur a répondu (nombres seulement).
+  const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']
+  type OsmElement = { tags?: Record<string, string> }
+  const elements: OsmElement[] = []
+  const diag: string[] = []
+  for (let i = 0; i < parts.length; i++) {
+    const ql = `[out:json][timeout:14];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${parts[i]});out tags 300;`
+    let got: OsmElement[] | null = null
+    for (const endpoint of ENDPOINTS) {
+      const left = 32_000 - (Date.now() - started)
+      if (left < 4_000) { diag.push('temps'); break }
+      try {
+        const r = await fetch(endpoint, {
+          method: 'POST', body: `data=${encodeURIComponent(ql)}`,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'JasonMarinhoBot/1.0 (+https://jasonmarinho.com)' },
+          cache: 'no-store', signal: AbortSignal.timeout(Math.min(14_000, left)),
+        })
+        if (!r.ok) { diag.push(String(r.status)); continue }
+        const j = await r.json() as { elements?: OsmElement[]; remark?: string }
+        // Délai dépassé côté Overpass : réponse 200 avec une remarque et rien dedans
+        if (j.remark && !(j.elements ?? []).length) { diag.push('remarque'); continue }
+        got = j.elements ?? []
+        break
+      } catch (e) { diag.push(e instanceof Error && e.name === 'TimeoutError' ? 'délai' : 'réseau') }
+    }
+    if (got) elements.push(...got)
+    else if (i === 0) throw new Error(`OpenStreetMap indisponible (${diag.join(', ') || 'délai dépassé'})`)
   }
-  if (!res || !res.ok) throw new Error(`OpenStreetMap indisponible (${res?.status ?? 'délai dépassé'})`)
-  const data = await res.json() as { elements?: Array<{ tags?: Record<string, string> }> }
+  const data = { elements }
   const cands: Candidate[] = (data.elements ?? []).map(e => {
     const t = e.tags ?? {}
     const site = t.website || t['contact:website'] || t.url || null
