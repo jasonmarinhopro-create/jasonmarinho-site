@@ -68,10 +68,19 @@ if (!dryRun) {
     }
   }
   const REF = /src="\/(nav|footer|cookie-banner)\.js(?:\?v=[A-Za-z0-9]+)?"/g
+  // Fichiers communs des simulateurs (10/11/2026) : versionnés par empreinte
+  // aussi, sinon une page à jour reçoit l'ancien outil.css pendant une heure
+  // (carrousel des études affiché sans style). Pas réduits : seulement l'adresse.
+  const SIMU = ['outil.css', 'outil.js', 'engine.js']
+  for (const f of SIMU) {
+    try { version[`simu/${f}`] = createHash('sha256').update(await readFile(join('services/simulateurs', f))).digest('hex').slice(0, 10) } catch {}
+  }
+  const REF_SIMU = /(href|src)="\/services\/simulateurs\/(outil\.css|outil\.js|engine\.js)(?:\?v=[A-Za-z0-9]+)?"/g
   let n = 0
   for await (const page of pages('.')) {
     const html = await readFile(page, 'utf8')
     const out = html.replace(REF, (m, name) => version[`${name}.js`] ? `src="/${name}.js?v=${version[`${name}.js`]}"` : m)
+      .replace(REF_SIMU, (m, attr, f) => version[`simu/${f}`] ? `${attr}="/services/simulateurs/${f}?v=${version[`simu/${f}`]}"` : m)
     if (out !== html) { await writeFile(page, out); n++ }
   }
   console.log(`minify-assets : scripts versionnés (${Object.entries(version).map(([f, v]) => `${f}=${v}`).join(', ')}) dans ${n} page(s)`)
