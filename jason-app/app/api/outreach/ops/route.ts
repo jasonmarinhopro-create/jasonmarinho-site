@@ -35,13 +35,18 @@ const hostOf = (u: string) => { try { return new URL(/^https?:\/\//i.test(u) ? u
 
 export async function POST(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  const body = await req.json().catch(() => ({})) as { op?: string; audience?: Audience; query?: string; ville?: string; audiences?: Audience[]; daily_cap?: number; force?: boolean; send_only?: boolean; relaunch?: boolean; jours?: number }
+  const body = await req.json().catch(() => ({})) as { candidats?: unknown; op?: string; audience?: Audience; query?: string; ville?: string; audiences?: Audience[]; daily_cap?: number; force?: boolean; send_only?: boolean; relaunch?: boolean; jours?: number }
   const db = getServiceClient()
   try {
     switch (body.op) {
       case 'status': return NextResponse.json(await status(db))
       case 'import': return NextResponse.json(await importFromMaps(db, body.audience, body.query))
       case 'import_osm': return NextResponse.json(await importFromOsm(db, body.audience, body.ville))
+      // 10/11/2026 : depuis le serveur de l'app, OpenStreetMap ne répond plus à
+      // temps (délai dépassé à chaque ville). Le workflow « Prospection :
+      // réserve » interroge OpenStreetMap lui-même et envoie ici la liste ;
+      // l'app ne fait plus que chercher l'e-mail sur le site de chaque pro.
+      case 'import_candidats': return NextResponse.json(await importFromList(db, body.audience, body.ville, body.candidats))
       case 'activate': return NextResponse.json(await activate(db, body.audiences ?? ['photographe', 'menage'], body.daily_cap))
       case 'test': {
         // E-mail d'essai (1er e-mail du premier contact photographes) envoyé à la boîte d'envoi elle-même
@@ -74,7 +79,7 @@ export async function POST(req: Request) {
         const { lus, corriges } = await fixInstalledTexts(db)
         return NextResponse.json({ ok: true, emails_lus: lus, emails_corriges: corriges })
       }
-      default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, activate, test, run, fix_texts)' }, { status: 400 })
+      default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, import_candidats, activate, test, run, fix_texts)' }, { status: 400 })
     }
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message.slice(0, 300) : 'erreur' }, { status: 500 })
@@ -227,6 +232,24 @@ async function importFromOsm(db: Db, audience: Audience | undefined, ville: stri
     }
   }).filter(c => c.nom)
   return { ville: city, ...(await importCandidates(db, audience, cands, started)) }
+}
+
+/** Liste venue du workflow (OpenStreetMap interrogé depuis GitHub) : nom, site, téléphone, code postal. */
+async function importFromList(db: Db, audience: Audience | undefined, ville: string | undefined, raw: unknown) {
+  if (!audience || !['photographe', 'menage', 'depannage'].includes(audience)) throw new Error('audience photographe, menage ou depannage')
+  const city = (ville ?? '').trim().slice(0, 80)
+  if (city.length < 2) throw new Error('ville manquante')
+  if (!Array.isArray(raw)) throw new Error('candidats manquants')
+  const str = (v: unknown, n: number) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, n) : null)
+  const cands: Candidate[] = raw.slice(0, 400).map(r => {
+    const o = (r && typeof r === 'object' ? r : {}) as Record<string, unknown>
+    const cp = str(o.cp, 10)
+    return {
+      nom: str(o.nom, 200), entreprise: str(o.nom, 200), ville: str(o.ville, 80) || city, departement: cp ? cp.slice(0, 2) : null,
+      site_web: str(o.site, 300), telephone: str(o.tel, 40), detail: `OpenStreetMap, ${city}`,
+    }
+  }).filter(c => c.nom && c.site_web)
+  return { ville: city, ...(await importCandidates(db, audience, cands, Date.now())) }
 }
 
 /** Sites déjà connus ignorés, e-mail cherché sur chaque site (5 à la fois), ajout en « À contacter ». */

@@ -63,6 +63,14 @@ jobs:
           if [ "${{ github.event_name }}" = push ] && grep -qi '^remplir' .github/prospection-trigger 2>/dev/null; then n=20; fi
           week=$((10#$(date -u +%V)))
           start=$(( (week * n) % ${#CITIES[@]} ))
+          # Sélections OpenStreetMap par audience (mêmes règles que l'app)
+          sel() {
+            case "$1" in
+              depannage) echo 'nwr["craft"~"^(plumber|electrician|locksmith|hvac|handyman|heating_engineer)$"]["website"](area.a);nwr["craft"~"^(plumber|electrician|locksmith|hvac|handyman|heating_engineer)$"]["contact:website"](area.a);nwr["shop"="locksmith"]["website"](area.a);nwr["name"~"d[ée]pann|multi.?services?|plomb|[ée]lectric|serrur|chauffag|petits travaux",i]["website"][!"shop"][!"amenity"](area.a);' ;;
+              photographe) echo 'nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["website"][!"amenity"](area.a);' ;;
+              menage) echo 'nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"ménage|menage|nettoyage|conciergerie|cleaning|propreté",i](area.a);nwr["name"~"ménage|menage|nettoyage|conciergerie|cleaning|airbnb|gestion locative",i]["website"](area.a);' ;;
+            esac
+          }
           status=$(call '{"op":"status"}')
           total=0
           for a in photographe menage depannage; do
@@ -72,15 +80,27 @@ jobs:
             added_a=0
             for i in $(seq 0 $((n - 1))); do
               v="${CITIES[$(( (start + i) % ${#CITIES[@]} ))]}"
-              for pass in 1 2 3 4; do
-                body=$(jq -nc --arg a "$a" --arg v "$v" '{op:"import_osm",audience:$a,ville:$v}')
-                for try in 1 2 3; do
-                  res=$(call "$body")
-                  echo "$res" | grep -q 'OpenStreetMap indisponible' || break
-                  sleep $((try * 20))
-                done
+              # 10/11/2026 : OpenStreetMap ne répondait plus à temps depuis le
+              # serveur de l'app (0 dépanneur importé en 10 jours). Interrogé
+              # ici, avec 60 s de marge ; l'app ne fait que chercher l'e-mail
+              # sur le site de chaque pro (op import_candidats).
+              ql="[out:json][timeout:60];area[\"name\"=\"$v\"][\"boundary\"=\"administrative\"][\"admin_level\"=\"8\"]->.a;($(sel "$a"));out tags 400;"
+              osm=""
+              for ep in https://overpass-api.de/api/interpreter https://overpass.kumi.systems/api/interpreter https://overpass.private.coffee/api/interpreter; do
+                osm=$(curl -sS --max-time 90 -A 'JasonMarinhoBot/1.0 (+https://jasonmarinho.com)' --data-urlencode "data=$ql" "$ep" 2>/dev/null || true)
+                echo "$osm" | jq -e '.elements' >/dev/null 2>&1 && break
+                osm=""
+                sleep 5
+              done
+              if [ -z "$osm" ]; then echo "  $v : OpenStreetMap indisponible"; continue; fi
+              cands=$(echo "$osm" | jq -c '[.elements[] | .tags // {} | {nom: .name, site: (.website // ."contact:website" // .url), tel: (.phone // ."contact:phone"), cp: ."addr:postcode", ville: ."addr:city"} | select(.nom != null and .site != null)] | unique_by(.site)')
+              nb=$(echo "$cands" | jq 'length')
+              for pass in 1 2 3 4 5 6; do
+                [ "$nb" -gt 0 ] || break
+                body=$(jq -nc --arg a "$a" --arg v "$v" --argjson c "$cands" '{op:"import_candidats",audience:$a,ville:$v,candidats:$c}')
+                res=$(call "$body")
                 k=$(echo "$res" | jq -r '.ajoutes // 0' 2>/dev/null || echo 0)
-                echo "  $v ($pass) : $(echo "$res" | jq -c '{resultats, avec_site, emails_trouves, ajoutes, error}' 2>/dev/null || echo "$res" | head -c 160)"
+                echo "  $v ($pass) : $nb avec site · $(echo "$res" | jq -c '{sites_visites, emails_trouves, ajoutes, reste_a_visiter, error}' 2>/dev/null || echo "$res" | head -c 160)"
                 added_a=$((added_a + k))
                 left=$(echo "$res" | jq -r '.reste_a_visiter // 0' 2>/dev/null || echo 0)
                 [ "$left" -gt 0 ] || break
