@@ -217,3 +217,38 @@ em{font-style:italic;color:var(--g)}
 @media(max-width:860px){.tools3{grid-template-columns:1fr}.grp-h{flex-direction:column;align-items:flex-start;gap:8px}.tool-live{min-height:0}}
 @media(max-width:640px){.tools5{grid-template-columns:1fr 1fr}.find{font-size:20px}}
 @media(max-width:420px){.tools5{grid-template-columns:1fr}}
+
+/* ── Études par ville : carrousel photo ── */
+.ec{margin-top:26px}
+.ec-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.ec-f{display:flex;gap:8px;flex-wrap:wrap}
+.ec-f button{appearance:none;font:600 14px 'Outfit',sans-serif;color:var(--tm);background:#fff;border:1px solid var(--bd2);border-radius:999px;padding:8px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .2s,color .2s,border-color .2s}
+.ec-f button small{font-size:11.5px;font-weight:700;color:var(--g);background:rgba(0,76,63,.08);border-radius:999px;padding:1px 7px}
+.ec-f button:hover{border-color:var(--g);color:var(--g)}
+.ec-f button.on{background:var(--g);border-color:var(--g);color:#fff}
+.ec-f button.on small{background:rgba(255,255,255,.18);color:#fff}
+.ec-arrows{display:flex;gap:8px;flex-shrink:0}
+.ec-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--bd2);background:#fff;color:var(--g);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:background .2s,color .2s}
+.ec-btn:hover:not(:disabled){background:var(--g);color:#fff}
+.ec-btn:disabled{opacity:.35;cursor:default}
+.ec-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 16px;scrollbar-width:thin;scrollbar-color:rgba(0,76,63,.25) transparent;overscroll-behavior-x:contain}
+.ec-card{position:relative;flex:0 0 clamp(190px,23vw,236px);aspect-ratio:4/5;border-radius:20px;overflow:hidden;scroll-snap-align:start;text-decoration:none;color:#fff;background:#0b3b31;box-shadow:0 8px 22px rgba(0,40,30,.12);transition:transform .25s,box-shadow .25s}
+.ec-card[hidden]{display:none}
+.ec-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(0,40,30,.2)}
+.ec-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.ec-card:hover img{transform:scale(1.06)}
+.ec-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 20% 18%,rgba(255,213,107,.28),transparent 45%),radial-gradient(circle at 85% 85%,rgba(99,214,131,.22),transparent 50%),linear-gradient(155deg,#003d31,#00594a 60%,#0b6b57)}
+.ec-ph span{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:96px;line-height:1;color:rgba(255,213,107,.55);margin-top:-40px}
+.ec-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,20,14,.82))}
+.ec-badge{position:absolute;top:12px;left:12px;font-size:12px;font-weight:700;background:var(--y);color:var(--gd);padding:5px 10px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.15);font-variant-numeric:tabular-nums}
+.ec-txt{position:absolute;left:16px;right:16px;bottom:15px;display:flex;flex-direction:column;gap:2px}
+.ec-reg{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.ec-name{font-family:'Fraunces',serif;font-size:26px;line-height:1.12}
+.ec-go{font-size:12px;font-weight:600;color:var(--y);display:inline-flex;align-items:center;gap:4px;margin-top:5px}
+.ec-credit{font-size:11.5px;color:var(--tl);margin:4px 0 0}
+.ec-credit a{color:inherit}
+@media(max-width:640px){.ec-arrows{display:none}.ec-card{flex-basis:64vw;max-width:250px}}
+.ec-credit summary{list-style:none;cursor:pointer}
+.ec-credit summary::-webkit-details-marker{display:none}
+.ec-credit summary span{text-decoration:underline;text-underline-offset:2px}
+.ec-credit p{margin:8px 0 0;line-height:1.6}

@@ -987,7 +987,7 @@ const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','A
 // Gabarit : scripts/lib/revenu-ville-html.mjs (format « rapport de ta ville »,
 // 10/11/2026). Les chiffres viennent de services/simulateurs/engine.js, comme
 // l'estimateur, pour ne jamais contredire /services/simulateurs/revenus-lcd.
-function loadEngine () {
+export function loadEngine () {
   globalThis.window = globalThis.window || {}
   const src = fs.readFileSync(path.join(ROOT, 'services', 'simulateurs', 'engine.js'), 'utf8')
   new Function(src)()

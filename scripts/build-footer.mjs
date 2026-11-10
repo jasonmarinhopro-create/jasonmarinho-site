@@ -12,11 +12,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { footerHtml, footerCss, PANEL_RULES } from './lib/footer-html.mjs'
-import { villesParRegionHtml } from './lib/villes-hub.mjs'
 import { villesRegistre } from './lib/registre-geo.mjs'
 import { cheminRegion } from './lib/footer-html.mjs'
 import { loadCities } from './verifier-villes.mjs'
 import { aPhoto } from './data/photos-villes.mjs'
+import { etudesCarrouselHtml } from './lib/etudes-carrousel.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const FOOTER_JS = path.join(ROOT, 'footer.js')
@@ -68,11 +68,6 @@ function villesGridHtml() {
     + '</div></a>').join('')
 }
 
-/** Toutes les études de revenus de /services/simulateurs, par pays */
-function etudesHtml() {
-  return `<div class="vh-groups">${villesParRegionHtml('revenus', { parPays: true, chipsClass: 'vh-chips' })}</div>`
-}
-
 /** Liens vers les pages région des guides hôte, en tête de /villes (09/11/2026) */
 function villesRegionsHtml() {
   const regs = [...new Map(villesRegistre().filter(v => v.pages.hote && v.region).map(v => [v.region.code, v.region.nom])).values()]
@@ -86,7 +81,7 @@ function villesRegionsHtml() {
 const HUBS = [
   { file: 'villes/index.html', marker: 'VILLES-REGIONS', before: /(\s*<div class="cities-grid" id="cities-grid">)/, html: () => villesRegionsHtml() },
   { file: 'villes/index.html', re: /(<div class="cities-grid" id="cities-grid">)[\s\S]*?(<\/div>\s*\n\s*<div class="no-results")/, html: () => villesGridHtml() },
-  { file: 'services/simulateurs/index.html', marker: 'ETUDES', after: /(<summary>Toutes les études, par pays<\/summary>\n)/, html: () => etudesHtml() },
+  { file: 'services/simulateurs/index.html', marker: 'ETUDES', after: /(<p class="find-msg"[^\n]*\n)/, html: () => etudesCarrouselHtml() },
 ]
 
 export function syncHubs() {
