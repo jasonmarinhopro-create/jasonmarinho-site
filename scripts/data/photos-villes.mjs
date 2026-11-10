@@ -58,6 +58,11 @@ export const PHOTOS_COMMONS = {
     "auteur": "DXR",
     "licence": "CC BY-SA 4.0"
   },
+  "barcelone": {
+    "page": "https://commons.wikimedia.org/wiki/File:Barcelona_Skyline_as_seen_from_Parc_G%C3%BCell.jpg",
+    "auteur": "Chris Koerner from St. Louis, USA",
+    "licence": "CC BY 2.0"
+  },
   "bastia": {
     "page": "https://commons.wikimedia.org/wiki/File:Panorama_-_Vieux_port_(Bastia).jpg",
     "auteur": "Gzen92",
@@ -72,6 +77,11 @@ export const PHOTOS_COMMONS = {
     "page": "https://commons.wikimedia.org/wiki/File:Grand-Place,_Brussels_-_panorama,_June_2018.jpg",
     "auteur": "Celuici",
     "licence": "CC BY-SA 4.0"
+  },
+  "cassis": {
+    "page": "https://commons.wikimedia.org/wiki/File:Cassis-Port.jpg",
+    "auteur": "Jean-Christophe BENOIST",
+    "licence": "CC BY 3.0"
   },
   "chambery": {
     "page": "https://commons.wikimedia.org/wiki/File:Panorama_Chamb%C3%A9ry_-_Rotonde_%2B_TGV.JPG",
@@ -98,10 +108,20 @@ export const PHOTOS_COMMONS = {
     "auteur": "Martin Falbisoner",
     "licence": "CC BY-SA 3.0"
   },
+  "funchal": {
+    "page": "https://commons.wikimedia.org/wiki/File:Funchal,_Jardim_Bot%C3%A2nico_da_Madeira_(View_of_Funchal_from_Jardim_Bot%C3%A2nico).jpg",
+    "auteur": "Dr. Thomas Liptak",
+    "licence": "CC BY-SA 4.0"
+  },
   "honfleur": {
     "page": "https://commons.wikimedia.org/wiki/File:Honfleur_panorama_at_night.jpg",
     "auteur": "Andrés Nieto Porras",
     "licence": "CC BY-SA 2.0"
+  },
+  "la-baule": {
+    "page": "https://commons.wikimedia.org/wiki/File:Plage_Baule_-_La_Baule-Escoublac_(FR44)_-_2022-09-17_-_3.jpg",
+    "auteur": "Chabe01",
+    "licence": "CC BY-SA 4.0"
   },
   "la-rochelle": {
     "page": "https://commons.wikimedia.org/wiki/File:Entrance_La_Rochelle_old_harbor.jpg",
@@ -168,9 +188,19 @@ export const PHOTOS_COMMONS = {
     "auteur": "Velvet",
     "licence": "CC BY-SA 3.0"
   },
+  "seville": {
+    "page": "https://commons.wikimedia.org/wiki/File:Plaza_de_Espa%C3%B1a_-_Seville,_Spain_-_DSC07654.JPG",
+    "auteur": "Daderot",
+    "licence": "CC0"
+  },
   "troyes": {
     "page": "https://commons.wikimedia.org/wiki/File:Troyes_rue_Emile_Zola_maisons_pans_de_bois.jpg",
     "auteur": "Myrabella",
+    "licence": "CC BY-SA 4.0"
+  },
+  "val-d-isere": {
+    "page": "https://commons.wikimedia.org/wiki/File:Place_des_Dolomites_%C3%A0_Val-d%27Is%C3%A8re_en_%C3%A9t%C3%A9_(juillet_2022).JPG",
+    "auteur": "Florian Pépellin",
     "licence": "CC BY-SA 4.0"
   },
   "valence": {
@@ -184,6 +214,7 @@ export const PHOTOS_COMMONS = {
     "licence": "CC BY-SA 4.0"
   }
 }
+
 
 /** La ville a-t-elle une photo (Pexels ou Commons) ? */
 export const aPhoto = slug => !!(PHOTOS_VILLES[slug] || PHOTOS_COMMONS[slug])
