@@ -235,7 +235,9 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
 
   useEffect(() => {
     if (!userId) return
-    refreshCounts()
+    // Pas d'appel au montage (10/11/2026) : le serveur vient de calculer ces
+    // compteurs pour ce même affichage, le redemander doublait les lectures
+    // de chaque ouverture. Le minuteur et le retour sur l'onglet suffisent.
     // Cloche instantanée : le fil est préchargé une fois la page affichée
     const warm = window.setTimeout(prefetchNotificationFeed, 2500)
     const tick = () => { if (document.visibilityState === 'visible') refreshCounts() }
