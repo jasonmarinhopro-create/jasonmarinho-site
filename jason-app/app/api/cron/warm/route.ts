@@ -26,8 +26,7 @@ export async function GET(req: Request) {
   }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const service = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !anon || !service) return NextResponse.json({ error: 'missing env vars' }, { status: 500 })
+  if (!url || !anon) return NextResponse.json({ error: 'missing env vars' }, { status: 500 })
 
   const timed = async (label: string, run: () => Promise<Response>) => {
     const t0 = Date.now()
@@ -45,7 +44,8 @@ export async function GET(req: Request) {
   const results = await Promise.all([
     timed('auth', () => fetch(`${url}/auth/v1/health`, opts(anon))),
     timed('menu', () => fetch(`${url}/rest/v1/rpc/menu_state`, opts(anon, { method: 'POST', body: '{}' }))),
-    timed('profiles', () => fetch(`${url}/rest/v1/profiles?select=id&limit=1`, opts(service, { method: 'HEAD' }))),
+    // Lecture publique minuscule (actualités publiées, règle d'accès publique) : pas de clé service
+    timed('lecture', () => fetch(`${url}/rest/v1/actualites?select=id&limit=1`, opts(anon, { method: 'HEAD' }))),
   ])
   return NextResponse.json({ ok: results.every(r => r[1] > 0 && r[1] < 500), ms: Object.fromEntries(results.map(r => [r[0], r[2]])) })
 }
