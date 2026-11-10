@@ -272,6 +272,9 @@ function zonePage({ t, kind, buildList, zone, pros, proches, villes, villesProch
     .replace(/<section class="villes-section" id="villes">[\s\S]*?<\/section>\n?/, '')
     .replace('<div class="grid">', `${proches_html}<div class="grid">`)
     .replace('<!-- REGION-SLOT -->', sections)
+    // Panneau « annuaire vide » : la zone de la page à la place de « près de chez toi »
+    .replace(/<!--EMPTY-ZONE-->[\s\S]*?<!--\/EMPTY-ZONE-->/g, esc(en))
+    .replace(/<!--EMPTY-ZONE-PRO-->[\s\S]*?<!--\/EMPTY-ZONE-PRO-->/g, ` ${esc(en)}`)
   if (!html.includes('class="rg-grid"')) throw new Error(`[zone] ${url} : emplacement REGION-SLOT absent du gabarit`)
   return { html, title }
 }

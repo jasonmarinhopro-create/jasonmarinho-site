@@ -273,9 +273,58 @@ export function cityPicksHtml(cfg, counts) {
     `<button type="button" class="city-pick" data-city="${esc(villeLabel(slug))}">${esc(villeLabel(slug))} <span>${n}</span></button>`).join('')}</div>`
 }
 
-/** État vide (aucun pro) côté hôte */
+/**
+ * État vide (aucun pro) côté hôte. Refait le 10/11/2026 (Jason : « minimaliste,
+ * le plus utile possible, effet wow », l'ancien panneau de 640 px était trop
+ * étroit) : pleine largeur, ce que l'hôte peut faire tout de suite à gauche,
+ * comment ça marche à droite, une ligne pour les pros du secteur.
+ * La zone (« dans les Alpes-Maritimes ») est posée par les pages de zone entre
+ * les marqueurs EMPTY-ZONE ; sinon « près de chez toi ».
+ */
 export function emptyHtml(cfg) {
-  return `<div class="empty"><div class="empty-ico"><i class="ph-bold ${cfg.icon}" style="font-size:32px;color:var(--g)"></i></div><h2>Les premiers ${esc(cfg.many)} arrivent</h2><p>L’annuaire vient d’ouvrir. Décris ton besoin : ta demande part aux pros de ta zone dès qu’ils sont là. Le guide de ta ville (plus bas) te donne les tarifs constatés.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a href="/trouver-un-pro?metier=${cfg.key}" class="btn-p">Décrire mon besoin</a><a href="#villes" class="btn-p" style="background:transparent;border:1px solid rgba(0,76,63,.25);color:var(--g)">Le guide de ma ville</a></div></div>`
+  const nu = cfg.unOne.replace(/^une? /, '')
+  const de = /^[aeiouyéèêh]/i.test(nu) ? `d’${nu}` : `de ${nu}`
+  const zone = '<!--EMPTY-ZONE-->près de chez toi<!--/EMPTY-ZONE-->'
+  return `<section class="e2" aria-labelledby="e2-h">
+  <div class="e2-main">
+    <span class="e2-tag"><i class="ph-bold ${cfg.icon}"></i> L’annuaire ouvre ${zone}</span>
+    <h2 id="e2-h">Pas encore ${esc(de)} inscrit${nu.startsWith('équipe') ? 'e' : ''} ici. <em>Ta demande, elle, peut partir maintenant.</em></h2>
+    <p>Décris ton logement et ton besoin : ta demande part aux pros de ta zone dès qu’ils sont là, et ils te répondent en direct, sans commission.</p>
+    <div class="e2-cta">
+      <a href="/trouver-un-pro?metier=${cfg.key}" class="e2-btn">Décrire mon besoin <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="#villes" class="e2-lnk">Les tarifs constatés dans ma ville</a>
+    </div>
+  </div>
+  <ol class="e2-steps">
+    <li><span class="e2-n">1</span><div><b>Tu décris ton besoin</b><small>Ton logement, tes dates, ce qu’il te faut.</small></div></li>
+    <li><span class="e2-n">2</span><div><b>Elle part aux pros de ta zone</b><small>Dès qu’ils s’inscrivent sur l’annuaire.</small></div></li>
+    <li><span class="e2-n">3</span><div><b>Ils te répondent en direct</b><small>Sans intermédiaire, sans commission.</small></div></li>
+  </ol>
+  <p class="e2-pro"><i class="ph-bold ph-briefcase"></i> Tu es ${esc(cfg.unOne)}<!--EMPTY-ZONE-PRO--><!--/EMPTY-ZONE-PRO--> ? <a href="${cfg.join[0]}">Crée ta fiche et reçois les demandes du secteur</a></p>
+</section>
+<style>
+.e2{position:relative;display:grid;grid-template-columns:1.25fr 1fr;gap:0;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:24px;overflow:hidden;box-shadow:0 24px 60px rgba(0,40,30,.08)}
+.e2-main{padding:clamp(26px,4vw,48px)}
+.e2-tag{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--g);background:rgba(0,76,63,.07);border-radius:999px;padding:6px 12px}
+.e2 h2{font-family:Fraunces,serif;font-weight:300;font-size:clamp(26px,3.1vw,38px);line-height:1.14;letter-spacing:-.02em;color:var(--td);margin:18px 0 14px}
+.e2 h2 em{display:block;color:var(--g);font-style:italic}
+.e2-main>p{font-size:15.5px;line-height:1.7;color:var(--tm);font-weight:300;margin:0;max-width:520px}
+.e2-cta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin-top:26px}
+.e2-btn{display:inline-flex;align-items:center;gap:8px;background:#FFD56B;color:#003329;font-weight:600;font-size:15px;padding:14px 22px;border-radius:12px;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.e2-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,200,69,.4)}
+.e2-lnk{font-size:14.5px;font-weight:600;color:var(--g);text-decoration:none;border-bottom:1px solid rgba(0,76,63,.3);padding-bottom:1px}
+.e2-lnk:hover{border-color:var(--g)}
+.e2-steps{list-style:none;margin:0;padding:clamp(26px,4vw,44px);background:radial-gradient(ellipse 80% 70% at 85% 10%,rgba(255,213,107,.14),transparent 60%),linear-gradient(160deg,#001a11,#003329 55%,#00463a);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:22px;position:relative}
+.e2-steps li{display:flex;gap:16px;align-items:flex-start;position:relative}
+.e2-steps li:not(:last-child)::after{content:"";position:absolute;left:17px;top:40px;bottom:-18px;width:1px;background:rgba(255,213,107,.3)}
+.e2-n{flex-shrink:0;width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Fraunces,serif;font-size:17px;color:#003329;background:#FFD56B;box-shadow:0 0 0 6px rgba(255,213,107,.12)}
+.e2-steps b{display:block;font-weight:600;font-size:15.5px;margin-top:5px}
+.e2-steps small{display:block;font-size:13.5px;color:rgba(255,255,255,.65);margin-top:2px;line-height:1.5}
+.e2-pro{grid-column:1/-1;margin:0;padding:14px clamp(26px,4vw,48px);border-top:1px solid rgba(0,76,63,.1);background:#FBFAF6;font-size:14px;color:var(--tm);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.e2-pro i{color:var(--g)}
+.e2-pro a{color:var(--g);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(0,76,63,.3)}
+@media(max-width:820px){.e2{grid-template-columns:1fr}.e2-steps{gap:18px}}
+</style>`
 }
 
 /** « Pas le temps de chercher ? » : vers le formulaire de demande inversée */
