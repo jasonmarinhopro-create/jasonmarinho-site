@@ -23,6 +23,16 @@ export default async function Page() {
   const fromDate = addDaysIso(today, -1)   // hier (ménages oubliés)
   const toDate = addDaysIso(today, DAYS_AHEAD)
 
+  // Fiche dans l'annuaire (05/10/2026) : une équipe qui utilise le planning
+  // sans être dans l'annuaire se voit proposer sa fiche. Service role : places
+  // Fondateur comptées sur toutes les fiches (compteur global). Lancé dès le
+  // début, en même temps que le reste (10/11/2026).
+  const db = getServiceClient()
+  const annuaireP = Promise.all([
+    db.from('cleaners').select('status').eq('user_id', user.id).maybeSingle(),
+    db.from('cleaners').select('id', { count: 'exact', head: true }).eq('tier', 'fondateur').or(founderSeatFilter()),
+  ])
+
   // Liste des plannings : client utilisateur (la RLS limite à ses propres liens).
   const supabase = await createClient()
   const { data: links, error: linksErr } = await supabase
@@ -35,7 +45,6 @@ export default async function Page() {
 
   // Les données des hôtes ne sont PAS lisibles par l'équipe via la RLS :
   // service role, uniquement pour les hôtes dont le lien est valide.
-  const db = getServiceClient()
   const hostIds = (links ?? []).map(l => l.host_user_id)
   const { data: hosts } = hostIds.length
     ? await db.from('profiles').select('id, ical_token').in('id', hostIds)
@@ -67,13 +76,17 @@ export default async function Page() {
     const compByKey = new Map((completions ?? []).map(r => [menageKey(r.date, r.logement_nom), r]))
     const hostDoneDates = (hostDone ?? []) as Array<{ title: string; date: string }>
 
-    return Promise.all(slots.map(async (s): Promise<PlanningSlot> => {
+    // Liens des photos : un seul appel pour tout le client (avant : un par ménage)
+    const paths = Array.from(new Set(slots.flatMap(s => compByKey.get(menageKey(s.date, s.logementName))?.photos ?? [])))
+    const urlByPath = new Map<string, string>()
+    if (paths.length) {
+      const { data } = await db.storage.from('menage-photos').createSignedUrls(paths, 3600)
+      for (const d of data ?? []) if (d.path && d.signedUrl) urlByPath.set(d.path, d.signedUrl)
+    }
+
+    return slots.map((s): PlanningSlot => {
       const comp = compByKey.get(menageKey(s.date, s.logementName))
-      let photoUrls: string[] = []
-      if (comp?.photos?.length) {
-        const { data } = await db.storage.from('menage-photos').createSignedUrls(comp.photos, 3600)
-        photoUrls = (data ?? []).map(d => d.signedUrl).filter(Boolean) as string[]
-      }
+      const photoUrls = (comp?.photos ?? []).map((p: string) => urlByPath.get(p)).filter(Boolean) as string[]
       const doneByHost = !comp && hostDoneDates.some(e => e.date === s.date && e.title.toLowerCase().includes(s.logementName.toLowerCase()))
       return {
         id: `${c.hostId}-${s.id}`,
@@ -90,18 +103,12 @@ export default async function Page() {
         fraisMenage: s.fraisMenage,
         done: comp ? { byMe: comp.cleaner_user_id === user.id, note: comp.note, photoUrls } : doneByHost ? { byMe: false, note: null, photoUrls: [] } : null,
       }
-    }))
+    })
   }))
 
   const slots = perHost.flat().sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime))
 
-  // Fiche dans l'annuaire (05/10/2026) : une équipe qui utilise le planning
-  // sans être dans l'annuaire se voit proposer sa fiche. Service role : places
-  // Fondateur comptées sur toutes les fiches (compteur global).
-  const [{ data: ownCleaner }, { count: founderCount }] = await Promise.all([
-    db.from('cleaners').select('status').eq('user_id', user.id).maybeSingle(),
-    db.from('cleaners').select('id', { count: 'exact', head: true }).eq('tier', 'fondateur').or(founderSeatFilter()),
-  ])
+  const [{ data: ownCleaner }, { count: founderCount }] = await annuaireP
   const cleanerStatus = (ownCleaner?.status as string | undefined) ?? null
   const annuaire = cleanerStatus === 'active' || cleanerStatus === 'hidden'
     ? null

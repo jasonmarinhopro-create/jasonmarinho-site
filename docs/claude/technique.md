@@ -387,3 +387,9 @@ Jason : « je ne peux pas me permettre d'avoir des pics, il faut que tout soit s
 - Contrats : les 5 lectures partent en même temps (avant : 4 à 5 allers-retours l'un après l'autre, 12,8 s en médiane) ; la fiche voyageur vient avec le contrat (`sejour:sejours(voyageur_id)`).
 - Sécurité voyageur : plus de `getUser()`. Garde-fou étendu : aucune page ni layout de `app/dashboard` ne rappelle `getUser()` (`request-guards.test.ts`).
 - Fiches Logement et Voyageur : déjà en parallèle, rien à changer. Les lenteurs restantes de ces pages venaient surtout du réveil de la base (cron `warm`) et du cadre.
+
+**Espaces pros (10/11/2026, mêmes fondations)**
+- Facturation et Devis (3 métiers) : `getProOwnerForPage` (session du layout, `getAuthIdentity`) au lieu de `getProOwner` qui rappelait `getUser()` à chaque ouverture ; `getProOwner` (avec `getUser()`) reste pour les actions qui écrivent.
+- Page principale des fiches (photographe, ménage, dépannage) : « vues du mois » gardées 10 min (`lib/pros/views-cached.ts`, jamais quand la table est indisponible).
+- Planning ménage : les lectures de la fiche annuaire partent dès le début ; liens des photos en un appel par client au lieu d'un par ménage.
+- Statistiques : voir plus haut (cache 5 min). Demandes et Carnet clients : 2 lectures (fiche puis liste), laissées telles quelles.

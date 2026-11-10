@@ -3,7 +3,7 @@
 
 import 'server-only'
 import { createClient } from '@/lib/supabase/server'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity, getAuthUser } from '@/lib/supabase/auth-user'
 import { METIERS, KINDS, type Metier } from './metiers'
 import { EMPTY_PROFILE, type BillingProfile, type ProDocument, type ProKind } from './billing'
 
@@ -26,9 +26,27 @@ export const DOC_COLUMNS = 'id, kind, number, status, client_id, client_name, cl
 export const PROFILE_COLUMNS = 'legal_name, trade_name, legal_form, siret, address, email, phone, vat_mode, vat_number, default_vat_rate, quote_validity_days, footer_note, has_invoicing_tool, invoicing_tool'
 
 /** Le pro connecté (sa propre fiche, jamais celle d'un autre : pas d'accès admin) */
+/** Actions (écritures) : session revalidée auprès de Supabase (getUser). */
 export async function getProOwner(kind: ProKind): Promise<ProOwner | null> {
   const user = await getAuthUser()
   if (!user) return null
+  return loadProOwner(kind, user.id)
+}
+
+/**
+ * Pages (lecture) : session déjà vérifiée par le layout, jeton contrôlé par sa
+ * signature (getAuthIdentity, dédupliqué par rendu). Évite un aller-retour vers
+ * le serveur d'authentification à chaque ouverture de Facturation et Devis
+ * (10/11/2026, 4 à 8 s mesurés quand la base est chargée).
+ */
+export async function getProOwnerForPage(kind: ProKind): Promise<ProOwner | null> {
+  const user = await getAuthIdentity()
+  if (!user) return null
+  return loadProOwner(kind, user.id)
+}
+
+async function loadProOwner(kind: ProKind, userId: string): Promise<ProOwner | null> {
+  const user = { id: userId }
   const db = await createClient()
   const cols = kind !== 'photographer'
     ? 'id, email, full_name, pseudo, telephone, ville, logo_url, siret'

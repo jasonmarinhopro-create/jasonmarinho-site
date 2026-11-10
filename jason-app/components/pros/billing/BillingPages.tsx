@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { recentLines, type ProKind } from '@/lib/pros/billing'
 import {
-  BILLING_BASE, DOC_COLUMNS, getProOwner, loadBillingProfile, loadClients, loadDocuments, normalizeDoc,
+  BILLING_BASE, DOC_COLUMNS, getProOwnerForPage, loadBillingProfile, loadClients, loadDocuments, normalizeDoc,
 } from '@/lib/pros/billing-server'
 import { METIERS, KINDS } from '@/lib/pros/metiers'
 import BillingHub from './BillingHub'
@@ -18,7 +18,7 @@ const GUIDE = Object.fromEntries(KINDS.map(k => [k, `${METIERS[k].espace}/factur
 const LOGIN = Object.fromEntries(KINDS.map(k => [k, `/auth/login?as=${METIERS[k].slug}`])) as Record<ProKind, string>
 
 export async function BillingHubPage({ kind }: { kind: ProKind }) {
-  const owner = await getProOwner(kind)
+  const owner = await getProOwnerForPage(kind)
   if (!owner) redirect(FICHE[kind])
   const [{ profile, saved }, { docs, tableMissing }] = await Promise.all([
     loadBillingProfile(kind, owner),
@@ -37,7 +37,7 @@ export async function BillingEditorPage({ kind, id, searchParams }: {
   id: string
   searchParams: { client?: string; contact?: string }
 }) {
-  const owner = await getProOwner(kind)
+  const owner = await getProOwnerForPage(kind)
   if (!owner) redirect(LOGIN[kind])
   const db = await createClient()
   const isNew = id === 'nouveau'

@@ -5,7 +5,8 @@ import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import { getProfile } from '@/lib/queries/profile'
 import { perfTimer } from '@/lib/perf/server-timing'
 import MaFicheDepannage from './MaFicheDepannage'
-import { getViewsTrend } from '@/lib/pros/views'
+import type { ViewsTrend } from '@/lib/pros/views'
+import { getViewsTrendCached } from '@/lib/pros/views-cached'
 import { Suspense } from 'react'
 import { ProStatsTeaser, StatsTeaserSkeleton } from '@/components/pros/stats/StatsTeaser'
 
@@ -33,12 +34,12 @@ export default async function Page({ searchParams }: PageProps) {
   const isAdminPreview = !!previewId && isAdmin
 
   let pro: any = null
-  let viewsTrend: Awaited<ReturnType<typeof getViewsTrend>> | undefined
+  let viewsTrend: ViewsTrend | undefined
   if (isAdminPreview) {
     // Aperçu admin : fiche et vues du mois en même temps (l'id est connu)
     const [{ data }, trend] = await Promise.all([
       admin.from('depannage_pros').select('*').eq('id', previewId).maybeSingle(),
-      getViewsTrend(admin, 'depannage', previewId!),
+      getViewsTrendCached('depannage', previewId!),
     ])
     pro = data
     viewsTrend = trend
@@ -75,7 +76,7 @@ export default async function Page({ searchParams }: PageProps) {
     )
   }
 
-  if (!viewsTrend) viewsTrend = await getViewsTrend(admin, 'depannage', pro.id)
+  if (!viewsTrend) viewsTrend = await getViewsTrendCached('depannage', pro.id)
   timer.mark('vues du mois')
   timer.done()
   const createdAt = new Date(pro.created_at)
