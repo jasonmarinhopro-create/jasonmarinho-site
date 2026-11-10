@@ -81,26 +81,37 @@ export async function warmupStats(db: Db, today: string): Promise<WarmupStats> {
     db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('replied_at', since),
     db.from('outreach_sends').select('sent_at').eq('status', 'envoye').gte('sent_at', since3).limit(1000),
   ])
+  return warmupStatsFrom({
+    sent: sent ?? 0,
+    errors: (errs.data ?? []).map(r => r.error as string | null),
+    reasons: (supp.data ?? []).map(r => r.reason as string),
+    replies: replies ?? 0,
+    recent: (recent.data ?? []).map(r => r.sent_at as string),
+  }, today)
+}
+
+/** Signaux de la montée en charge à partir des lignes brutes (aussi fournies par outreach_admin_data). */
+export function warmupStatsFrom(raw: { sent: number; errors: Array<string | null>; reasons: string[]; replies: number; recent: string[] }, today: string): WarmupStats {
   let blocks = 0, otherErrors = 0
-  for (const r of errs.data ?? []) {
-    const k = classifyError(r.error as string | null)
+  for (const e of raw.errors) {
+    const k = classifyError(e)
     // Adresse inconnue : déjà comptée en rebond (suppression « rebond »)
     if (k === 'blocage') blocks++
     else if (k === 'autre') otherErrors++
   }
-  const reasons = (supp.data ?? []).map(r => r.reason as string)
+  const reasons = raw.reasons
   const perDay = new Map<string, number>()
-  for (const r of recent.data ?? []) {
-    const d = parisToday(new Date(r.sent_at as string))
+  for (const at of raw.recent) {
+    const d = parisToday(new Date(at))
     if (d !== today) perDay.set(d, (perDay.get(d) ?? 0) + 1)
   }
   return {
-    sent: sent ?? 0,
+    sent: raw.sent,
     bounces: reasons.filter(r => r === 'rebond').length,
     unsubscribes: reasons.filter(r => r === 'desinscrit').length,
     complaints: reasons.filter(r => r === 'plainte').length,
     blocks, otherErrors,
-    replies: replies ?? 0,
+    replies: raw.replies,
     busiestDay: Math.max(0, ...Array.from(perDay.values())),
   }
 }
