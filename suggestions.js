@@ -11,6 +11,9 @@
      data-suggest-anchor="<sel>"  boîte visuelle du champ (ex. .vs-in) pour placer la liste
      data-suggest-submit          envoie le formulaire au choix d'une ligne
      data-suggest-strict          pas de ligne « Utiliser « … » »
+     data-suggest-fresh           sur téléphone, la recherche s'ouvre vide (valeur actuelle en exemple)
+     data-suggest-found="…" / data-suggest-none="…"   titres de la liste (trouvé / rien trouvé)
+     <option data-sub="…">        deuxième ligne propre à l'option (remplace la région et « Page dédiée »)
    La valeur choisie déclenche les événements input et change du champ.
    Même composant dans l'app : jason-app/components/ui/SuggestInput.tsx. */
 (function () {
@@ -72,12 +75,14 @@
     var dl = input._jmsList ? document.getElementById(input._jmsList) : null;
     if (!dl) return [];
     return Array.prototype.map.call(dl.querySelectorAll('option'), function (o) {
-      return { value: o.value, label: o.value };
+      return { value: o.value, label: o.value, sub: o.getAttribute('data-sub') || '' };
     }).filter(function (o) { return o.value; });
   }
 
   function search(input, q) {
     var all = readOptions(input), nq = norm(q.trim()), city = input.dataset.suggest === 'ville';
+    // Champ « fresh » qui affiche déjà un choix : on propose la liste entière, pas ce seul choix
+    if (input.hasAttribute('data-suggest-fresh') && nq && q === input.value && all.some(function (o) { return norm(o.value) === nq; })) nq = '';
     var list;
     if (!nq) {
       list = city ? POPULAR.map(function (s) { return all.filter(function (o) { return slug(o.value) === s; })[0]; }).filter(Boolean) : all.slice();
@@ -89,7 +94,7 @@
     var exact = all.some(function (o) { return norm(o.value) === nq; });
     return {
       items: list.slice(0, isPhone() ? 30 : MAX),
-      heading: !nq ? (city ? 'Les plus demandées' : 'Suggestions') : (list.length ? (city ? 'Villes avec une page sur le site' : 'Suggestions') : (city ? 'Pas encore de page pour cette ville' : '')),
+      heading: !nq ? (city ? 'Les plus demandées' : 'Suggestions') : (list.length ? (input.dataset.suggestFound || (city ? 'Villes avec une page sur le site' : 'Suggestions')) : (input.dataset.suggestNone || (city ? 'Pas encore de page pour cette ville' : ''))),
       free: nq && !exact && !input.hasAttribute('data-suggest-strict') ? q.trim() : null,
       nq: nq, city: city
     };
@@ -98,11 +103,11 @@
   function rowHtml(o, i, r, active, id) {
     var k = r.nq ? norm(o.value).indexOf(r.nq) : -1;
     var name = k >= 0 ? esc(o.value.slice(0, k)) + '<u>' + esc(o.value.slice(k, k + r.nq.length)) + '</u>' + esc(o.value.slice(k + r.nq.length)) : esc(o.value);
-    var reg = r.city ? REGIONS[slug(o.value)] : null;
+    var reg = o.sub || (r.city ? REGIONS[slug(o.value)] : null);
     return '<div class="jms-o' + (i === active ? ' on' : '') + '" role="option" id="' + id + '-' + i + '" aria-selected="' + (i === active) + '" data-i="' + i + '">' +
       (r.city ? '<span class="jms-pin">' + PIN + '</span>' : '') +
       '<span class="jms-t"><span class="jms-n">' + name + '</span>' + (reg ? '<span class="jms-r">' + esc(reg) + '</span>' : '') + '</span>' +
-      (reg ? '<span class="jms-b">Page dédiée</span>' : '') + '</div>';
+      (reg && !o.sub ? '<span class="jms-b">Page dédiée</span>' : '') + '</div>';
   }
 
   function listHtml(r, active, id) {
@@ -215,7 +220,7 @@
     var label = (input.labels && input.labels[0] && input.labels[0].textContent.trim()) || input.getAttribute('aria-label') || 'Choisir';
     sheet.setAttribute('aria-label', label);
     sheet.innerHTML = '<div class="jms-grab"><span></span></div><div class="jms-top"><label class="jms-box">' + LOUPE +
-      '<input type="text" autocomplete="off" autocapitalize="words" enterkeyhint="done" aria-label="' + esc(label) + '" placeholder="' + esc(input.getAttribute('placeholder') || 'Rechercher') + '"></label>' +
+      '<input type="text" autocomplete="off" autocapitalize="words" enterkeyhint="done" aria-label="' + esc(label) + '" placeholder="' + esc((input.hasAttribute('data-suggest-fresh') && input.value) || input.getAttribute('placeholder') || 'Rechercher') + '"></label>' +
       '<button type="button" class="jms-cancel">Annuler</button></div><div class="jms-list" role="listbox" id="' + id + '"></div>';
     document.body.appendChild(veil);
     document.body.appendChild(sheet);
@@ -234,7 +239,7 @@
     fit();
     if (vv) { vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); }
     var field = sheet.querySelector('input'), list = sheet.querySelector('.jms-list'), r = null;
-    field.value = input.value;
+    field.value = input.hasAttribute('data-suggest-fresh') ? '' : input.value;
     function render() { r = search(input, field.value); list.innerHTML = listHtml(r, -1, id); }
     function shut() {
       if (vv) { vv.removeEventListener('resize', fit); vv.removeEventListener('scroll', fit); }

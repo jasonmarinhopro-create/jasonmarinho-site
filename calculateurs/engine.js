@@ -202,7 +202,7 @@
       var avg = COUNTRY_AVG[input.pays] || COUNTRY_AVG.FR
       baseOcc = avg.occ / 100
       baseAdr = avg.adr
-      sourceLabel = avg.source + ' (moyenne pays — ville non listée)'
+      sourceLabel = avg.source + ' (moyenne du pays, ville pas encore dans nos données)'
     }
 
     var typeMult = TYPE_MULT[input.typeLogement] || 1.00

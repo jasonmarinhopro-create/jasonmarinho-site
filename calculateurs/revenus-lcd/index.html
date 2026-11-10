@@ -50,7 +50,10 @@
     .sentence{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(21px,2.7vw,32px);line-height:1.9;max-width:900px;margin:0 auto;color:var(--tm)}
     .pill{position:relative;display:inline-block;vertical-align:baseline;margin:0 3px}
     .pill select,.pill input{appearance:none;-webkit-appearance:none;font:inherit;font-style:italic;color:var(--g);background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.4' stroke-linecap='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 12px center;border:1px solid var(--bd2);border-radius:14px;padding:0 36px 0 14px;line-height:1.5;box-shadow:0 2px 10px rgba(0,76,63,.06);cursor:pointer;max-width:72vw;transition:border-color .2s,box-shadow .2s}
-    .pill select:hover{border-color:var(--g)}
+    .pill select:hover,.pill input:hover{border-color:var(--g)}
+    .pill-in input{cursor:text;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.4' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>")}
+    .pill-in input::placeholder{color:var(--tl);opacity:.7}
+    .pill-in input:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 4px rgba(0,76,63,.12)}
     .pill select:focus-visible,.ctl:focus-visible{outline:none;border-color:var(--g);box-shadow:0 0 0 4px rgba(0,76,63,.12)}
     .result{margin:38px auto 0;max-width:900px;background:#fff;border:1px solid var(--bd);border-radius:28px;box-shadow:0 30px 80px rgba(0,76,63,.10);padding:clamp(24px,4vw,44px);text-align:left}
     .big{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(54px,9vw,100px);letter-spacing:-.045em;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums}
@@ -155,7 +158,7 @@
         <option value="t3">T3</option>
         <option value="t4">T4 ou plus</option>
         <option value="maison">maison</option>
-      </select></span> à <span class="pill"><select id="f-ville" aria-label="Ville"></select></span>,<br>
+      </select></span> à <span class="pill pill-in"><input id="f-ville-in" type="text" list="dl-villes" data-suggest="ville" data-suggest-fresh data-suggest-found="Villes avec leurs chiffres" data-suggest-none="Pas encore de chiffres pour cette ville : moyenne de la France" autocomplete="off" spellcheck="false" enterkeyhint="done" placeholder="ta ville" aria-label="Ville (écris pour chercher)"><input type="hidden" id="f-ville" value="FR|Paris"></span><datalist id="dl-villes"></datalist>,<br>
       loué <span class="pill"><select id="f-mode" aria-label="Période de location">
         <option value="toute-annee" selected>toute l'année</option>
         <option value="saisonnier-ete">l'été seulement</option>
@@ -336,22 +339,41 @@
   function eur (n) { return Math.round(n).toLocaleString('fr-FR').replace(/[\u202F\u00A0]/g, '\u00A0') + '\u00A0€' }
   function num (id, def) { var v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : def }
 
+  // Ville : champ où l'on écrit, liste de /suggestions.js (comme la recherche de l'accueil)
+  var CITY_BY_NAME = {}
+  // Noms en français des villes étrangères (le moteur garde les noms locaux)
+  var FR_NAME = { Lisboa: 'Lisbonne', 'Évora': 'Evora', Barcelona: 'Barcelone', Sevilla: 'Séville', Valencia: 'Valence', 'Málaga': 'Malaga', 'San Sebastián': 'Saint-Sébastien', Roma: 'Rome', Milano: 'Milan', Firenze: 'Florence', Venezia: 'Venise', Napoli: 'Naples', Torino: 'Turin', Bologna: 'Bologne', Verona: 'Vérone', Palermo: 'Palerme', Brugge: 'Bruges', Gent: 'Gand', Antwerpen: 'Anvers', 'München': 'Munich', Hamburg: 'Hambourg', 'Köln': 'Cologne', 'Frankfurt am Main': 'Francfort', 'Den Haag': 'La Haye', Wien: 'Vienne', Salzburg: 'Salzbourg', 'Zürich': 'Zurich', Bern: 'Berne' }
+  function shown (ville) { return FR_NAME[ville] || ville }
+  function cityKey (name) { return String(name || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') }
+  function setCity (pays, ville) {
+    $('f-ville').value = pays + '|' + ville
+    $('f-ville-in').value = shown(ville)
+  }
+  // Ville tapée : connue, on prend ses chiffres ; sinon moyenne de la France
+  function pickTyped () {
+    var raw = $('f-ville-in').value.trim()
+    if (!raw) { var cur = $('f-ville').value.split('|'); $('f-ville-in').value = shown(cur[1]); fit(); return }
+    var k = cityKey(raw), hit = CITY_BY_NAME[k]
+    if (!hit) hit = Object.keys(CITY_BY_NAME).filter(function (n) { return n.indexOf(k) === 0 }).map(function (n) { return CITY_BY_NAME[n] })[0]
+    if (hit) setCity(hit.pays, hit.ville)
+    else setCity('FR', raw.charAt(0).toUpperCase() + raw.slice(1))
+    render()
+    // Choix fait : on quitte le champ (le prochain clic resélectionne tout)
+    if (document.activeElement === $('f-ville-in')) $('f-ville-in').blur()
+  }
   function fillCities () {
     var html = ''
     Object.keys(COUNTRIES).forEach(function (p) {
-      var list = window.JMCalc.citiesByCountry(p)
-      html += '<optgroup label="' + COUNTRIES[p] + '">'
-      list.forEach(function (c) { html += '<option value="' + p + '|' + c.ville + '">' + c.ville + '</option>' })
-      html += '<option value="' + p + '|">une autre ville (' + COUNTRIES[p] + ')</option></optgroup>'
+      window.JMCalc.citiesByCountry(p).forEach(function (c) {
+        CITY_BY_NAME[cityKey(c.ville)] = CITY_BY_NAME[cityKey(shown(c.ville))] = { pays: p, ville: c.ville }
+        html += '<option value="' + shown(c.ville) + '" data-sub="' + COUNTRIES[p] + ', ' + c.adr + ' \u20ac la nuit, ' + c.occ + ' % d\'occupation"></option>'
+      })
     })
-    $('f-ville').innerHTML = html
+    $('dl-villes').innerHTML = html
     // Ville demandée dans l'adresse (?ville=Lyon&pays=FR), sinon Paris
     var q = new URLSearchParams(location.search)
-    var want = (q.get('pays') || 'FR').toUpperCase() + '|' + (q.get('ville') || 'Paris')
-    var opts = Array.prototype.slice.call($('f-ville').options)
-    var hit = opts.filter(function (o) { return o.value.toLowerCase() === want.toLowerCase() })[0]
-      || opts.filter(function (o) { return o.value.split('|')[1].toLowerCase() === (q.get('ville') || '').toLowerCase() })[0]
-    $('f-ville').value = hit ? hit.value : 'FR|Paris'
+    var hit = CITY_BY_NAME[cityKey(q.get('ville') || 'Paris')] || CITY_BY_NAME.paris
+    setCity(hit.pays, hit.ville)
     var t = (q.get('type') || '').toLowerCase()
     if (TYPES[t]) $('f-type').value = t
   }
@@ -385,11 +407,11 @@
   ruler.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0'
   function fit () {
     if (!ruler.parentNode) document.body.appendChild(ruler)
-    Array.prototype.forEach.call(document.querySelectorAll('.pill select'), function (el) {
+    Array.prototype.forEach.call(document.querySelectorAll('.pill select, .pill input[type=text]'), function (el) {
       var cs = getComputedStyle(el)
       ruler.style.font = cs.font
       ruler.style.fontStyle = cs.fontStyle
-      ruler.textContent = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : ''
+      ruler.textContent = el.tagName === 'INPUT' ? (el.value || el.placeholder) + ' ' : (el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '')
       el.style.width = Math.ceil(ruler.getBoundingClientRect().width + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 4) + 'px'
     })
   }
@@ -474,7 +496,15 @@
   function boot () {
     if (!window.JMCalc) { setTimeout(boot, 50); return }
     fillCities()
-    ;['f-type', 'f-ville', 'f-mode', 'f-level', 'f-canal', 'f-gestion', 'f-sejour', 'f-classe', 'f-tmi'].forEach(function (id) { $(id).addEventListener('change', render) })
+    var vin = $('f-ville-in')
+    vin.addEventListener('change', pickTyped)
+    vin.addEventListener('input', fit)
+    // Un clic sélectionne tout : on écrit directement par-dessus la ville affichée
+    var justFocused = false
+    vin.addEventListener('focus', function () { justFocused = true; try { vin.select() } catch (e) {} })
+    vin.addEventListener('mouseup', function (e) { if (justFocused) e.preventDefault(); justFocused = false })
+    vin.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); vin.blur() } })
+    ;['f-type', 'f-mode', 'f-level', 'f-canal', 'f-gestion', 'f-sejour', 'f-classe', 'f-tmi'].forEach(function (id) { $(id).addEventListener('change', render) })
     ;['f-menage', 'f-charges', 'f-loyer'].forEach(function (id) { $(id).addEventListener('input', function () { if (id === 'f-loyer') loyerTouched = true; render() }) })
     render()
     window.addEventListener('resize', fit)
@@ -484,5 +514,6 @@
   else boot()
 })()
 </script>
+<script src="/suggestions.js" defer></script>
 </body>
 </html>
