@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-11 · reglementation · Bruxelles propose d'interdire les achats LCD en zones tendues · masquée (https://www.lechotouristique.com/article/contre-la-crise-du-logement-bruxelles-veut-faciliter-les-mesures-anti-airbnb)
-- 2026-09-11 · juridique · Copropriété : ton AG peut voter l'interdiction d'Airbnb cet automne (https://kohenavocats.fr/2026/09/08/copropriete-meubles-tourisme-interdiction-assemblee/)
 - 2026-09-12 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre : recalcule tes tarifs · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-13 · plateformes · Airbnb bascule à 15,5 % de frais hôte en France dès le 13 octobre (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-14 · fiscalite · Facturation électronique : les LMNP doivent agir depuis le 1er septembre · masquée (https://kohenavocats.fr/2026/07/17/facture-electronique-lmnp-septembre-2026-obligations-amendes-recours/)
@@ -77,3 +75,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-06 · entreprise · Urssaf : si tu déclares chaque mois, le 30 novembre est ta prochaine échéance · pour photographe, menage, depannage (https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut/declarer-et-payer-mes-cotisations.html)
 - 2026-11-09 · fiscalite · Mise à jour PLF 2027 : amortissement LMNP, le Sénat examine dès le 20 novembre (https://www.legifiscal.fr/actualites-fiscales/4722-plf-2027-rejete-assemblee-amendements-pourraient-revenir-senat.html)
 - 2026-11-09 · entreprise · Facture électronique : l'émission devient obligatoire en septembre 2027 · pour photographe, menage, depannage (https://www.journaldunet.com/fintech/1557199-facture-electronique-ce-que-les-auto-entrepreneurs-devront-vraiment-faire-en-septembre-2027/)
+- 2026-11-10 · entreprise · Micro-entrepreneur : vérifie ton chiffre d'affaires 2026 avant le 31 décembre · pour photographe, menage, depannage (https://www.entreprises.cci-paris-idf.fr/actualites/micro-entrepreneur-revalorisation-des-seuils-pour-2026-2028)
+- 2026-11-10 · outils · Location saisonnière : vérifie que ton assurance couvre tes voyageurs (https://www.service-public.fr/particuliers/vosdroits/F2069)
