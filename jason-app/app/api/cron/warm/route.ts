@@ -17,8 +17,11 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 20
 
 export async function GET(req: Request) {
+  // Pas de CRON_SECRET dans ce projet Vercel (10/11/2026) : sans lui, Vercel
+  // appelle sans en-tête. Route sans effet (lectures minuscules), donc ouverte
+  // dans ce cas, comme ping-db ; protégée dès que le secret existe.
   const secret = process.env.CRON_SECRET
-  if (!secret || req.headers.get('authorization') !== `Bearer ${secret}`) {
+  if (secret && req.headers.get('authorization') !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
