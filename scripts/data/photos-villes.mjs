@@ -68,6 +68,11 @@ export const PHOTOS_COMMONS = {
     "auteur": "Gzen92",
     "licence": "CC BY-SA 4.0"
   },
+  "beaune": {
+    "page": "https://commons.wikimedia.org/wiki/File:Hospices_de_Beaune_0100_17.jpg",
+    "auteur": "FrDr",
+    "licence": "CC BY-SA 4.0"
+  },
   "berlin": {
     "page": "https://commons.wikimedia.org/wiki/File:Berlin_Mitte_June_2023_01.jpg",
     "auteur": "ArildV",
@@ -112,6 +117,11 @@ export const PHOTOS_COMMONS = {
     "page": "https://commons.wikimedia.org/wiki/File:Funchal,_Jardim_Bot%C3%A2nico_da_Madeira_(View_of_Funchal_from_Jardim_Bot%C3%A2nico).jpg",
     "auteur": "Dr. Thomas Liptak",
     "licence": "CC BY-SA 4.0"
+  },
+  "grenoble": {
+    "page": "https://commons.wikimedia.org/wiki/File:GrenobleVuDeLaBastille-Ouest.jpg",
+    "auteur": "Donsez",
+    "licence": "CC BY-SA 3.0"
   },
   "honfleur": {
     "page": "https://commons.wikimedia.org/wiki/File:Honfleur_panorama_at_night.jpg",
@@ -168,6 +178,11 @@ export const PHOTOS_COMMONS = {
     "auteur": "Berthold Werner",
     "licence": "CC BY-SA 3.0"
   },
+  "pau": {
+    "page": "https://commons.wikimedia.org/wiki/File:Contrebas_du_boulevard_des_Pyr%C3%A9n%C3%A9es_(Pau).jpg",
+    "auteur": "Ludo29880",
+    "licence": "CC BY-SA 2.0"
+  },
   "perpignan": {
     "page": "https://commons.wikimedia.org/wiki/File:Place_de_la_R%C3%A9publique_Pano_2.jpg",
     "auteur": "Christophe Marcheux",
@@ -183,6 +198,16 @@ export const PHOTOS_COMMONS = {
     "auteur": "ArielSL98",
     "licence": "CC BY-SA 4.0"
   },
+  "quimper": {
+    "page": "https://commons.wikimedia.org/wiki/File:Cath%C3%A9drale_Saint-Corentin_@_Rue_K%C3%A9r%C3%A9on_Quimper_01.jpg",
+    "auteur": "Rémih",
+    "licence": "CC BY-SA 4.0"
+  },
+  "roanne": {
+    "page": "https://commons.wikimedia.org/wiki/File:Le_Port_de_Roanne_(1).jpg",
+    "auteur": "arneonreloi",
+    "licence": "CC BY-SA 3.0"
+  },
   "rome": {
     "page": "https://commons.wikimedia.org/wiki/File:Forum_romanum_6k_(5760x2097).jpg",
     "auteur": "BeBo86",
@@ -197,6 +222,11 @@ export const PHOTOS_COMMONS = {
     "page": "https://commons.wikimedia.org/wiki/File:Plaza_de_Espa%C3%B1a_-_Seville,_Spain_-_DSC07654.JPG",
     "auteur": "Daderot",
     "licence": "CC0"
+  },
+  "tours": {
+    "page": "https://commons.wikimedia.org/wiki/File:Tours_Place_Plumereau_1.jpg",
+    "auteur": "Zairon",
+    "licence": "CC BY-SA 4.0"
   },
   "troyes": {
     "page": "https://commons.wikimedia.org/wiki/File:Troyes_rue_Emile_Zola_maisons_pans_de_bois.jpg",
