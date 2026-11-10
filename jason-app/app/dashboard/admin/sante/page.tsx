@@ -13,10 +13,10 @@ export default async function SantePage() {
   if (profile.role !== 'admin') redirect('/dashboard')
 
   const t = perfTimer('/dashboard/admin/sante')
-  const checks = await loadHealth()
+  const { checks, at } = await loadHealth()
   t.done()
 
-  const checkedAt = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' })
+  const checkedAt = new Date(at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' })
   // Même marge que les autres pages admin (Vue d'ensemble, Membres)
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>

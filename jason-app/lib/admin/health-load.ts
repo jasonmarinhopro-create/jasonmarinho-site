@@ -360,7 +360,42 @@ async function quotasCheck(): Promise<HealthCheck> {
   return freeQuotaCheck(rows, monthViews)
 }
 
-export async function loadHealth(): Promise<HealthCheck[]> {
+// 10/11/2026 (Jason : « cliquer sur État de santé prend beaucoup de temps ») :
+// la page lançait 57 lectures d'un coup à chaque ouverture, dont une par
+// migration surveillée. Une migration appliquée le reste : le résultat
+// « tout est appliqué » est gardé une heure (clé liée au nombre de sondes,
+// donc une sonde ajoutée relance la vérification). Tant qu'il en manque une,
+// rien n'est gardé.
+class MigrationsPending extends Error {
+  constructor(public check: HealthCheck) { super('migrations en attente') }
+}
+const migrationsOkCached = unstable_cache(async () => {
+  const check = await migrationsCheck()
+  if (check.level !== 'ok') throw new MigrationsPending(check)
+  return check
+}, ['sante-migrations-ok', String(MIGRATION_PROBES.length)], { revalidate: 3600 })
+
+async function migrationsCheckCached(): Promise<HealthCheck> {
+  try {
+    return await migrationsOkCached()
+  } catch (e) {
+    if (e instanceof MigrationsPending) return e.check
+    throw e
+  }
+}
+
+// Page entière gardée 2 minutes : revenir sur l'onglet ne relance rien.
+// Au-delà de 10 minutes, on recalcule plutôt que d'afficher un vieil état.
+const healthCached = unstable_cache(async () => ({ checks: await loadHealthFresh(), at: Date.now() }), ['sante-page-v1'], { revalidate: 120 })
+const HEALTH_MAX_AGE_MS = 10 * 60_000
+
+export async function loadHealth(): Promise<{ checks: HealthCheck[]; at: number }> {
+  const cached = await healthCached()
+  if (Date.now() - cached.at <= HEALTH_MAX_AGE_MS) return cached
+  return { checks: await loadHealthFresh(), at: Date.now() }
+}
+
+async function loadHealthFresh(): Promise<HealthCheck[]> {
   const guard = <T,>(key: string, title: string, p: Promise<T>) => p.catch(e => unavailable(key, title, e) as unknown as T)
   const [payments, stripeC, ical, emails, workflows, migrations, quotas] = await Promise.all([
     guard('paiements', 'Paiements', paymentsCheck()),
@@ -368,7 +403,7 @@ export async function loadHealth(): Promise<HealthCheck[]> {
     guard('ical', 'Calendriers Airbnb / Booking', icalCheck()),
     guard('emails', 'E-mails', emailsCheck()),
     guard('taches', 'Tâches automatiques', workflowsCheck()),
-    guard('migrations', 'Migrations de la base', migrationsCheck()),
+    guard('migrations', 'Migrations de la base', migrationsCheckCached()),
     guard('quotas', 'Offres gratuites (Supabase)', quotasCheck()),
   ])
   const flat = (x: HealthCheck | HealthCheck[]) => (Array.isArray(x) ? x : [x])

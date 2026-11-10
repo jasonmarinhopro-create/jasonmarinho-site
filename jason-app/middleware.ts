@@ -66,6 +66,7 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set('x-pathname', request.nextUrl.pathname)
   let supabaseResponse = NextResponse.next({ request: { headers: requestHeaders } })
 
+  const pendingCookies = new Map<string, Record<string, unknown>>()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -76,10 +77,20 @@ export async function middleware(request: NextRequest) {
         get(name: string) {
           return request.cookies.get(name)?.value
         },
+        // 10/11/2026 (Jason : « la connexion a pris au moins 1 minute ») :
+        // le cookie de session est coupé en deux morceaux (.0 et .1) et la
+        // bibliothèque appelle set() une fois par morceau. La réponse était
+        // recréée à chaque appel et ne gardait donc que le DERNIER morceau :
+        // après un renouvellement, le navigateur conservait l'ancien jeton
+        // (morceau .0) et chaque requête suivante redemandait un
+        // renouvellement à Supabase (46 en 20 s relevés dans les journaux
+        // Auth, 0,4 à 4,7 s chacun). On garde tous les morceaux et on les
+        // repose tous sur la réponse.
         set(name: string, value: string, options: CookieOptions) {
           request.cookies.set({ name, value, ...options } as any)
+          pendingCookies.set(name, { name, value, ...options })
           supabaseResponse = NextResponse.next({ request })
-          supabaseResponse.cookies.set({ name, value, ...options } as any)
+          pendingCookies.forEach(c => supabaseResponse.cookies.set(c as any))
         },
         // Jamais d'effacement ici (07/11/2026) : la bibliothèque efface la
         // session dès qu'un renouvellement échoue, y compris quand Supabase
