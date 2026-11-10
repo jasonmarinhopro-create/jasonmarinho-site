@@ -66,21 +66,31 @@ async function loadAffiliateClicks(start: string, end: string): Promise<ClickRow
   return out
 }
 
-export async function loadVisibility(periodKey: PeriodKey, tab: VisTab, today: string): Promise<VisibilityData> {
+// Sources partagées par tous les onglets (10/11/2026) : la page garde déjà
+// chaque onglet 15 min, mais chaque onglet relisait les mêmes visites, fiches,
+// demandes et clics. Gardées 5 min en mémoire par période et par jour : passer
+// d'un onglet à l'autre ne relit plus la base. Un échec n'est pas gardé.
+const SOURCES_TTL_MS = 5 * 60_000
+const sourcesMemo = new Map<string, { at: number; p: ReturnType<typeof loadSourcesFresh> }>()
+
+function loadSources(periodKey: PeriodKey, today: string) {
+  const key = `${periodKey}:${today}`
+  const hit = sourcesMemo.get(key)
+  if (hit && Date.now() - hit.at < SOURCES_TTL_MS) return hit.p
+  for (const [k, v] of Array.from(sourcesMemo.entries())) if (Date.now() - v.at >= SOURCES_TTL_MS) sourcesMemo.delete(k)
+  const p = loadSourcesFresh(periodKey, today)
+  sourcesMemo.set(key, { at: Date.now(), p })
+  p.then(r => {
+    const failed = !r.qp.ok || !r.daily.ok || !r.truth.ok || !r.visitsRes.ok || !r.prosRes.ok || !r.affClicksRes.ok
+    if (failed && sourcesMemo.get(key)?.p === p) sourcesMemo.delete(key)
+  }, () => { if (sourcesMemo.get(key)?.p === p) sourcesMemo.delete(key) })
+  return p
+}
+
+async function loadSourcesFresh(periodKey: PeriodKey, today: string) {
   const gscPeriod = periodRange(periodKey, today, GSC_LAG_DAYS)
   const visitPeriod = periodRange(periodKey, today, 0)
-
-  // Clics affiliés et ventes Affilae lancés en même temps que le reste
-  const affPromise = Promise.all([
-    Promise.all([loadAffiliateClicks(visitPeriod.start, visitPeriod.end), loadAffiliateClicks(visitPeriod.prevStart, visitPeriod.prevEnd)])
-      .then(([cur, prev]) => ({ ok: true as const, cur, prev }), e => ({ ok: false as const, error: errMsg(e) })),
-    // Affilae (appel externe, parfois lent) : seulement pour l'onglet Partenaires
-    tab === 'partenaires' ? getAffilaeOverview().catch(() => null) : Promise.resolve(null),
-    // PartnerStack (Brevo) : même règle
-    tab === 'partenaires' ? getPartnerStackOverview().catch(() => null) : Promise.resolve(null),
-  ])
-
-  const [qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes] = await Promise.all([
+  const [qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes] = await Promise.all([
     safeGsc(() => loadGscQueryPages(gscPeriod)),
     safeGsc(() => loadGscDaily(gscPeriod)),
     safeGsc(() => loadGscPages(gscPeriod)),
@@ -88,8 +98,18 @@ export async function loadVisibility(periodKey: PeriodKey, tab: VisTab, today: s
     loadVisits({ start: visitPeriod.prevStart, end: visitPeriod.prevEnd }).then(rows => ({ ok: true as const, rows }), () => ({ ok: false as const, rows: [] as VisitRow[] })),
     loadPros().then(d => ({ ok: true as const, ...d }), e => ({ ok: false as const, error: errMsg(e) })),
     loadDemandes(visitPeriod.start, visitPeriod.end).catch(() => new Map<string, number>()),
+    Promise.all([loadAffiliateClicks(visitPeriod.start, visitPeriod.end), loadAffiliateClicks(visitPeriod.prevStart, visitPeriod.prevEnd)])
+      .then(([cur, prev]) => ({ ok: true as const, cur, prev }), e => ({ ok: false as const, error: errMsg(e) })),
   ])
-  const [affClicksRes, affilae, partnerstack] = await affPromise
+  return { gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes }
+}
 
-  return buildVisibility({ periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes, affilae, partnerstack })
+export async function loadVisibility(periodKey: PeriodKey, tab: VisTab, today: string): Promise<VisibilityData> {
+  const [src, affilae, partnerstack] = await Promise.all([
+    loadSources(periodKey, today),
+    // Affilae et PartnerStack (appels externes, parfois lents) : seulement pour l'onglet Partenaires
+    tab === 'partenaires' ? getAffilaeOverview().catch(() => null) : Promise.resolve(null),
+    tab === 'partenaires' ? getPartnerStackOverview().catch(() => null) : Promise.resolve(null),
+  ])
+  return buildVisibility({ periodKey, tab, ...src, affilae, partnerstack })
 }
