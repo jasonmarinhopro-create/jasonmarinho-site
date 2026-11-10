@@ -5,7 +5,7 @@ import MembresUI from './MembresUI'
 import { perfTimer } from '@/lib/perf/server-timing'
 import { loadMemberActivity } from '@/lib/admin/activity-load'
 import { computeRevenue, type ProRow } from '@/lib/admin/revenue'
-import { adminUserIds, splitDemo } from '@/lib/pros/demo'
+import { splitDemo } from '@/lib/pros/demo'
 
 export const metadata = { title: 'Membres, Jason Marinho' }
 
@@ -44,7 +44,8 @@ export default async function MembresPage() {
   // Revenu : même calcul que la Vue d'ensemble (Standard au prix réel de chaque abonné +
   // fiches photographes et ménage payées, fiches d'exemple écartées). Avant le 20/10/2026 :
   // Standard × 19,98 € seulement, bloqué à 5 € alors que les fiches pros payaient.
-  const admins = await adminUserIds(adminClient)
+  // Comptes admin pris dans la liste déjà lue (avant : une lecture de plus, après les autres)
+  const admins = new Set((members ?? []).filter((m: { role: string | null }) => m.role === 'admin').map((m: { id: string }) => m.id))
   const revenue = computeRevenue({
     standardMembers: 0,
     standardPriceIds: (members ?? []).filter((m: { plan: string | null }) => m.plan === 'standard').map((m: { stripe_price_id?: string | null }) => m.stripe_price_id ?? null),

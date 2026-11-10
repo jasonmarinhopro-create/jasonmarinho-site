@@ -46,7 +46,7 @@ export async function loadMemberActivity(userIds?: string[]): Promise<Map<string
     } catch { return [] }
   })
 
-  const seenP = (async () => {
+  const seenP = async () => {
     const map = new Map<string, string | null>()
     try {
       let q = db.from('profiles').select('id, last_seen_at')
@@ -55,9 +55,9 @@ export async function loadMemberActivity(userIds?: string[]): Promise<Map<string
       if (!error) for (const r of (data ?? []) as Array<{ id: string; last_seen_at: string | null }>) map.set(r.id, r.last_seen_at)
     } catch { /* migration 129 absente */ }
     return map
-  })()
+  }
 
-  const signInsP = (async () => {
+  const signInsP = async () => {
     const map = new Map<string, string | null>()
     try {
       if (one) {
@@ -73,9 +73,25 @@ export async function loadMemberActivity(userIds?: string[]): Promise<Map<string
       }
     } catch { /* comptes indisponibles : la visite notée par l'app suffit */ }
     return map
-  })()
+  }
 
   const rowsP = viaRpc.then(async rows => rows ?? (await Promise.all(await sourceRows())).flat())
-  const [rows, seen, signIns] = await Promise.all([rowsP, seenP, signInsP])
+  // Dernière visite et dernière connexion en une lecture (migration 184), sans
+  // passer par le serveur d'authentification ; ancienne méthode si elle manque
+  const seenBothP = (async () => {
+    try {
+      const { data, error } = await db.rpc('admin_members_seen', { p_user_ids: userIds ?? null })
+      if (error || !Array.isArray(data)) return null
+      const seen = new Map<string, string | null>()
+      const signIns = new Map<string, string | null>()
+      for (const r of data as Array<{ id: string; last_seen_at: string | null; last_sign_in_at: string | null }>) {
+        seen.set(r.id, r.last_seen_at)
+        signIns.set(r.id, r.last_sign_in_at)
+      }
+      return { seen, signIns }
+    } catch { return null }
+  })()
+  const [rows, both] = await Promise.all([rowsP, seenBothP])
+  const [seen, signIns] = both ? [both.seen, both.signIns] : await Promise.all([seenP(), signInsP()])
   return buildMemberActivity({ rows, seen, signIns })
 }
