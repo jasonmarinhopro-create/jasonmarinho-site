@@ -4,9 +4,9 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-11 22:19 UTC.
+Mis à jour le 2026-11-11 22:20 UTC.
 
-- 2026-11-13 · stories (4 écrans) · stories-demande-photographe-biarritz · FB - · IG - · stories FB pending IG pending · « Stories : Biarritz / 62 m² tout juste rénové / Aucun photographe à Biarritz sur l'annuaire / Tu veux recevoir  »
+- 2026-11-12 · stories (4 écrans) · stories-demande-photographe-biarritz · FB - · IG - · stories FB pending IG pending · « Stories : Biarritz / 62 m² tout juste rénové / Aucun photographe à Biarritz sur l'annuaire / Tu veux recevoir  »
 - 2026-11-12 · stories (4 écrans) · stories-lyon-fete-des-lumieres · FB - · IG - · stories FB pending IG pending · « Stories : Lyon : la Fête des Lumières arrive / Ton numéro d’enregistrement / 1,87 € / Tes prix de décembre, dé »
 - 2026-11-11 · photo · conciergerie-sortir-mauvais-client · FB published 0 j'aime 0 comm. · IG published 1 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Garder un mauvais client coûte souvent plus cher que d’en trouver un nouveau. »
 - 2026-11-10 · stories (4 écrans) · stories-photos-smartphone · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Tes photos au smartphone ? / Avant de déclencher / Place-toi dans un coin / Tes photos, toi-même ou  »
