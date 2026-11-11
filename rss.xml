@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 09 Nov 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 11 Nov 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Communiquer avec ton équipe de ménage LCD : 6 règles pour un turnover fluide sans appels de dernière minute</title>
+      <link>https://jasonmarinho.com/blog/communiquer-equipe-menage-lcd-6-regles-turnover-fluide</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/communiquer-equipe-menage-lcd-6-regles-turnover-fluide</guid>
+      <pubDate>Wed, 11 Nov 2026 08:00:00 GMT</pubDate>
+      <description>Canal unique, fiche de passage, planning iCal, signalement photo, point post-turnover, bilan mensuel : 6 règles pour cadrer les échanges avec ton équipe de ménage LCD.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Bilan de saison LCD 2026 : les 7 questions à te poser en novembre avant de planifier 2027</title>
       <link>https://jasonmarinho.com/blog/bilan-saison-lcd-2026-7-questions-planifier-2027</link>
@@ -398,14 +406,6 @@
       <pubDate>Mon, 03 Aug 2026 08:00:00 GMT</pubDate>
       <description>Vaisselle, couteaux, machine à café, ustensiles, épices : 8 règles concrètes pour équiper la cuisine de ta location courte durée et transformer un point faible classique en argument à 5 étoiles.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Chauffage en LCD : 7 règles pour maîtriser ta facture énergie sans dégrader tes avis voyageurs cet hiver</title>
-      <link>https://jasonmarinho.com/blog/chauffage-lcd-7-regles-maitriser-facture-energie-hiver-avis</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/chauffage-lcd-7-regles-maitriser-facture-energie-hiver-avis</guid>
-      <pubDate>Fri, 31 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Thermostat, contrat énergie, consignes, isolation, livret d&apos;accueil, forfait chauffage : 7 règles concrètes pour piloter ta facture énergie en location courte durée sans risquer d&apos;avis négatifs sur le confort thermique.</description>
-      <category>Revenus</category>
     </item>
   </channel>
 </rss>
