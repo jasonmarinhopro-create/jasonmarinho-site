@@ -1,0 +1,36 @@
+{
+  "format": "stories",
+  "slug": "stories-demande-photographe-biarritz",
+  "jour": "2026-11-12",
+  "frames": [
+    {
+      "type": "chiffre",
+      "kicker": "Nouvelle demande de photographe",
+      "valeur": "Biarritz",
+      "label": "Un propriétaire cherche un *photographe* pour son logement en location courte durée. Budget *200 à 400 €*, à faire *dans le mois*."
+    },
+    {
+      "type": "liste",
+      "kicker": "Le logement",
+      "titre": "62 m² *tout juste rénové*",
+      "items": [
+        "Vue sur la mer et la montagne",
+        "2 chambres et 2 salles d'eau",
+        "Terrasse de 14 m² et mezzanine de 12 m²",
+        "Extérieur et jardin"
+      ]
+    },
+    {
+      "type": "astuce",
+      "kicker": "Le principe",
+      "titre": "Aucun photographe *à Biarritz* sur l'annuaire",
+      "texte": "Les propriétaires déposent leur demande, les photographes membres reçoivent leurs coordonnées et leur proposent leurs services. *Pas de commission* : tu fixes tes prix et tu gères tes échanges."
+    },
+    {
+      "type": "question",
+      "kicker": "Photographes du Pays basque",
+      "titre": "Tu veux *recevoir ces demandes* ?",
+      "texte": "Écris-moi en message privé : je te présente l'annuaire et les modalités d'adhésion."
+    }
+  ]
+}
