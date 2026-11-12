@@ -27,6 +27,10 @@ mise à jour : 08/11/2026 (semaine 3, 11 posts automatiques au total).
 - Chiffres : seulement ceux qui ont une source officielle sur la page. Un
   article qui donne des pourcentages sans source : garder les conseils,
   retirer les chiffres.
+- Numéro d'enregistrement national : l'article du site (téléservice ouvert
+  le 20/05, amende 5 000 €) ne concorde pas avec Service-Public (téléservice
+  attendu au 4e trimestre 2026, amendes jusqu'à 10 000 et 20 000 €). Pas de
+  post sur ce sujet tant que l'article n'est pas mis à jour.
 - Questions qui se répondent en un mot ou un chiffre, posées aussi sur la
   couverture ou dans les stories.
 
