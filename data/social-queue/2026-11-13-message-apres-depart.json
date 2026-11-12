@@ -1,0 +1,23 @@
+{
+  "slug": "message-apres-depart",
+  "format": "carrousel",
+  "public": "hotes",
+  "photo": "img/exemple-fiches/photo-chambre-4.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Après le séjour", "titre": "Le message *après le départ* qui fait revenir tes voyageurs", "sous_titre": "Court, chaleureux, et dans les règles des plateformes." },
+    { "type": "point", "titre": "Dans les *24 à 48 h*", "texte": "Le voyageur vient de partir : c’est le moment de le remercier et de demander un avis." },
+    { "type": "liste", "kicker": "La recette", "titre": "Un message *en 4 phrases*", "items": ["Un merci, avec son prénom", "Une phrase sur son séjour", "Le lien vers l’avis", "Un mot pour la suite"] },
+    { "type": "astuce", "kicker": "Attention", "titre": "Sur Airbnb et Booking, *pas de code*", "texte": "Par la messagerie de la plateforme : merci et avis seulement. Ni code de réservation directe, ni newsletter." },
+    { "type": "point", "titre": "En direct, *tu peux aller plus loin*", "texte": "Un code pour revenir réserver chez toi, et une invitation à ta newsletter s’il est d’accord." },
+    { "type": "astuce", "kicker": "Voyageurs pros", "titre": "Un tarif *pour ceux qui reviennent*", "texte": "Les voyageurs en mission dans ta ville peuvent devenir des habitués : propose-leur un tarif en direct." }
+  ],
+  "legende": "Le voyageur vient de partir. C’est maintenant que se joue son avis, et peut-être son retour.\n\nUn message court suffit : un merci personnel, une phrase sur son séjour, le lien vers l’avis. Attention : sur Airbnb et Booking, pas de code de réservation directe ni de newsletter dans la messagerie. Ça, c’est pour tes voyageurs venus en direct.\n\nEt toi, tu envoies un message après chaque départ : oui ou non ?",
+  "hashtags": ["#airbnb", "#locationcourteduree", "#hoteairbnb", "#avisvoyageurs", "#reservationdirecte"],
+  "lien": "https://jasonmarinho.com/blog/modele-email-post-sejour-fideliser-voyageur",
+  "story": {
+    "texte": "Ce que tu as le droit d’écrire *après le départ*",
+    "frames": [
+      { "type": "question", "titre": "Un message après *chaque départ* : oui ou non ?" }
+    ]
+  }
+}
