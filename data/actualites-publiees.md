@@ -11,7 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-13 · plateformes · Airbnb bascule à 15,5 % de frais hôte en France dès le 13 octobre (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-14 · fiscalite · Facturation électronique : les LMNP doivent agir depuis le 1er septembre · masquée (https://kohenavocats.fr/2026/07/17/facture-electronique-lmnp-septembre-2026-obligations-amendes-recours/)
 - 2026-09-14 · plateformes · Airbnb lance ses nouveaux services en France : ce que tu dois savoir (https://fr.finance.yahoo.com/actualites/airbnb-propose-d%C3%A9sormais-location-voitures-120508074.html)
 - 2026-09-15 · plateformes · Airbnb bascule à une commission unique de 15,5 % le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
@@ -76,3 +75,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-09 · entreprise · Facture électronique : l'émission devient obligatoire en septembre 2027 · pour photographe, menage, depannage (https://www.journaldunet.com/fintech/1557199-facture-electronique-ce-que-les-auto-entrepreneurs-devront-vraiment-faire-en-septembre-2027/)
 - 2026-11-10 · entreprise · Micro-entrepreneur : vérifie ton chiffre d'affaires 2026 avant le 31 décembre · pour photographe, menage, depannage (https://www.entreprises.cci-paris-idf.fr/actualites/micro-entrepreneur-revalorisation-des-seuils-pour-2026-2028)
 - 2026-11-10 · outils · Location saisonnière : vérifie que ton assurance couvre tes voyageurs (https://www.service-public.fr/particuliers/vosdroits/F2069)
+- 2026-11-12 · entreprise · Mise à jour : ton avis CFE 2026 est en ligne, paiement avant le 15 décembre · pour photographe, menage, depannage (https://www.impots.gouv.fr/professionnel/la-cotisation-fonciere-des-entreprises-cfe)
