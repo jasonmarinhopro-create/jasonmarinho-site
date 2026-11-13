@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-14 · fiscalite · Facturation électronique : les LMNP doivent agir depuis le 1er septembre · masquée (https://kohenavocats.fr/2026/07/17/facture-electronique-lmnp-septembre-2026-obligations-amendes-recours/)
-- 2026-09-14 · plateformes · Airbnb lance ses nouveaux services en France : ce que tu dois savoir (https://fr.finance.yahoo.com/actualites/airbnb-propose-d%C3%A9sormais-location-voitures-120508074.html)
 - 2026-09-15 · plateformes · Airbnb bascule à une commission unique de 15,5 % le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-15 · marche · Été 2026 : la Bretagne cartonne, les grandes villes en recul · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
 - 2026-09-16 · plateformes · Airbnb passe à 15,5 % de frais hôte : un mois pour adapter tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
