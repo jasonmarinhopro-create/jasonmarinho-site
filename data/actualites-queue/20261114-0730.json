@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Airbnb interdit les photos retouchées par IA dans les annonces",
+    "summary": "Depuis la mise à jour des conditions d'utilisation Airbnb d'avril 2026, les photos générées ou modifiées substantiellement par des outils d'IA sont interdites dans les annonces. Une image qui ne représente pas fidèlement le logement peut entraîner la suspension de l'annonce. Par ailleurs, les algorithmes Airbnb peuvent tester ou remplacer automatiquement ta photo de couverture sans accord préalable. Pour tes clients hôtes, c'est un argument concret : seules les photos professionnelles authentiques sont conformes aux règles de la plateforme et rassurent les voyageurs.",
+    "category": "plateformes",
+    "audience": ["photographe"],
+    "source_url": "https://www.rentalscaleup.com/fr/mise-a-jour-des-conditions-dairbnb-au-20-avril-ce-que-les-gestionnaires-professionnels-doivent-lire-avant-de-cliquer-sur-accepter/",
+    "read_time_minutes": 2
+  },
+  {
+    "title": "Taxe de séjour collectée : vérifie tes obligations de versement en fin d'année",
+    "summary": "Si tu gères des réservations en direct (hors plateformes qui collectent la taxe de séjour à ta place comme Airbnb ou Booking), tu collectes toi-même la taxe auprès de tes voyageurs et tu dois la reverser à ta commune selon ses délais. Certaines communes exigent un versement trimestriel, d'autres annuel. La fin d'année est le bon moment pour vérifier ta procédure et éviter les pénalités. Consulte ton portail local sur taxesejour.impots.gouv.fr ou contacte ta mairie.",
+    "category": "fiscalite",
+    "audience": ["hote"],
+    "source_url": "https://www.impots.gouv.fr/taxe-de-sejour",
+    "read_time_minutes": 2
+  }
+]
