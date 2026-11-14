@@ -1,0 +1,22 @@
+{
+  "slug": "photographe-etre-trouve-par-ville",
+  "format": "reel",
+  "public": "pros",
+  "photo": "img/exemple-fiches/photo-salon-2.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Photographes et vidéastes", "titre": "Un hôte cherche un photographe dans *ta ville*. Il te trouve ?", "sous_titre": "Il tape « photographe Airbnb » et le nom de sa ville." },
+    { "type": "point", "titre": "Dans l’annuaire, *par ville*", "texte": "Un hôte te trouve aussi dans les villes que tu couvres, pas seulement la tienne." },
+    { "type": "point", "titre": "Sur la page *de ta ville*", "texte": "Règles locales, checklist des photos, et les photographes de la ville présentés." },
+    { "type": "point", "titre": "Les demandes *viennent à toi*", "texte": "La demande d’un hôte pressé part aux 3 photographes les plus proches de son logement." },
+    { "type": "astuce", "kicker": "Astuce", "titre": "Affiche *tes formules*", "texte": "Jusqu’à 3 formules, avec leur prix ou sur devis : les demandes arrivent plus précises." }
+  ],
+  "legende": "Les hôtes ne cherchent pas un annuaire. Ils tapent « photographe Airbnb » et le nom de leur ville, ou ils n’ont pas le temps de chercher du tout.\n\nTa fiche est là dans les deux cas : dans l’annuaire par ville, sur la page de ta ville, et dans les demandes envoyées aux photographes les plus proches. Sans commission sur tes séances.\n\nEt toi, tes prix sont affichés quelque part : oui ou non ?",
+  "hashtags": ["#photographeimmobilier", "#photographe", "#videaste", "#airbnb", "#locationcourteduree"],
+  "lien": "https://jasonmarinho.com/pour-qui/photographes",
+  "story": {
+    "texte": "Ce que tape un hôte qui cherche *un photographe*",
+    "frames": [
+      { "type": "question", "titre": "Tes prix, *affichés* quelque part ?" }
+    ]
+  }
+}
