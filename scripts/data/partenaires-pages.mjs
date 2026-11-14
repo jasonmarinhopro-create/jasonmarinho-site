@@ -194,6 +194,10 @@ export const PAGES = [
     offre: {
       titre: '1er mois offert',
       sous: 'sur les offres payantes, sans engagement',
+      code: 'PREMIERMOIS',
+      pct: '1 mois',
+      pctSous: 'offert',
+      codeTexte: 'Appliqué automatiquement par le lien : 1er mois offert sur les offres payantes, sans engagement.',
       points: [
         'Inscription gratuite, sans carte bancaire',
         'Facture électronique incluse dans l\'offre gratuite',
@@ -281,6 +285,9 @@ export const PAGES = [
     offre: {
       titre: 'Réduction avec JASON15',
       sous: 'sur ta création en ligne : micro-entreprise, SASU, EURL, SAS ou SARL',
+      code: 'JASON15',
+      pctSous: 'montant affiché au paiement',
+      codeTexte: 'À saisir au moment du paiement, sur ta création en ligne (micro-entreprise, SASU, EURL, SAS ou SARL). Le montant de la réduction s\'affiche au paiement.',
       points: [
         'Code JASON15 à saisir au moment du paiement',
         'Statuts générés à partir d\'un questionnaire',

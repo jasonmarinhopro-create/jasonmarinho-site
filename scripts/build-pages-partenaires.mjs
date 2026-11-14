@@ -581,6 +581,12 @@ const CSS2 = `
   .src2 a{color:var(--tl)}
 
   /* Page partenaire v2 */
+  .nofacts{height:clamp(40px,5vw,64px)}
+  .cout2.solo{grid-template-columns:1fr}
+  .cp-code strong.long{font-size:clamp(1.25rem,2.3vw,1.6rem);letter-spacing:1.5px}
+  .cp-code strong{overflow-wrap:anywhere}
+  .ofc .ofc-t{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(1.7rem,3.2vw,2.3rem);line-height:1.1;letter-spacing:-.02em;color:var(--g);margin:8px 0 6px}
+  .ofc .ofc-s{font-size:14.5px;color:var(--tm);line-height:1.55;margin:0}
   @media(min-width:861px){.steps.n3{grid-template-columns:repeat(3,1fr)}}
   .duo{display:flex;align-items:center;gap:12px;margin-bottom:18px}
   .duo .lg{width:48px;height:48px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;font-weight:600;color:var(--g)}
@@ -666,11 +672,11 @@ document.addEventListener('click', function(e){
       ${o.code ? `<div class="cp" id="code">
         <div class="cp-l">
           <span class="cp-tag"><i class="ph-bold ph-gift"></i> Offre partenaire</span>
-          <div class="cp-code"><strong>${o.code}</strong><button type="button" class="copy" data-copy="${o.code}"><i class="ph ph-copy"></i><span>Copier</span></button></div>
+          <div class="cp-code"><strong${o.code.length > 9 ? ' class="long"' : ''}>${o.code}</strong><button type="button" class="copy" data-copy="${o.code}"><i class="ph ph-copy"></i><span>Copier</span></button></div>
           <p class="cp-sub">${o.sous}</p>
         </div>
-        <div class="cp-r"><div class="cp-pct">${o.pct}</div><small>${o.pctSous}</small></div>
-      </div>` : `<div class="vcard"><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><h2>${o.titre}</h2><p>${o.sous}</p></div>`}
+        <div class="cp-r">${o.pct ? `<div class="cp-pct">${o.pct}</div>` : '<div class="cp-pct"><i class="ph-bold ph-tag"></i></div>'}<small>${o.pctSous}</small></div>
+      </div>` : `<div class="vcard ofc"><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">${o.titre}</p><p class="ofc-s">${o.sous}</p></div>`}
       <ul class="pts">
 ${o.points.map(t => `        <li><i class="ph-bold ph-check-circle"></i><span>${t}</span></li>`).join('\n')}
       </ul>
@@ -685,7 +691,7 @@ ${p.faits ? `
 <div class="facts">
 ${p.faits.map(f => `  <div class="fact"><i class="ph-bold ph-${f.icon}"></i><span>${f.k}</span><b>${f.href ? `<a href="${f.href}">${f.v}</a>` : f.v}</b></div>`).join('\n')}
 </div>
-` : ''}
+` : '<div class="nofacts"></div>'}
 <section id="pourquoi">
   <div class="eye">Pourquoi</div>
   <h2>${p.pourquoi.titre}</h2>
@@ -722,7 +728,7 @@ ${p.cout ? `
 <section id="cout">
   <div class="eye">Budget</div>
   <h2>${p.cout.titre}</h2>
-  <div class="cout2">
+  <div class="cout2${p.cout.chiffres ? '' : ' solo'}">
     <div class="card">${p.cout.paras.map(t => `<p>${t}</p>`).join('')}</div>
     ${p.cout.chiffres ? `<div class="prices">${p.cout.chiffres.map(c => `<div class="pl${c.hot ? ' hot' : ''}"><div><b>${c.k}${c.hot ? '<span class="tag">Le plus courant</span>' : ''}</b><small>${c.s}</small></div><div class="pr">${c.v}<small>${c.vs}</small></div></div>`).join('')}</div>` : ''}
   </div>
@@ -790,6 +796,6 @@ for (const p of PAGES) {
   if (all.includes('—')) throw new Error(`Tiret cadratin dans la page ${p.slug}`)
   const dir = path.join(ROOT, 'partenaires', p.slug)
   fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(path.join(dir, 'index.html'), p.v2 ? pageV2(p) : page(p))
+  fs.writeFileSync(path.join(dir, 'index.html'), p.v2 === false ? page(p) : pageV2(p))
   console.log(`[build-pages-partenaires] partenaires/${p.slug}/index.html (${plain(p.h1)})`)
 }
