@@ -73,6 +73,13 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 - -65 % sur Professional et Ultimate en annuel ou 2 ans, nouveaux clients, du 12/11 au 12/12/2026. Ventes suivies par le lien affilié, pas le code : toujours les deux ensemble. Commission majorée de 15 % sur les paiements du 1er au 30/11 (pour Jason, jamais affiché).
 - `nav.js` (fin) : encart daté avant la 1re mention du code Lodgify JASON15 de la page (« Bientôt » jusqu'au 11/11, puis bouton affilié `rel="sponsored noopener"` + « Lien affilié »), carte du catalogue `/partenaires` changée pendant l'offre, rien après le 12/12. Lettre du mois : `jason-app/lib/newsletter/promos.ts` (testé) remplace le bon plan des éditions qui proposent Lodgify, du 01/11 au 12/12.
 
+## Accueil : section Partenaires sombre et animée (14/11/2026, version sombre choisie par Jason)
+
+- HTML écrit à la main dans `index.html` (pas de générateur) : carte à la une `[data-pfeat]` à 3 offres qui tournent toutes les 7 s, tuiles `.pt` qui se retournent (survol, toucher ou clavier), tuile jaune vers /partenaires, bande des avantages `.pa-mq`.
+- Lodgify : la diapo Black Friday JASON65 (`data-bfs`, compte à rebours) s'affiche du 12/11 au 12/12/2026 inclus, sinon la diapo JASON15 (`data-nbf`). Dates dans le script de la page, à changer pour un autre Black Friday.
+- `.pa` garde `bf-skip` : l'encart Black Friday de `nav.js` ne s'insère pas dans la section.
+- Piège : une ancienne règle `@media(max-width:1024px){.pa-g{…repeat(2,1fr)}}` cassait la grille sur mobile, retirée.
+
 ## Accueil : onglet « Trouver un pro » visuel et carte des villes (01/11/2026)
 
 - **Onglets du haut** : sur ordinateur et tablette (≥ 721 px), les onglets partent du bord du bloc blanc et les deux coins du haut du bloc sont droits (`.hg-box .hg-card`), plus de « marche » blanche ni d'encoche sous l'onglet voisin (Jason, captures à l'appui).
