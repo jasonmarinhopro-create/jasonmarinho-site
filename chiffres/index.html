@@ -322,6 +322,65 @@ a.dm-city:hover{border-color:var(--g)}
 .vd-cta a{flex:1 1 160px;text-align:center;text-decoration:none;font-weight:600;font-size:14px;padding:11px 12px;border-radius:11px}
 .vd-cta .a1{background:var(--y);color:var(--gd)}
 .vd-cta .a2{border:1px solid rgba(255,255,255,.35);color:#fff}
+
+/* ── Refonte du 14/11/2026 (Jason : « on se répète entre les blocs », « full moderne, effet wow, épurée ») ── */
+.hx{padding:clamp(34px,5vw,60px) 0 clamp(36px,5vw,56px);position:relative;overflow:hidden}
+.hx .brd{margin-bottom:22px}
+.live{width:8px;height:8px;border-radius:50%;background:#63D683;box-shadow:0 0 0 0 rgba(99,214,131,.6);animation:livep 2s infinite}
+@keyframes livep{70%{box-shadow:0 0 0 8px rgba(99,214,131,0)}100%{box-shadow:0 0 0 0 rgba(99,214,131,0)}}
+.hx-top{display:grid;gap:22px;align-items:end}
+@media(min-width:900px){.hx-top{grid-template-columns:minmax(0,1fr) auto}}
+.hx .lead{margin-top:14px;max-width:600px;font-size:16px}
+.grow{text-align:right}
+.grow b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:300;font-size:clamp(56px,8vw,104px);line-height:.9;letter-spacing:-.04em;color:var(--y)}
+.grow span{display:block;font-size:13.5px;color:rgba(255,255,255,.7);margin-top:8px;max-width:260px;margin-left:auto}
+@media(max-width:899px){.grow{text-align:left}.grow span{margin-left:0}}
+.hx-chart{position:relative;height:clamp(190px,24vw,260px);margin-top:clamp(22px,3vw,36px)}
+.hx-load{height:100%;border-radius:20px;background:rgba(255,255,255,.04)}
+.hx-chart svg{position:absolute;inset:0 0 28px 0;width:100%;height:calc(100% - 28px);overflow:visible}
+.hx-pt{position:absolute;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--gd);border:2px solid var(--y)}
+.hx-pt.last{width:14px;height:14px;background:var(--y);box-shadow:0 0 0 6px rgba(255,213,107,.18)}
+.hx-pt.part{border-style:dashed;background:transparent}
+.hx-v{position:absolute;transform:translate(-50%,-100%);margin-top:-12px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.8);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hx-v.last{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(18px,2vw,24px);color:#fff}
+.hx-m{position:absolute;bottom:0;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.55)}
+.hx-v small{font-family:Outfit,sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,.55)}
+@media(max-width:640px){.hx-v:not(.last):not(.part){display:none}}
+.k4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:clamp(22px,3vw,34px);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:visible}
+.k{position:relative;display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:#022f25;color:#fff;text-decoration:none;min-width:0}
+.k:first-child{border-radius:19px 0 0 19px}.k:last-child{border-radius:0 19px 19px 0}
+.k-l{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(255,255,255,.65)}
+.k b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(28px,3vw,36px);line-height:1;font-variant-numeric:tabular-nums}
+.k small{align-self:flex-start;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(99,214,131,.16);color:#9BEDB2}
+.k small.dn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65)}
+.k-s{font-style:normal;font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.4}
+.k-dm{background:linear-gradient(160deg,#0b4a3b,#0f5a47);transition:background .2s}
+.k-dm:hover{background:linear-gradient(160deg,#0f5a47,#136b55)}
+.k-dm b{color:var(--y)}.k-dm .k-s{color:var(--y)}
+.k-go{position:absolute;top:18px;right:18px;color:var(--y);font-size:16px}
+@media(max-width:860px){.k4{grid-template-columns:1fr 1fr}.k:first-child{border-radius:19px 0 0 0}.k:nth-child(2){border-radius:0 19px 0 0}.k:nth-child(3){border-radius:0 0 0 19px}.k:last-child{border-radius:0 0 19px 0}}
+.hx-foot{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:rgba(255,255,255,.55)}.hx-foot [data-chart-cur]{color:rgba(255,255,255,.7)}
+.tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);cursor:help;flex-shrink:0;vertical-align:middle}
+.sec .tip{background:rgba(0,76,63,.1);color:var(--g)}
+.tip-b{position:absolute;z-index:20;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);width:260px;padding:12px 14px;border-radius:12px;background:#0F1A0D;color:#fff;font-size:12.5px;font-weight:400;line-height:1.5;text-align:left;box-shadow:0 14px 34px rgba(0,0,0,.3);opacity:0;visibility:hidden;transition:opacity .15s;pointer-events:none;letter-spacing:0;text-transform:none}
+.tip:hover .tip-b,.tip:focus .tip-b{opacity:1;visibility:visible}
+@media(max-width:640px){.tip-b{left:auto;right:-40px;transform:none;width:220px}}
+.hl{font-weight:600;color:var(--g)}
+.d1{background:#fff;border:1px solid var(--bd);border-radius:24px;padding:clamp(18px,3vw,32px);box-shadow:0 24px 60px rgba(0,40,30,.06)}
+.d1-m{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.d1-m>div{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--cr)}
+.d1-m i{width:38px;height:38px;border-radius:11px;background:rgba(0,76,63,.08);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.d1-m b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1}
+.d1-m span{font-size:13px;color:var(--tm);line-height:1.3}
+@media(max-width:700px){.d1-m{grid-template-columns:1fr}}
+.d1-cols{display:grid;gap:24px;margin-top:26px}
+@media(min-width:900px){.d1-cols{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}}
+.d1-f{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-top:22px;padding-top:18px;border-top:1px solid var(--bd);font-size:13px;color:var(--tm)}
+.d1-f b{color:var(--td);margin-left:4px}
+.d1-f .d{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.d1-f .sep{width:1px;height:16px;background:var(--bd)}
+@media(max-width:700px){.d1-f .sep{display:none}}
+.d1 .dm-note{margin-top:18px}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"La visibilité du site en chiffres","description":"Affichages Google, clics, visiteurs et recherches où jasonmarinho.com sort en première page, mis à jour chaque jour.","url":"https://jasonmarinho.com/chiffres","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Les chiffres","item":"https://jasonmarinho.com/chiffres"}]}</script>
@@ -329,106 +388,91 @@ a.dm-city:hover{border-color:var(--g)}
 </head>
 <body>
 
-<header class="hero">
-  <div class="s-in hero-grid">
-    <div>
-      <div class="brd"><a href="/">Accueil</a> › Les chiffres</div>
-      <div class="eye"><i class="ph-bold ph-chart-line-up"></i>Transparence</div>
-      <h1>La visibilité du site, <em>en chiffres réels</em></h1>
-      <p class="lead">Tu hésites à prendre une fiche ? Voici ce que jasonmarinho.com reçoit vraiment de Google et ce que voient les hôtes, mis à jour chaque jour. Pas de chiffre arrondi pour faire joli : ce sont les données de Google Search Console et notre propre mesure des visites.</p>
-      <div class="src">
-        <span><i class="ph-bold ph-google-logo"></i>Google Search Console</span>
-        <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour chaque jour</span>
-        <span><i class="ph-bold ph-shield-check"></i>Aucune donnée personnelle</span>
+<header class="hero hx">
+  <div class="s-in">
+    <div class="brd"><a href="/">Accueil</a> › Les chiffres</div>
+    <div class="hx-top">
+      <div>
+        <div class="eye"><span class="live" aria-hidden="true"></span>Transparence · chiffres en direct</div>
+        <h1>La visibilité du site, <em>en chiffres réels</em></h1>
+        <p class="lead">Ce que jasonmarinho.com reçoit vraiment de Google et des hôtes, mis à jour chaque jour. Données de Google Search Console et notre propre mesure des visites : rien d’arrondi, rien de caché.</p>
       </div>
+      <div class="grow" data-grow hidden><b data-grow-n></b><span data-grow-l></span></div>
     </div>
-    <div>
-      <div class="kpis" aria-live="polite">
-        <div class="kpi"><i class="ph-bold ph-eye ic"></i><div><b data-k="imp"><span class="sk"></span></b><span>affichages dans Google sur 28 jours</span></div><small data-d="imp" hidden></small></div>
-        <div class="kpi"><i class="ph-bold ph-cursor-click ic"></i><div><b data-k="clk"><span class="sk"></span></b><span>clics depuis Google sur 28 jours</span></div><small data-d="clk" hidden></small></div>
-        <div class="kpi"><i class="ph-bold ph-users-three ic"></i><div><b data-k="vis"><span class="sk"></span></b><span>visiteurs du site sur 30 jours</span></div><small data-d="vis" hidden></small></div>
-        <a class="kpi kpi-dm" href="#demandes"><i class="ph-bold ph-paper-plane-tilt ic"></i><div><b data-k="dm"><span class="sk"></span></b><span data-k-dm-l>demandes d’hôtes reçues</span><em class="kpi-last" data-dm-last hidden></em></div><i class="ph-bold ph-arrow-down kpi-go" aria-hidden="true"></i></a>
-        <div class="upd" data-upd>Chargement des chiffres…</div>
-      </div>
-      <div class="err" data-err>Les chiffres ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</div>
+    <div class="hx-chart" data-chart aria-live="polite"><div class="hx-load"><span class="sk"></span></div></div>
+    <div class="k4">
+      <div class="k"><span class="k-l">Affichages Google · 28 j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une page du site est apparue dans les résultats de Google pour une recherche. Ce n’est pas une visite : c’est la vitrine qui passe devant les yeux.</span></span></span><b data-k="imp"><span class="sk"></span></b><small data-d="imp" hidden></small></div>
+      <div class="k"><span class="k-l">Clics depuis Google · 28 j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Quelqu’un a cliqué sur une page du site depuis Google. Les visites venues de Facebook, des e-mails ou d’un lien direct n’y sont pas : elles sont dans les visiteurs.</span></span></span><b data-k="clk"><span class="sk"></span></b><small data-d="clk" hidden></small><em class="k-s" data-f="ctr"></em></div>
+      <div class="k"><span class="k-l">Visiteurs du site · 30 j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une visite du site, comptée par notre propre mesure, sans cookie publicitaire ni adresse IP gardée.</span></span></span><b data-k="vis"><span class="sk"></span></b><small data-d="vis" hidden></small></div>
+      <a class="k k-dm" href="#demandes"><span class="k-l" data-k-dm-l>Demandes d’hôtes</span><b data-k="dm"><span class="sk"></span></b><em class="k-s" data-dm-last hidden></em><i class="ph-bold ph-arrow-down k-go" aria-hidden="true"></i></a>
     </div>
+    <div class="hx-foot"><span data-chart-cur hidden></span><div class="upd" data-upd>Chargement des chiffres…</div></div>
+    <div class="err" data-err>Les chiffres ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</div>
   </div>
 </header>
 
-<section class="facts">
-  <div class="s-in facts-grid">
-    <div class="fact"><b data-f="first"><span class="sk dk"></span></b><span>recherches différentes où le site sort en première page</span></div>
-    <div class="fact"><b data-f="pages"><span class="sk dk"></span></b><span>pages du site vues dans Google sur 28 jours</span></div>
-    <div class="fact"><b data-f="cities">122</b><span>pages de ville pour les photographes, les équipes de ménage et le dépannage</span></div>
-    <div class="fact"><b data-f="ctr"><span class="sk dk"></span></b><span>des affichages se transforment en clic (taux de clic)</span></div>
-  </div>
-</section>
-
 <section class="sec" id="demandes">
   <div class="s-in">
-    <div class="dm">
-      <div>
-        <div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes · en toute transparence</div>
-        <h2>Chaque demande compte, <em>même la première</em></h2>
-        <p class="dm-lead">Combien d’hôtes ont vraiment demandé un photographe, un vidéaste, une équipe de ménage ou un pro du dépannage ? Le service est jeune : je préfère te montrer les vrais chiffres, petits ou grands. Ils se mettent à jour tout seuls à chaque demande.</p>
-        <div class="dm-priv">
-          <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour toutes les 10 minutes</span>
-          <span><i class="ph-bold ph-shield-check"></i>Métier, ville et mois seulement</span>
+    <div class="sec-head">
+      <div class="lbl">Demandes d’hôtes</div>
+      <h2>Chaque demande compte, <em>même la première</em></h2>
+      <p>Le service est jeune : je préfère montrer les vrais chiffres, petits ou grands. Mis à jour toutes les 10 minutes, avec le métier, la ville et le mois seulement.</p>
+    </div>
+    <div class="d1">
+      <div class="d1-m">
+        <div><i class="ph-bold ph-camera"></i><b data-dm-photo>·</b><span>photographe ou vidéaste</span></div>
+        <div><i class="ph-bold ph-broom"></i><b data-dm-menage>·</b><span>équipe de ménage</span></div>
+        <div><i class="ph-bold ph-wrench"></i><b data-dm-depannage>·</b><span>dépannage</span></div>
+      </div>
+      <div class="d1-cols">
+        <div>
+          <h3 class="t">Le fil des demandes</h3>
+          <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
+        </div>
+        <div>
+          <h3 class="t">Par ville</h3>
+          <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
         </div>
       </div>
-      <div class="dm-total" aria-live="polite">
-        <span data-dm-since>Demandes reçues</span>
-        <b data-dm-total><span class="sk"></span></b>
-        <div class="dm-split">
-          <div><i class="ph-bold ph-camera"></i><div><b data-dm-photo>·</b><small>photographe ou vidéaste</small></div></div>
-          <div><i class="ph-bold ph-broom"></i><div><b data-dm-menage>·</b><small>équipe de ménage</small></div></div>
-          <div><i class="ph-bold ph-wrench"></i><div><b data-dm-depannage>·</b><small>dépannage</small></div></div>
-        </div>
+      <div class="d1-f">
+        <span>Formulaire « Trouver un pro » <b data-dm-src="formulaire">·</b></span>
+        <span>Bouton « Contacter » d’une fiche <b data-dm-src="fiche">·</b></span>
+        <span>Appel ou message à Jason <b data-dm-src="direct">·</b></span>
+        <span class="sep"></span>
+        <span><i class="d" style="background:#004C3F"></i>Ouvertes par un pro <b data-dm-et="ouverte">·</b></span>
+        <span><i class="d" style="background:#C9A227"></i>Transmises <b data-dm-et="transmise">·</b></span>
+        <span><i class="d" style="background:#B9C4BC"></i>En attente d’un pro <b data-dm-et="sans_pro">·</b></span>
       </div>
-    </div>
-
-    <div class="dm-cards">
-      <div class="dm-c">
-        <h3>D’où elles viennent</h3>
-        <div class="dm-row"><span>Formulaire « Trouver un pro »</span><b data-dm-src="formulaire">·</b></div>
-        <div class="dm-bar"><i data-dm-bar="formulaire" style="width:0"></i></div>
-        <div class="dm-row"><span>Bouton « Contacter » d’une fiche</span><b data-dm-src="fiche">·</b></div>
-        <div class="dm-bar"><i class="y" data-dm-bar="fiche" style="width:0"></i></div>
-        <div class="dm-row"><span>Appel ou message à Jason</span><b data-dm-src="direct">·</b></div>
-        <div class="dm-bar"><i class="b" data-dm-bar="direct" style="width:0"></i></div>
+      <div class="dm-note">
+        <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
+        <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
       </div>
-      <div class="dm-c">
-        <h3>Ce qu’elles sont devenues</h3>
-        <div class="dm-et"><span class="d" style="background:#004C3F"></span>Ouvertes par un pro<b data-dm-et="ouverte">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#C9A227"></span>Transmises, pas encore ouvertes<b data-dm-et="transmise">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#B9C4BC"></span>En attente d’un pro dans la zone<b data-dm-et="sans_pro">·</b></div>
-      </div>
-      <div class="dm-c">
-        <h3>Mois par mois</h3>
-        <div class="dm-months" data-dm-months></div>
-        <div class="dm-mlab" data-dm-mlab></div>
-      </div>
-    </div>
-
-    <div class="dm-cols">
-      <div>
-        <h3 class="t">Par ville</h3>
-        <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
-      </div>
-      <div>
-        <h3 class="t">Le fil des demandes</h3>
-        <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
-      </div>
-    </div>
-
-    <div class="dm-note">
-      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
-      <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
     </div>
   </div>
 </section>
 
-<section class="sec cr" id="ta-ville">
+
+
+<section class="sec cr" id="recherches">
+  <div class="s-in">
+    <div class="sec-head">
+      <div class="lbl">Sur Google</div>
+      <h2>Où le site sort <em>en première page</em></h2>
+      <p><b class="hl" data-f="first">·</b> recherches et <b class="hl" data-f="rk">·</b> pages de ville dans les 10 premiers résultats de Google, en moyenne sur 28 jours. Choisis un métier, puis une ville pour voir comment. <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">La place moyenne est pondérée par les affichages, sur 28 jours. Elle varie selon la ville, l’appareil et l’historique de chacun : ce que tu vois sur ton téléphone peut être un peu différent.</span></span></p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Public">
+      <button class="tab" role="tab" aria-selected="true" data-tab="photographe"><i class="ph-bold ph-camera"></i>Photographes &amp; vidéastes <em data-c="photographe">·</em></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="menage"><i class="ph-bold ph-broom"></i>Ménage <em data-c="menage">·</em></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="depannage"><i class="ph-bold ph-wrench"></i>Dépannage <em data-c="depannage">·</em></button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="hote"><i class="ph-bold ph-house-line"></i>Hôtes <em data-c="hote">·</em></button>
+    </div>
+    <div class="ranks" data-ranks hidden></div>
+    <div class="card" data-queries><p class="empty">Chargement des recherches…</p></div>
+    <p class="rk-note" data-rk-note hidden>Pourquoi une page de ville peut être en première page sans recherche listée ? Google ne donne pas le texte des recherches trop rares (pour protéger la vie privée de ceux qui les tapent). La place d’une page compte toutes ses recherches, nommées ou non.</p>
+  </div>
+</section>
+
+<section class="sec" id="ta-ville">
   <div class="s-in">
     <div class="sec-head">
       <div class="lbl">Ta ville</div>
@@ -446,71 +490,13 @@ a.dm-city:hover{border-color:var(--g)}
   </div>
 </section>
 
-<section class="sec">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Sur Google, mois par mois</div>
-      <h2>Les affichages <em>dans Google</em></h2>
-      <p>Nombre de fois où une page du site est apparue dans les résultats de Google, chaque mois. Le dernier mois n’est pas terminé.</p>
-    </div>
-    <div class="card">
-      <div data-chart><svg class="chart" viewBox="0 0 720 260" role="img" aria-label="Chargement du graphique"></svg></div>
-      <div class="chart-legend"><span><i class="dot"></i>Affichages dans Google</span><span><i class="dot p"></i>Mois en cours (pas terminé)</span><span data-chart-clicks></span></div>
-    </div>
-  </div>
-</section>
 
-<section class="sec cr" id="recherches">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Les recherches</div>
-      <h2>Où le site sort <em>en première page</em></h2>
-      <p>Les pages de ville et les recherches tapées dans Google pour lesquelles le site apparaît dans les 10 premiers résultats, en moyenne sur 28 jours. La place est celle mesurée par Google, pas une recherche faite par nous : ce que tu vois sur ton téléphone peut être un peu différent.</p>
-    </div>
-    <div class="tabs" role="tablist" aria-label="Public">
-      <button class="tab" role="tab" aria-selected="true" data-tab="photographe"><i class="ph-bold ph-camera"></i>Photographes &amp; vidéastes <em data-c="photographe">·</em></button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="menage"><i class="ph-bold ph-broom"></i>Ménage <em data-c="menage">·</em></button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="depannage"><i class="ph-bold ph-wrench"></i>Dépannage <em data-c="depannage">·</em></button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="hote"><i class="ph-bold ph-house-line"></i>Hôtes <em data-c="hote">·</em></button>
-    </div>
-    <div class="ranks" data-ranks hidden></div>
-    <div class="card" data-queries><p class="empty">Chargement des recherches…</p></div>
-    <p class="rk-note" data-rk-note hidden>Pourquoi une page de ville peut être en première page sans recherche listée ? Google ne donne pas le texte des recherches trop rares (pour protéger la vie privée de ceux qui les tapent). La place d’une page compte toutes ses recherches, nommées ou non.</p>
-  </div>
-</section>
-
-<section class="sec" id="villes">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Les pages de ville</div>
-      <h2>Ta ville <em>dans Google</em></h2>
-      <p>Pages « Photographe à … », « Ménage à … », « Dépannage à … » et guides hôtes de ville qui sortent en première page. Les affichages, clics et visiteurs d’une page ne sont indiqués qu’au-delà de <span data-thr>100</span> affichages sur 28 jours : en dessous, ce serait trop peu pour en tirer quoi que ce soit.</p>
-    </div>
-    <div data-cities><p class="empty">Chargement des villes…</p></div>
-  </div>
-</section>
-
-
-<section class="sec cr">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Bien lire ces chiffres</div>
-      <h2>Ce que chaque chiffre <em>veut dire</em></h2>
-    </div>
-    <div class="read">
-      <div><h3><i class="ph-bold ph-eye"></i>Un affichage</h3><p>Une page du site est apparue dans les résultats de Google pour une recherche. Ce n’est pas une visite ni un client : c’est la vitrine qui passe devant les yeux.</p></div>
-      <div><h3><i class="ph-bold ph-cursor-click"></i>Un clic</h3><p>Quelqu’un a cliqué sur une page du site depuis Google. Les visites qui arrivent par Facebook, les e-mails ou un lien direct n’y sont pas : elles sont dans les visiteurs.</p></div>
-      <div><h3><i class="ph-bold ph-ranking"></i>La place moyenne</h3><p>Moyenne sur 28 jours, pondérée par les affichages. Elle varie selon la ville, l’appareil et l’historique de chacun : c’est pour ça qu’on ne montre pas de capture de nos propres recherches.</p></div>
-      <div><h3><i class="ph-bold ph-users-three"></i>Un visiteur</h3><p>Une visite du site sur 30 jours, comptée par notre propre mesure, sans cookie publicitaire ni adresse IP gardée. Google masque aussi les recherches trop rares : les vrais totaux sont donc un peu plus hauts que la somme des recherches affichées.</p></div>
-    </div>
-  </div>
-</section>
 
 <section class="sec">
   <div class="s-in">
     <div class="end">
       <h2>Rejoins l’annuaire <em>là où les hôtes cherchent</em></h2>
-      <p>Ta fiche apparaît sur la page de ta ville et dans l’annuaire, avec tes propres statistiques chaque mois : visiteurs, clics, demandes et recherches Google.</p>
+      <p>Ta fiche apparaît sur la page de ta ville (<b data-f="cities">186</b> pages de ville pour les photographes, le ménage et le dépannage) et dans l’annuaire, avec tes propres statistiques chaque mois : visiteurs, clics, demandes et recherches Google.</p>
       <div class="ctas">
         <a class="btn btn-y" href="/annuaires/photographes/inscription"><i class="ph-bold ph-camera"></i>Créer ma fiche photographe ou vidéaste</a>
         <a class="btn btn-y" href="/annuaires/menage/inscription"><i class="ph-bold ph-broom"></i>Créer la fiche de mon équipe</a>
@@ -568,29 +554,46 @@ a.dm-city:hover{border-color:var(--g)}
   });
   function placeHtml(p){ return '<span class="place' + (p <= 3 ? ' top' : '') + '">' + pf.format(p) + '</span>'; }
 
-  function chart(months){
-    var box = $('[data-chart]'); if (!box || !months || !months.length) return;
-    var W = 720, H = 260, padL = 52, padB = 34, padT = 16, padR = 8;
+  // Courbe de l'en-tête (14/11/2026) : affichages Google mois par mois, aire dégradée,
+  // points et valeurs en HTML (lisibles à toutes les tailles), mois en cours en pointillés
+  var MOIS_L = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  function chart(all){
+    var box = $('[data-chart]'); if (!box || !all || !all.length) return;
+    // Mois en cours hors de la courbe (il n'est pas fini : il ferait croire à une baisse), dit à côté
+    var months = all.filter(function(m){ return !m.partial; }), cur = all.filter(function(m){ return m.partial; })[0];
+    if (!months.length) months = all;
+    var cn = $('[data-chart-cur]');
+    if (cn && cur) { cn.textContent = MOIS_L[+cur.month.split('-')[1]-1].charAt(0).toUpperCase() + MOIS_L[+cur.month.split('-')[1]-1].slice(1) + ' en cours : ' + n(cur.impressions) + ' affichages pour l’instant'; cn.hidden = false; }
     var max = Math.max.apply(null, months.map(function(m){ return m.impressions; })) || 1;
-    var step = Math.pow(10, Math.floor(Math.log10(max))); var top = Math.ceil(max / step) * step;
-    var bw = (W - padL - padR) / months.length;
-    var y = function(v){ return padT + (H - padT - padB) * (1 - v / top); };
-    var s = '<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="rgba(0,76,63,.35)"/><rect width="3" height="6" fill="#004C3F"/></pattern></defs>';
-    for (var i = 0; i <= 4; i++) {
-      var v = top * i / 4, yy = y(v);
-      s += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + yy + '" y2="' + yy + '" stroke="rgba(0,76,63,.10)"/>';
-      s += '<text x="' + (padL - 8) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="11" fill="#6B7D68">' + n(v) + '</text>';
-    }
+    var N = months.length, W = 1000, H = 1000;
+    var X = function(i){ return N > 1 ? 4 + i * (92 / (N - 1)) : 50; };          // en % de la largeur
+    var Y = function(v){ return 8 + (1 - v / max) * 84; };                          // en % de la hauteur
+    var pts = months.map(function(m, i){ return [X(i) * W / 100, Y(m.impressions) * H / 100]; });
+    var full = months.filter(function(m){ return !m.partial; }).length;
+    var line = function(a){ return a.map(function(p, i){ return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' '); };
+    var solid = pts.slice(0, full), dash = full < N ? pts.slice(full - 1) : [];
+    var area = line(solid) + ' L' + solid[solid.length - 1][0].toFixed(1) + ' ' + H + ' L' + solid[0][0].toFixed(1) + ' ' + H + ' Z';
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD56B" stop-opacity=".32"/><stop offset="1" stop-color="#FFD56B" stop-opacity="0"/></linearGradient></defs>' +
+      '<path d="' + area + '" fill="url(#hxg)"/><path d="' + line(solid) + '" fill="none" stroke="#FFD56B" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>' +
+      (dash.length ? '<path d="' + line(dash) + '" fill="none" stroke="#FFD56B" stroke-width="2" stroke-dasharray="6 6" vector-effect="non-scaling-stroke" opacity=".7"/>' : '') + '</svg>';
+    var html = svg, H2 = 'calc(100% - 28px)';
     months.forEach(function(m, i){
-      var x = padL + i * bw + bw * 0.18, w = bw * 0.64, yy = y(m.impressions);
-      var p = m.month.split('-');
-      s += '<rect x="' + x + '" y="' + yy + '" width="' + w + '" height="' + Math.max(1, H - padB - yy) + '" rx="4" fill="' + (m.partial ? 'url(#hatch)' : '#004C3F') + '"><title>' + MOIS[+p[1]-1] + ' ' + p[0] + ' : ' + n(m.impressions) + ' affichages, ' + n(m.clicks) + ' clics' + (m.partial ? ' (mois en cours)' : '') + '</title></rect>';
-      s += '<text x="' + (x + w / 2) + '" y="' + (yy - 6) + '" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0F1A0D">' + n(m.impressions) + '</text>';
-      s += '<text x="' + (x + w / 2) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="12" fill="#3D5038">' + MOIS[+p[1]-1] + '</text>';
+      var p = m.month.split('-'), last = i === full - 1, part = !!m.partial;
+      var top = 'calc(' + H2 + ' * ' + (Y(m.impressions) / 100) + ')';
+      html += '<span class="hx-pt' + (last ? ' last' : '') + (part ? ' part' : '') + '" style="left:' + X(i) + '%;top:' + top + '" title="' + MOIS[+p[1]-1] + ' ' + p[0] + ' : ' + n(m.impressions) + ' affichages, ' + n(m.clicks) + ' clics' + (part ? ' (mois en cours)' : '') + '"></span>';
+      html += '<span class="hx-v' + (last ? ' last' : '') + (part ? ' part' : '') + '" style="left:' + X(i) + '%;top:' + top + '">' + n(m.impressions) + (part ? ' <small>en cours</small>' : '') + '</span>';
+      html += '<span class="hx-m" style="left:' + X(i) + '%">' + MOIS[+p[1]-1] + '</span>';
     });
-    box.innerHTML = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Affichages dans Google par mois">' + s + '</svg>';
-    var clk = months.reduce(function(a, m){ return a + m.clicks; }, 0);
-    var lg = $('[data-chart-clicks]'); if (lg) lg.textContent = n(clk) + ' clics depuis Google sur la période';
+    box.innerHTML = html;
+    box.setAttribute('aria-label', 'Affichages dans Google par mois : ' + months.map(function(m){ return MOIS[+m.month.split('-')[1]-1] + ' ' + n(m.impressions); }).join(', '));
+    // Croissance : dernier mois complet face au premier mois mesuré
+    var f = months[0], l = months[full - 1], g = $('[data-grow]');
+    if (g && f && l && f !== l && f.impressions > 0 && l.impressions / f.impressions >= 1.5) {
+      var r = l.impressions / f.impressions;
+      $('[data-grow-n]').textContent = '×' + pf.format(r);
+      $('[data-grow-l]').textContent = 'd’affichages dans Google en ' + MOIS_L[+l.month.split('-')[1]-1] + ' qu’en ' + MOIS_L[+f.month.split('-')[1]-1] + ' ' + f.month.split('-')[0] + ', le premier mois mesuré';
+      g.hidden = false;
+    }
   }
 
   var Q = null, current = 'photographe';
@@ -699,7 +702,7 @@ a.dm-city:hover{border-color:var(--g)}
     if (tot) tot.textContent = n(D.total);
     // Chiffre de l'en-tête (14/11/2026, Jason : « plus mis en avant ») : total et dernière demande
     setNum('[data-k="dm"]', n(D.total));
-    var kl = $('[data-k-dm-l]'); if (kl) kl.textContent = (D.total > 1 ? 'demandes d’hôtes' : 'demande d’hôte') + (D.total ? ' depuis ' + monthFr(D.since) : ' pour le moment');
+    var kl = $('[data-k-dm-l]'); if (kl) kl.textContent = (D.total > 1 ? 'Demandes d’hôtes' : 'Demande d’hôte') + (D.total ? ' · depuis ' + MOIS[+D.since.split('-')[1]-1] : '');
     var last = (D.fil || [])[0], kd = $('[data-dm-last]');
     if (kd && last) { kd.textContent = 'Dernière : ' + ({ photographe: 'un photographe', menage: 'une équipe de ménage', depannage: 'un pro du dépannage' }[last.metier] || 'un pro') + (last.slug ? ' à ' + last.label : '') + ', ' + monthFr(last.month); kd.hidden = false; }
     var since = $('[data-dm-since]');
@@ -987,7 +990,7 @@ a.dm-city:hover{border-color:var(--g)}
       setNum('[data-k="clk"]', n(g.clicks)); delta('[data-d="clk"]', g.clicks, g.prevClicks);
       setNum('[data-f="first"]', n(g.firstPageCount));
       setNum('[data-f="pages"]', n(g.pagesSeen));
-      setNum('[data-f="ctr"]', g.impressions ? pf.format(g.clicks / g.impressions * 100) + ' %' : '–');
+      var ctr = $('[data-f="ctr"]'); if (ctr && g.impressions) ctr.textContent = 'soit ' + pf.format(g.clicks / g.impressions * 100) + ' % des affichages';
       chart(g.months);
       var u = $('[data-upd]'); if (u) u.textContent = 'Google : du ' + dateFr(g.start) + ' au ' + dateFr(g.end) + ' (2 jours de retard chez Google)';
     } else {
@@ -1003,7 +1006,7 @@ a.dm-city:hover{border-color:var(--g)}
     R = d.cityRanks || null;
     renderRanks();
     renderQueries();
-    renderCities(d.cities, d.cityRanks);
+    var rk = 0; if (d.cityRanks) ['photographe','menage','depannage','hote'].forEach(function(k){ rk += (d.cityRanks[k] || []).length; }); setNum('[data-f="rk"]', n(rk));
     renderDemandes(d.demandes || null);
   }).catch(function(){
     renderDemandes(null);

@@ -89,3 +89,13 @@ Jason : « la partie demande d'hôte en toute transparence devrait être plus mi
 - Dépannage à 0 en première page : pages créées le 31/10, dans `sitemap-depannage.xml` ; délai de classement normal.
 - **Accueil (14/11/2026, même demande)** : dans l'encart Transparence, la carte des demandes passe en premier (verte, cliquable vers `/chiffres#demandes`) et la liste des dernières demandes avant le graphique Google. **Pas de pastille dans le premier écran** : essayée puis retirée le même jour (Jason : « les hôtes sont aussi mes clients, voir ça tout en haut je ne suis pas d'accord »). Même règle pour les en-têtes des pages de ville.
 - **Pages de ville des pros (14/11/2026)** : dans l'encart « Cette page dans Google » (`chiffres-ville.js`, styles dans `scripts/inject-chiffres-ville.mjs`), bloc vert `.cv-dm` : demandes de la ville pour le métier de la page (zéro compris ; le dépannage comptait à tort les demandes de photographes), puis total du site et dernière demande (champ `demandesSite` ajouté à `?page=` de `/api/public/chiffres`), lien vers `/chiffres?ville=<slug>#ta-ville`.
+
+## /chiffres refaite en 5 blocs (14/11/2026)
+
+Jason : « on se répète entre les blocs », « une partie full moderne, effet wow, minimaliste, épurée, c'est le centre du projet, surtout que les chiffres montent ». Structure validée : 8 blocs → 5, aucune modification de l'API.
+1. **En-tête « la courbe qui monte »** : affichages Google mois par mois en courbe dorée (SVG étiré + points, valeurs et mois en HTML pour rester lisibles), multiplicateur en grand (dernier mois complet ÷ premier mois mesuré, affiché à partir de ×1,5), mois en cours hors de la courbe (il ferait croire à une baisse) et dit dessous ; 4 chiffres en une bande (affichages, clics + taux de clic, visiteurs, demandes cliquables vers `#demandes`).
+2. **Demandes d'hôtes** : une seule carte (3 métiers, fil, villes, provenance et devenir sur une ligne, mot de Jason). Le total n'est plus répété (il est dans l'en-tête) ; graphique mensuel des demandes retiré.
+3. **Google par métier** : onglets, pages de ville en première page + recherches ; le compte (« N recherches et N pages de ville ») dans le chapeau. La section « Ta ville dans Google » (mêmes pages de ville en cartes) est retirée (`renderCities` n'est plus appelée).
+4. **Ta ville** (recherche), inchangée, déplacée après Google.
+5. **Appel aux pros**, avec le nombre de pages de ville.
+Le lexique « Ce que chaque chiffre veut dire » devient des bulles « ? » (`.tip`) sur les chiffres. Bande blanche de 4 chiffres retirée (recherches en 1re page dans le chapeau Google, taux de clic sous les clics, pages de ville dans l'appel aux pros ; « pages vues dans Google » abandonné).
