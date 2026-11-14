@@ -1260,12 +1260,12 @@ export default function LogementsPage({ logements: initial }: Props) {
                 <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px' }}>
                   {([
                     { value: 'virement', label: '🏦 Virement bancaire' },
-                    { value: 'stripe',   label: '💳 Paiement Stripe (en ligne)' },
+                    { value: 'stripe',   label: '💳 Carte bancaire en ligne (Stripe)' },
                     { value: 'especes',  label: '💵 Espèces' },
                     { value: 'cheque',   label: '📄 Chèque' },
                     { value: 'paypal',   label: '🅿️ PayPal' },
                     { value: 'airbnb',   label: '🏠 Airbnb / Booking' },
-                    { value: 'carte',    label: '💳 Carte bancaire (TPE)' },
+                    { value: 'carte',    label: '💳 Carte bancaire sur place (TPE)' },
                   ] as { value: string; label: string }[]).map(opt => {
                     const selected = (form.methodes_paiement ?? 'virement').split(',').map(s => s.trim())
                     const checked = selected.includes(opt.value)

@@ -3,6 +3,16 @@
 import { useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { NATIONALITES } from '@/lib/nationalites'
+import { Dancing_Script } from 'next/font/google'
+
+// Écriture manuscrite pour la signature « Écrire mon nom » (15/11/2026)
+const hand = Dancing_Script({ subsets: ['latin', 'latin-ext'], weight: ['600'], display: 'swap' })
+
+// Encre de la signature : foncée sur fond blanc, lisible à l'écran et dans
+// l'image enregistrée. Avant : 'var(--success-1)', qu'un canvas ne comprend
+// pas (il dessinait en noir sur un fond presque noir : on ne voyait rien).
+const INK = '#10241B'
+type Mode = 'draw' | 'type' | 'upload'
 
 interface Props {
   token: string
@@ -21,7 +31,14 @@ type SLang = 'fr' | 'en' | 'es' | 'pt' | 'de'
 const SIGN_T: Record<SLang, Record<string, string>> = {
   fr: {
     signTitle: 'Apposez votre signature',
-    signSubtitle: 'Dessinez votre signature dans le cadre ci-dessous en utilisant votre souris ou votre doigt.',
+    signSubtitle: "Dessinez votre signature avec la souris ou le doigt, écrivez votre nom ou importez une image de votre signature.",
+    modeDraw: "Dessiner",
+    modeType: "Écrire mon nom",
+    modeUpload: "Importer une image",
+    typeLabel: "Votre nom, tel qu’il apparaîtra comme signature",
+    uploadBtn: "Choisir une image de ma signature",
+    uploadHint: "Photo ou scan de votre signature sur papier blanc (JPG ou PNG).",
+    errImage: "Image illisible. Essayez une photo JPG ou PNG.",
     officialNote: 'Le contrat ci-dessus fait foi dans sa langue officielle.',
     signHere: 'Signez ici',
     clear: 'Effacer',
@@ -47,7 +64,14 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
   },
   en: {
     signTitle: 'Add your signature',
-    signSubtitle: 'Draw your signature in the frame below using your mouse or finger.',
+    signSubtitle: "Draw your signature with your mouse or finger, type your name or upload an image of your signature.",
+    modeDraw: "Draw",
+    modeType: "Type my name",
+    modeUpload: "Upload an image",
+    typeLabel: "Your name, as it will appear as your signature",
+    uploadBtn: "Choose an image of my signature",
+    uploadHint: "Photo or scan of your signature on white paper (JPG or PNG).",
+    errImage: "Unreadable image. Try a JPG or PNG photo.",
     officialNote: 'The contract above is legally binding in its official language.',
     signHere: 'Sign here',
     clear: 'Clear',
@@ -73,7 +97,14 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
   },
   es: {
     signTitle: 'Añada su firma',
-    signSubtitle: 'Dibuje su firma en el recuadro con el ratón o el dedo.',
+    signSubtitle: "Dibuje su firma con el ratón o el dedo, escriba su nombre o suba una imagen de su firma.",
+    modeDraw: "Dibujar",
+    modeType: "Escribir mi nombre",
+    modeUpload: "Subir una imagen",
+    typeLabel: "Su nombre, tal como aparecerá como firma",
+    uploadBtn: "Elegir una imagen de mi firma",
+    uploadHint: "Foto o escaneo de su firma sobre papel blanco (JPG o PNG).",
+    errImage: "Imagen ilegible. Pruebe con una foto JPG o PNG.",
     officialNote: 'El contrato anterior es vinculante en su idioma oficial.',
     signHere: 'Firme aquí',
     clear: 'Borrar',
@@ -99,7 +130,14 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
   },
   pt: {
     signTitle: 'Aponha a sua assinatura',
-    signSubtitle: 'Desenhe a sua assinatura no quadro abaixo com o rato ou o dedo.',
+    signSubtitle: "Desenhe a sua assinatura com o rato ou o dedo, escreva o seu nome ou importe uma imagem da sua assinatura.",
+    modeDraw: "Desenhar",
+    modeType: "Escrever o meu nome",
+    modeUpload: "Importar uma imagem",
+    typeLabel: "O seu nome, tal como aparecerá como assinatura",
+    uploadBtn: "Escolher uma imagem da minha assinatura",
+    uploadHint: "Foto ou digitalização da sua assinatura em papel branco (JPG ou PNG).",
+    errImage: "Imagem ilegível. Experimente uma foto JPG ou PNG.",
     officialNote: 'O contrato acima faz fé na sua língua oficial.',
     signHere: 'Assine aqui',
     clear: 'Apagar',
@@ -125,7 +163,14 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
   },
   de: {
     signTitle: 'Setzen Sie Ihre Unterschrift',
-    signSubtitle: 'Zeichnen Sie Ihre Unterschrift im Feld unten mit Maus oder Finger.',
+    signSubtitle: "Zeichnen Sie Ihre Unterschrift mit Maus oder Finger, tippen Sie Ihren Namen ein oder laden Sie ein Bild Ihrer Unterschrift hoch.",
+    modeDraw: "Zeichnen",
+    modeType: "Namen eintippen",
+    modeUpload: "Bild hochladen",
+    typeLabel: "Ihr Name, wie er als Unterschrift erscheint",
+    uploadBtn: "Bild meiner Unterschrift wählen",
+    uploadHint: "Foto oder Scan Ihrer Unterschrift auf weißem Papier (JPG oder PNG).",
+    errImage: "Bild nicht lesbar. Versuchen Sie ein JPG- oder PNG-Foto.",
     officialNote: 'Der obige Vertrag ist in seiner Amtssprache rechtsverbindlich.',
     signHere: 'Hier unterschreiben',
     clear: 'Löschen',
@@ -164,7 +209,6 @@ export default function SignaturePage({ token, locataireName, withCgv = false }:
   const t = SIGN_T[slang]
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [isDrawing, setIsDrawing] = useState(false)
   const [hasSignature, setHasSignature] = useState(false)
   const [agreed, setAgreed] = useState(false)
   // Nationalité (ISO-2) déclarée par le locataire : alimente la fiche
@@ -175,7 +219,6 @@ export default function SignaturePage({ token, locataireName, withCgv = false }:
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [alreadySigned, setAlreadySigned] = useState(false)
-  const lastPos = useRef<{ x: number; y: number } | null>(null)
 
   // Cleanup fallback timer on unmount (router.refresh unmounts this component)
   useEffect(() => {
@@ -184,73 +227,193 @@ export default function SignaturePage({ token, locataireName, withCgv = false }:
     }
   }, [])
 
-  // Setup canvas
-  useEffect(() => {
+  // 3 façons de signer (15/11/2026, retour d'une hôte : « les personnes
+  // n'arrivent pas à signer ») : dessiner, écrire son nom, importer une image.
+  // Les trois aboutissent à la même image PNG envoyée à /api/contracts/sign.
+  const [mode, setMode] = useState<Mode>('draw')
+  const [typed, setTyped] = useState(locataireName)
+  const [uploadName, setUploadName] = useState('')
+  const drawing = useRef(false)
+  const pts = useRef<{ x: number; y: number }[]>([])
+  const cssW = useRef(0)
+
+  /** Taille réelle du canvas = taille affichée x densité de l'écran. Garde le
+   *  dessin si la largeur change (rotation du téléphone, barre d'adresse). */
+  function fitCanvas() {
     const canvas = canvasRef.current
     if (!canvas) return
+    const rect = canvas.getBoundingClientRect()
+    if (!rect.width || Math.abs(rect.width - cssW.current) < 1) return
+    const dpr = window.devicePixelRatio || 1
+    const prev = cssW.current && canvas.width ? canvas.toDataURL() : null
+    cssW.current = rect.width
+    canvas.width = Math.round(rect.width * dpr)
+    canvas.height = Math.round(rect.height * dpr)
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    paper(ctx, rect.width, rect.height)
+    if (prev) {
+      const img = new Image()
+      img.onload = () => ctx.drawImage(img, 0, 0, rect.width, rect.height)
+      img.src = prev
+    }
+  }
 
-    // Ratio pour les écrans Retina
-    const dpr = window.devicePixelRatio || 1
-    const rect = canvas.getBoundingClientRect()
-    canvas.width = rect.width * dpr
-    canvas.height = rect.height * dpr
-    ctx.scale(dpr, dpr)
-    ctx.strokeStyle = 'var(--success-1)'
-    ctx.lineWidth = 2.5
+  function paper(ctx: CanvasRenderingContext2D, w: number, h: number) {
+    ctx.save()
+    ctx.setTransform(1, 0, 0, 1, 0, 0)
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    ctx.restore()
+    ctx.strokeStyle = INK
+    ctx.fillStyle = INK
+    ctx.lineWidth = 2.6
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
+    void w; void h
+  }
+
+  useEffect(() => {
+    fitCanvas()
+    const canvas = canvasRef.current
+    if (!canvas || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => fitCanvas())
+    ro.observe(canvas)
+    return () => ro.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function getPos(e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) {
-    const rect = canvas.getBoundingClientRect()
-    if ('touches' in e) {
-      const touch = e.touches[0]
-      return { x: touch.clientX - rect.left, y: touch.clientY - rect.top }
-    }
-    return { x: (e as React.MouseEvent).clientX - rect.left, y: (e as React.MouseEvent).clientY - rect.top }
+  function ctx2d() {
+    const canvas = canvasRef.current
+    if (!canvas) return null
+    if (!cssW.current) fitCanvas()
+    return canvas.getContext('2d')
   }
 
-  function startDraw(e: React.MouseEvent | React.TouchEvent) {
-    e.preventDefault()
-    const canvas = canvasRef.current
-    if (!canvas) return
-    setIsDrawing(true)
-    lastPos.current = getPos(e, canvas)
+  function posOf(e: React.PointerEvent<HTMLCanvasElement>) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top }
   }
 
-  function draw(e: React.MouseEvent | React.TouchEvent) {
+  function onDown(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (mode !== 'draw') return
     e.preventDefault()
-    if (!isDrawing) return
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = ctx2d()
     if (!ctx) return
-    const pos = getPos(e, canvas)
-    if (lastPos.current) {
-      ctx.beginPath()
-      ctx.moveTo(lastPos.current.x, lastPos.current.y)
-      ctx.lineTo(pos.x, pos.y)
-      ctx.stroke()
-    }
-    lastPos.current = pos
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* ancien navigateur */ }
+    drawing.current = true
+    const p = posOf(e)
+    pts.current = [p]
+    // Un simple appui laisse un point
+    ctx.beginPath(); ctx.arc(p.x, p.y, 1.3, 0, Math.PI * 2); ctx.fill()
     setHasSignature(true)
+    setError('')
   }
 
-  function stopDraw(e: React.MouseEvent | React.TouchEvent) {
+  function onMove(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (!drawing.current) return
     e.preventDefault()
-    setIsDrawing(false)
-    lastPos.current = null
+    const ctx = ctx2d()
+    if (!ctx) return
+    // Points intermédiaires (souris et stylet rapides) pour un trait continu
+    const events = typeof e.nativeEvent.getCoalescedEvents === 'function' ? e.nativeEvent.getCoalescedEvents() : []
+    const rect = e.currentTarget.getBoundingClientRect()
+    const list = events.length ? events.map(ev => ({ x: ev.clientX - rect.left, y: ev.clientY - rect.top })) : [posOf(e)]
+    for (const p of list) {
+      const arr = pts.current
+      arr.push(p)
+      if (arr.length < 3) {
+        const a = arr[0]
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(p.x, p.y); ctx.stroke()
+        continue
+      }
+      const [p0, p1, p2] = arr.slice(-3)
+      const m1 = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 }
+      const m2 = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 }
+      ctx.beginPath(); ctx.moveTo(m1.x, m1.y); ctx.quadraticCurveTo(p1.x, p1.y, m2.x, m2.y); ctx.stroke()
+      if (arr.length > 3) arr.shift()
+    }
+  }
+
+  function onUp() {
+    drawing.current = false
+    pts.current = []
+  }
+
+  function clearCanvas() {
+    const ctx = ctx2d()
+    const canvas = canvasRef.current
+    if (!ctx || !canvas) return
+    const rect = canvas.getBoundingClientRect()
+    paper(ctx, rect.width, rect.height)
   }
 
   function clearSignature() {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    clearCanvas()
     setHasSignature(false)
+    setUploadName('')
+  }
+
+  // « Écrire mon nom » : le nom tapé, en écriture manuscrite
+  useEffect(() => {
+    if (mode !== 'type') return
+    let cancelled = false
+    const name = typed.trim()
+    const run = async () => {
+      const family = hand.style.fontFamily
+      try { await document.fonts.load(`600 48px ${family}`) } catch { /* police de repli */ }
+      if (cancelled) return
+      const ctx = ctx2d()
+      const canvas = canvasRef.current
+      if (!ctx || !canvas) return
+      const rect = canvas.getBoundingClientRect()
+      paper(ctx, rect.width, rect.height)
+      if (!name) { setHasSignature(false); return }
+      let size = Math.min(56, rect.height * 0.5)
+      ctx.font = `600 ${size}px ${family}`
+      while (ctx.measureText(name).width > rect.width - 40 && size > 18) {
+        size -= 2
+        ctx.font = `600 ${size}px ${family}`
+      }
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText(name, rect.width / 2, rect.height / 2)
+      setHasSignature(true)
+    }
+    run()
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, typed])
+
+  // « Importer une image » : photo ou scan, posé sur fond blanc et centré
+  function onFile(file: File | undefined) {
+    if (!file) return
+    setError('')
+    const url = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      const ctx = ctx2d()
+      const canvas = canvasRef.current
+      if (!ctx || !canvas) { URL.revokeObjectURL(url); return }
+      const rect = canvas.getBoundingClientRect()
+      paper(ctx, rect.width, rect.height)
+      const pad = 10
+      const k = Math.min((rect.width - pad * 2) / img.width, (rect.height - pad * 2) / img.height)
+      const w = img.width * k, h = img.height * k
+      ctx.drawImage(img, (rect.width - w) / 2, (rect.height - h) / 2, w, h)
+      URL.revokeObjectURL(url)
+      setUploadName(file.name)
+      setHasSignature(true)
+    }
+    img.onerror = () => { URL.revokeObjectURL(url); setError(t.errImage); setHasSignature(false) }
+    img.src = url
+  }
+
+  function switchMode(m: Mode) {
+    if (m === mode) return
+    clearSignature()
+    setMode(m)
   }
 
   async function handleSubmit() {
@@ -371,28 +534,58 @@ export default function SignaturePage({ token, locataireName, withCgv = false }:
       <p style={signSubtitle}>{t.signSubtitle}</p>
       <p style={{ ...signSubtitle, fontSize: '12px', opacity: 0.8 }}>{t.officialNote}</p>
 
-      {/* Canvas de signature */}
+      {/* Façon de signer */}
+      <div role="tablist" style={modeRow}>
+        {(['draw', 'type', 'upload'] as Mode[]).map(m => (
+          <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => switchMode(m)}
+            style={{ ...modeBtn, ...(mode === m ? modeBtnOn : {}) }}>
+            {m === 'draw' ? t.modeDraw : m === 'type' ? t.modeType : t.modeUpload}
+          </button>
+        ))}
+      </div>
+
+      {mode === 'type' && (
+        <div style={{ marginBottom: '12px' }}>
+          <label htmlFor="sign-typed" style={natLabel}>{t.typeLabel}</label>
+          <input id="sign-typed" type="text" value={typed} maxLength={80} autoComplete="name"
+            onChange={e => setTyped(e.target.value)} style={natSelect} />
+        </div>
+      )}
+
+      {mode === 'upload' && (
+        <div style={{ marginBottom: '12px' }}>
+          <label style={uploadLabel}>
+            <input type="file" accept="image/png,image/jpeg,image/webp" style={{ display: 'none' }}
+              onChange={e => { onFile(e.target.files?.[0]); e.target.value = '' }} />
+            {uploadName || t.uploadBtn}
+          </label>
+          <p style={natHint}>{t.uploadHint}</p>
+        </div>
+      )}
+
+      {/* Zone de signature (fond blanc, encre foncée) */}
       <div style={canvasWrapper}>
         <canvas
           ref={canvasRef}
-          style={canvasStyle}
-          onMouseDown={startDraw}
-          onMouseMove={draw}
-          onMouseUp={stopDraw}
-          onMouseLeave={stopDraw}
-          onTouchStart={startDraw}
-          onTouchMove={draw}
-          onTouchEnd={stopDraw}
+          style={{ ...canvasStyle, cursor: mode === 'draw' ? 'crosshair' : 'default' }}
+          onPointerDown={onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          onPointerCancel={onUp}
+          onPointerLeave={onUp}
         />
-        {!hasSignature && (
+        {!hasSignature && mode === 'draw' && (
           <div style={canvasPlaceholder}>
             <span style={{ fontSize: '28px', marginBottom: '8px', display: 'block' }}>✍️</span>
             {t.signHere}
           </div>
         )}
-        <button onClick={clearSignature} style={clearBtn} type="button">
-          {t.clear}
-        </button>
+        <div style={signLine} aria-hidden="true" />
+        {hasSignature && mode !== 'type' && (
+          <button onClick={clearSignature} style={clearBtn} type="button">
+            {t.clear}
+          </button>
+        )}
       </div>
 
       {/* Nationalité : requise par la réglementation locale pour les hôtes
@@ -512,13 +705,39 @@ const natHint: React.CSSProperties = {
 
 const canvasStyle: React.CSSProperties = {
   width: '100%',
-  height: '140px',
-  background: 'rgba(52,211,153,0.04)',
-  border: '2px dashed rgba(52,211,153,0.25)',
+  height: '170px',
+  background: '#ffffff',
+  border: '2px dashed rgba(52,211,153,0.45)',
   borderRadius: '14px',
-  cursor: 'crosshair',
   display: 'block',
   touchAction: 'none',
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+}
+
+const signLine: React.CSSProperties = {
+  position: 'absolute', left: '24px', right: '24px', bottom: '34px',
+  borderBottom: '1px solid rgba(16,36,27,0.15)', pointerEvents: 'none',
+}
+
+const modeRow: React.CSSProperties = {
+  display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px',
+}
+
+const modeBtn: React.CSSProperties = {
+  flex: '1 1 auto', padding: '9px 12px', borderRadius: '10px', cursor: 'pointer',
+  fontFamily: 'inherit', fontSize: '13px', fontWeight: 600,
+  background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.65)',
+}
+
+const modeBtnOn: React.CSSProperties = {
+  background: 'rgba(255,213,107,0.15)', border: '1px solid rgba(255,213,107,0.5)', color: '#FFD56B',
+}
+
+const uploadLabel: React.CSSProperties = {
+  display: 'block', textAlign: 'center', padding: '12px', borderRadius: '10px', cursor: 'pointer',
+  border: '1px dashed rgba(255,213,107,0.5)', color: '#FFD56B', fontSize: '14px', fontWeight: 600,
+  marginBottom: '8px', wordBreak: 'break-all',
 }
 
 const canvasPlaceholder: React.CSSProperties = {
@@ -528,7 +747,7 @@ const canvasPlaceholder: React.CSSProperties = {
   flexDirection: 'column' as const,
   alignItems: 'center',
   justifyContent: 'center',
-  color: 'rgba(52,211,153,0.35)',
+  color: 'rgba(16,36,27,0.35)',
   fontSize: '14px',
   pointerEvents: 'none',
   userSelect: 'none' as const,

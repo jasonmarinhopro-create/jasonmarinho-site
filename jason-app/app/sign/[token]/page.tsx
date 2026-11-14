@@ -7,6 +7,7 @@ import { toUiLang } from '@/lib/sign-ui-i18n'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 import { syncLoyerPayment, findPaidLoyerSessions } from '@/lib/stripe/loyer-payment'
 import { syncDeposit } from '@/lib/stripe/deposit-payment'
+import { parsePaypalMe, contractOffersPaypal } from '@/lib/contracts/paypal'
 
 // Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -89,6 +90,14 @@ export default async function SignPage({
     .eq('id', contract.user_id)
     .single()
   const stripeReady = !!(bailProfile?.stripe_account_id && bailProfile?.stripe_onboarding_complete)
+
+  // PayPal (migration 187) : lu à part, la page s'affiche même sans la colonne
+  let hostPaypal: string | null = null
+  if (contractOffersPaypal(contract.modalites_paiement)) {
+    const { data: pp, error: ppErr } = await supabase
+      .from('profiles').select('paypal_me').eq('id', contract.user_id).maybeSingle()
+    if (!ppErr) hostPaypal = parsePaypalMe((pp as { paypal_me?: string | null } | null)?.paypal_me)
+  }
 
   // Conciergerie : si le logement a son propre IBAN (propriétaire tiers géré
   // par l'utilisateur), il est prioritaire sur profiles.iban — l'argent doit
@@ -179,6 +188,7 @@ export default async function SignPage({
       n={n}
       hostIban={hostIban}
       hostBic={hostBic}
+      hostPaypal={hostPaypal}
       stripeReady={stripeReady}
       paymentEnabled={paymentEnabled}
       paymentAlreadyDone={paymentAlreadyDone}

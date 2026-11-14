@@ -93,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261115_187_paypal_bailleur.sql', what: 'Lien PayPal.me du bailleur : bouton « Payer avec PayPal » sur le contrat signé', table: 'profiles', column: 'paypal_me' },
   { file: '20261110_181_cgv_bailleur.sql', what: 'Conditions générales de vente du bailleur jointes aux contrats (Mon compte)', table: 'profiles', column: 'cgv' },
   { file: '20261107_180_groupes_pros.sql', what: 'Groupes Facebook par public (hôtes, photographes, ménage, dépannage, recrutement) : page Trouver des clients des pros', table: 'community_groups', column: 'audiences' },
   { file: '20261104_178_montee_en_charge.sql', what: 'Reconstructions du site regroupées et calendriers synchronisés toutes les heures', table: 'site_rebuild_state', column: 'requested_at' },
