@@ -93,11 +93,6 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 - **Pied de page en double (10/11/2026)** : `footer.js` chargé sans `defer` (117 articles, études, `investir-lcd`) s'exécutait avant le pied de page écrit au déploiement et en ajoutait un deuxième. `footer.js` attend maintenant `DOMContentLoaded` (`whenReady`). Charger `footer.js` en `defer` dans toute nouvelle page.
 - Photos manquantes pour les études : La Baule, Cassis, Val d'Isère, Porto, Funchal, Barcelone, Séville (carte graphique à la place).
 
-## /tarifs refaite en 5 blocs (14/11/2026)
+## /tarifs : refonte en 5 blocs essayée puis annulée (14/11/2026)
 
-Jason : « fais la même chose pour la page tarifs » (après /chiffres). Prix, offres et mentions légales inchangés.
-1. **En-tête** : le choix du métier est dans l'en-tête (4 boutons `.who-b`, classe `tab-btn` : même `switchTab`, mêmes ancres `#hote`, `#photographes`, `#menage`, `#depannage`). Les 3 grandes cartes de public (qui oubliaient le dépannage) et le second sélecteur sont retirés.
-2. **Offres** : cartes hôte à 6 points clés (Découverte, Standard), tableau complet replié dans « Tout comparer » (`<details id="compare">`, ouvert par `#compare`). Annuaires : une seule liste « Ce que comprend ta fiche » et les deux prix côte à côte (`.ann2`), au lieu de deux cartes aux 6 mêmes points.
-3. **Bande de réassurance** (`.assure`, ancre `#garantie`) : sans engagement, remboursement 14 jours (plan Standard hôte), prix affiché = prix payé (TVA non applicable). Remplace la grande section garantie.
-4. **FAQ** pleine largeur (`#faq`).
-5. **Appel final** adapté au métier choisi (`END` dans `switchTab` : titre, texte, lien d'inscription).
+Refonte faite le 14/11 (choix du métier dans l'en-tête, listes raccourcies, tableau replié, bande de réassurance) puis annulée le même jour à la demande de Jason (« je préférais largement l'ancienne version de la page prix ») : page remise à l'identique (commit 015020b annulé). Ne pas la refaire sans son accord.

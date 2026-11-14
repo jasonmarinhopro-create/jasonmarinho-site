@@ -25,14 +25,14 @@
 <meta name="theme-color" content="#004C3F">
   
   
-  <link rel="stylesheet" href="/fonts/site-fonts.css?v=4e4cb4c62f">
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
 <!-- FONTLOAD:END -->
-  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=a74d66b64f">
-  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a8e72e2e96">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
   <style>
     :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57}
     *,*::before,*::after{box-sizing:border-box}
@@ -293,44 +293,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
     @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
     @media(max-width:640px){.price-grid{grid-template-columns:1fr}}
-  
-    /* ── Refonte du 14/11/2026 (Jason : « on se répète », même travail que /chiffres) ── */
-    .who{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:30px;max-width:1000px}
-    .who-b{display:flex;align-items:center;gap:14px;text-align:left;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;font-family:inherit;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
-    .who-b:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
-    .who-b>i{width:42px;height:42px;border-radius:12px;background:rgba(255,213,107,.14);color:var(--y);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-    .who-b b{display:block;font-size:15px;font-weight:600;line-height:1.25}
-    .who-b small{display:block;font-size:12.5px;color:rgba(255,255,255,.6);margin-top:3px}
-    .who-b.active{background:var(--y);border-color:var(--y);color:var(--gd);box-shadow:0 14px 34px rgba(255,200,69,.25)}
-    .who-b.active>i{background:rgba(0,51,41,.1);color:var(--gd)}
-    .who-b.active small{color:rgba(0,51,41,.7)}
-    @media(max-width:900px){.who{grid-template-columns:1fr 1fr}}
-    .who-b{min-width:0}.who-b>span{min-width:0}
-    @media(max-width:520px){.who{gap:8px}.who-b{flex-direction:column;align-items:flex-start;padding:12px;gap:8px}.who-b>i{width:34px;height:34px;font-size:16px}.who-b b{font-size:13.5px}.who-b small{font-size:12px}}
-    .cmp-det{padding:0}
-    .cmp-sum{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;font-family:'Fraunces','Fraunces Fallback',serif;font-size:20px;color:var(--td)}
-    .cmp-sum::-webkit-details-marker{display:none}
-    .cmp-sum small{display:block;font-family:'Outfit','Outfit Fallback',sans-serif;font-size:13px;color:var(--tl);margin-top:2px}
-    .cmp-sum i{color:var(--g);transition:transform .2s}
-    .cmp-det[open] .cmp-sum i{transform:rotate(180deg)}
-    .cmp-det[open] .cmp-sum{border-bottom:1px solid var(--bd)}
-    .ann2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;max-width:960px;margin:28px auto 0}
-    .ann2-f{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:26px 28px}
-    .ann2-h{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:20px;color:var(--td);margin-bottom:14px}
-    .ann2-p{display:grid;gap:12px}
-    .ann2-o{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:6px}
-    .ann2-o.on{border-color:var(--y);background:linear-gradient(160deg,#FFFCEF,#FFF8E1);box-shadow:0 14px 34px rgba(184,134,11,.12)}
-    .ann2-n{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:18px;color:var(--td)}
-    .ann2-o .annuaire-tag{align-self:flex-start}
-    @media(max-width:820px){.ann2{grid-template-columns:1fr}}
-    .assure{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}
-    .assure>div{display:flex;align-items:center;gap:14px;padding:16px 18px;background:#fff;border:1px solid var(--bd);border-radius:16px}
-    .assure i{width:40px;height:40px;border-radius:12px;background:rgba(0,76,63,.07);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-    .assure b{display:block;font-size:14.5px;color:var(--td)}
-    .assure span{font-size:12.5px;color:var(--tl);line-height:1.45}
-    @media(max-width:820px){.assure{grid-template-columns:1fr}}
-    #faq .faq{max-width:820px;margin:0 auto}
-</style>
+  </style>
 <!-- JSONLD-AUTO:START -->
 <script type="application/ld+json">
 {
@@ -382,20 +345,80 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <a href="/">Accueil</a><span>›</span><span>Tarifs</span>
     </div>
     <div class="lbl">Accès &amp; Tarifs</div>
-    <h1 class="h1">Un tarif simple <em>pour chaque métier</em></h1>
-    <p class="sub">Sans engagement, sans commission, facturation annuelle. Choisis ton métier :</p>
-    <div class="who" role="tablist" aria-label="Choisir ton métier">
-      <button class="tab-btn who-b active" role="tab" aria-selected="true" data-tab="hote" onclick="switchTab('hote')"><i class="ph-bold ph-house-line"></i><span><b>Hôte LCD</b><small>Gratuit, puis 19,98 €/an</small></span></button>
-      <button class="tab-btn who-b" role="tab" aria-selected="false" data-tab="photographes" onclick="switchTab('photographes')"><i class="ph-bold ph-camera"></i><span><b>Photographe ou vidéaste</b><small>Dès 39,98 €/an</small></span></button>
-      <button class="tab-btn who-b" role="tab" aria-selected="false" data-tab="menage" onclick="switchTab('menage')"><i class="ph-bold ph-sparkle"></i><span><b>Équipe de ménage</b><small>Dès 39,98 €/an</small></span></button>
-      <button class="tab-btn who-b" role="tab" aria-selected="false" data-tab="depannage" onclick="switchTab('depannage')"><i class="ph-bold ph-wrench"></i><span><b>Dépannage</b><small>Dès 39,98 €/an</small></span></button>
-    </div>
+    <h1 class="h1">Un accès adapté<br>à <em>chaque étape</em></h1>
+    <p class="sub">Trois offres pour trois métiers : choisis la tienne. Facturation annuelle uniquement, résiliation à tout moment.</p>
+    <!-- Une carte par public : ouvre l'onglet correspondant plus bas (applyTarifsHash) -->
+    <nav class="aud-grid" aria-label="Choisir ton profil">
+      <a href="#hote" class="aud-card aud-hote">
+        <span class="aud-vis">
+          <span class="aud-row"><i class="ph-bold ph-file-text"></i>Contrat<b>Signé</b></span>
+          <span class="aud-row"><i class="ph-bold ph-sparkle"></i>Ménage<b>Planifié</b></span>
+          <span class="aud-row"><i class="ph-bold ph-lock-key"></i>Caution<b>Bloquée</b></span>
+        </span>
+        <span>
+          <span class="aud-for">Tu loues en courte durée</span>
+          <span class="aud-t" style="display:block">Plateforme hôte</span>
+          <p class="aud-p">Gratuit pour commencer, puis le plan Standard à l'année pour tout débloquer : contrats, paiements, performances.</p>
+        </span>
+        <span class="aud-cta">Voir les offres hôte <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+      <a href="#photographes" class="aud-card aud-photo">
+        <span class="aud-vis">
+          <span class="aud-tiles"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="aud-row dk"><i class="ph-bold ph-camera"></i>Portfolio<b>Lien direct</b></span>
+        </span>
+        <span>
+          <span class="aud-for">Tu es photographe ou vidéaste</span>
+          <span class="aud-t" style="display:block">Photographes &amp; vidéastes</span>
+          <p class="aud-p">Ta fiche dans l'annuaire consulté par les hôtes : portfolio, tarifs, zone, contact direct sans commission.</p>
+        </span>
+        <span class="aud-cta">Voir l'offre photographe <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+      <a href="#menage" class="aud-card aud-menage">
+        <span class="aud-vis">
+          <span class="aud-row dk"><i class="ph-bold ph-check-circle"></i>Chambres<b>Fait</b></span>
+          <span class="aud-row dk"><i class="ph-bold ph-check-circle"></i>Linge<b>Fait</b></span>
+          <span class="aud-row dk"><i class="ph-bold ph-camera"></i>Photos<b>Envoyées</b></span>
+        </span>
+        <span>
+          <span class="aud-for">Tu fais le ménage</span>
+          <span class="aud-t" style="display:block">Équipes ménage</span>
+          <p class="aud-p">Ta fiche dans l'annuaire consulté par les hôtes. En plus, gratuitement : le planning de tes clients, à jour avec leurs réservations.</p>
+        </span>
+        <span class="aud-cta">Voir l'offre ménage <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+    </nav>
   </div>
 </header>
 
 <!-- PRICING -->
 <section class="sec cr" id="pricing">
   <div class="s-in">
+    <div style="text-align:center">
+      <div class="lbl dk">Offres</div>
+      <h2 class="h2">Choisis ton <em>niveau d'accès</em></h2>
+      <p style="font-size:15px;color:var(--tm);margin:8px auto 0;max-width:520px;line-height:1.7">Pas d'engagement, pas de frais cachés. Facturation annuelle uniquement. Résiliation à tout moment.</p>
+
+      <!-- Tab switcher : 3 services -->
+      <div class="tab-switcher" role="tablist" aria-label="Sélectionner un service">
+        <button class="tab-btn active" role="tab" aria-selected="true" data-tab="hote" onclick="switchTab('hote')">
+          <i class="ph-bold ph-house-line"></i>
+          <span class="tab-label-full">Hôte LCD</span>
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="photographes" onclick="switchTab('photographes')">
+          <i class="ph-bold ph-camera"></i>
+          <span class="tab-label-full">Photographes &amp; vidéastes</span>
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="menage" onclick="switchTab('menage')">
+          <i class="ph-bold ph-sparkle"></i>
+          <span class="tab-label-full">Ménage</span>
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="depannage" onclick="switchTab('depannage')">
+          <i class="ph-bold ph-wrench"></i>
+          <span class="tab-label-full">Dépannage</span>
+        </button>
+      </div>
+    </div>
 
     <!-- ───── PANEL HÔTE LCD ───── -->
     <div class="tab-panel" data-panel="hote">
@@ -414,12 +437,18 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         </div>
         <div class="pc-divider"></div>
         <ul class="pc-list">
-          <li><i class="ph-bold ph-check"></i><span><strong style="color:var(--td)">Tous les contenus en lecture</strong></span></li>
-          <li><i class="ph-bold ph-check"></i><span>2 formations au choix</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Calendrier, planning ménage + journal revenus</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Voyageurs illimités (carnet + infos de base)</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Simulateurs (rentabilité, fiscalité)</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Questions & réponses : 2 questions par mois, réponse sous 48 h</span></li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">Tous les contenus en lecture</strong></li>
+          <li><i class="ph-bold ph-check"></i>Guide LCD complet + actualités</li>
+          <li><i class="ph-bold ph-check"></i>Gabarits de messages (FR + EN)</li>
+          <li><i class="ph-bold ph-check"></i>Sécurité voyageur (consulter + signaler)</li>
+          <li><i class="ph-bold ph-check"></i>2 formations au choix</li>
+          <li><i class="ph-bold ph-check"></i>Calendrier, planning ménage + journal revenus</li>
+          <li><i class="ph-bold ph-check"></i>Voyageurs illimités (carnet + infos de base)</li>
+          <li><i class="ph-bold ph-check"></i>Simulateurs (rentabilité, fiscalité)</li>
+          <li><i class="ph-bold ph-check"></i>Audit de ta fiche Google</li>
+          <li><i class="ph-bold ph-check"></i>Questions & réponses : 2 questions par mois, réponse sous 48 h</li>
+          <li><i class="ph-bold ph-check"></i>Roadmap publique + suggestions</li>
+          <li><i class="ph-bold ph-check"></i>Communauté + partenaires exclusifs</li>
         </ul>
         <a href="https://app.jasonmarinho.com/auth/register" class="btn-g">Commencer gratuitement <i class="ph-bold ph-arrow-right"></i></a>
       </div>
@@ -452,12 +481,16 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         </div>
         <div class="pc-divider"></div>
         <ul class="pc-list">
-          <li><i class="ph-bold ph-check"></i><span><strong style="color:var(--td)">Contrats illimités + paiement Stripe</strong> (sans commission sur tes réservations, frais de paiement 2 % + 0,30 €)</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Caution par empreinte bancaire</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Calendrier + état des lieux digital</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Suivi revenus + performances détaillées</span></li>
-          <li><i class="ph-bold ph-check"></i><span><span data-formations-count>22</span> formations complètes</span></li>
-          <li><i class="ph-bold ph-check"></i><span><strong style="color:var(--td)">Support prioritaire</strong></span></li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">Contrats illimités + paiement Stripe</strong> (sans commission sur tes réservations, frais de paiement 2 % + 0,30 €)</li>
+          <li><i class="ph-bold ph-check"></i>Caution par empreinte bancaire</li>
+          <li><i class="ph-bold ph-check"></i>Calendrier + état des lieux digital</li>
+          <li><i class="ph-bold ph-check"></i>Suivi revenus + performances détaillées</li>
+          <li><i class="ph-bold ph-check"></i>Simulateurs (rentabilité, fiscalité)</li>
+          <li><i class="ph-bold ph-check"></i>Audit de ta fiche Google</li>
+          <li><i class="ph-bold ph-check"></i>Gabarits FR + EN · Sécurité voyageur</li>
+          <li><i class="ph-bold ph-check"></i><span data-formations-count>22</span> formations complètes</li>
+          <li><i class="ph-bold ph-check"></i>Questions & réponses illimitées + communauté complète</li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">Support prioritaire</strong></li>
         </ul>
         <a href="https://app.jasonmarinho.com/auth/register" class="btn-p" data-cta-standard>
           <span class="cta-founder-label">Passer en Standard, 19,98 €/an</span>
@@ -487,10 +520,10 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         </div>
         <div class="pc-divider"></div>
         <ul class="pc-list">
-          <li><i class="ph-bold ph-check"></i><span><strong style="color:#fff">Tout le plan Standard</strong></span></li>
-          <li><i class="ph-bold ph-check"></i><span>Badge Driing Member dans l'app</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Avantages partenaires exclusifs</span></li>
-          <li><i class="ph-bold ph-check"></i><span>Support prioritaire</span></li>
+          <li><i class="ph-bold ph-check"></i><strong style="color:#fff">Tout le plan Standard</strong></li>
+          <li><i class="ph-bold ph-check"></i>Badge Driing Member dans l'app</li>
+          <li><i class="ph-bold ph-check"></i>Avantages partenaires exclusifs</li>
+          <li><i class="ph-bold ph-check"></i>Support prioritaire</li>
         </ul>
         <a href="/pour-qui/membres-driing" class="btn-ol">Découvrir Driing <i class="ph-bold ph-arrow-right"></i></a>
         <div class="pc-alumni" style="background:rgba(255,213,107,.08);color:rgba(255,255,255,.6)">
@@ -502,8 +535,8 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     </div>
 
     <!-- Comparison table -->
-    <details class="cmp-wrap cmp-det" id="compare">
-      <summary class="cmp-sum"><span>Tout comparer <small>Toutes les fonctions, plan par plan</small></span><i class="ph-bold ph-caret-down"></i></summary>
+    <div class="cmp-wrap" id="compare">
+      <h3 class="cmp-ttl">Compare <em style="color:var(--g);font-style:italic">en détail</em></h3>
       <table class="cmp-table">
         <thead>
           <tr>
@@ -553,7 +586,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
           <tr><td>Support</td><td><span class="cmp-txt">FAQ</span></td><td><span class="cmp-txt">Prioritaire</span></td><td><span class="cmp-txt">Prioritaire</span></td></tr>
         </tbody>
       </table>
-    </details>
+    </div>
 
     <!-- Legal mentions -->
     <div class="legal-note">
@@ -570,14 +603,44 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p style="font-size:15px;color:var(--tm);margin:0 auto;max-width:620px;line-height:1.7">Ta fiche fait office de site vitrine : indexée sur Google, avec un lien dofollow vers ton site et tes statistiques. Pour les hôtes : <strong>consultation et contact gratuits</strong>, inclus dans tous les plans.</p>
       </div>
 
-      <div class="ann2"><div class="ann2-f"><b class="ann2-h">Ce que comprend ta fiche</b><ul class="annuaire-feats">
-            <li><i class="ph-bold ph-check"></i><span>Ta fiche comme un site vitrine : 6 photos, formules, bio, zone</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Indexée sur Google, présente sur la page de ta ville</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Lien dofollow vers ton site ou ton portfolio</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Devis en ligne acceptés en un clic, guide facture électronique 2027</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Aucune commission · contact direct hôte</span></li>
-          </ul></div><div class="ann2-p"><div class="ann2-o on"><span class="annuaire-tag gold"><i class="ph-bold ph-star"></i> Fondateur · 20 places</span><b class="ann2-n">Membre Fondateur</b><div class="annuaire-price-row"><span class="annuaire-price">39,98 €</span><span class="annuaire-period">/ an TTC à vie</span></div><p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p></div><div class="ann2-o"><span class="annuaire-tag">Standard · dès la 21e fiche</span><b class="ann2-n">Standard</b><div class="annuaire-price-row"><span class="annuaire-price">79,98 €</span><span class="annuaire-period">/ an TTC</span></div><p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p></div></div></div>
+      <div class="annuaire-grid">
+        <!-- Fondateur photo -->
+        <div class="annuaire-card featured">
+          <span class="annuaire-tag gold"><i class="ph-bold ph-star"></i> Fondateur · 20 places</span>
+          <h4 class="annuaire-name">Membre Fondateur</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">39,98 €</span>
+            <span class="annuaire-period">/ an TTC à vie</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, bio, zone</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site ou ton portfolio</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne acceptés en un clic, guide facture électronique 2027</li>
+            <li><i class="ph-bold ph-check"></i>Aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+        <!-- Standard photo -->
+        <div class="annuaire-card">
+          <span class="annuaire-tag">Standard · dès la 21e fiche</span>
+          <h4 class="annuaire-name">Standard</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">79,98 €</span>
+            <span class="annuaire-period">/ an TTC</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, bio, zone</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site ou ton portfolio</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne acceptés en un clic, guide facture électronique 2027</li>
+            <li><i class="ph-bold ph-check"></i>Aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="annuaire-cta-row">
         <a href="/annuaires/photographes/inscription" class="btn-p"><i class="ph-bold ph-arrow-right"></i> Créer ma fiche</a>
@@ -599,14 +662,44 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p style="font-size:15px;color:var(--tm);margin:0 auto;max-width:620px;line-height:1.7">Ta fiche fait office de site vitrine : indexée sur Google, avec un lien dofollow vers ton site et tes statistiques. Pour les hôtes : <strong>consultation et contact gratuits</strong>, inclus dans tous les plans.</p>
       </div>
 
-      <div class="ann2"><div class="ann2-f"><b class="ann2-h">Ce que comprend ta fiche</b><ul class="annuaire-feats">
-            <li><i class="ph-bold ph-check"></i><span>Ta fiche comme un site vitrine : 6 photos, formules, prestations</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Indexée sur Google, présente sur la page de ta ville</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Lien dofollow vers ton site</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Planning de tes clients : leurs ménages calculés depuis Airbnb et Booking</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Devis en ligne, aucune commission · contact direct hôte</span></li>
-          </ul></div><div class="ann2-p"><div class="ann2-o on"><span class="annuaire-tag gold"><i class="ph-bold ph-star"></i> Fondateur · 20 places</span><b class="ann2-n">Équipe Fondatrice</b><div class="annuaire-price-row"><span class="annuaire-price">39,98 €</span><span class="annuaire-period">/ an TTC à vie</span></div><p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p></div><div class="ann2-o"><span class="annuaire-tag">Standard · dès la 21e fiche</span><b class="ann2-n">Standard</b><div class="annuaire-price-row"><span class="annuaire-price">79,98 €</span><span class="annuaire-period">/ an TTC</span></div><p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p></div></div></div>
+      <div class="annuaire-grid">
+        <!-- Fondateur ménage -->
+        <div class="annuaire-card featured">
+          <span class="annuaire-tag gold"><i class="ph-bold ph-star"></i> Fondateur · 20 places</span>
+          <h4 class="annuaire-name">Équipe Fondatrice</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">39,98 €</span>
+            <span class="annuaire-period">/ an TTC à vie</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, prestations</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Planning de tes clients : leurs ménages calculés depuis Airbnb et Booking</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne, aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+        <!-- Standard ménage -->
+        <div class="annuaire-card">
+          <span class="annuaire-tag">Standard · dès la 21e fiche</span>
+          <h4 class="annuaire-name">Standard</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">79,98 €</span>
+            <span class="annuaire-period">/ an TTC</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, prestations</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Planning de tes clients : leurs ménages calculés depuis Airbnb et Booking</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne, aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="annuaire-cta-row">
         <a href="/annuaires/menage/inscription" class="btn-p"><i class="ph-bold ph-arrow-right"></i> Créer ma fiche équipe ménage</a>
@@ -628,14 +721,44 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p style="font-size:15px;color:var(--tm);margin:0 auto;max-width:620px;line-height:1.7">Ta fiche fait office de site vitrine : indexée sur Google, avec un lien dofollow vers ton site et tes statistiques. Pour les hôtes : <strong>consultation et contact gratuits</strong>, inclus dans tous les plans.</p>
       </div>
 
-      <div class="ann2"><div class="ann2-f"><b class="ann2-h">Ce que comprend ta fiche</b><ul class="annuaire-feats">
-            <li><i class="ph-bold ph-check"></i><span>Ta fiche comme un site vitrine : 6 photos, formules, spécialités</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Indexée sur Google, présente sur la page de ta ville</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Lien dofollow vers ton site</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Les demandes des hôtes de ta zone, filtrées par spécialité et urgence</span></li>
-            <li><i class="ph-bold ph-check"></i><span>Devis en ligne, aucune commission · contact direct hôte</span></li>
-          </ul></div><div class="ann2-p"><div class="ann2-o on"><span class="annuaire-tag gold"><i class="ph-bold ph-star"></i> Fondateur · 20 places</span><b class="ann2-n">Pro Fondateur</b><div class="annuaire-price-row"><span class="annuaire-price">39,98 €</span><span class="annuaire-period">/ an TTC à vie</span></div><p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p></div><div class="ann2-o"><span class="annuaire-tag">Standard · dès la 21e fiche</span><b class="ann2-n">Standard</b><div class="annuaire-price-row"><span class="annuaire-price">79,98 €</span><span class="annuaire-period">/ an TTC</span></div><p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p></div></div></div>
+      <div class="annuaire-grid">
+        <!-- Fondateur dépannage -->
+        <div class="annuaire-card featured">
+          <span class="annuaire-tag gold"><i class="ph-bold ph-star"></i> Fondateur · 20 places</span>
+          <h4 class="annuaire-name">Pro Fondateur</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">39,98 €</span>
+            <span class="annuaire-period">/ an TTC à vie</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, spécialités</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Les demandes des hôtes de ta zone, filtrées par spécialité et urgence</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne, aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+        <!-- Standard dépannage -->
+        <div class="annuaire-card">
+          <span class="annuaire-tag">Standard · dès la 21e fiche</span>
+          <h4 class="annuaire-name">Standard</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">79,98 €</span>
+            <span class="annuaire-period">/ an TTC</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, spécialités</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Les demandes des hôtes de ta zone, filtrées par spécialité et urgence</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne, aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="annuaire-cta-row">
         <a href="/annuaires/depannage/inscription" class="btn-p"><i class="ph-bold ph-arrow-right"></i> Créer ma fiche dépannage</a>
@@ -649,21 +772,21 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       </div>
     </div><!-- /tab-panel depannage -->
 
-    <div class="assure" id="garantie">
-      <div><i class="ph-bold ph-arrows-counter-clockwise"></i><span><b>Sans engagement</b>Résiliable à tout moment depuis ton espace</span></div>
-      <div><i class="ph-bold ph-shield-check"></i><span><b>Remboursé sous 14 jours</b>Plan Standard hôte, sans justification</span></div>
-      <div><i class="ph-bold ph-receipt"></i><span><b>Prix affiché = prix payé</b>TVA non applicable, article 293 B du CGI</span></div>
-    </div>
   </div>
 </section>
 
 <!-- GARANTIE + FAQ -->
-<section class="sec" id="faq">
+<section class="sec" id="garantie">
   <div class="s-in">
-    <div style="text-align:center;margin-bottom:28px">
-      <div class="lbl dk">Questions fréquentes</div>
-      <h2 class="h2">Tout ce qu’on me <em>demande sur les tarifs</em></h2>
-    </div>
+    <div class="two-col">
+      <div>
+        <div class="lbl dk">Garantie</div>
+        <h2 class="h2">Remboursement<br><em>14 jours</em> sans question</h2>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 24px">Si le plan Standard ne t'apporte pas de valeur concrète dans les 14 jours, je te rembourse intégralement. Sans justification. Un simple message suffit.</p>
+        <a href="/contact" class="btn-g">Contacter Jason <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+      <div>
+        <div class="lbl dk" id="faq">FAQ</div>
         <div class="faq">
           <div class="faq-item">
             <div class="faq-q">Le plan Découverte est-il vraiment gratuit à vie ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
@@ -702,6 +825,8 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
             <div class="faq-a">Chaque contrat créé génère un PDF et un email envoyé au voyageur, ce sont des actions qui ont un coût réel (stockage + envoi). Garder ces fonctions dans le Standard permet de maintenir le plan Découverte réellement gratuit et viable dans la durée, sans limite artificielle sur la lecture des contenus.</div>
           </div>
         </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -710,10 +835,10 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   <div class="s-in">
     <div class="cta-ban">
       <div class="lbl" style="color:rgba(255,213,107,.6)">Commencer</div>
-      <h2 class="h2" style="color:#fff;margin-bottom:14px" data-end-t>Prêt à <em style="color:var(--y)">développer</em> ton activité ?</h2>
-      <p style="font-size:16px;color:rgba(255,255,255,.6);margin:0 0 32px;max-width:480px;margin-left:auto;margin-right:auto" data-end-p>Crée ton compte gratuit en moins d'une minute et accède immédiatement aux ressources.</p>
+      <h2 class="h2" style="color:#fff;margin-bottom:14px">Prêt à <em style="color:var(--y)">développer</em> ton activité ?</h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.5);margin:0 0 32px;max-width:480px;margin-left:auto;margin-right:auto">Crée ton compte gratuit en moins d'une minute et accède immédiatement aux ressources.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p" data-end-a>Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
         <a href="/contact" class="btn-ol">Poser une question</a>
       </div>
     </div>
@@ -743,15 +868,6 @@ function switchTab(tab, keepHash){
   document.querySelectorAll('.tab-panel').forEach(function(p){
     p.style.display = p.getAttribute('data-panel') === tab ? '' : 'none';
   });
-  // Appel final adapté au métier (14/11/2026)
-  var END = {
-    hote: ['Prêt à <em style="color:var(--y)">développer</em> ton activité ?', 'Crée ton compte gratuit en moins d\'une minute et accède immédiatement aux ressources.', 'https://app.jasonmarinho.com/auth/register', 'Créer mon compte gratuit'],
-    photographes: ['Ta vitrine devant <em style="color:var(--y)">les hôtes de ta ville</em>', 'Ta fiche en ligne en quelques minutes : photos, formules, zone. Les hôtes te contactent en direct.', '/annuaires/photographes/inscription', 'Créer ma fiche photographe'],
-    menage: ['Ton équipe devant <em style="color:var(--y)">les hôtes de ta ville</em>', 'Ta fiche en ligne en quelques minutes, et le planning de tes clients à jour avec leurs réservations.', '/annuaires/menage/inscription', 'Créer la fiche de mon équipe'],
-    depannage: ['Tes interventions devant <em style="color:var(--y)">les hôtes de ta ville</em>', 'Ta fiche en ligne en quelques minutes : métiers, zone, délais. Les hôtes te contactent en direct.', '/annuaires/depannage/inscription', 'Créer ma fiche dépannage']
-  }[tab];
-  var et = document.querySelector('[data-end-t]'), ep = document.querySelector('[data-end-p]'), ea = document.querySelector('[data-end-a]');
-  if (END && et && ep && ea) { et.innerHTML = END[0]; ep.textContent = END[1]; ea.href = END[2]; ea.firstChild.nodeValue = END[3] + ' '; }
   // Update hash sans scroller
   if (!keepHash && history.replaceState) {
     history.replaceState(null, '', '#'+tab);
@@ -765,7 +881,7 @@ function applyTarifsHash(scroll){
   var hash = (window.location.hash || '').replace('#','');
   var target = null;
   if (VALID_TABS.includes(hash)) { switchTab(hash, true); target = document.getElementById('pricing'); }
-  else if (hash === 'compare') { switchTab('hote', true); target = document.getElementById('compare'); if (target) target.open = true; }
+  else if (hash === 'compare') { switchTab('hote', true); target = document.getElementById('compare'); }
   else if (hash === 'garantie' || hash === 'faq') { target = document.getElementById(hash); }
   if (scroll && target) {
     var y = target.getBoundingClientRect().top + window.pageYOffset - 80;

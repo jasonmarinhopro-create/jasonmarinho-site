@@ -99,3 +99,4 @@ Jason : « on se répète entre les blocs », « une partie full moderne, effet 
 4. **Ta ville** (recherche), inchangée, déplacée après Google.
 5. **Appel aux pros**, avec le nombre de pages de ville.
 Le lexique « Ce que chaque chiffre veut dire » devient des bulles « ? » (`.tip`) sur les chiffres. Bande blanche de 4 chiffres retirée (recherches en 1re page dans le chapeau Google, taux de clic sous les clics, pages de ville dans l'appel aux pros ; « pages vues dans Google » abandonné).
+- **Filtre par métier des demandes (14/11/2026, Jason : « un photographe se concentre juste sur ses demandes et voit les villes »)** : les 3 compteurs (photographe, ménage, dépannage) sont des boutons (`data-dmf`) ; un clic filtre le fil et les cartes de ville (compte de la ville pour ce métier, pros du métier, « place libre » du métier), second clic ou « Tout voir » pour revenir. La ligne provenance / devenir reste globale.

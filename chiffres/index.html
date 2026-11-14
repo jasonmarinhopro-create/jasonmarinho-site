@@ -368,7 +368,12 @@ a.dm-city:hover{border-color:var(--g)}
 .hl{font-weight:600;color:var(--g)}
 .d1{background:#fff;border:1px solid var(--bd);border-radius:24px;padding:clamp(18px,3vw,32px);box-shadow:0 24px 60px rgba(0,40,30,.06)}
 .d1-m{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.d1-m>div{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--cr)}
+.d1-m>button{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--cr);border:1px solid transparent;font-family:inherit;text-align:left;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.d1-m>button:hover{border-color:rgba(0,76,63,.25);transform:translateY(-1px)}
+.d1-m>button[aria-pressed=true]{background:var(--g);border-color:var(--g)}
+.d1-m>button[aria-pressed=true] b,.d1-m>button[aria-pressed=true] span{color:#fff}
+.d1-m>button[aria-pressed=true] i{background:rgba(255,213,107,.18);color:var(--y)}
+.dm-fh{font-size:13px;color:var(--tl);margin:12px 0 0;min-height:1.4em}.dm-fh button{background:none;border:0;padding:0;font:inherit;font-weight:600;color:var(--g);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .d1-m i{width:38px;height:38px;border-radius:11px;background:rgba(0,76,63,.08);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .d1-m b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1}
 .d1-m span{font-size:13px;color:var(--tm);line-height:1.3}
@@ -420,10 +425,11 @@ a.dm-city:hover{border-color:var(--g)}
     </div>
     <div class="d1">
       <div class="d1-m">
-        <div><i class="ph-bold ph-camera"></i><b data-dm-photo>·</b><span>photographe ou vidéaste</span></div>
-        <div><i class="ph-bold ph-broom"></i><b data-dm-menage>·</b><span>équipe de ménage</span></div>
-        <div><i class="ph-bold ph-wrench"></i><b data-dm-depannage>·</b><span>dépannage</span></div>
+        <button type="button" data-dmf="photographe" aria-pressed="false"><i class="ph-bold ph-camera"></i><b data-dm-photo>·</b><span>photographe ou vidéaste</span></button>
+        <button type="button" data-dmf="menage" aria-pressed="false"><i class="ph-bold ph-broom"></i><b data-dm-menage>·</b><span>équipe de ménage</span></button>
+        <button type="button" data-dmf="depannage" aria-pressed="false"><i class="ph-bold ph-wrench"></i><b data-dm-depannage>·</b><span>dépannage</span></button>
       </div>
+      <p class="dm-fh" data-dm-fh>Touche un métier pour ne voir que ses demandes et ses villes.</p>
       <div class="d1-cols">
         <div>
           <h3 class="t">Le fil des demandes</h3>
@@ -689,7 +695,10 @@ a.dm-city:hover{border-color:var(--g)}
   // ── Demandes d'hôtes (17/10/2026) : tout est montré, zéro compris ──
   var monthFr = function(m){ var p = m.split('-'); return MOIS[+p[1]-1] + ' ' + p[0]; };
   var ETAT = { ouverte: 'Ouverte par un pro', transmise: 'Transmise', sans_pro: 'En attente d’un pro' };
+  // Filtre par métier (14/11/2026, Jason : « un photographe se concentre juste sur ses demandes et voit les villes »)
+  var DMF = null, DM_LAST = null;
   function renderDemandes(D){
+    DM_LAST = D;
     var tot = $('[data-dm-total]');
     if (!D) {
       if (tot) tot.textContent = '–';
@@ -726,34 +735,48 @@ a.dm-city:hover{border-color:var(--g)}
     }
     var cb = $('[data-dm-cities]');
     if (cb) {
-      if (!D.cities.length) cb.innerHTML = '<div class="dm-wait">Pas encore de demande. Chaque ville apparaîtra ici dès sa première demande, avec le nombre de pros déjà présents.</div>';
-      else cb.innerHTML = D.cities.map(function(c){
-        var tags = (c.photographe ? '<span class="dm-tag">' + n(c.photographe) + ' photo &amp; vidéo</span>' : '') + (c.menage ? '<span class="dm-tag m">' + n(c.menage) + ' ménage</span>' : '') + (c.depannage ? '<span class="dm-tag m">' + n(c.depannage) + ' dépannage</span>' : '');
+      var CL = DMF ? D.cities.filter(function(c){ return c[DMF]; }) : D.cities;
+      if (DMF && !CL.length) cb.innerHTML = '<div class="dm-wait">Pas encore de demande pour ce métier. Chaque ville apparaîtra ici dès sa première demande.</div>';
+      else if (!CL.length) cb.innerHTML = '<div class="dm-wait">Pas encore de demande. Chaque ville apparaîtra ici dès sa première demande, avec le nombre de pros déjà présents.</div>';
+      else cb.innerHTML = CL.map(function(c){
+        var tags = DMF ? '' : (c.photographe ? '<span class="dm-tag">' + n(c.photographe) + ' photo &amp; vidéo</span>' : '') + (c.menage ? '<span class="dm-tag m">' + n(c.menage) + ' ménage</span>' : '') + (c.depannage ? '<span class="dm-tag m">' + n(c.depannage) + ' dépannage</span>' : '');
         var free = '';
         if (c.pros) {
           // Métiers demandés sans aucun pro inscrit dans la ville
           var SEUL = { photographe: 'Aucun photographe ou vidéaste inscrit', menage: 'Aucune équipe de ménage inscrite', depannage: 'Aucun pro du dépannage inscrit' };
           var NOM = { photographe: 'photographe', menage: 'équipe de ménage', depannage: 'dépannage' };
-          var vides = ['photographe', 'menage', 'depannage'].filter(function(k){ return c[k] && !c.pros[k]; });
+          var vides = (DMF ? [DMF] : ['photographe', 'menage', 'depannage']).filter(function(k){ return c[k] && !c.pros[k]; });
           var manque = vides.length === 1 ? SEUL[vides[0]] : vides.length ? 'Personne d’inscrit en ' + vides.map(function(k){ return NOM[k]; }).join(', ') : '';
           free = manque ? '<div class="dm-free">' + manque + ' : la place est libre</div>'
-            : '<div class="dm-pros">' + [c.pros.photographe ? n(c.pros.photographe) + ' photographe' + (c.pros.photographe > 1 ? 's' : '') : '', c.pros.menage ? n(c.pros.menage) + ' équipe' + (c.pros.menage > 1 ? 's' : '') + ' de ménage' : '', c.pros.depannage ? n(c.pros.depannage) + ' pro' + (c.pros.depannage > 1 ? 's' : '') + ' du dépannage' : ''].filter(Boolean).join(' · ') + ' sur place</div>';
+            : '<div class="dm-pros">' + [(!DMF || DMF === 'photographe') && c.pros.photographe ? n(c.pros.photographe) + ' photographe' + (c.pros.photographe > 1 ? 's' : '') : '', (!DMF || DMF === 'menage') && c.pros.menage ? n(c.pros.menage) + ' équipe' + (c.pros.menage > 1 ? 's' : '') + ' de ménage' : '', (!DMF || DMF === 'depannage') && c.pros.depannage ? n(c.pros.depannage) + ' pro' + (c.pros.depannage > 1 ? 's' : '') + ' du dépannage' : ''].filter(Boolean).join(' · ') + ' sur place</div>';
         }
-        var inner = '<div class="dm-city-h"><b>' + esc(c.label) + '</b><strong>' + n(c.total) + '</strong></div><div class="dm-tags">' + tags + '</div>' + free;
+        var inner = '<div class="dm-city-h"><b>' + esc(c.label) + '</b><strong>' + n(DMF ? c[DMF] : c.total) + '</strong></div><div class="dm-tags">' + tags + '</div>' + free;
         return c.slug ? '<a class="dm-city" href="/chiffres?ville=' + esc(c.slug) + '#ta-ville">' + inner + '</a>' : '<div class="dm-city">' + inner + '</div>';
       }).join('');
     }
     var fb = $('[data-dm-fil]');
     if (fb) {
-      var items = D.fil.map(function(f){
+      var FL = DMF ? D.fil.filter(function(f){ return f.metier === DMF; }) : D.fil;
+      var items = FL.map(function(f){
         var photo = f.metier === 'photographe', dep = f.metier === 'depannage';
         var title = (photo ? 'Photographe ou vidéaste' : dep ? 'Pro du dépannage' : 'Équipe de ménage') + (f.slug ? ' à ' + f.label : ' · ' + f.label);
         var src = f.source === 'formulaire' ? 'Formulaire « Trouver un pro »' : f.source === 'direct' ? 'Appel ou message à Jason' : 'Bouton « Contacter » d’une fiche';
         return '<li><span class="ic' + (photo ? '' : ' m') + '"><i class="ph-bold ' + (photo ? 'ph-camera' : dep ? 'ph-wrench' : 'ph-broom') + '"></i></span><span class="tx"><b>' + esc(title) + '</b><small>' + esc(monthFr(f.month)) + ' · ' + src + '</small></span><span class="dm-st ' + f.etat + '">' + ETAT[f.etat] + '</span></li>';
       }).join('');
-      fb.innerHTML = items + '<li class="dm-next"><span class="tx"><small>' + (D.total ? 'La prochaine demande s’affichera ici.' : 'La première demande s’affichera ici, dès qu’un hôte décrit son besoin ou contacte un pro.') + '</small></span></li>';
+      fb.innerHTML = (DMF && !FL.length ? '<li class="dm-next"><span class="tx"><small>Pas encore de demande pour ce métier.</small></span></li>' : items) + '<li class="dm-next"><span class="tx"><small>' + (D.total ? 'La prochaine demande s’affichera ici.' : 'La première demande s’affichera ici, dès qu’un hôte décrit son besoin ou contacte un pro.') + '</small></span></li>';
     }
   }
+  var DMN = { photographe: 'photographe ou vidéaste', menage: 'équipe de ménage', depannage: 'dépannage' };
+  document.querySelectorAll('[data-dmf]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var k = b.getAttribute('data-dmf'); DMF = DMF === k ? null : k;
+      document.querySelectorAll('[data-dmf]').forEach(function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-dmf') === DMF)); });
+      var fh = $('[data-dm-fh]');
+      if (fh) fh.innerHTML = DMF ? 'Seulement les demandes ' + (DMF === 'depannage' ? 'de dépannage' : 'd’' + (DMF === 'menage' ? 'équipe de ménage' : 'un photographe ou vidéaste')) + '. <button type="button" data-dmf-x>Tout voir</button>' : 'Touche un métier pour ne voir que ses demandes et ses villes.';
+      var x = fh && fh.querySelector('[data-dmf-x]'); if (x) x.addEventListener('click', function(){ b.click(); });
+      if (DM_LAST) renderDemandes(DM_LAST);
+    });
+  });
   function cityDemandes(label, slug, dm, pros, photoOnly){
     if (!dm) return '';
     var row = function(lbl, k){ var p = pros ? pros[k] || 0 : null; return '<div><span>' + lbl + '</span><strong>' + n(dm[k]) + ' demande' + (dm[k] > 1 ? 's' : '') + (p === null ? '' : ' · ' + n(p) + ' pro' + (p > 1 ? 's' : '')) + '</strong></div>'; };
