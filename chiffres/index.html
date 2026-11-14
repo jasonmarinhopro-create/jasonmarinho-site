@@ -87,38 +87,6 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .tab em{font-style:normal;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--cr);color:var(--tl)}
 .tab[aria-selected="true"] em{background:rgba(255,213,107,.18);color:var(--y)}
 @media(max-width:640px){.tabs{display:grid;grid-template-columns:1fr 1fr;width:100%;border-radius:18px;gap:4px}.tab{justify-content:center;border-radius:14px;padding:10px 8px}.tab-l{display:none}}
-.gx{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,56px);align-items:start}
-.gx.solo{grid-template-columns:1fr}
-@media(max-width:900px){.gx{grid-template-columns:1fr}}
-.gx-col[hidden]{display:none}
-.gx-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--td)}
-.gx-h b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:22px;color:var(--td)}
-.gx-h span{font-size:13px;color:var(--tl)}
-.gx-h .tip{margin-left:auto;align-self:center}
-.gx-h .tip-b{left:auto;right:-8px;transform:none}
-.rl{display:flex;flex-direction:column}
-.rk{display:grid;grid-template-columns:52px minmax(0,1fr) 96px;align-items:center;gap:14px;padding:12px 4px;border:none;border-bottom:1px solid var(--bd);background:none;color:var(--td);text-decoration:none;transition:background .15s}
-.rk:hover{background:rgba(0,76,63,.03)}
-.rk-p{font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;line-height:1;color:var(--g);font-variant-numeric:tabular-nums}
-.rk-p.top{color:var(--g)}
-.rk-p.top::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--y);margin-left:4px;vertical-align:super}
-.rk-t{min-width:0}
-.rk-t b{display:block;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rk-t small{display:block;font-size:12.5px;color:var(--tl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.rk-tr{position:relative;height:6px;border-radius:99px;background:linear-gradient(90deg,rgba(0,76,63,.16),rgba(0,76,63,.05))}
-.rk-tr i{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--g);border:2px solid #fff;box-shadow:0 0 0 1px var(--g)}
-@media(max-width:640px){.rk{grid-template-columns:44px minmax(0,1fr) 64px;gap:10px}.rk-p{font-size:21px}}
-.rk-more{margin-top:12px;background:none;border:none;color:var(--g);font:600 13.5px 'Outfit','Outfit Fallback',sans-serif;cursor:pointer;padding:4px 0;display:inline-flex;align-items:center;gap:6px}
-.qr{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:14px;padding:12px 4px;border-bottom:1px solid var(--bd)}
-.qr .rk-p{font-size:20px}
-.qr-t{min-width:0}
-.qr-t .q{display:block;font-weight:600;font-size:15px;color:var(--td);overflow-wrap:anywhere}
-.qr-t small{display:block;font-size:12.5px;color:var(--tl);margin-top:2px}
-.qr-t small a{color:var(--tl);text-decoration:none}
-.qr-t small a:hover{color:var(--g);text-decoration:underline}
-.qr .cpy{width:34px;height:34px;padding:0;justify-content:center;border-radius:10px}
-.qr .cpy.ok{width:auto;padding:0 10px}
-@media(max-width:640px){.qr{grid-template-columns:44px minmax(0,1fr) auto;gap:10px}}
 
 .cp-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .cp-f{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--bd);background:#fff;font:600 13.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--tm);cursor:pointer}
@@ -132,26 +100,74 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .cp button[disabled]{opacity:.35;cursor:default}
 .cp-gap{min-width:20px;text-align:center;color:var(--tl)}
 .cp-info{width:100%;text-align:center;font-size:12.5px;color:var(--tl);margin-top:4px}
-.rk-note{margin:22px 0 0;font-size:13px;color:var(--tl)}.rk-note summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--tm)}.rk-note summary::-webkit-details-marker{display:none}.rk-note[open] summary i{transform:rotate(180deg)}.rk-note summary i{transition:transform .2s}.rk-note p{margin-top:8px;line-height:1.6;max-width:640px}.rk-note[hidden]{display:none}
-button.rk{font:inherit;text-align:left;cursor:pointer;width:100%}
-.rk.on{background:rgba(0,76,63,.05)}
-.rk-d{background:#fff;border:1px solid var(--bd);border-radius:16px;margin:10px 0 14px;padding:18px;box-shadow:0 12px 32px -18px rgba(0,51,41,.35);display:flex;flex-direction:column;gap:14px}
-.rk-d-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.rk-d-h b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:20px;color:var(--td);display:block}
-.rk-d-h p{font-size:13.5px;color:var(--tm);line-height:1.6;margin-top:4px}
-.rk-x{flex-shrink:0;width:34px;height:34px;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--tm);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-.rk-d .vp{border:none;padding:0}
-.rk-d .vp-h{display:none}
-.rk-d-a{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;font-weight:600}
-.rk-d-a a{color:var(--g);text-decoration:none}
-.rk-d-a a:hover{text-decoration:underline}
+.anc{display:block;height:0;scroll-margin-top:64px}
+.ap{display:grid;grid-template-columns:270px minmax(0,1fr);gap:clamp(18px,3vw,28px);align-items:start;margin-top:26px}
+.ap>div{min-width:0}
+@media(max-width:860px){.ap{grid-template-columns:1fr}}
+.ap-lh{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin:0 0 10px}
+.ap-list{display:flex;flex-direction:column;gap:6px;max-height:640px;overflow-y:auto;padding:2px 4px 2px 2px;scrollbar-width:thin}
+@media(max-width:860px){.ap-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;max-height:none;padding-bottom:8px;scrollbar-width:none}.ap-list::-webkit-scrollbar{display:none}}
+.ap-list button{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;font:600 14.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.ap-list button:hover{border-color:var(--g)}
+.ap-list button b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:17px;color:var(--g);font-variant-numeric:tabular-nums}
+.ap-list button.on{background:var(--g);border-color:var(--g);color:#fff}
+.ap-list button.on b{color:var(--y)}
+.ap-list .empty{font-size:13.5px}
+.serp{background:#fff;border:1px solid var(--bd);border-radius:22px;padding:clamp(14px,2.4vw,22px);box-shadow:0 20px 50px -30px rgba(0,51,41,.35)}
+.serp-bar{display:flex;align-items:center;gap:10px;border:1px solid #DADCE0;border-radius:999px;padding:11px 18px;font-size:15.5px;color:#202124;min-width:0}
+.serp-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.serp-bar i{color:#9AA0A6}
+.serp-pg{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin:10px 2px 0}
+.serp-pg b{color:var(--g)}
+.serp-res{position:relative}
+.sr{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid #F1F3F4;align-items:center}
+.sr:last-of-type{border-bottom:none}
+.sr span{font-size:12px;color:#B0B5B0;text-align:center;font-variant-numeric:tabular-nums}
+.sr div i{display:block;height:8px;border-radius:5px;background:#EEF0EE;margin:5px 0}
+.sr div i:first-child{width:38%;height:10px}.sr div i:last-child{width:82%}
+.me{position:absolute;left:-8px;right:-8px;top:0;background:#fff;border:2px solid var(--g);border-radius:14px;padding:10px 12px 10px 46px;box-shadow:0 14px 30px -14px rgba(0,76,63,.5);transition:top .55s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.me.far{border-style:dashed}
+.me[hidden]{display:block;opacity:0;pointer-events:none}
+.me .pos{position:absolute;left:10px;top:50%;transform:translateY(-50%);min-width:26px;height:26px;padding:0 4px;border-radius:13px;background:var(--y);color:var(--gd);font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center}
+.me small{display:block;font-size:12.5px;color:var(--tl);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me strong{display:block;color:var(--g);font-size:16px;font-weight:600;margin:1px 0}
+.me em{font-style:normal;font-size:13px;color:var(--tm)}
+.serp-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
+.serp-msg div{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:18px 20px;max-width:420px;box-shadow:0 14px 30px -18px rgba(0,51,41,.4);font-size:15px;line-height:1.6;color:var(--tm)}
+.serp-msg b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:20px;color:var(--td);margin-bottom:4px}
+.serp-msg button{margin-top:10px;border:none;background:var(--g);color:#fff;font:600 14px 'Outfit','Outfit Fallback',sans-serif;border-radius:10px;padding:9px 14px;cursor:pointer}
+.ap-k{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.ap-k div{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:12px 14px;min-width:0}
+.ap-k b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(24px,3vw,28px);color:var(--g);line-height:1.1}
+.ap-k span{font-size:12.5px;color:var(--tl)}
+.ap-a{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.ap-a a,.ap-a button{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 14px;font:600 14px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);text-decoration:none;cursor:pointer}
+.ap-a a:hover,.ap-a button:hover{border-color:var(--g)}
+.ap-a button.ok{background:var(--g);border-color:var(--g);color:#fff}
+.vr-wait{margin-top:26px;padding-top:22px;border-top:1px solid var(--bd);text-align:center;font-size:14.5px;color:var(--tl)}
+.vr-h h3 em{color:var(--g)}
+.tsx{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px}
+@media(max-width:700px){.tsx{grid-template-columns:1fr 1fr}}
+.tsx div{border-radius:16px;padding:14px 16px;background:#fff;border:1px solid var(--bd)}
+.tsx div.dk{background:var(--gd);color:#fff;border-color:var(--gd)}
+.tsx b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1.15}
+.tsx .dk b{color:var(--y)}
+.tsx span{font-size:13px;opacity:.8}
+.vr-more{display:flex;justify-content:center;margin-top:16px}
+.vr-more button{border:1px solid var(--g);background:#fff;color:var(--g);font:600 14.5px 'Outfit','Outfit Fallback',sans-serif;border-radius:999px;padding:11px 20px;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.vr-more button i{transition:transform .2s}
+.vr-more button[aria-expanded=true] i{transform:rotate(180deg)}
+.vr-all{margin-top:18px}
+.vr-all[hidden]{display:none}
+.help-w{text-align:center;margin-top:26px}
+.help-b{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;border-radius:999px;padding:8px 16px;font:600 14px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);cursor:pointer}
+.help-b i{font-size:16px}
+.help{margin:14px auto 0;max-width:720px;background:#fff;border:1px solid var(--bd);border-left:4px solid var(--y);border-radius:14px;padding:18px 20px;font-size:15.5px;line-height:1.65;color:var(--td)}
+.help[hidden]{display:none}
+.help ul{margin:8px 0 0 18px}.help li{margin:5px 0}
 .cpy{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 8px;border-radius:8px;border:1px solid var(--bd);background:#fff;font:600 11.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--tm);cursor:pointer;vertical-align:middle}
 .cpy:hover{border-color:var(--g);color:var(--g)}
 .cpy.ok{background:var(--g);border-color:var(--g);color:#fff}
-.qpager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);font-size:13.5px;color:var(--tm)}
-.qpager button{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:600;font-size:13.5px;color:var(--g);background:#fff;border:1px solid var(--bd);border-radius:999px;padding:7px 14px;cursor:pointer}
-.qpager button:hover:not([disabled]){border-color:var(--g)}
-.qpager button[disabled]{opacity:.4;cursor:default}
 .place{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:4px 10px;border-radius:999px;font-weight:700;font-size:13px;background:rgba(0,76,63,.08);color:var(--g)}
 .place.top{background:var(--g);color:#fff}
 .empty{text-align:center;color:var(--tm);font-size:15px;line-height:1.6;padding:24px 10px}
@@ -366,6 +382,8 @@ a.dm-city:hover{border-color:var(--g)}
 .k-dm:hover{background:linear-gradient(160deg,#0f5a47,#136b55)}
 .k-dm b{color:var(--y)}.k-dm .k-s{color:var(--y)}
 .k-go{position:absolute;top:18px;right:18px;color:var(--y);font-size:16px}
+.k-dm .k-l{padding-right:22px}
+@media(max-width:640px){.k{padding:16px 14px}.k-l{font-size:12px}.k-go{top:16px;right:12px}}
 @media(max-width:860px){.k4{grid-template-columns:1fr 1fr}.k:first-child{border-radius:19px 0 0 0}.k:nth-child(2){border-radius:0 19px 0 0}.k:nth-child(3){border-radius:0 0 0 19px}.k:last-child{border-radius:0 0 19px 0}}
 .hx-foot{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:rgba(255,255,255,.55)}.hx-foot [data-chart-cur]{color:rgba(255,255,255,.7)}
 .tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);cursor:help;flex-shrink:0;vertical-align:middle}
@@ -417,9 +435,9 @@ a.dm-city:hover{border-color:var(--g)}
     </div>
     <div class="hx-chart" data-chart aria-live="polite"><div class="hx-load"><span class="sk"></span></div></div>
     <div class="k4">
-      <div class="k"><span class="k-l">Affichages Google · 28 j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une page du site est apparue dans les résultats de Google pour une recherche. Ce n’est pas une visite : c’est la vitrine qui passe devant les yeux.</span></span></span><b data-k="imp"><span class="sk"></span></b><small data-d="imp" hidden></small></div>
-      <div class="k"><span class="k-l">Clics depuis Google · 28 j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Quelqu’un a cliqué sur une page du site depuis Google. Les visites venues de Facebook, des e-mails ou d’un lien direct n’y sont pas : elles sont dans les visiteurs.</span></span></span><b data-k="clk"><span class="sk"></span></b><small data-d="clk" hidden></small><em class="k-s" data-f="ctr"></em></div>
-      <div class="k"><span class="k-l">Visiteurs du site · 30 j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une visite du site, comptée par notre propre mesure, sans cookie publicitaire ni adresse IP gardée.</span></span></span><b data-k="vis"><span class="sk"></span></b><small data-d="vis" hidden></small></div>
+      <div class="k"><span class="k-l">Affichages Google&nbsp;·&nbsp;28&nbsp;j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une page du site est apparue dans les résultats de Google pour une recherche. Ce n’est pas une visite : c’est la vitrine qui passe devant les yeux.</span></span></span><b data-k="imp"><span class="sk"></span></b><small data-d="imp" hidden></small></div>
+      <div class="k"><span class="k-l">Clics depuis Google&nbsp;·&nbsp;28&nbsp;j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Quelqu’un a cliqué sur une page du site depuis Google. Les visites venues de Facebook, des e-mails ou d’un lien direct n’y sont pas : elles sont dans les visiteurs.</span></span></span><b data-k="clk"><span class="sk"></span></b><small data-d="clk" hidden></small><em class="k-s" data-f="ctr"></em></div>
+      <div class="k"><span class="k-l">Visiteurs du site&nbsp;·&nbsp;30&nbsp;j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une visite du site, comptée par notre propre mesure, sans cookie publicitaire ni adresse IP gardée.</span></span></span><b data-k="vis"><span class="sk"></span></b><small data-d="vis" hidden></small></div>
       <a class="k k-dm" href="#demandes"><span class="k-l" data-k-dm-l>Demandes d’hôtes</span><b data-k="dm"><span class="sk"></span></b><em class="k-s" data-dm-last hidden></em><i class="ph-bold ph-arrow-down k-go" aria-hidden="true"></i></a>
     </div>
     <div class="hx-foot"><span data-chart-cur hidden></span><div class="upd" data-upd>Chargement des chiffres…</div></div>
@@ -470,12 +488,13 @@ a.dm-city:hover{border-color:var(--g)}
 
 
 
-<section class="sec cr" id="recherches">
+<section class="sec cr" id="ta-ville">
+  <span id="recherches" class="anc"></span><span id="villes" class="anc"></span>
   <div class="s-in">
     <div class="sec-head">
       <div class="lbl">Sur Google</div>
-      <h2>Où le site sort <em>en première page</em></h2>
-      <p><b class="hl" data-f="first">·</b> recherches et <b class="hl" data-f="rk">·</b> pages de ville dans les 10 premiers résultats, en moyenne sur 28 jours. <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">La place moyenne est pondérée par les affichages, sur 28 jours. Elle varie selon la ville, l’appareil et l’historique de chacun : ce que tu vois sur ton téléphone peut être un peu différent.</span></span></p>
+      <h2>Ta ville <em>sur Google</em></h2>
+      <p><b class="hl" data-f="first">·</b> recherches et <b class="hl" data-f="rk">·</b> pages de ville en première page de Google. Choisis ton métier et ta ville : tu vois où elle sort, en vrai.</p>
     </div>
     <div class="tabs" role="tablist" aria-label="Public">
       <button class="tab" role="tab" aria-selected="true" data-tab="photographe"><i class="ph-bold ph-camera"></i><span>Photo<span class="tab-l">graphes &amp; vidéastes</span></span> <em data-c="photographe">·</em></button>
@@ -483,33 +502,28 @@ a.dm-city:hover{border-color:var(--g)}
       <button class="tab" role="tab" aria-selected="false" data-tab="depannage"><i class="ph-bold ph-wrench"></i>Dépannage <em data-c="depannage">·</em></button>
       <button class="tab" role="tab" aria-selected="false" data-tab="hote"><i class="ph-bold ph-house-line"></i>Hôtes <em data-c="hote">·</em></button>
     </div>
-    <div class="gx" data-gx>
-      <div class="gx-col ranks" data-ranks hidden></div>
-      <div class="gx-col" data-queries><p class="empty">Chargement des recherches…</p></div>
-    </div>
-    <details class="rk-note" data-rk-note hidden><summary>Pourquoi une ville peut être en première page sans recherche listée<i class="ph-bold ph-caret-down"></i></summary><p>Google ne donne pas le texte des recherches trop rares, pour protéger la vie privée de ceux qui les tapent. La place d’une page compte toutes ses recherches, nommées ou non.</p></details>
-  </div>
-</section>
-
-<section class="sec" id="ta-ville">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Ta ville</div>
-      <h2>Les chiffres <em>de ta ville</em></h2>
-      <p>Tape le nom de ta ville : tu vois tout ce que Google montre pour ses pages (photographes, ménage, guide des hôtes), même quand les chiffres sont petits. Rien n’est caché ni arrondi.</p>
-    </div>
     <form class="vs" data-vs role="search" autocomplete="off">
       <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" data-suggest="ville" data-suggest-anchor=".vs-in" data-suggest-submit maxlength="60" placeholder="Ex. Lyon, Gironde, Bretagne…" aria-label="Ta ville, ton département ou ta région" required></div>
-      <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir les chiffres</button>
+      <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir</button>
     </form>
     <datalist id="villes-list"></datalist>
-    <p class="vs-hint"><span data-vcount>62</span> villes ont déjà leurs pages<span data-vintl></span>. La tienne n’y est pas ? Tu pourras me demander de la créer. Tu peux aussi chercher ton département ou ta région.</p>
-    <div class="vs-picks" data-picks></div>
-    <div class="vr" data-vres aria-live="polite"></div>
+    <p class="vs-hint"><span data-vcount>62</span> villes ont déjà leurs pages<span data-vintl></span>. La tienne n’y est pas ? Tape-la quand même : tu pourras me demander de la créer. Ton département ou ta région marchent aussi.</p>
+    <div class="ap" data-ap>
+      <div class="ap-l"><div class="ap-lh"><span>En première page</span><span data-ap-n></span></div><div class="ap-list" data-ap-list><p class="empty">Chargement…</p></div></div>
+      <div class="ap-r">
+        <div class="serp"><div class="serp-bar"><i class="ph-bold ph-magnifying-glass"></i><span data-ap-q>…</span></div><div class="serp-pg"><span>Résultats</span><b data-ap-pg></b></div><div class="serp-res" data-ap-res></div></div>
+        <div class="ap-k" data-ap-k></div>
+        <div class="ap-a" data-ap-a></div>
+      </div>
+    </div>
+    <div class="vr" data-vres aria-live="polite"><p class="vr-wait">Clique sur une ville ou tape la tienne : tu verras aussi ses demandes d’hôtes, ses pros et ses visiteurs.</p></div>
+    <p class="help-w"><button type="button" class="help-b" data-help aria-expanded="false"><i class="ph-bold ph-info"></i>Comment lire ces chiffres</button></p>
+    <div class="help" data-help-p hidden>
+      <p><b>La place</b> est la position moyenne de la page dans Google sur les 28 derniers jours : 1, c’est tout en haut ; 10, le bas de la première page ; au-delà, la page 2 et plus.</p>
+      <ul><li><b>Affichages</b> : combien de fois Google a montré la page.</li><li><b>Clics</b> : combien de personnes sont venues depuis Google.</li><li><b>Vérifie toi-même</b> : copie la recherche et colle-la dans Google. Ta place peut varier un peu, car Google adapte ses résultats à la personne, au lieu et à l’appareil.</li><li><b>Pas de recherche affichée ?</b> Google ne donne pas le texte des recherches trop rares, pour protéger la vie privée de ceux qui les tapent. La place compte quand même toutes les recherches.</li></ul>
+    </div>
   </div>
 </section>
-
-
 
 <section class="sec">
   <div class="s-in">
@@ -562,7 +576,6 @@ a.dm-city:hover{border-color:var(--g)}
   }
   // Copier une recherche pour la taper soi-même dans Google (01/11/2026, Jason : « vérifier avec mes yeux »)
   function copyBtn(q, icon){ return '<button type="button" class="cpy" data-copy="' + esc(q) + '" aria-label="Copier la recherche ' + esc(q) + '"' + (icon ? ' title="Copier pour vérifier dans Google"' : '') + '><i class="ph-bold ph-copy"></i>' + (icon ? '' : 'Copier') + '</button>'; }
-  var CPY_TIP = '<span class="tip" tabindex="0" role="button" aria-label="Vérifier soi-même">?<span class="tip-b" role="tooltip">Copie une recherche et colle-la dans Google pour vérifier toi-même. Ta place peut différer un peu : Google adapte ses résultats à la personne, au lieu et à l’appareil. La place affichée ici est une moyenne sur 28 jours.</span></span>';
   document.addEventListener('click', function(e){
     var b = e.target.closest('[data-copy]'); if (!b) return;
     e.preventDefault();
@@ -615,97 +628,104 @@ a.dm-city:hover{border-color:var(--g)}
     }
   }
 
-  var Q = null, current = 'photographe';
-  var EMPTY = {
-    photographe: 'Pas encore de recherche de photographe en première page sur les 28 derniers jours.',
-    menage: 'Pas encore de recherche de ménage en première page sur les 28 derniers jours.',
-    depannage: 'Pas encore de recherche de dépannage en première page sur les 28 derniers jours : les pages ont ouvert le 31 octobre 2026.',
-    hote: 'Pas encore de recherche d’hôte en première page sur les 28 derniers jours.'
-  };
-  // 8 recherches par page (17/10/2026, Jason : la liste des hôtes était trop longue)
-  var PER_PAGE = 8, qpage = 0;
-  function renderQueries(){
-    var box = $('[data-queries]'); if (!box || !Q) return;
-    var list = Q[current] || [];
-    box.hidden = false;
-    if (!list.length) {
-      // Pages de ville déjà montrées au-dessus : pas de carte vide en plus
-      if (R && R[current] && R[current].length) { box.hidden = true; return; }
-      box.innerHTML = '<p class="empty">' + EMPTY[current] + '</p>'; return;
-    }
-    var pages = Math.ceil(list.length / PER_PAGE);
-    if (qpage >= pages) qpage = pages - 1;
-    var from = qpage * PER_PAGE, part = list.slice(from, from + PER_PAGE);
-    var nav = pages > 1 ? '<div class="qpager"><button type="button" data-qp="-1"' + (qpage === 0 ? ' disabled' : '') + ' aria-label="Recherches précédentes"><i class="ph-bold ph-caret-left"></i></button><span>' + (from + 1) + ' à ' + (from + part.length) + ' sur ' + list.length + '</span><button type="button" data-qp="1"' + (qpage >= pages - 1 ? ' disabled' : '') + ' aria-label="Recherches suivantes"><i class="ph-bold ph-caret-right"></i></button></div>' : '';
-    box.innerHTML = '<div class="gx-h"><b>' + n(list.length) + ' recherche' + (list.length > 1 ? 's' : '') + '</b><span>tapées dans Google</span>' + CPY_TIP + '</div>' +
-      part.map(function(q){
-        return '<div class="qr"><span class="rk-p' + (q.place <= 3 ? ' top' : '') + '">' + pf.format(q.place) + '</span><div class="qr-t"><span class="q">« ' + esc(q.q) + ' »</span><small><a href="' + esc(q.page) + '">' + esc(pageLabel(q.page)) + '</a> · ' + n(q.impressions) + ' affichage' + (q.impressions > 1 ? 's' : '') + (q.clicks ? ' · ' + n(q.clicks) + ' clic' + (q.clicks > 1 ? 's' : '') : '') + '</small></div>' + copyBtn(q.q, true) + '</div>';
-      }).join('') + nav;
-    box.querySelectorAll('[data-qp]').forEach(function(btn){
-      btn.addEventListener('click', function(){ qpage += Number(btn.getAttribute('data-qp')); renderQueries(); });
-    });
-  }
-  // Pages de ville en première page (18/10/2026) : place de la page elle-même,
-  // recherches masquées par Google comprises
-  var R = null, rkAll = false;
+  // ── Ta ville sur Google (14/11/2026, maquette D validée par Jason) : l'aperçu
+  // des résultats montre où la page sort, la ville choisie remplit « Tout sur … »
+  var current = 'photographe', R = null;
+  var AP = { slug: null, city: null };
   function rankCity(path){ return cityName(path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, '')); }
-  function renderRanks(){
-    var box = $('[data-ranks]'), note = $('[data-rk-note]'); if (!box) return;
-    var list = (R && R[current]) || [];
-    if (!list.length) { box.hidden = true; if (note) note.hidden = true; return; }
-    var shown = rkAll ? list : list.slice(0, 8);
-    var what = current === 'menage' ? '« ménage Airbnb » + ville' : current === 'depannage' ? '« dépannage, plombier ou électricien Airbnb » + ville' : current === 'hote' ? 'guides « Louer sur Airbnb à … »' : '« photographe ou vidéaste Airbnb » + ville';
-    var kindLbl = current === 'hote' ? ' guide' + (list.length > 1 ? 's' : '') + ' de ville' : ' page' + (list.length > 1 ? 's' : '') + ' de ville';
-    box.innerHTML = '<div class="gx-h"><b>' + list.length + kindLbl + '</b><span>en première page</span><span class="tip" tabindex="0" role="button" aria-label="Ce que montre cette liste">?<span class="tip-b" role="tooltip">Recherches ' + what + '. Le chiffre est la place moyenne de la page sur 28 jours, la barre la situe entre la 1re et la 10e place. Clique sur une ville pour voir comment elle y arrive.</span></span></div><div class="rl">' +
-      shown.map(function(r){
-        var x = Math.max(0, Math.min(100, (r.place - 1) / 9 * 100));
-        return '<button type="button" class="rk" data-rk="' + esc(r.path) + '" aria-expanded="false" aria-label="' + esc(rankCity(r.path)) + ', place ' + pf.format(r.place) + '"><span class="rk-p' + (r.place <= 3 ? ' top' : '') + '">' + pf.format(r.place) + '</span><span class="rk-t"><b>' + esc(rankCity(r.path)) + '</b><small>' + n(r.impressions) + ' affichage' + (r.impressions > 1 ? 's' : '') + (r.clicks ? ' · ' + n(r.clicks) + ' clic' + (r.clicks > 1 ? 's' : '') : '') + '</small></span><span class="rk-tr" aria-hidden="true"><i style="left:' + x.toFixed(1) + '%"></i></span></button>';
-      }).join('') + '</div>' + (list.length > 8 && !rkAll ? '<button type="button" class="rk-more" data-rk-more>Voir les ' + list.length + ' villes<i class="ph-bold ph-caret-down"></i></button>' : '');
-    box.hidden = false; if (note) note.hidden = false;
-    var more = box.querySelector('[data-rk-more]'); if (more) more.addEventListener('click', function(){ rkAll = true; renderRanks(); });
-    box.querySelectorAll('[data-rk]').forEach(function(t){ t.addEventListener('click', function(){ openRank(t, list); }); });
+  function rankSlug(path){ return path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, ''); }
+  var KQ = { photographe: 'photographe airbnb ', menage: 'ménage airbnb ', depannage: 'dépannage airbnb ', hote: 'louer sur airbnb ' };
+  var KN = { photographe: 'photographe ou vidéaste', menage: 'ménage', depannage: 'dépannage', hote: 'guide pour les hôtes' };
+  var apRes = $('[data-ap-res]');
+  if (apRes) {
+    var rows = ''; for (var i = 1; i <= 10; i++) rows += '<div class="sr"><span>' + i + '</span><div><i></i><i></i></div></div>';
+    apRes.innerHTML = rows + '<div class="me" data-me hidden><span class="pos" data-me-pos></span><small data-me-u></small><strong data-me-t></strong><em data-me-s></em></div><div class="serp-msg" data-ap-msg hidden></div>';
   }
-  // Clic sur une ville : on explique d'abord comment la page sort en première
-  // page (affichages, clics, recherches), la page elle-même ensuite
-  // (01/11/2026, Jason : « savoir comment c'est possible, pas être redirigé »)
-  var rkCache = {};
-  function openRank(tile, list){
-    var grid = tile.parentNode, path = tile.getAttribute('data-rk');
-    var old = grid.querySelector('.rk-d'); if (old) old.remove();
-    var wasOn = tile.classList.contains('on');
-    grid.querySelectorAll('.rk').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-expanded', 'false'); });
-    if (wasOn) return;
-    tile.classList.add('on'); tile.setAttribute('aria-expanded', 'true');
-    var r = list.filter(function(x){ return x.path === path; })[0];
-    var slug = path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, '');
-    var kind = /^\/photographe-/.test(path) ? 'photographe' : /^\/menage-/.test(path) ? 'menage' : /^\/depannage-/.test(path) ? 'depannage' : 'hote';
-    var city = rankCity(path);
-    // Fin de la rangée de la tuile : le détail s'ouvre juste en dessous
-    var tiles = Array.prototype.filter.call(grid.children, function(x){ return x.classList.contains('rk'); });
-    var after = tile;
-    tiles.forEach(function(x){ if (x.offsetTop === tile.offsetTop) after = x; });
-    var d = document.createElement('div'); d.className = 'rk-d';
-    var intro = 'Sur les 28 derniers jours, Google a montré la page ' + esc(pageLabel(path)) + ' ' + n(r.impressions) + ' fois, en moyenne à la place ' + pf.format(r.place) + (r.place <= 10 ? ', donc en première page' : '') + ', et ' + (r.clicks ? n(r.clicks) + ' personne' + (r.clicks > 1 ? 's ont' : ' a') + ' cliqué.' : 'personne n’a encore cliqué.') + (r.query ? ' La recherche la plus vue : « ' + esc(r.query) + ' ».' : '') + (r.impressions < 20 ? ' Avec si peu d’affichages, la place moyenne repose sur quelques recherches seulement : elle peut bouger vite d’un mois à l’autre.' : '');
-    d.innerHTML = '<div class="rk-d-h"><div><b>Comment ' + esc(city) + ' sort en première page</b><p>' + intro + '</p></div><button type="button" class="rk-x" aria-label="Fermer"><i class="ph-bold ph-x"></i></button></div><div data-rk-body><p class="empty">Chargement du détail…</p></div><div class="rk-d-a"><a href="' + esc(path) + '">Voir la page ' + esc(pageLabel(path)) + ' <i class="ph-bold ph-arrow-right"></i></a><a href="?ville=' + encodeURIComponent(slug) + '#ta-ville">Tous les chiffres de ' + esc(city) + '</a></div>';
-    after.insertAdjacentElement('afterend', d);
-    d.querySelector('.rk-x').addEventListener('click', function(){ d.remove(); tile.classList.remove('on'); tile.setAttribute('aria-expanded', 'false'); tile.focus(); });
-    var body = d.querySelector('[data-rk-body]');
-    var show = function(data){
-      var pg = data && data.city && data.city.pages && data.city.pages[kind];
-      body.innerHTML = pg ? pageCard(kind, data.city.label || city, pg, data.city.pros) : '<p class="empty">Détail indisponible pour le moment.</p>';
-    };
-    if (rkCache[slug]) show(rkCache[slug]);
-    else fetch(API + '?ville=' + encodeURIComponent(slug), { cache: 'no-store' }).then(function(res){ return res.ok ? res.json() : null; }).then(function(data){ if (data && data.city) rkCache[slug] = data; show(data); }).catch(function(){ show(null); });
+  function apInput(){ return vform && vform.querySelector('input[name=ville]'); }
+  function apList(){
+    var box = $('[data-ap-list]'); if (!box) return;
+    var all = (R && R[current]) || [], inp = apInput(), q = inp ? normT(inp.value) : '';
+    var list = q && !(AP.city && normT(AP.city.label) === q) && q !== normT(AP.slug || '') ? all.filter(function(r){ return normT(rankCity(r.path)).indexOf(q) >= 0; }) : all;
+    var cn = $('[data-ap-n]'); if (cn) cn.textContent = list.length + ' ville' + (list.length > 1 ? 's' : '');
+    if (!all.length) { box.innerHTML = '<p class="empty">Pas encore de page ' + KN[current] + ' en première page' + (current === 'depannage' ? ' : les pages ont ouvert le 31 octobre 2026.' : '.') + '</p>'; return; }
+    if (!list.length) { box.innerHTML = '<p class="empty">Pas dans la première page pour l’instant. Clique sur « Voir » pour ses chiffres.</p>'; return; }
+    box.innerHTML = list.map(function(r){ var sl = rankSlug(r.path); return '<button type="button" data-ap-pick="' + esc(sl) + '"' + (sl === AP.slug ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '><span>' + esc(rankCity(r.path)) + '</span><b>' + pf.format(r.place) + '</b></button>'; }).join('');
   }
+  // d : { label, path, place, impressions, clicks, query } ou { label, none: 'page' | 'ville' }
+  function apShow(d){
+    if (!apRes) return;
+    var me = $('[data-me]'), msg = $('[data-ap-msg]'), rws = apRes.querySelectorAll('.sr');
+    var qtxt = d.query || (KQ[current] + String(d.label || '').toLowerCase()).trim();
+    setNum('[data-ap-q]', qtxt);
+    var pg = d.place ? Math.ceil(d.place / 10) : 1;
+    rws.forEach(function(r, i){ r.querySelector('span').textContent = (pg - 1) * 10 + i + 1; });
+    setNum('[data-ap-pg]', 'Page ' + pg);
+    var k = $('[data-ap-k]'), a = $('[data-ap-a]');
+    if (d.none || !d.place) {
+      me.hidden = true; msg.hidden = false;
+      msg.innerHTML = '<div>' + (d.none === 'ville'
+        ? '<b>Pas encore de page pour « ' + esc(d.label) + ' »</b>Regarde juste en dessous : tu peux me demander de la créer.'
+        : d.none === 'page'
+          ? '<b>Pas encore de page ' + KN[current] + ' à ' + esc(d.label) + '</b>Les autres métiers de la ville sont juste en dessous.<br><button type="button" data-ap-ask="' + esc(d.label) + '">Demander cette page</button>'
+          : d.none === 'vide'
+            ? '<b>Pas encore de ville en première page</b>Tape ta ville au-dessus pour voir où en est sa page ' + KN[current] + '.'
+            : '<b>Pas encore vue dans Google</b>La page ' + esc(pageLabel(d.path)) + ' n’est pas apparue dans Google sur ces 28 jours. Une page récente met souvent plusieurs mois à se faire une place.') + '</div>';
+      if (k) k.innerHTML = '';
+      if (a) a.innerHTML = d.path ? '<a href="' + esc(d.path) + '">Voir la page ' + esc(pageLabel(d.path)) + '<i class="ph-bold ph-arrow-right"></i></a>' : '';
+      return;
+    }
+    msg.hidden = true; me.hidden = false;
+    var pos = Math.min(10, Math.max(1, Math.round(d.place) - (pg - 1) * 10));
+    me.classList.toggle('far', pg > 1);
+    setNum('[data-me-pos]', Math.round(d.place));
+    setNum('[data-me-u]', 'jasonmarinho.com › ' + d.path.slice(1));
+    setNum('[data-me-t]', pageLabel(d.path));
+    setNum('[data-me-s]', pg === 1 ? 'Ta page sort ici : ' + pf.format(d.place) + 'e place en moyenne' : 'Page ' + pg + ' de Google : ' + pf.format(d.place) + 'e place en moyenne, pas encore en première page');
+    requestAnimationFrame(function(){ me.style.top = (rws[pos - 1].offsetTop - 6) + 'px'; });
+    if (k) k.innerHTML = '<div><b>' + pf.format(d.place) + '</b><span>place moyenne</span></div><div><b>' + n(d.impressions) + '</b><span>affichage' + (d.impressions > 1 ? 's' : '') + '</span></div><div><b>' + n(d.clicks) + '</b><span>clic' + (d.clicks > 1 ? 's' : '') + '</span></div>';
+    if (a) a.innerHTML = '<button type="button" data-copy="' + esc(qtxt) + '"><i class="ph-bold ph-copy"></i>Copier la recherche et vérifier</button><a href="' + esc(d.path) + '">Voir la page ' + esc(pageLabel(d.path)) + '<i class="ph-bold ph-arrow-right"></i></a>';
+  }
+  function apFromRank(slug){
+    var r = ((R && R[current]) || []).filter(function(x){ return rankSlug(x.path) === slug; })[0];
+    if (r) apShow({ label: rankCity(r.path), path: r.path, place: r.place, impressions: r.impressions, clicks: r.clicks, query: r.query });
+    return !!r;
+  }
+  function apFromCity(){
+    var c = AP.city; if (!c) return;
+    var p = c.pages && c.pages[current];
+    if (!p) { apShow({ label: c.label, none: 'page' }); return; }
+    var top = (p.queries || []).slice().sort(function(x, y){ return y.impressions - x.impressions; })[0];
+    apShow({ label: c.label, path: p.path, place: p.place, impressions: p.impressions, clicks: p.clicks, query: top ? top.q : null });
+  }
+  function apDefault(){
+    if (AP.city) { apFromCity(); return; }
+    var all = (R && R[current]) || [];
+    if (all.length) { AP.slug = rankSlug(all[0].path); apFromRank(AP.slug); }
+    else apShow({ label: '', none: 'vide', path: null });
+    apList();
+  }
+  var apL = $('[data-ap-list]');
+  if (apL) apL.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ap-pick]'); if (!b) return;
+    AP.slug = b.getAttribute('data-ap-pick'); AP.city = null;
+    apFromRank(AP.slug); apList();
+    searchCity(AP.slug.replace(/-/g, ' '), false);
+  });
+  var apA = $('[data-ap]');
+  if (apA) apA.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ap-ask]'); if (b) { renderRequest(b.getAttribute('data-ap-ask'), true); var v = $('[data-vres]'); if (v) v.scrollIntoView({ block: 'start' }); }
+  });
   document.querySelectorAll('[data-tab]').forEach(function(b){
     b.addEventListener('click', function(){
-      current = b.getAttribute('data-tab'); qpage = 0;
-      rkAll = false; renderRanks();
+      current = b.getAttribute('data-tab');
       document.querySelectorAll('[data-tab]').forEach(function(x){ x.setAttribute('aria-selected', String(x === b)); });
-      renderQueries(); gxLayout();
+      if (!AP.city) AP.slug = null;
+      apDefault(); apList();
+      VF = current; applyVf();
     });
   });
-  function gxLayout(){ var g = $('[data-gx]'); if (!g) return; var vis = g.querySelectorAll('.gx-col:not([hidden])').length; g.classList.toggle('solo', vis < 2); }
+  var hb = $('[data-help]'), hp = $('[data-help-p]');
+  if (hb && hp) hb.addEventListener('click', function(){ hp.hidden = !hp.hidden; hb.setAttribute('aria-expanded', String(!hp.hidden)); });
 
   // ── Demandes d'hôtes (17/10/2026) : tout est montré, zéro compris ──
   var monthFr = function(m){ var p = m.split('-'); return MOIS[+p[1]-1] + ' ' + p[0]; };
@@ -726,7 +746,7 @@ a.dm-city:hover{border-color:var(--g)}
     if (tot) tot.textContent = n(D.total);
     // Chiffre de l'en-tête (14/11/2026, Jason : « plus mis en avant ») : total et dernière demande
     setNum('[data-k="dm"]', n(D.total));
-    var kl = $('[data-k-dm-l]'); if (kl) kl.textContent = (D.total > 1 ? 'Demandes d’hôtes' : 'Demande d’hôte') + (D.total ? ' · depuis ' + MOIS[+D.since.split('-')[1]-1] : '');
+    var kl = $('[data-k-dm-l]'); if (kl) kl.textContent = (D.total > 1 ? 'Demandes d’hôtes' : 'Demande d’hôte') + (D.total ? ' · depuis\u00a0' + MOIS[+D.since.split('-')[1]-1] : '');
     var last = (D.fil || [])[0], kd = $('[data-dm-last]');
     if (kd && last) { kd.textContent = 'Dernière : ' + ({ photographe: 'un photographe', menage: 'une équipe de ménage', depannage: 'un pro du dépannage' }[last.metier] || 'un pro') + (last.slug ? ' à ' + last.label : '') + ', ' + monthFr(last.month); kd.hidden = false; }
     var since = $('[data-dm-since]');
@@ -919,16 +939,29 @@ a.dm-city:hover{border-color:var(--g)}
   function renderCity(d){
     var c = d.city, label = c.label;
     var period = d.period ? 'Google du ' + dateFr(d.period.start) + ' au ' + dateFr(d.period.end) + ' · visiteurs sur 30 jours' : 'Chiffres de Google indisponibles pour le moment';
-    var html = '<div class="vr-h"><div><h3>' + esc(label) + '</h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div>' +
+    var KS = ['photographe', 'menage', 'depannage', 'hote'];
+    var nPages = KS.filter(function(k){ return c.pages[k]; }).length;
+    var nVis = KS.reduce(function(t, k){ return t + ((c.pages[k] && c.pages[k].visitors) || 0); }, 0);
+    var nPros = c.pros ? ['photographe', 'menage', 'depannage'].reduce(function(t, k){ return t + (c.pros[k] || 0); }, 0) : null;
+    var nDm = d.demandes ? d.demandes.total || 0 : 0;
+    var cell = function(v, l, dk){ return '<div' + (dk ? ' class="dk"' : '') + '><b>' + v + '</b><span>' + l + '</span></div>'; };
+    var html = '<div class="vr-h"><div><h3>Tout sur <em>' + esc(label) + '</em></h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div>' +
+      '<div class="tsx">' + cell(n(nDm), 'demande' + (nDm > 1 ? 's' : '') + ' d’hôte' + (nDm > 1 ? 's' : '') + ' reçue' + (nDm > 1 ? 's' : ''), true) +
+        cell(nPros === null ? '–' : n(nPros), 'pro' + (nPros > 1 ? 's' : '') + ' présenté' + (nPros > 1 ? 's' : '')) +
+        cell(n(nPages), 'page' + (nPages > 1 ? 's' : '') + ' de ville') +
+        cell(n(nVis), 'visiteur' + (nVis > 1 ? 's' : '') + ' sur 30 jours') + '</div>' +
+      '<div class="vr-more"><button type="button" data-vr-all aria-expanded="false">Voir tous les chiffres de ' + esc(label) + '<i class="ph-bold ph-caret-down"></i></button></div>' +
+      '<div class="vr-all" data-vr-all-p hidden>' +
       vfBar(c) + cityDemandes(label, c.slug, d.demandes, c.pros, !!c.pays) + '<div class="vr-grid">' +
       pageCard('photographe', label, c.pages.photographe, c.pros) +
       (c.pages.menage ? pageCard('menage', label, c.pages.menage, c.pros) : '') +
       (c.pages.depannage ? pageCard('depannage', label, c.pages.depannage, c.pros) : '') +
       (c.pages.hote ? pageCard('hote', label, c.pages.hote, null) : '') +
       (c.pays ? '<div class="vp"><div class="vp-h"><i class="ph-bold ph-globe-hemisphere-west"></i><div><b>' + esc(label + ' (' + c.pays + ')') + '</b></div></div><p class="vp-empty">Première ville hors de France : seule la page des photographes et vidéastes est ouverte, avec les règles du ' + (c.pays === 'Canada' ? 'Québec' : 'pays') + ', pas celles de la France. Les pages ménage et hôtes ouvriront si elles sont demandées.</p><button type="button" class="vr-share" data-intl-ask="' + esc(label) + '"><i class="ph-bold ph-paper-plane-tilt"></i>Demander une autre page</button></div>' : '') +
-      '</div><div class="vr-note"><i class="ph-bold ph-info"></i><span>Ce sont les chiffres bruts de Google Search Console, sans tri : la place est une moyenne sur 28 jours (elle varie selon la personne et l’appareil), un affichage n’est pas un client. Les petites villes et les pages récentes partent de peu, et ça se voit ici.</span></div>';
+      '</div><div class="vr-note"><i class="ph-bold ph-info"></i><span>Ce sont les chiffres bruts de Google Search Console, sans tri : la place est une moyenne sur 28 jours (elle varie selon la personne et l’appareil), un affichage n’est pas un client. Les petites villes et les pages récentes partent de peu, et ça se voit ici.</span></div></div>';
     vres.innerHTML = html;
     applyVf();
+    AP.slug = c.slug; AP.city = c; apFromCity(); apList();
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = label;
     setUrl(c.slug);
   }
@@ -1004,20 +1037,22 @@ a.dm-city:hover{border-color:var(--g)}
     q = String(q || '').trim().slice(0, 60);
     if (!q || !vres) return;
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = q;
-    vres.innerHTML = '<p class="empty">Recherche des chiffres de ' + esc(q) + '…</p>';
+    vres.innerHTML = '<p class="vr-wait">Recherche des chiffres de ' + esc(q) + '…</p>';
     if (scroll) pinTa();
     fetch(API + '?ville=' + encodeURIComponent(q)).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
       if (d.found && d.city) renderCity(d);
       else if (d.found) vres.innerHTML = '<p class="empty">Les chiffres de cette ville ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</p>';
-      else if (d.zone) renderZone(q, d.zone);
-      else renderRequest(q);
+      else { AP.slug = null; AP.city = null; apShow({ label: q, none: 'ville' }); apList(); if (d.zone) renderZone(q, d.zone); else renderRequest(q); }
     }).catch(function(){ vres.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment. Réessaie dans quelques minutes.</p>'; });
   }
+  var apIn = apInput(); if (apIn) apIn.addEventListener('input', apList);
   if (vform) vform.addEventListener('submit', function(e){ e.preventDefault(); var i = vform.querySelector('input[name=ville]'); searchCity(i && i.value, false); });
   if (vres) {
     vres.addEventListener('click', function(e){
       var b = e.target.closest('[data-pick]'); if (b) { searchCity(b.getAttribute('data-pick'), false); return; }
       var ask = e.target.closest('[data-intl-ask]'); if (ask) { renderRequest(ask.getAttribute('data-intl-ask'), true); return; }
+      var all = e.target.closest('[data-vr-all]');
+      if (all) { var pa = vres.querySelector('[data-vr-all-p]'); if (pa) { pa.hidden = !pa.hidden; all.setAttribute('aria-expanded', String(!pa.hidden)); all.firstChild.textContent = pa.hidden ? 'Voir tous les chiffres de ' + (AP.city ? AP.city.label : 'la ville') : 'Masquer le détail'; } return; }
       var s = e.target.closest('[data-share]');
       if (s) {
         var done = function(){ s.innerHTML = '<i class="ph-bold ph-check-circle"></i>Lien copié'; };
@@ -1073,11 +1108,9 @@ a.dm-city:hover{border-color:var(--g)}
     else setNum('[data-k="vis"]', '–');
     if (d.cityPages) setNum('[data-f="cities"]', n(d.cityPages));
     if (d.threshold) { var th = $('[data-thr]'); if (th) th.textContent = n(d.threshold); }
-    Q = d.queries || { photographe: [], menage: [], hote: [] };
-    ['photographe','menage','depannage','hote'].forEach(function(k){ var c = $('[data-c="' + k + '"]'); if (c) c.textContent = (Q[k] || []).length + (d.cityRanks && d.cityRanks[k] ? d.cityRanks[k].length : 0); });
+    ['photographe','menage','depannage','hote'].forEach(function(k){ var c = $('[data-c="' + k + '"]'); if (c) c.textContent = d.cityRanks && d.cityRanks[k] ? d.cityRanks[k].length : 0; });
     R = d.cityRanks || null;
-    renderRanks();
-    renderQueries(); gxLayout();
+    apDefault();
     var rk = 0; if (d.cityRanks) ['photographe','menage','depannage','hote'].forEach(function(k){ rk += (d.cityRanks[k] || []).length; }); setNum('[data-f="rk"]', n(rk));
     renderDemandes(d.demandes || null);
   }).catch(function(){
@@ -1085,7 +1118,7 @@ a.dm-city:hover{border-color:var(--g)}
     var e = $('[data-err]'); if (e) e.style.display = 'block';
     var u = $('[data-upd]'); if (u) u.textContent = '';
     ['[data-k="imp"]','[data-k="clk"]','[data-k="vis"]','[data-f="first"]','[data-f="pages"]','[data-f="ctr"]'].forEach(function(s){ setNum(s, '–'); });
-    var b1 = $('[data-queries]'); if (b1) b1.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
+    var b1 = $('[data-ap-list]'); if (b1) b1.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
     var b2 = $('[data-cities]'); if (b2) b2.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
   });
 })();
