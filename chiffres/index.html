@@ -392,6 +392,7 @@ a.dm-city:hover{border-color:var(--g)}
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"La visibilité du site en chiffres","description":"Affichages Google, clics, visiteurs et recherches où jasonmarinho.com sort en première page, mis à jour chaque jour.","url":"https://jasonmarinho.com/chiffres","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Les chiffres","item":"https://jasonmarinho.com/chiffres"}]}</script>
 <script defer src="/nav.js"></script>
+<script>if(location.hash==='#ta-ville'||/[?&]ville=/.test(location.search))document.documentElement.style.scrollBehavior='auto'</script>
 </head>
 <body>
 
@@ -1034,8 +1035,8 @@ a.dm-city:hover{border-color:var(--g)}
   // Arrivée sur ?ville=… ou #ta-ville : les blocs au-dessus se remplissent après coup et repoussent la section.
   // On la garde en haut de l'écran tant que la page grandit, jusqu'au premier geste du visiteur (6 s au plus).
   var PIN = location.hash === '#ta-ville';
-  function pinTa(){ PIN = true; var sec = $('#ta-ville'); if (sec) sec.scrollIntoView({ block: 'start' }); }
-  function unpin(){ PIN = false; }
+  function pinTa(){ PIN = true; document.documentElement.style.scrollBehavior = 'auto'; var sec = $('#ta-ville'); if (sec) sec.scrollIntoView({ block: 'start', behavior: 'instant' }); }
+  function unpin(){ if (!PIN && document.documentElement.style.scrollBehavior !== 'auto') return; PIN = false; document.documentElement.style.scrollBehavior = ''; }
   ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function(ev){ addEventListener(ev, unpin, { passive: true, once: true }); });
   setTimeout(unpin, 6000);
   if (window.ResizeObserver) new ResizeObserver(function(){ if (PIN) pinTa(); }).observe(document.body);
