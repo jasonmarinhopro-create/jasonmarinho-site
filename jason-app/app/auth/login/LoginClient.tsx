@@ -105,17 +105,29 @@ export default function LoginPage({ google = false }: { google?: boolean }) {
   // prerender statique Next.js (sinon le build échoue avec
   // "missing-suspense-with-csr-bailout").
   return (
-    <Suspense fallback={<div style={{ minHeight: '100svh', background: '#fff' }} />}>
-      <LoginInner google={google} />
+    // 14/11/2026 (Jason : « vert, puis blanc, puis vert » à la connexion) : le
+    // fallback était un bloc blanc, seul envoyé par le serveur (la page est
+    // statique et useSearchParams se lit dans le navigateur). Il affiche
+    // maintenant l'écran de connexion lui-même (espace hôte par défaut) ; le
+    // JavaScript ajuste seulement le texte pour ?as=photographe|menage|depannage.
+    <Suspense fallback={<LoginInner google={google} asParam="" googleFail={false} />}>
+      <LoginWithParams google={google} />
     </Suspense>
   )
 }
 
-function LoginInner({ google }: { google: boolean }) {
-  const supabase = createClient()
-  const router = useRouter()
+function LoginWithParams({ google }: { google: boolean }) {
   const searchParams = useSearchParams()
-  const asParam = searchParams?.get('as') ?? ''
+  return <LoginInner google={google} asParam={searchParams?.get('as') ?? ''} googleFail={searchParams?.get('google') === 'echec'} />
+}
+
+function LoginInner({ google, asParam, googleFail }: { google: boolean; asParam: string; googleFail: boolean }) {
+  // Client Supabase créé au premier usage (effets, clics), jamais pendant le
+  // rendu : le formulaire est aussi rendu par le serveur (fallback), où
+  // document.cookie n'existe pas.
+  const sbRef = useRef<ReturnType<typeof createClient> | null>(null)
+  const sb = () => (sbRef.current ??= createClient())
+  const router = useRouter()
   const profileKey: Profile = asParam === 'photographe' || asParam === 'menage' || asParam === 'depannage' ? asParam : 'host'
   const ctx = PROFILES[profileKey]
 
@@ -132,7 +144,7 @@ function LoginInner({ google }: { google: boolean }) {
   useEffect(() => {
     const espace = metierParSlug(asParam)?.espace
     if (!espace) return
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    sb().auth.getUser().then(({ data: { user } }) => {
       if (!user) return
       const target = espace
       // router.replace utilise le prefetch (client-side nav), pas de reload
@@ -163,13 +175,13 @@ function LoginInner({ google }: { google: boolean }) {
       goToApp()
     }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const { data: { subscription } } = sb().auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_IN') {
         subscription.unsubscribe()
         redirect()
       }
     })
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    sb().auth.getSession().then(({ data: { session } }) => {
       if (session) redirect()
     })
 
@@ -181,7 +193,7 @@ function LoginInner({ google }: { google: boolean }) {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(searchParams?.get('google') === 'echec' ? 'La connexion avec Google n’a pas abouti. Réessaie, ou utilise ton e-mail.' : '')
+  const [error, setError] = useState(googleFail ? 'La connexion avec Google n’a pas abouti. Réessaie, ou utilise ton e-mail.' : '')
   const [attempts, setAttempts] = useState(0)
   const [blockedUntil, setBlockedUntil] = useState<number | null>(null)
   const [emailNotConfirmed, setEmailNotConfirmed] = useState(false)
@@ -222,7 +234,7 @@ function LoginInner({ google }: { google: boolean }) {
     let signInError: Error | null = null
     let isUnconfirmed = false
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email: emailVal, password: passwordVal })
+      const { error } = await sb().auth.signInWithPassword({ email: emailVal, password: passwordVal })
       if (error) {
         if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
           isUnconfirmed = true
@@ -294,7 +306,7 @@ function LoginInner({ google }: { google: boolean }) {
       return
     }
     setResendLoading(true)
-    const { error } = await supabase.auth.resend({ type: 'signup', email })
+    const { error } = await sb().auth.resend({ type: 'signup', email })
     setResendLoading(false)
     if (error) {
       setError("Impossible de renvoyer l'email. Réessaie dans quelques minutes.")

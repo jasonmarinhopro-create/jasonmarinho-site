@@ -401,3 +401,7 @@ Jason : « petit zoom et dézoom » et « saut de page » à l'ouverture du site
 - **Bandeau du haut posé avant le premier affichage** : `fillTop` (remonter le premier bandeau coloré sous la barre) était fait par `nav.js` seulement ; arrivé tard, on voyait une bande claire de 64 px puis le bandeau sauter. Même calcul en ligne en fin de page (`FILLTOP`, posé par `scripts/inject-font-loading.mjs` au build).
 - Résultat (CLS à froid) : annuaires 0,074 → 0,000, ménage Lyon 0,078 → 0,0015, études et blog divisés par 5 à 30.
 - App : plus d'entrée animée (`fadeUp`) du formulaire sur Connexion, Mot de passe oublié et Nouveau mot de passe.
+
+## Connexion : « vert, puis blanc, puis vert » (14/11/2026)
+
+Cause : `app/auth/login/LoginClient.tsx` enveloppait tout le formulaire dans un `<Suspense>` au fallback **blanc** (`useSearchParams` impose un Suspense ; la page étant statique, le serveur n'envoyait que ce fallback, le vrai écran arrivait avec le JavaScript). Correctif : le fallback rend l'écran de connexion lui-même (`LoginInner` avec `asParam=""`), `LoginWithParams` lit `?as=` et `?google=echec` dans le navigateur. Le client Supabase est créé au premier usage (`sb()`), jamais pendant le rendu (le serveur n'a pas `document.cookie`). **Règle : jamais de fallback vide ou blanc devant un écran entier** ; rendre la version par défaut de l'écran.
