@@ -142,15 +142,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .hg-h1 em{color:var(--y);font-weight:400}
 .hg-p{font-size:19px;line-height:1.55;color:rgba(255,255,255,.75);max-width:660px;min-height:2lh}
 .hg-box{width:100%;max-width:1000px;margin-top:8px;text-align:left}
-/* Demandes d’hôtes en direct dans le premier écran (14/11/2026, Jason : « mets les demandes en avant sur l’accueil ») : une ligne de hauteur fixe, le texte change sans rien décaler */
-.hg-live{display:inline-flex;align-items:center;gap:10px;max-width:100%;height:40px;margin:-4px auto 18px;padding:0 16px 0 14px;border-radius:999px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.32);color:#fff;font-size:14px;text-decoration:none;transition:background .2s,border-color .2s}
-.hg-live:hover{background:rgba(255,213,107,.18);border-color:rgba(255,213,107,.6)}
-.hg-live-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.hg-live-t b{color:var(--y);font-weight:600}
-.hg-live i{color:var(--y);font-size:14px;flex-shrink:0}
-.hg-dot{width:8px;height:8px;border-radius:50%;background:#63D683;flex-shrink:0;box-shadow:0 0 0 0 rgba(99,214,131,.6);animation:hgPulse 2s infinite}
-@keyframes hgPulse{70%{box-shadow:0 0 0 8px rgba(99,214,131,0)}100%{box-shadow:0 0 0 0 rgba(99,214,131,0)}}
-@media(prefers-reduced-motion:reduce){.hg-dot{animation:none}}
-@media(max-width:640px){.hg-live{font-size:13px;height:38px}.hg-live-l{display:none}}
 .hg-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0}@media(min-width:721px){.hg-box .hg-card{border-top-left-radius:0;border-top-right-radius:0}}
 .hg-tabs button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:10px 12px;border:none;border-radius:16px 16px 0 0;background:rgba(255,255,255,.08);color:#fff;font-family:inherit;font-size:14.5px;font-weight:600;cursor:pointer;transition:background .2s}
 .hg-tabs button svg{color:var(--y)}
@@ -634,7 +625,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <p class="hg-by hx"><img src="/jason-marinho.webp" alt="" width="34" height="34" decoding="async"><span>Créé par Jason, co-fondateur de <a href="https://driing.co">Driing</a>.</span></p>
 <h1 class="hg-h1 hx" id="hg-h1">Les bons pros pour ta <em>location courte durée</em>, près de chez toi.</h1>
 <p class="hg-p hx" id="hg-p">Dis ce qu’il te faut et où : les 3 pros les plus proches qui le font reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission.</p>
-<a class="hg-live hx" href="/chiffres#demandes"><span class="hg-dot" aria-hidden="true"></span><span class="hg-live-t" data-live>Les demandes d’hôtes, publiées en direct</span><i class="ph-bold ph-arrow-right" aria-hidden="true"></i></a>
 <div class="hg-box hx2" id="intent">
 <div class="hg-tabs" role="tablist" aria-label="Qu’est-ce qui t’amène ?"><button type="button" role="tab" id="ht-pro" aria-controls="hp-pro" aria-selected="true" data-tab="pro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3"/></svg><span>Trouver un pro</span></button><button type="button" role="tab" id="ht-gerer" aria-controls="hp-gerer" aria-selected="false" data-tab="gerer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Gérer ma location</span></button><button type="button" role="tab" id="ht-metier" aria-controls="hp-metier" aria-selected="false" data-tab="metier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Je suis un pro</span></button></div>
 <div class="hg-card">
@@ -981,8 +971,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
       set('imp',g?g.impressions:null); dl('imp',g&&g.impressions,g&&g.prevImpressions);
       set('clk',g?g.clicks:null); dl('clk',g&&g.clicks,g&&g.prevClicks);
       set('dem',dm?dm.total:null);
-      var lv=document.querySelector('[data-live]'), UN={photographe:'un photographe',menage:'une équipe de ménage',depannage:'un pro du dépannage'};
-      if(lv&&dm&&dm.total){var f0=(dm.fil||[])[0];lv.innerHTML='<b>'+nf.format(dm.total)+' demande'+(dm.total>1?'s':'')+' d’hôtes</b> depuis '+esc(mois(dm.since))+(f0?'<span class="hg-live-l"> · dernière : '+esc(UN[f0.metier]||'un pro')+(f0.slug?' à '+esc(f0.label):'')+', '+esc(mois(f0.month).split(' ')[0])+'</span>':'')} var ds=document.querySelector('[data-pubs]'); if(ds&&dm&&dm.since)ds.textContent='depuis '+mois(dm.since);
       var ch=document.querySelector('[data-pubchart]');
       if(ch&&g&&g.months&&g.months.length){var mx=Math.max.apply(null,g.months.map(function(m){return m.impressions}))||1;
         ch.innerHTML=g.months.slice(-8).map(function(m){var h=Math.max(4,Math.round(m.impressions/mx*100));return '<div title="'+nf.format(m.impressions)+'"><i style="height:'+h+'%"></i><span>'+esc(mois(m.month).split(' ')[0])+'</span></div>'}).join('')}
