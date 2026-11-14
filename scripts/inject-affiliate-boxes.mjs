@@ -165,7 +165,7 @@ const sportEquipe = box('sport-equipe',
 
 // [fichier, id, texte avant lequel insérer l'encadré, contenu]
 const PLACEMENTS = [
-  ['comparatif-smoobu-hospitable/index.html', 'hospitable-vous', '</section>\n\n<section id="verdict">', hospitableVous],
+  // comparatif-smoobu-hospitable : encadré intégré à la page depuis sa refonte (14/11/2026)
   ['blog/messagerie-unifiee-3-plateformes-tester/index.html', 'hospitable-tu', '<h2 class="art-h2">2. Smoobu : l\'option européenne complète</h2>', hospitableTu],
   ['blog/logiciels-conciergerie-comparatif-2026/index.html', 'hospitable-tu', '<h2 class="art-h2">2. Smoobu : l\'option européenne tout-en-un</h2>', hospitableTu],
   ['blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/index.html', 'hospitable-tu', '<h2 class="art-h2">4. L\'automatisation au-delà du pricing', hospitableTu],
