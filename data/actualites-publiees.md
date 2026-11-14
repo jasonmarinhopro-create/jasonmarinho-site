@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-15 · plateformes · Airbnb bascule à une commission unique de 15,5 % le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-09-15 · marche · Été 2026 : la Bretagne cartonne, les grandes villes en recul · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
 - 2026-09-16 · plateformes · Airbnb passe à 15,5 % de frais hôte : un mois pour adapter tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-17 · marche · Été 2026 : revenus en hausse sur le littoral, villes en recul · masquée (https://www.lejma.fr/2026/09/13/bilan-touristique-de-lete-2026-en-france-les-premiers-enseignements-dune-saison-bousculee-par-la-chaleur-mais-globalement-solide/)
 - 2026-09-18 · reglementation · Declaloc : le portail d'enregistrement des meublés se déploie sur tout le territoire · masquée (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
@@ -74,3 +72,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-10 · entreprise · Micro-entrepreneur : vérifie ton chiffre d'affaires 2026 avant le 31 décembre · pour photographe, menage, depannage (https://www.entreprises.cci-paris-idf.fr/actualites/micro-entrepreneur-revalorisation-des-seuils-pour-2026-2028)
 - 2026-11-10 · outils · Location saisonnière : vérifie que ton assurance couvre tes voyageurs (https://www.service-public.fr/particuliers/vosdroits/F2069)
 - 2026-11-12 · entreprise · Mise à jour : ton avis CFE 2026 est en ligne, paiement avant le 15 décembre · pour photographe, menage, depannage (https://www.impots.gouv.fr/professionnel/la-cotisation-fonciere-des-entreprises-cfe)
+- 2026-11-14 · plateformes · Airbnb interdit les photos retouchées par IA dans les annonces · pour photographe (https://www.rentalscaleup.com/fr/mise-a-jour-des-conditions-dairbnb-au-20-avril-ce-que-les-gestionnaires-professionnels-doivent-lire-avant-de-cliquer-sur-accepter/)
+- 2026-11-14 · fiscalite · Taxe de séjour collectée : vérifie tes obligations de versement en fin d'année (https://www.impots.gouv.fr/taxe-de-sejour)
