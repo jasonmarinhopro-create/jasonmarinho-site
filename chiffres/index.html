@@ -125,17 +125,31 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .sr span{font-size:12px;color:#B0B5B0;text-align:center;font-variant-numeric:tabular-nums}
 .sr div i{display:block;height:8px;border-radius:5px;background:#EEF0EE;margin:5px 0}
 .sr div i:first-child{width:38%;height:10px}.sr div i:last-child{width:82%}
-.me{position:absolute;left:-8px;right:-8px;top:0;background:#fff;border:2px solid var(--g);border-radius:14px;padding:10px 12px 10px 46px;box-shadow:0 14px 30px -14px rgba(0,76,63,.5);transition:top .55s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.me{position:absolute;left:-8px;right:-8px;top:0;background:#fff;border:2px solid var(--g);border-radius:14px;padding:10px 120px 10px 46px;cursor:pointer;box-shadow:0 14px 30px -14px rgba(0,76,63,.5);transition:top .55s cubic-bezier(.2,.8,.2,1),opacity .2s}
 .me.far{border-style:dashed}
+.me:hover{box-shadow:0 18px 36px -14px rgba(0,76,63,.6)}
+.me .me-more{display:inline-flex;align-items:center;gap:4px;margin-left:8px;font-weight:600;color:var(--g);font-style:normal}
+.me .me-more i{transition:transform .2s}
+.me.open .me-more i{transform:rotate(180deg)}
+.me-cp{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);background:#fff;border-radius:10px;padding:8px 11px;font:600 13px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);cursor:pointer}
+.me-cp:hover{border-color:var(--g)}
+.me-cp.ok{background:var(--g);border-color:var(--g);color:#fff}
+@media(max-width:640px){.me{padding-right:56px}.me-cp .l{display:none}.me-cp{padding:8px 10px}}
+.ap-det{margin-top:14px;background:#fff;border:1px solid var(--g);border-radius:18px;padding:16px 18px;box-shadow:0 14px 34px -22px rgba(0,51,41,.45)}
+.ap-det[hidden]{display:none}
+.ap-det .vp{border:none;padding:0;background:none}
+.ap-det .vp-h{display:none}
 .me[hidden]{display:block;opacity:0;pointer-events:none}
 .me .pos{position:absolute;left:10px;top:50%;transform:translateY(-50%);min-width:26px;height:26px;padding:0 4px;border-radius:13px;background:var(--y);color:var(--gd);font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center}
 .me small{display:block;font-size:12.5px;color:var(--tl);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .me strong{display:block;color:var(--g);font-size:16px;font-weight:600;margin:1px 0}
 .me em{font-style:normal;font-size:13px;color:var(--tm)}
+.serp-msg[hidden]{display:none}
 .serp-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
 .serp-msg div{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:18px 20px;max-width:420px;box-shadow:0 14px 30px -18px rgba(0,51,41,.4);font-size:15px;line-height:1.6;color:var(--tm)}
 .serp-msg b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:20px;color:var(--td);margin-bottom:4px}
 .serp-msg button{margin-top:10px;border:none;background:var(--g);color:#fff;font:600 14px 'Outfit','Outfit Fallback',sans-serif;border-radius:10px;padding:9px 14px;cursor:pointer}
+.ap-k[hidden]{display:none}
 .ap-k{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
 .ap-k div{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:12px 14px;min-width:0}
 .ap-k b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(24px,3vw,28px);color:var(--g);line-height:1.1}
@@ -153,12 +167,10 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .tsx b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1.15}
 .tsx .dk b{color:var(--y)}
 .tsx span{font-size:13px;opacity:.8}
-.vr-more{display:flex;justify-content:center;margin-top:16px}
 .vr-more button{border:1px solid var(--g);background:#fff;color:var(--g);font:600 14.5px 'Outfit','Outfit Fallback',sans-serif;border-radius:999px;padding:11px 20px;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
 .vr-more button i{transition:transform .2s}
 .vr-more button[aria-expanded=true] i{transform:rotate(180deg)}
 .vr-all{margin-top:18px}
-.vr-all[hidden]{display:none}
 .help-w{text-align:center;margin-top:26px}
 .help-b{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;border-radius:999px;padding:8px 16px;font:600 14px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);cursor:pointer}
 .help-b i{font-size:16px}
@@ -512,6 +524,7 @@ a.dm-city:hover{border-color:var(--g)}
       <div class="ap-l"><div class="ap-lh"><span>En première page</span><span data-ap-n></span></div><div class="ap-list" data-ap-list><p class="empty">Chargement…</p></div></div>
       <div class="ap-r">
         <div class="serp"><div class="serp-bar"><i class="ph-bold ph-magnifying-glass"></i><span data-ap-q>…</span></div><div class="serp-pg"><span>Résultats</span><b data-ap-pg></b></div><div class="serp-res" data-ap-res></div></div>
+        <div class="ap-det" data-ap-det hidden></div>
         <div class="ap-k" data-ap-k></div>
         <div class="ap-a" data-ap-a></div>
       </div>
@@ -631,7 +644,7 @@ a.dm-city:hover{border-color:var(--g)}
   // ── Ta ville sur Google (14/11/2026, maquette D validée par Jason) : l'aperçu
   // des résultats montre où la page sort, la ville choisie remplit « Tout sur … »
   var current = 'photographe', R = null;
-  var AP = { slug: null, city: null };
+  var AP = { slug: null, city: null, det: false };
   function rankCity(path){ return cityName(path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, '')); }
   function rankSlug(path){ return path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, ''); }
   var KQ = { photographe: 'photographe airbnb ', menage: 'ménage airbnb ', depannage: 'dépannage airbnb ', hote: 'louer sur airbnb ' };
@@ -639,7 +652,7 @@ a.dm-city:hover{border-color:var(--g)}
   var apRes = $('[data-ap-res]');
   if (apRes) {
     var rows = ''; for (var i = 1; i <= 10; i++) rows += '<div class="sr"><span>' + i + '</span><div><i></i><i></i></div></div>';
-    apRes.innerHTML = rows + '<div class="me" data-me hidden><span class="pos" data-me-pos></span><small data-me-u></small><strong data-me-t></strong><em data-me-s></em></div><div class="serp-msg" data-ap-msg hidden></div>';
+    apRes.innerHTML = rows + '<div class="me" data-me hidden><span class="pos" data-me-pos></span><small data-me-u></small><strong data-me-t></strong><em><span data-me-s></span><span class="me-more">Détail<i class="ph-bold ph-caret-down"></i></span></em><button type="button" class="me-cp" data-me-cp><i class="ph-bold ph-copy"></i><span class="l">Copier</span></button></div><div class="serp-msg" data-ap-msg hidden></div>';
   }
   function apInput(){ return vform && vform.querySelector('input[name=ville]'); }
   function apList(){
@@ -671,6 +684,7 @@ a.dm-city:hover{border-color:var(--g)}
             ? '<b>Pas encore de ville en première page</b>Tape ta ville au-dessus pour voir où en est sa page ' + KN[current] + '.'
             : '<b>Pas encore vue dans Google</b>La page ' + esc(pageLabel(d.path)) + ' n’est pas apparue dans Google sur ces 28 jours. Une page récente met souvent plusieurs mois à se faire une place.') + '</div>';
       if (k) k.innerHTML = '';
+      apDet(false);
       if (a) a.innerHTML = d.path ? '<a href="' + esc(d.path) + '">Voir la page ' + esc(pageLabel(d.path)) + '<i class="ph-bold ph-arrow-right"></i></a>' : '';
       return;
     }
@@ -681,9 +695,23 @@ a.dm-city:hover{border-color:var(--g)}
     setNum('[data-me-u]', 'jasonmarinho.com › ' + d.path.slice(1));
     setNum('[data-me-t]', pageLabel(d.path));
     setNum('[data-me-s]', pg === 1 ? 'Ta page sort ici : ' + pf.format(d.place) + 'e place en moyenne' : 'Page ' + pg + ' de Google : ' + pf.format(d.place) + 'e place en moyenne, pas encore en première page');
-    requestAnimationFrame(function(){ me.style.top = (rws[pos - 1].offsetTop - 6) + 'px'; });
+    var cp = me.querySelector('[data-me-cp]'); cp.setAttribute('data-copy', qtxt); cp.setAttribute('aria-label', 'Copier la recherche ' + qtxt + ' pour vérifier dans Google'); cp.setAttribute('title', 'Copier la recherche pour vérifier dans Google');
+    // Bloc posé sur sa ligne, sans déborder en haut (place 1) ni en bas
+    requestAnimationFrame(function(){ var t = rws[pos - 1].offsetTop + rws[pos - 1].offsetHeight / 2 - me.offsetHeight / 2; me.style.top = Math.max(0, Math.min(t, apRes.offsetHeight - me.offsetHeight)) + 'px'; });
+    apDet(AP.det);
     if (k) k.innerHTML = '<div><b>' + pf.format(d.place) + '</b><span>place moyenne</span></div><div><b>' + n(d.impressions) + '</b><span>affichage' + (d.impressions > 1 ? 's' : '') + '</span></div><div><b>' + n(d.clicks) + '</b><span>clic' + (d.clicks > 1 ? 's' : '') + '</span></div>';
-    if (a) a.innerHTML = '<button type="button" data-copy="' + esc(qtxt) + '"><i class="ph-bold ph-copy"></i>Copier la recherche et vérifier</button><a href="' + esc(d.path) + '">Voir la page ' + esc(pageLabel(d.path)) + '<i class="ph-bold ph-arrow-right"></i></a>';
+    if (a) a.innerHTML = '<a href="' + esc(d.path) + '">Voir la page ' + esc(pageLabel(d.path)) + '<i class="ph-bold ph-arrow-right"></i></a><button type="button" data-ap-down>Tous les chiffres de ' + esc(d.label) + '<i class="ph-bold ph-arrow-down"></i></button>';
+  }
+  // Clic sur le bloc : le détail de la page (affichages, clics, place, visiteurs, recherches)
+  function apDet(open){
+    var box = $('[data-ap-det]'), me = $('[data-me]'), k = $('[data-ap-k]'); if (!box || !me) return;
+    var c = AP.city, p = c && c.pages && c.pages[current];
+    var show = !!open && !me.hidden;
+    me.classList.toggle('open', show);
+    me.setAttribute('aria-expanded', String(show));
+    if (!show) { box.hidden = true; if (k) k.hidden = false; return; }
+    box.hidden = false; if (k) k.hidden = true;
+    box.innerHTML = p ? pageCard(current, c.label, p, c.pros) : '<p class="empty">Chargement du détail…</p>';
   }
   function apFromRank(slug){
     var r = ((R && R[current]) || []).filter(function(x){ return rankSlug(x.path) === slug; })[0];
@@ -711,8 +739,16 @@ a.dm-city:hover{border-color:var(--g)}
     apFromRank(AP.slug); apList();
     searchCity(AP.slug.replace(/-/g, ' '), false);
   });
+  var apMe = $('[data-me]');
+  if (apMe) {
+    apMe.setAttribute('role', 'button'); apMe.setAttribute('tabindex', '0');
+    var tog = function(e){ if (e.target.closest('[data-copy]')) return; AP.det = !AP.det; if (AP.det && !AP.city && AP.slug) searchCity(AP.slug.replace(/-/g, ' '), false); apDet(AP.det); };
+    apMe.addEventListener('click', tog);
+    apMe.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(e); } });
+  }
   var apA = $('[data-ap]');
   if (apA) apA.addEventListener('click', function(e){
+    if (e.target.closest('[data-ap-down]')) { var v = $('[data-vres]'); if (v) v.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     var b = e.target.closest('[data-ap-ask]'); if (b) { renderRequest(b.getAttribute('data-ap-ask'), true); var v = $('[data-vres]'); if (v) v.scrollIntoView({ block: 'start' }); }
   });
   document.querySelectorAll('[data-tab]').forEach(function(b){
@@ -950,8 +986,7 @@ a.dm-city:hover{border-color:var(--g)}
         cell(nPros === null ? '–' : n(nPros), 'pro' + (nPros > 1 ? 's' : '') + ' présenté' + (nPros > 1 ? 's' : '')) +
         cell(n(nPages), 'page' + (nPages > 1 ? 's' : '') + ' de ville') +
         cell(n(nVis), 'visiteur' + (nVis > 1 ? 's' : '') + ' sur 30 jours') + '</div>' +
-      '<div class="vr-more"><button type="button" data-vr-all aria-expanded="false">Voir tous les chiffres de ' + esc(label) + '<i class="ph-bold ph-caret-down"></i></button></div>' +
-      '<div class="vr-all" data-vr-all-p hidden>' +
+      '<div class="vr-all">' +
       vfBar(c) + cityDemandes(label, c.slug, d.demandes, c.pros, !!c.pays) + '<div class="vr-grid">' +
       pageCard('photographe', label, c.pages.photographe, c.pros) +
       (c.pages.menage ? pageCard('menage', label, c.pages.menage, c.pros) : '') +
@@ -1051,8 +1086,6 @@ a.dm-city:hover{border-color:var(--g)}
     vres.addEventListener('click', function(e){
       var b = e.target.closest('[data-pick]'); if (b) { searchCity(b.getAttribute('data-pick'), false); return; }
       var ask = e.target.closest('[data-intl-ask]'); if (ask) { renderRequest(ask.getAttribute('data-intl-ask'), true); return; }
-      var all = e.target.closest('[data-vr-all]');
-      if (all) { var pa = vres.querySelector('[data-vr-all-p]'); if (pa) { pa.hidden = !pa.hidden; all.setAttribute('aria-expanded', String(!pa.hidden)); all.firstChild.textContent = pa.hidden ? 'Voir tous les chiffres de ' + (AP.city ? AP.city.label : 'la ville') : 'Masquer le détail'; } return; }
       var s = e.target.closest('[data-share]');
       if (s) {
         var done = function(){ s.innerHTML = '<i class="ph-bold ph-check-circle"></i>Lien copié'; };
