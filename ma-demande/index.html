@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -23,14 +23,14 @@
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#6E7F6B;--bd:rgba(0,76,63,.11);--gs:#EEF4F1;--amb:#FBF1DE;--ambt:#6B4300}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 button{font-family:inherit}
 .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(28px,5vw,56px) 0 clamp(84px,10vw,110px)}
 .s-in{max-width:1160px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
 .brd{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px}.brd a{color:rgba(255,255,255,.6);text-decoration:none}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:10px}
-h1{font-family:'Fraunces',serif;font-size:clamp(28px,4.2vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;max-width:780px;text-wrap:balance}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(28px,4.2vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;max-width:780px;text-wrap:balance}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:16px;color:rgba(255,255,255,.75);line-height:1.65;max-width:620px;margin-top:12px}
 .promises{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
@@ -38,7 +38,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .promises i{color:var(--y)}
 .pc{display:flex;gap:11px;align-items:center;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:9px 11px;text-decoration:none;color:inherit;min-width:0}
 .pc:hover{border-color:rgba(0,76,63,.35)}
-.pc .av{width:46px;height:46px;border-radius:12px;flex-shrink:0;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces',serif;font-size:17px;color:var(--g)}
+.pc .av{width:46px;height:46px;border-radius:12px;flex-shrink:0;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;color:var(--g)}
 .pc .tx{min-width:0;flex:1}
 .pc b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pc small{display:block;font-size:12.5px;color:var(--tl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -59,11 +59,11 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .st{display:flex;gap:14px;align-items:flex-start}
 .st .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;flex-shrink:0;background:var(--gs);color:var(--g)}
 .st .ic.wait{background:var(--amb);color:var(--ambt)}
-.st h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(23px,3vw,28px);line-height:1.15}
+.st h2{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(23px,3vw,28px);line-height:1.15}
 .st p{font-size:15px;color:var(--tm);line-height:1.6;margin-top:4px}
 .relais{display:flex;gap:10px;align-items:center;font-size:14px;background:#FBFAF6;border:1px dashed rgba(0,76,63,.18);border-radius:13px;padding:11px 13px;color:var(--tm)}
 .relais i{color:#B98900;font-size:18px}
-h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
+h3{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:19px}
 .plist{display:grid;gap:8px}
 @media(min-width:640px){.plist{grid-template-columns:1fr 1fr}}
 .pc .state{flex-shrink:0;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;background:#F2EFE8;color:var(--tm)}
@@ -147,5 +147,6 @@ h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
 </script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body>
 </html>

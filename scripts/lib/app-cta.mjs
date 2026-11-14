@@ -128,7 +128,7 @@ export function appCtaBlock(slug, title) {
   return `<!-- APPCTA:START -->
 <div style="margin:36px 0 8px;padding:24px clamp(18px,3vw,28px);border-radius:16px;background:#F2F8F4;border:1px solid rgba(0,76,63,.16)" data-app-cta="${t.id}">
   <div style="font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#004C3F;margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="ph-bold ph-${t.icon}" style="font-size:15px"></i> ${t.eyebrow || 'Dans l’app Jason Marinho'}</div>
-  <p style="font-family:'Fraunces',serif;font-weight:500;font-size:clamp(19px,2.4vw,23px);line-height:1.25;color:#0F1A0D;margin:0 0 8px">${t.title}</p>
+  <p style="font-family:'Fraunces','Fraunces Fallback',serif;font-weight:500;font-size:clamp(19px,2.4vw,23px);line-height:1.25;color:#0F1A0D;margin:0 0 8px">${t.title}</p>
   <p style="font-size:14.5px;line-height:1.65;color:#3D5038;margin:0 0 16px">${t.text}</p>
   <div style="display:flex;flex-wrap:wrap;gap:10px">
     <a href="${primary.href}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:10px;background:#004C3F;color:#fff;font-weight:600;font-size:14.5px;text-decoration:none;flex:1 1 200px;max-width:280px">${primary.label} <i class="ph-bold ph-arrow-right"></i></a>

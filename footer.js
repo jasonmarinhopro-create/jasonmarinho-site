@@ -94,7 +94,7 @@
     var style = document.createElement('style');
     style.id = 'footer-styles';
     style.textContent = [
-      'footer{background:var(--gd,#003329);padding:clamp(56px,7vw,80px) clamp(16px,5vw,60px) clamp(24px,3vw,32px);border-top:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;color:#fff;font-family:\'Outfit\',sans-serif}',
+      'footer{background:var(--gd,#003329);padding:clamp(56px,7vw,80px) clamp(16px,5vw,60px) clamp(24px,3vw,32px);border-top:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;color:#fff;font-family:\'Outfit\',\'Outfit Fallback\',sans-serif}',
       'footer::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 100% 0%,rgba(255,213,107,.04),transparent 70%);pointer-events:none}',
       '.ft-in{max-width:1280px;margin:0 auto;position:relative;z-index:1}',
 
@@ -103,7 +103,7 @@
       '.ft-brand{display:flex;flex-direction:column;gap:18px}',
       '.ft-brand-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff}',
       '.ft-brand-logo img{width:36px;height:36px;border-radius:8px;filter:brightness(0) invert(1);opacity:.9}',
-      '.ft-brand-name{font-family:\'Fraunces\',serif;font-size:21px;font-weight:400;letter-spacing:-.01em}',
+      '.ft-brand-name{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:21px;font-weight:400;letter-spacing:-.01em}',
       '.ft-brand-name em{color:#FFD56B;font-style:italic;font-weight:300}',
       '.ft-brand-desc{font-size:14.5px;color:rgba(255,255,255,.6);line-height:1.7;margin:0;max-width:340px}',
       '.ft-socs{display:flex;gap:8px;margin-top:4px}',
@@ -124,11 +124,11 @@
       /* Bloc Explorer : onglets + panneaux (tous les liens en HTML, SEO préservé) */
       '.ft-explore{padding:clamp(28px,3.5vw,40px) 0;border-bottom:1px solid rgba(255,255,255,.07)}',
       '.ft-explore-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;flex-wrap:wrap}',
-      '.ft-explore-h{display:flex;align-items:center;gap:12px;font-family:\'Fraunces\',serif;font-size:17px;font-weight:400;color:#fff;letter-spacing:-.01em;margin:0}',
+      '.ft-explore-h{display:flex;align-items:center;gap:12px;font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:17px;font-weight:400;color:#fff;letter-spacing:-.01em;margin:0}',
       '.ft-explore-h i{color:#FFD56B;font-size:18px}',
       '.ft-explore-h em{color:#FFD56B;font-style:italic;font-weight:300}',
       '.ft-explore-tabs{display:flex;gap:6px;flex-wrap:wrap}',
-      '.ft-tab{font-size:12.5px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.75);cursor:pointer;font-family:\'Outfit\',sans-serif;font-weight:500;transition:all .2s}',
+      '.ft-tab{font-size:12.5px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.75);cursor:pointer;font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;font-weight:500;transition:all .2s}',
       '.ft-tab:hover{background:rgba(255,255,255,.08);color:#fff}',
       '.ft-tab.on{background:rgba(255,213,107,.12);border-color:rgba(255,213,107,.30);color:#FFD56B;font-weight:600}',
       '.ft-panels{margin-top:6px}',

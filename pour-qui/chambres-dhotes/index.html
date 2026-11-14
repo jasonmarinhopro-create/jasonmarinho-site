@@ -25,7 +25,7 @@
 <meta name="theme-color" content="#004C3F">
   
   
-  <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -39,7 +39,7 @@
     :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57}
     *,*::before,*::after{box-sizing:border-box}
     html{scroll-behavior:smooth}
-    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body{margin:0;padding-top:64px;font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td)}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
     img{max-width:100%;height:auto} a{color:inherit}
     .s-in{max-width:1200px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
@@ -47,18 +47,18 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)} .sec.w{background:#fff}
     .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
     .lbl.dk{color:var(--g)}
-    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
     .h1 em{color:var(--y);font-style:italic;font-weight:300}
-    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
     .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
     .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.6);margin:0 0 32px;max-width:560px}
     .sub.dk{color:var(--tm)} .sub.mx{max-width:680px}
-    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;font-family:'Outfit',sans-serif}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;font-family:'Outfit','Outfit Fallback',sans-serif}
     .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
     .btn-p:active{transform:translateY(0)}
-    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),color .2s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;font-family:'Outfit',sans-serif}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),color .2s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;font-family:'Outfit','Outfit Fallback',sans-serif}
     .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff}
-    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit',sans-serif}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s;font-family:'Outfit','Outfit Fallback',sans-serif}
     .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
     .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.1);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
     /* Hero */
@@ -71,14 +71,14 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     /* Stat cards */
     .stats{display:flex;gap:20px;flex-wrap:wrap;margin-top:40px}
     .stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 22px;min-width:120px}
-    .stat-n{font-family:'Fraunces',serif;font-size:1.8rem;color:var(--y);font-weight:600;line-height:1}
+    .stat-n{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.8rem;color:var(--y);font-weight:600;line-height:1}
     .stat-l{font-size:12px;color:rgba(255,255,255,.45);margin-top:4px}
     /* Cards */
     .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:40px}
     .card{background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:16px;padding:28px;transition:box-shadow .2s,transform .2s}
     .card:hover{box-shadow:0 8px 32px rgba(0,76,63,.1);transform:translateY(-2px)}
     .card-ic{width:44px;height:44px;border-radius:11px;background:rgba(0,76,63,.08);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:22px;margin-bottom:16px}
-    .card h3{font-family:'Fraunces',serif;font-size:1.15rem;margin:0 0 10px;font-weight:600;color:var(--td)}
+    .card h3{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.15rem;margin:0 0 10px;font-weight:600;color:var(--td)}
     .card p{font-size:14px;line-height:1.7;color:var(--tm);margin:0}
     /* Checklist */
     .ck-list{list-style:none;padding:0;margin:24px 0;display:flex;flex-direction:column;gap:12px}
@@ -115,7 +115,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .price-card.featured .price-inc li{color:rgba(255,255,255,.7)}
     .price-badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:6px;background:rgba(255,213,107,.15);color:var(--g)}
     .price-card.featured .price-badge{background:rgba(255,213,107,.15);color:var(--y)}
-    .price-n{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:600;line-height:1;color:var(--td)}
+    .price-n{font-family:'Fraunces','Fraunces Fallback',serif;font-size:2.5rem;font-weight:600;line-height:1;color:var(--td)}
     .price-card.featured .price-n{color:var(--y)}
     .price-per{font-size:13px;color:var(--tl);margin-left:4px;font-weight:400}
     .price-title{font-size:18px;font-weight:600;color:var(--td);margin:0}
@@ -171,7 +171,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       </div>
       <div style="background:linear-gradient(135deg,var(--cr),#fff);border-radius:20px;padding:32px;border:1px solid rgba(0,76,63,.08)">
         <div class="lbl dk">La solution</div>
-        <h3 style="font-family:'Fraunces',serif;font-size:1.4rem;margin:0 0 16px;color:var(--td)">Une approche en 3 temps</h3>
+        <h3 style="font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.4rem;margin:0 0 16px;color:var(--td)">Une approche en 3 temps</h3>
         <div style="display:flex;flex-direction:column;gap:16px">
           <div style="display:flex;gap:14px;align-items:flex-start">
             <div style="width:32px;height:32px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0">1</div>
@@ -225,7 +225,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .rel-card:hover .rel-ico i{color:var(--y)}
     .rel-body{display:flex;flex-direction:column;gap:6px;flex:1}
     .rel-kind{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol,#556B2F)}
-    .rel-title{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.2px}
+    .rel-title{font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.2px}
     .rel-desc{font-size:13px;font-weight:300;color:var(--tm);line-height:1.55;flex:1}
     .rel-cta{font-size:13px;font-weight:600;color:var(--g);display:flex;align-items:center;gap:6px;margin-top:4px}
     .rel-cta i{font-size:12px}
@@ -307,4 +307,5 @@ document.querySelectorAll('.faq-q').forEach(function(q){
   });
 });
 </script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body></html>

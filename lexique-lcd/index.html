@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -59,7 +59,7 @@
   :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,.09)}
   *,*::before,*::after{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.6}
+  body{margin:0;padding-top:64px;font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td);line-height:1.6}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
   a{color:var(--g);text-decoration:underline;text-decoration-color:rgba(0,76,63,.25);text-underline-offset:3px}
   a:hover{text-decoration-color:var(--g)}
@@ -72,7 +72,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   .breadcrumb a:hover{color:#fff}
   .breadcrumb i{font-size:11px;opacity:0.6}
   .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
-  .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:300}
+  .h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:300}
   .h1 em{color:var(--y);font-style:italic;font-weight:300}
   .lead{font-size:clamp(15px,1.5vw,17px);color:rgba(255,255,255,.6);margin:0;max-width:680px;line-height:1.7}
 
@@ -84,14 +84,14 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   main{max-width:920px;margin:0 auto;padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px)}
 
   .cat{margin-bottom:56px;scroll-margin-top:140px}
-  .cat-h{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:400;letter-spacing:-.5px;margin:0 0 8px;color:var(--td);display:flex;align-items:center;gap:12px}
+  .cat-h{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:400;letter-spacing:-.5px;margin:0 0 8px;color:var(--td);display:flex;align-items:center;gap:12px}
   .cat-h i{color:var(--g);font-size:.85em}
   .cat-h em{font-style:italic;color:var(--g);font-weight:300}
   .cat-desc{color:var(--tm);font-size:15px;margin:0 0 28px;max-width:600px}
 
   .term{padding:24px 0;border-top:1px solid var(--bd);scroll-margin-top:140px}
   .term:first-of-type{border-top:none}
-  .term-h{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:600;color:var(--td);margin:0 0 8px;letter-spacing:-.3px}
+  .term-h{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.25rem;font-weight:600;color:var(--td);margin:0 0 8px;letter-spacing:-.3px}
   .term-h a{color:inherit;text-decoration:none;border-bottom:2px solid transparent;transition:border-color .18s}
   .term-h:hover a{border-color:var(--y)}
   .term-h .perma{font-size:13px;font-weight:400;color:var(--tl);margin-left:6px;opacity:0;transition:opacity .18s}
@@ -101,7 +101,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   .term .also strong{color:var(--tm);font-weight:500}
 
   .cta-banner{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:18px;padding:clamp(28px,4vw,44px);margin:48px 0 0;text-align:center}
-  .cta-banner h2{font-family:'Fraunces',serif;color:#fff;font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:400;margin:0 0 10px;letter-spacing:-.4px}
+  .cta-banner h2{font-family:'Fraunces','Fraunces Fallback',serif;color:#fff;font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:400;margin:0 0 10px;letter-spacing:-.4px}
   .cta-banner h2 em{color:var(--y);font-style:italic;font-weight:300}
   .cta-banner p{color:rgba(255,255,255,.6);font-size:15px;margin:0 0 20px;max-width:480px;margin-left:auto;margin-right:auto}
   .cta-banner .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
@@ -387,5 +387,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 <script src="/nav.js" defer></script>
 <script src="/footer.js" defer></script>
 <script src="/cookie-banner.js" defer></script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body>
 </html>

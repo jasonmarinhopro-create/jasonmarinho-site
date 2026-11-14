@@ -117,13 +117,13 @@ function buildBlock(picks) {
     .apl-in{max-width:1100px;margin:0 auto}
     .apl-head{text-align:center;margin-bottom:28px}
     .apl-lbl{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ol,#556B2F);margin-bottom:10px}
-    .apl-h{font-family:'Fraunces',serif;font-size:clamp(20px,2.4vw,28px);font-weight:400;color:var(--td,#1a1a1a);margin:0;letter-spacing:-.3px}
+    .apl-h{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(20px,2.4vw,28px);font-weight:400;color:var(--td,#1a1a1a);margin:0;letter-spacing:-.3px}
     .apl-grid{display:grid;grid-template-columns:repeat(${picks.length},1fr);gap:16px}
     @media(max-width:760px){.apl-grid{grid-template-columns:1fr}}
     .al-card{display:flex;flex-direction:column;gap:8px;background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:14px;padding:22px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
     .al-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,76,63,.08);border-color:rgba(0,76,63,.22)}
     .al-kind{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol,#556B2F)}
-    .al-title{font-family:'Fraunces',serif;font-size:17px;color:var(--td,#1a1a1a);line-height:1.3;letter-spacing:-.2px}
+    .al-title{font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;color:var(--td,#1a1a1a);line-height:1.3;letter-spacing:-.2px}
     .al-desc{font-size:13px;color:var(--tm,#555);line-height:1.55;flex:1}
     .al-cta{font-size:13px;font-weight:600;color:var(--g,#00604F);display:flex;align-items:center;gap:6px;margin-top:6px}
     .al-cta i{font-size:12px}

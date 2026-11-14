@@ -72,7 +72,7 @@ export const SIMULATOR_VS_CSS = `
   border-radius:999px;padding:5px 12px;margin-bottom:14px;
 }
 .sim-vs-title{
-  font-family:'Fraunces',serif;font-size:clamp(18px,2.2vw,24px);
+  font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(18px,2.2vw,24px);
   font-weight:400;color:var(--td);letter-spacing:-.01em;line-height:1.3;
   margin:0 0 24px;
 }
@@ -119,7 +119,7 @@ export const SIMULATOR_VS_CSS = `
   padding:13px 22px;border-radius:10px;text-decoration:none;
   margin-top:14px;align-self:flex-start;
   transition:all .2s;
-  font-family:'Outfit',sans-serif;
+  font-family:'Outfit','Outfit Fallback',sans-serif;
   box-shadow:0 6px 18px rgba(255,213,107,.30);
 }
 .sim-vs-cta:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 10px 24px rgba(255,213,107,.36)}
@@ -182,7 +182,7 @@ export const SIMULATOR_CSS = `
 .sim-results > *{position:relative;z-index:1}
 
 .sim-title{
-  font-family:'Fraunces',serif;font-size:20px;line-height:1.2;font-weight:400;
+  font-family:'Fraunces','Fraunces Fallback',serif;font-size:20px;line-height:1.2;font-weight:400;
   letter-spacing:-.01em;color:var(--td);margin:0 0 14px;
 }
 .sim-title em{color:var(--g);font-style:italic;font-weight:300}
@@ -194,7 +194,7 @@ export const SIMULATOR_CSS = `
   color:rgba(0,76,63,.65);
 }
 .sim-label-val{
-  font-family:'Fraunces',serif;font-size:16px;font-weight:500;
+  font-family:'Fraunces','Fraunces Fallback',serif;font-size:16px;font-weight:500;
   color:var(--g);letter-spacing:-.01em;text-transform:none;
 }
 
@@ -224,7 +224,7 @@ export const SIMULATOR_CSS = `
   background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:10px;
   cursor:pointer;text-align:center;
   transition:all .18s cubic-bezier(.4,0,.2,1);
-  font-family:'Outfit',sans-serif;
+  font-family:'Outfit','Outfit Fallback',sans-serif;
 }
 .sim-chip:hover{border-color:var(--g);color:var(--g);background:rgba(0,76,63,.03)}
 .sim-chip.on{
@@ -237,7 +237,7 @@ export const SIMULATOR_CSS = `
   width:100%;padding:13px 14px;font-size:15px;font-weight:500;
   color:var(--td);background:#fff;
   border:1px solid rgba(0,76,63,.12);border-radius:10px;
-  outline:none;font-family:'Outfit',sans-serif;
+  outline:none;font-family:'Outfit','Outfit Fallback',sans-serif;
   transition:border-color .18s,box-shadow .18s;
 }
 .sim-num:focus{
@@ -252,7 +252,7 @@ export const SIMULATOR_CSS = `
   width:100%;padding:13px 38px 13px 14px;font-size:15px;font-weight:500;
   color:var(--td);background:#fff;
   border:1px solid rgba(0,76,63,.12);border-radius:10px;
-  outline:none;cursor:pointer;font-family:'Outfit',sans-serif;
+  outline:none;cursor:pointer;font-family:'Outfit','Outfit Fallback',sans-serif;
   appearance:none;-webkit-appearance:none;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23004C3F' stroke-width='2.5'><polyline points='6 9 12 15 18 9'/></svg>");
   background-repeat:no-repeat;background-position:right 14px center;background-size:14px;
@@ -281,7 +281,7 @@ export const SIMULATOR_CSS = `
   color:rgba(255,213,107,.7);
 }
 .sim-out-value{
-  font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:500;
+  font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(22px,2.4vw,28px);font-weight:500;
   color:#fff;letter-spacing:-.01em;line-height:1.2;
 }
 .sim-out.primary .sim-out-value{color:var(--y)}
@@ -299,7 +299,7 @@ export const SIMULATOR_CSS = `
   font-size:13.5px;font-weight:600;
   text-decoration:none;
   transition:all .2s;
-  font-family:'Outfit',sans-serif;
+  font-family:'Outfit','Outfit Fallback',sans-serif;
 }
 .sim-cta-primary{
   background:var(--y);color:var(--gd);

@@ -727,7 +727,7 @@ function buildPage(p) {
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#004C3F">
 
-  <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
   <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
@@ -735,18 +735,18 @@ function buildPage(p) {
   <style>
     :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,.10)}
     *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
-    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+    body{margin:0;padding-top:64px;font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td)}
     body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
     img{max-width:100%;height:auto} a{color:inherit}
     .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
     .sec{padding:clamp(56px,7vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
     .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
     .lbl.dk{color:var(--g)}
-    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
     .h1 em{color:var(--y);font-style:italic;font-weight:300}
-    .h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
     .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
-    .h3{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;color:var(--td);margin:0 0 10px;letter-spacing:-.01em}
+    .h3{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.3rem;font-weight:500;color:var(--td);margin:0 0 10px;letter-spacing:-.01em}
     .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.65);margin:0 0 32px;max-width:680px}
     .sub.dk{color:var(--tm)} .sub.mx{max-width:760px}
     .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s,transform .2s,box-shadow .2s}
@@ -776,14 +776,14 @@ function buildPage(p) {
     .item-card p{font-size:14px;line-height:1.65;color:var(--tm);margin:0}
     .case-list{display:flex;flex-direction:column;gap:22px;margin-top:28px}
     .case{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:28px}
-    .case-t{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;color:var(--g);margin:0 0 14px;letter-spacing:-.01em}
+    .case-t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.15rem;font-weight:500;color:var(--g);margin:0 0 14px;letter-spacing:-.01em}
     .case ol{margin:0;padding:0 0 0 22px;color:var(--tm);font-size:14.5px;line-height:1.7}
     .case ol li{margin-bottom:5px}
     .faq-list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
     .faq-it{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px 26px}
-    .faq-it summary{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:500;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .faq-it summary{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.05rem;font-weight:500;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
     .faq-it summary::-webkit-details-marker{display:none}
-    .faq-it summary::after{content:'+';font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:300;color:var(--g);transition:transform .2s}
+    .faq-it summary::after{content:'+';font-family:'Outfit','Outfit Fallback',sans-serif;font-size:1.4rem;font-weight:300;color:var(--g);transition:transform .2s}
     .faq-it[open] summary::after{transform:rotate(45deg)}
     .faq-it p{margin:14px 0 0;font-size:14.5px;line-height:1.7;color:var(--tm)}
     .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:22px;padding:clamp(36px,5vw,56px);text-align:center;color:#fff}
@@ -793,7 +793,7 @@ function buildPage(p) {
     .rel-ic{width:38px;height:38px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:18px;flex-shrink:0}
     .rel-card:hover .rel-ic{background:var(--g);color:var(--y)}
     .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
-    .rel-t{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
+    .rel-t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
     .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
 ${SIMULATOR_CSS}
 ${SIMULATOR_VS_CSS}

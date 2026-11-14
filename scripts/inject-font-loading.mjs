@@ -46,8 +46,19 @@ function* htmlFiles(dir) {
   }
 }
 
+// Bandeau du haut prolongé avant la première image (14/11/2026, Jason : « saut de
+// page » à l'ouverture après une longue absence). nav.js remonte le premier
+// bandeau coloré jusqu'en haut de la page (fillTop) ; quand nav.js arrive tard
+// (cache vide, réseau lent : 3 à 4 s mesurées), on voyait d'abord une bande
+// claire de 64 px puis le bandeau sauter. Même calcul, ici en ligne à la fin de
+// la page : fait avant le premier affichage. nav.js le refait sans effet (écart 0).
+const FT_START = '<!-- FILLTOP:START -->'
+const FT_END = '<!-- FILLTOP:END -->'
+export const FILLTOP = `${FT_START}<script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\\(([^)]+)\\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script>${FT_END}`
+
 let n = 0
 let fades = 0
+let tops = 0
 for (const file of htmlFiles(ROOT)) {
   const rel = relative(ROOT, file)
   const raw = readFileSync(file, 'utf8')
@@ -60,4 +71,12 @@ for (const file of htmlFiles(ROOT)) {
   else out = html.replace(LINK, m => `${m}\n${BLOCK}`)
   if (out !== html) { writeFileSync(file, out); n++ }
 }
-console.log(`[font-loading] ${n} page(s) mises à jour, entrée du hero corrigée dans ${fades}`)
+for (const file of htmlFiles(ROOT)) {
+  const html = readFileSync(file, 'utf8')
+  if (!html.includes('/nav.js') || !html.includes('</body>')) continue
+  const clean = html.replace(new RegExp(`${FT_START}[\\s\\S]*?${FT_END}\\n?`), '')
+  const at = clean.lastIndexOf('</body>')
+  const out = clean.slice(0, at) + FILLTOP + '\n' + clean.slice(at)
+  if (out !== html) { writeFileSync(file, out); tops++ }
+}
+console.log(`[font-loading] ${n} page(s) mises à jour, entrée du hero corrigée dans ${fades}, bandeau du haut posé dans ${tops}`)

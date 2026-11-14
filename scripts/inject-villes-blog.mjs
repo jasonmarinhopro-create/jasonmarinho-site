@@ -69,7 +69,7 @@ function block(g) {
   return `<!-- VILLES-BLOG:START -->
 <div style="margin:32px 0 8px;padding:22px clamp(18px,3vw,26px);border-radius:16px;background:#FBF8F1;border:1px solid rgba(0,76,63,.12)">
   <div style="font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#004C3F;margin-bottom:8px;display:flex;align-items:center;gap:7px"><i class="ph-bold ${g.icone}" style="font-size:15px"></i> Par ville</div>
-  <p style="font-family:'Fraunces',serif;font-weight:500;font-size:clamp(18px,2.2vw,21px);line-height:1.25;color:#0F1A0D;margin:0 0 6px">${g.titre}</p>
+  <p style="font-family:'Fraunces','Fraunces Fallback',serif;font-weight:500;font-size:clamp(18px,2.2vw,21px);line-height:1.25;color:#0F1A0D;margin:0 0 6px">${g.titre}</p>
   <p style="font-size:14.5px;line-height:1.6;color:#3D5038;margin:0 0 14px">${g.texte}</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">
     ${chips}

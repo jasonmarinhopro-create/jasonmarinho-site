@@ -393,3 +393,11 @@ Jason : « je ne peux pas me permettre d'avoir des pics, il faut que tout soit s
 - Page principale des fiches (photographe, ménage, dépannage) : « vues du mois » gardées 10 min (`lib/pros/views-cached.ts`, jamais quand la table est indisponible).
 - Planning ménage : les lectures de la fiche annuaire partent dès le début ; liens des photos en un appel par client au lieu d'un par ménage.
 - Statistiques : voir plus haut (cache 5 min). Demandes et Carnet clients : 2 lectures (fiche puis liste), laissées telles quelles.
+
+## Ouverture des pages « à froid » sans saut ni petit zoom (14/11/2026)
+
+Jason : « petit zoom et dézoom » et « saut de page » à l'ouverture du site après une longue absence, « opacité, rebond » sur la connexion. Mesuré avec cache vide et réseau lent (560 ms, 1,6 Mbit/s) : les polices arrivent vers 2,2-2,5 s, `nav.js` vers 4 s.
+- **Polices de secours calibrées** (`fonts/site-fonts.css`, `?v=` changé partout) : `Fraunces Fallback` (Times) et `Outfit Fallback` (Arial) avec `size-adjust` et `ascent/descent-override` mesurés dans une vraie page (Fraunces est ~25 % plus large que Times à cause de sa taille optique, ses lignes 12 % plus hautes). Chaque pile du site nomme la face de secours juste après la vraie : `'Fraunces','Fraunces Fallback',serif` (remplacement fait dans les pages, `nav.js`, `footer.js` et les générateurs ; à garder dans toute nouvelle page).
+- **Bandeau du haut posé avant le premier affichage** : `fillTop` (remonter le premier bandeau coloré sous la barre) était fait par `nav.js` seulement ; arrivé tard, on voyait une bande claire de 64 px puis le bandeau sauter. Même calcul en ligne en fin de page (`FILLTOP`, posé par `scripts/inject-font-loading.mjs` au build).
+- Résultat (CLS à froid) : annuaires 0,074 → 0,000, ménage Lyon 0,078 → 0,0015, études et blog divisés par 5 à 30.
+- App : plus d'entrée animée (`fadeUp`) du formulaire sur Connexion, Mot de passe oublié et Nouveau mot de passe.

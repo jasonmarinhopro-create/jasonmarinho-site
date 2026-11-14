@@ -70,7 +70,7 @@ function page(reg, villes, cities, tpl) {
     <div class="rg-grid">
       <div>
         <span class="lbl dk">Les guides</span>
-        <h2 style="font-family:Fraunces,serif;font-weight:400;font-size:clamp(24px,3vw,32px);margin:6px 0 8px">Les villes <em style="color:var(--g)">${esc(de)}</em></h2>
+        <h2 style="font-family:Fraunces,Fraunces Fallback,serif;font-weight:400;font-size:clamp(24px,3vw,32px);margin:6px 0 8px">Les villes <em style="color:var(--g)">${esc(de)}</em></h2>
         <p style="color:var(--tm);margin:0">Réglementation locale, numéro d’enregistrement, taxe de séjour, saisons et repères du marché : un guide complet par ville.</p>
         <div class="rg-list">
           ${villes.map(v => `<a href="${v.pages.hote}"><i class="ph-bold ph-map-pin"></i><span class="rg-v">${esc(v.nom)}${v.departement.nom !== v.nom ? ` <small>${esc(v.departement.nom)}</small>` : ''}</span>${cities[v.slug] ? `<span class="rg-a">${esc(cities[v.slug].ann)}</span>` : ''}<i class="ph-bold ph-arrow-right"></i></a>`).join('\n          ')}

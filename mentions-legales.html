@@ -20,7 +20,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -33,15 +33,15 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,.09)}
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased;padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 main{max-width:760px;margin:0 auto;padding:104px clamp(20px,5vw,40px) 80px}
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--tl);text-decoration:none;font-size:13px;font-weight:500;margin-bottom:36px;padding:6px 10px;margin-left:-10px;border-radius:8px;transition:color .2s cubic-bezier(.4,0,.2,1),background .2s}
 .back:hover{color:var(--g);background:rgba(0,76,63,.04)}
-h1{font-family:'Fraunces',serif;font-size:clamp(30px,4vw,44px);font-weight:400;color:var(--td);margin-bottom:10px;line-height:1.15;letter-spacing:-.5px}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(30px,4vw,44px);font-weight:400;color:var(--td);margin-bottom:10px;line-height:1.15;letter-spacing:-.5px}
 .updated{font-size:13px;color:var(--tl);margin-bottom:0}
 section{border-top:1px solid var(--bd);padding-top:28px;margin-top:28px}
-h2{font-family:'Fraunces',serif;font-size:20px;font-weight:500;color:var(--td);margin-bottom:16px;letter-spacing:-.2px}
+h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:20px;font-weight:500;color:var(--td);margin-bottom:16px;letter-spacing:-.2px}
 p,li{font-size:15px;font-weight:400;color:var(--tm);line-height:1.75}
 ul{padding-left:20px;display:flex;flex-direction:column;gap:6px}
 p+p{margin-top:10px}
@@ -124,6 +124,7 @@ a.inline:hover{text-decoration:underline}
 <script defer src="/footer.js"></script>
 
 <script src="/cookie-banner.js" defer></script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body>
 </html>
 

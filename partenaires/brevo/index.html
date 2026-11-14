@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -126,7 +126,7 @@
 <style>
   :root{--gd:#004c3f;--g:#63D683;--y:#FFD56B;--td:#111827;--tm:#374151;--tl:#6B7280;--bd:#E5E7EB;--bg:#F9FAFB;--cr:#F0FDF4}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--td);-webkit-font-smoothing:antialiased}
+  body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--bg);color:var(--td);-webkit-font-smoothing:antialiased}
   a{color:var(--gd);text-decoration:none}
   a:hover{text-decoration:underline}
   p a:not([class]),.faq-body a:not([class]){text-decoration:underline;text-underline-offset:2px}
@@ -137,16 +137,16 @@
   .breadcrumb a:hover{color:#fff;text-decoration:none}
   .breadcrumb i{font-size:10px}
   .duo{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-  .duo .lg{width:48px;height:48px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:24px;font-weight:600}
+  .duo .lg{width:48px;height:48px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;font-weight:600}
   .duo .x{color:rgba(255,255,255,.4);font-size:18px}
-  .duo .jm{width:48px;height:48px;border-radius:13px;background:var(--y);color:var(--gd);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:19px;font-weight:600}
+  .duo .jm{width:48px;height:48px;border-radius:13px;background:var(--y);color:var(--gd);display:flex;align-items:center;justify-content:center;font-family:'Fraunces','Fraunces Fallback',serif;font-size:19px;font-weight:600}
   .lbl{display:inline-block;background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.25);color:var(--y);font-size:12px;letter-spacing:.6px;text-transform:uppercase;font-weight:500;padding:5px 12px;border-radius:20px;margin-bottom:14px}
-  .h1{font-family:'Fraunces',serif;font-size:clamp(1.9rem,4vw,3rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:300}
+  .h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.9rem,4vw,3rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:300}
   .h1 em{color:var(--y);font-style:italic;font-weight:300}
   .lead{font-size:clamp(15px,1.5vw,17px);color:rgba(255,255,255,.68);line-height:1.7;margin:0}
   .offer{background:#fff;border-radius:20px;padding:clamp(22px,3vw,30px);box-shadow:0 24px 60px rgba(0,0,0,.25)}
   .offer .tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#7a5a00;background:rgba(255,213,107,.35);padding:4px 9px;border-radius:6px;margin-bottom:14px}
-  .offer .big{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:400;letter-spacing:-.02em;color:var(--td);line-height:1.1;margin:0 0 4px}
+  .offer .big{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:400;letter-spacing:-.02em;color:var(--td);line-height:1.1;margin:0 0 4px}
   .offer .sous{font-size:14.5px;color:var(--tl);margin:0 0 18px}
   .offer ul{list-style:none;margin:0 0 20px;display:flex;flex-direction:column;gap:9px}
   .offer li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--tm);line-height:1.5}
@@ -158,7 +158,7 @@
   .offer small{display:block;margin-top:12px;font-size:12px;color:var(--tl);line-height:1.5}
   main{max-width:1120px;margin:0 auto;padding:clamp(32px,4vw,48px) 16px clamp(48px,6vw,72px)}
   section{margin-bottom:clamp(44px,6vw,64px);scroll-margin-top:90px}
-  h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:400;letter-spacing:-.5px;margin:0 0 20px;color:var(--td)}
+  h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:400;letter-spacing:-.5px;margin:0 0 20px;color:var(--td)}
   h2 em{font-style:italic;color:var(--gd);font-weight:300}
   p{color:var(--tm);font-size:15.5px;line-height:1.7;margin:0 0 14px}
   .disc{font-size:13.5px;color:var(--tl);background:#fff;border:1px dashed var(--bd);border-radius:10px;padding:12px 16px;margin:0 0 clamp(36px,5vw,52px)}
@@ -166,7 +166,7 @@
   .why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
   .why div{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:24px}
   .why i{display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:12px;background:var(--cr);color:var(--gd);font-size:22px;margin-bottom:14px}
-  .why h3{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:500;margin:0 0 8px;color:var(--td)}
+  .why h3{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.15rem;font-weight:500;margin:0 0 8px;color:var(--td)}
   .why p{font-size:14.5px;margin:0}
   .feat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
   .feat div{background:#fff;padding:22px;display:flex;flex-direction:column;gap:6px}
@@ -176,7 +176,7 @@
   .feat a{font-size:13.5px;font-weight:600;margin-top:4px}
   .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;counter-reset:st;list-style:none}
   .steps li{counter-increment:st;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:24px;font-size:14.5px;color:var(--tm);line-height:1.6}
-  .steps li::before{content:counter(st);display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--gd);color:var(--y);font-family:'Fraunces',serif;font-weight:600;margin-bottom:14px}
+  .steps li::before{content:counter(st);display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--gd);color:var(--y);font-family:'Fraunces','Fraunces Fallback',serif;font-weight:600;margin-bottom:14px}
   .steps strong{display:block;color:var(--td);font-size:15.5px;margin-bottom:4px}
   .tbw{overflow-x:auto;border-radius:14px;border:1px solid var(--bd)}
   table.tb{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
@@ -363,5 +363,6 @@
 <script src="/nav.js" defer></script>
 <script src="/footer.js" defer></script>
 <script src="/cookie-banner.js" defer></script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body>
 </html>

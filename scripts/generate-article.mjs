@@ -90,7 +90,7 @@ function buildRelated(related) {
     `<div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div>` +
     `<div style="padding:16px">` +
     `<div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">${r.categoryLabel}</div>` +
-    `<p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">${r.label}</p>` +
+    `<p style="font-family:'Fraunces','Fraunces Fallback',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">${r.label}</p>` +
     `</div></a>`
   ).join('')
 }
@@ -106,21 +106,21 @@ const SHARED_CSS = `*,*::before,*::after{box-sizing:border-box;margin:0;padding:
   --bd:rgba(0,76,63,.09);
 }
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .nav-logo-img{width:36px;height:36px;object-fit:contain;filter:brightness(0) invert(1);opacity:.9;flex-shrink:0}
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);background:rgba(0,51,41,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,213,107,.07);transition:box-shadow .3s}
 nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
 .n-logo svg{width:34px;height:34px;flex-shrink:0}
-.n-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}
+.n-brand{font-family:'Fraunces','Fraunces Fallback',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}
 .n-brand em{color:var(--y);font-style:italic;font-weight:300}
 .n-links{display:flex;align-items:center;gap:28px;list-style:none}
 .n-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:14px;transition:color .2s}
 .n-links a:hover{color:#fff}
 .n-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.nb-o{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18);background:transparent;padding:8px 15px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
+.nb-o{font-family:'Outfit','Outfit Fallback',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18);background:transparent;padding:8px 15px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
 .nb-o:hover{border-color:rgba(255,255,255,.42);color:#fff}
-.nb-c{font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:8px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
+.nb-c{font-family:'Outfit','Outfit Fallback',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:8px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
 .nb-c:hover{background:#ffe08f;transform:translateY(-1px)}
 .hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
 .hbg span{display:block;height:2px;background:rgba(255,255,255,.8);border-radius:2px;transition:.3s}
@@ -136,13 +136,13 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .mob-ctas a{flex:1;justify-content:center;font-size:14px;font-weight:500;text-decoration:none;padding:12px 0;border-radius:9px;display:flex;align-items:center;gap:5px}
 .mc-o{background:rgba(255,255,255,.05);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.12)}
 .mc-c{background:var(--y);color:var(--gd)!important;font-weight:600}
-.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit','Outfit Fallback',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
 .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
 .lbl{font-size:10.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--ol);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .lbl.lt{color:rgba(255,213,107,.5)}
 .lbl.ct{justify-content:center}
 .lbl::before{content:'';width:18px;height:2px;background:currentColor;border-radius:2px}
-.h2{font-family:'Fraunces',serif;font-size:clamp(30px,3.8vw,50px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:var(--td);margin-bottom:14px}
+.h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(30px,3.8vw,50px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:var(--td);margin-bottom:14px}
 .h2 em{font-style:italic;color:var(--g)}
 .h2.lt{color:#fff}.h2.lt em{color:var(--y)}
 .h2.ct{text-align:center}
@@ -153,7 +153,7 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .cta-gw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:640px;height:300px;background:radial-gradient(ellipse,rgba(255,213,107,.06) 0%,transparent 65%);pointer-events:none}
 .cta-in{max-width:520px;margin:0 auto;position:relative;z-index:2}
 .cta-fm{display:flex;gap:10px;margin:28px auto 0;max-width:420px}
-.cta-i{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 16px;font-size:14.5px;font-weight:300;color:#fff;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;min-width:0}
+.cta-i{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 16px;font-size:14.5px;font-weight:300;color:#fff;font-family:'Outfit','Outfit Fallback',sans-serif;outline:none;transition:border-color .2s;min-width:0}
 .cta-i::placeholder{color:rgba(255,255,255,.28)}
 .cta-i:focus{border-color:rgba(255,213,107,.45)}
 .cta-n{font-size:11.5px;color:rgba(255,255,255,.62);margin-top:12px;font-weight:300;display:flex;align-items:center;justify-content:center;gap:5px}
@@ -197,13 +197,13 @@ const ARTICLE_CSS = `.art-hero{background:var(--gd);padding:clamp(100px,14vw,130
 .art-hero-in{position:relative;z-index:2;max-width:760px;margin:0 auto}
 .art-cat{font-size:11px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--y);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .art-cat::before{content:"";display:inline-block;width:22px;height:2px;background:var(--g);border-radius:2px}
-.art-title{font-family:'Fraunces',serif;font-size:clamp(28px,4.2vw,52px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:#fff;margin-bottom:20px}
+.art-title{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(28px,4.2vw,52px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:#fff;margin-bottom:20px}
 .art-title em{font-style:italic;color:var(--y)}
 .art-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .art-meta span{font-size:12px;color:rgba(255,255,255,.42);display:flex;align-items:center;gap:5px}
 .art-body{max-width:760px;margin:0 auto;padding:clamp(40px,6vw,64px) clamp(16px,5vw,60px)}
 .art-lead{font-size:clamp(16px,1.5vw,18px);font-weight:300;color:var(--tm);line-height:1.8;margin-bottom:28px;border-left:3px solid var(--g);padding-left:18px}
-.art-h2{font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,26px);font-weight:400;color:var(--td);letter-spacing:-.3px;margin:36px 0 12px}
+.art-h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(20px,2.2vw,26px);font-weight:400;color:var(--td);letter-spacing:-.3px;margin:36px 0 12px}
 .art-p{font-size:15px;font-weight:300;color:var(--tm);line-height:1.8;margin-bottom:16px}
 .art-ul{padding-left:0;margin:0 0 20px;list-style:none}
 .art-ul li{font-size:15px;font-weight:300;color:var(--tm);line-height:1.7;padding:6px 0 6px 24px;position:relative;border-bottom:1px solid var(--bd)}
@@ -278,7 +278,7 @@ function generateArticleHTML(art) {
 <meta property="article:section" content="${cat.section}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
 <style>
@@ -320,7 +320,7 @@ ${buildBodyContent(art.sections)}
 <section class="related-sec">
   <div class="related-in">
     <div class="lbl rv">Continuer la lecture</div>
-    <h2 style="font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,24px);font-weight:400;color:var(--td);margin-bottom:0;letter-spacing:-.2px">Articles similaires</h2>
+    <h2 style="font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(20px,2.2vw,24px);font-weight:400;color:var(--td);margin-bottom:0;letter-spacing:-.2px">Articles similaires</h2>
     <div class="rel-grid">
       ${buildRelated(art.related)}
     </div>

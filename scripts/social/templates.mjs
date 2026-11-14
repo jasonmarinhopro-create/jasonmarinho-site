@@ -42,14 +42,14 @@ const CSS = ({ w, h }) => `
 @import url('/fonts/phosphor-bold.css');
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:${w}px;height:${h}px;overflow:hidden}
-body{font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased;color:#0F1A0D}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;-webkit-font-smoothing:antialiased;color:#0F1A0D}
 .s{position:relative;width:${w}px;height:${h}px;overflow:hidden;display:flex;flex-direction:column;padding:${h > 1500 ? '170px 150px 400px 90px' : '84px 84px 92px'}}
 .dark{background:radial-gradient(ellipse 70% 55% at 88% 6%,rgba(255,213,107,.16),transparent 70%),linear-gradient(162deg,#001a11 0%,#003329 52%,#00463a 100%);color:#fff}
 .cream{background:#F7F5F0}
 .bg{position:absolute;inset:0;background-size:cover;background-position:center}
 .bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,26,17,.55) 0%,rgba(0,26,17,.35) 38%,rgba(0,26,17,.92) 78%,#001a11 100%)}
 .top{position:relative;display:flex;align-items:center;justify-content:space-between;z-index:2}
-.brand{display:flex;align-items:center;gap:16px;font-family:'Fraunces',serif;font-size:30px;font-weight:600;letter-spacing:-.3px}
+.brand{display:flex;align-items:center;gap:16px;font-family:'Fraunces','Fraunces Fallback',serif;font-size:30px;font-weight:600;letter-spacing:-.3px}
 .brand img{width:52px;height:52px;object-fit:contain}
 .dark .brand img{filter:brightness(0) invert(1)}
 .cream .brand{color:#003329}
@@ -60,21 +60,21 @@ body{font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased;color:#0
 .kick{display:inline-flex;align-self:flex-start;align-items:center;gap:14px;font-size:26px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#FFD56B}
 .kick::before{content:'';width:46px;height:4px;border-radius:4px;background:currentColor}
 .cream .kick{color:#556B2F}
-h1{font-family:'Fraunces',serif;font-weight:400;font-size:${h > 1500 ? 104 : 92}px;line-height:1.04;letter-spacing:-2px}
-h2{font-family:'Fraunces',serif;font-weight:400;font-size:${h > 1500 ? 86 : 78}px;line-height:1.08;letter-spacing:-1.4px}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:${h > 1500 ? 104 : 92}px;line-height:1.04;letter-spacing:-2px}
+h2{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:${h > 1500 ? 86 : 78}px;line-height:1.08;letter-spacing:-1.4px}
 h1 em,h2 em{font-style:italic;font-weight:300;color:#FFD56B}
 .cream h1 em,.cream h2 em{color:#004C3F}
 .sub{font-size:36px;line-height:1.45;font-weight:300;color:rgba(255,255,255,.82);max-width:880px}
 .txt{font-size:42px;line-height:1.5;font-weight:300;color:#3D5038;max-width:900px}
 .dark .txt{color:rgba(255,255,255,.82)}
-.num{font-family:'Fraunces',serif;font-size:150px;line-height:.9;font-weight:300;font-style:italic;color:#004C3F;opacity:.9}
+.num{font-family:'Fraunces','Fraunces Fallback',serif;font-size:150px;line-height:.9;font-weight:300;font-style:italic;color:#004C3F;opacity:.9}
 .num small{display:block;width:90px;height:6px;border-radius:6px;background:#FFD56B;margin-top:22px}
 ul{list-style:none;display:flex;flex-direction:column;gap:30px;margin-top:10px}
 li{display:flex;gap:24px;align-items:flex-start;font-size:42px;line-height:1.38;font-weight:400;color:#1d2b1a}
 .dark li{color:#fff}
 li .ck{flex:none;width:52px;height:52px;border-radius:50%;background:#004C3F;color:#FFD56B;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:28px;margin-top:2px}
 .dark li .ck{background:#FFD56B;color:#003329}
-.stat{font-family:'Fraunces',serif;font-size:${h > 1500 ? 230 : 200}px;line-height:.95;font-weight:300;color:#FFD56B;letter-spacing:-6px}
+.stat{font-family:'Fraunces','Fraunces Fallback',serif;font-size:${h > 1500 ? 230 : 200}px;line-height:.95;font-weight:300;color:#FFD56B;letter-spacing:-6px}
 .lab{font-size:42px;line-height:1.35;font-weight:400;max-width:860px}
 .src{font-size:24px;color:rgba(255,255,255,.55)}
 .cream .src{color:#6E7F6B}

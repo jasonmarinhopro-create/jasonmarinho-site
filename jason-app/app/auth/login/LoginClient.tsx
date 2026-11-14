@@ -566,10 +566,11 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: '36px',
     alignItems: 'center',
   } as React.CSSProperties,
+  // Pas d'entrée animée (14/11/2026, Jason : « opacité, rebond » à l'ouverture) :
+  // le formulaire est là tout de suite (idem mot de passe oublié et nouveau mot de passe)
   formCard: {
     width: '100%',
     maxWidth: '440px',
-    animation: 'fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both',
   },
   formTitle: {
     fontFamily: 'var(--font-fraunces), serif',

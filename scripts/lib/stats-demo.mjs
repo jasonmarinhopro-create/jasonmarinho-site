@@ -99,15 +99,15 @@ function chart(metier) {
 
 const bars = rows => rows.map(([l, p]) => `<div class="sd-bar"><span class="sd-bar-l">${l}</span><span class="sd-bar-t"><span style="width:${p}%"></span></span><span class="sd-bar-p">${p} %</span></div>`).join('')
 
-export const STATS_DEMO_CSS = `.sd{max-width:1080px;margin:0 auto;padding:0 16px;font-family:'Outfit',system-ui,sans-serif;color:#0F1A0D}
+export const STATS_DEMO_CSS = `.sd{max-width:1080px;margin:0 auto;padding:0 16px;font-family:'Outfit','Outfit Fallback',system-ui,sans-serif;color:#0F1A0D}
 .sd-head{text-align:center;max-width:700px;margin:0 auto 28px}
 .sd-lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:rgba(255,213,107,.2);color:#8a6408;border:1px solid rgba(255,213,107,.5);margin-bottom:12px}
-.sd-h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:400;line-height:1.2;margin:0 0 12px;color:#0F1A0D}
+.sd-h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:400;line-height:1.2;margin:0 0 12px;color:#0F1A0D}
 .sd-h2 em{font-style:italic;color:#004C3F}
 .sd-sub{font-size:15.5px;color:#3D5038;line-height:1.7;margin:0}
 .sd-app{background:#F4F8F5;border:1px solid rgba(0,76,63,.12);border-radius:22px;padding:clamp(14px,2.4vw,26px);box-shadow:0 18px 50px rgba(0,51,41,.08)}
 .sd-hero{background:linear-gradient(135deg,#001a11,#003329 55%,#00463a);border-radius:16px;padding:18px clamp(16px,2.4vw,24px);color:#fff;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
-.sd-hero-t{font-family:'Fraunces',serif;font-size:clamp(1.15rem,2.2vw,1.45rem);font-weight:400;margin:2px 0 0}
+.sd-hero-t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.15rem,2.2vw,1.45rem);font-weight:400;margin:2px 0 0}
 .sd-hero-t em{color:#FFD56B;font-style:italic}
 .sd-eyebrow{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,213,107,.8);font-weight:600}
 .sd-pills{display:flex;gap:6px;flex-wrap:wrap}
@@ -119,12 +119,12 @@ export const STATS_DEMO_CSS = `.sd{max-width:1080px;margin:0 auto;padding:0 16px
 .sd-tile-l{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#3D5038}
 .sd-tile-l i{color:#1e9d54;font-size:15px}
 .sd-tile-h{font-size:11px;color:#5A6B57;margin-top:1px;min-height:14px}
-.sd-tile-v{font-family:'Fraunces',serif;font-size:26px;line-height:1.1;margin-top:4px;color:#0F1A0D}
+.sd-tile-v{font-family:'Fraunces','Fraunces Fallback',serif;font-size:26px;line-height:1.1;margin-top:4px;color:#0F1A0D}
 .sd-tile-d{display:inline-block;font-size:11.5px;font-weight:600;color:#17803f;background:rgba(30,157,84,.1);border-radius:999px;padding:2px 8px;margin-top:6px}
 .sd-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:16px 18px;min-width:0}
 .sd-card-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .sd-ic{width:34px;height:34px;border-radius:10px;background:rgba(30,157,84,.1);color:#004C3F;display:inline-flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.sd-card-t{font-family:'Fraunces',serif;font-size:17px;font-weight:400;margin:0;color:#0F1A0D;line-height:1.25}
+.sd-card-t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;font-weight:400;margin:0;color:#0F1A0D;line-height:1.25}
 .sd-card-s{font-size:12px;color:#5A6B57;margin-top:1px}
 .sd-chart{margin-bottom:14px}
 .sd-chart-top{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between;margin-bottom:8px}
@@ -146,7 +146,7 @@ export const STATS_DEMO_CSS = `.sd{max-width:1080px;margin:0 auto;padding:0 16px
 .sd-q-m{grid-column:1/-1;font-size:11.5px;color:#5A6B57}
 .sd-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .sd-num{background:#F4F8F5;border-radius:12px;padding:10px;min-width:0}
-.sd-num-v{font-family:'Fraunces',serif;font-size:22px;color:#0F1A0D;line-height:1.1}
+.sd-num-v{font-family:'Fraunces','Fraunces Fallback',serif;font-size:22px;color:#0F1A0D;line-height:1.1}
 .sd-num-l{font-size:11.5px;color:#3D5038;margin-top:3px;line-height:1.35}
 .sd-list{list-style:none;margin:0;padding:0}
 .sd-list li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.55;color:#0F1A0D;padding:6px 0}
@@ -180,7 +180,7 @@ export function statsDemoHtml(metier, { cta = null } = {}) {
     </div>
     <div class="sd-tiles">${tiles}</div>
     <div class="sd-card sd-chart">
-      <div class="sd-chart-top"><h3 class="sd-card-t">Visiteurs <span style="font-family:'Outfit',sans-serif;font-size:13px;color:#5A6B57">· par jour</span></h3>
+      <div class="sd-chart-top"><h3 class="sd-card-t">Visiteurs <span style="font-family:'Outfit','Outfit Fallback',sans-serif;font-size:13px;color:#5A6B57">· par jour</span></h3>
       <div class="sd-legend"><span><b></b>30 derniers jours</span><span><b class="prev"></b>30 jours d'avant</span></div></div>
       ${chart(metier)}
     </div>

@@ -65,15 +65,15 @@ const html = `<!-- MARKET:START -->
     .mk-sec .s-in{max-width:1320px}
     .mk-head{text-align:center;max-width:760px;margin:0 auto 44px}
     .mk-head .h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin-bottom:14px}
-    .mk-head p{font-size:clamp(16px,1.6vw,19px);color:var(--tm);line-height:1.6;margin:0;font-family:'Fraunces',serif;font-weight:300}
+    .mk-head p{font-size:clamp(16px,1.6vw,19px);color:var(--tm);line-height:1.6;margin:0;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:300}
     .mk-tiles{display:grid;grid-template-columns:repeat(${RACCOURCIS.length},1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
-    .mk-tile{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;cursor:pointer;padding:14px 8px;border-radius:14px;font-family:'Outfit',sans-serif;font-size:14.5px;color:var(--td);line-height:1.4;transition:background .15s}
+    .mk-tile{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;cursor:pointer;padding:14px 8px;border-radius:14px;font-family:'Outfit','Outfit Fallback',sans-serif;font-size:14.5px;color:var(--td);line-height:1.4;transition:background .15s}
     .mk-tile i{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:var(--cr);font-size:24px;color:var(--g);transition:background .15s,color .15s}
     .mk-tile:hover{background:rgba(0,76,63,.03)}
     .mk-tile:hover i,.mk-tile.on i{background:var(--g);color:var(--y)}
     .mk-layout{display:grid;grid-template-columns:230px 1fr;gap:clamp(28px,4vw,56px);align-items:start}
     .mk-side{position:sticky;top:90px;display:flex;flex-direction:column;gap:2px}
-    .mk-f{display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;cursor:pointer;text-align:left;padding:11px 0;font-family:'Outfit',sans-serif;font-size:15px;color:var(--tm);position:relative}
+    .mk-f{display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;cursor:pointer;text-align:left;padding:11px 0;font-family:'Outfit','Outfit Fallback',sans-serif;font-size:15px;color:var(--tm);position:relative}
     .mk-f span{font-size:12px;color:var(--tl);font-variant-numeric:tabular-nums}
     .mk-f:hover{color:var(--g)}
     .mk-f.on{color:var(--g);font-weight:600}
@@ -88,9 +88,9 @@ const html = `<!-- MARKET:START -->
     .mk-card.is-offre{border-color:rgba(255,213,107,.7);background:linear-gradient(180deg,rgba(255,213,107,.07),#fff 60%)}
     .mk-card[hidden]{display:none}
     .mk-head-c{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-    .mk-logo{flex:0 0 52px;width:52px;height:52px;border-radius:13px;background:#fff;border:1px solid rgba(0,76,63,.12);box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:24px;font-weight:600;line-height:1}
+    .mk-logo{flex:0 0 52px;width:52px;height:52px;border-radius:13px;background:#fff;border:1px solid rgba(0,76,63,.12);box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;align-items:center;justify-content:center;font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;font-weight:600;line-height:1}
     .mk-id{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
-    .mk-nom{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:400;color:var(--td);margin:0;letter-spacing:-.02em;line-height:1.15;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mk-nom{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.3rem;font-weight:400;color:var(--td);margin:0;letter-spacing:-.02em;line-height:1.15;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .mk-badge{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap;line-height:1.4}
     .b-aff{background:rgba(255,213,107,.3);color:#7a5a00}
     .b-mem{background:rgba(21,128,61,.1);color:#15803d}

@@ -113,7 +113,7 @@ export function injectProsIntoVillePages({ root, prefix, metier, pluriel = `${me
     const villeName = villeLabel(villeSlug)
     const cards = list.map(p => `
       <a href="${escHtml(p.url)}" style="display:flex;flex-direction:column;gap:4px;padding:16px 18px;background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:12px;text-decoration:none;min-width:220px;flex:1">
-        <span style="font-family:'Fraunces',serif;font-size:16px;color:#0F1A0D">${escHtml(p.name)}</span>
+        <span style="font-family:'Fraunces','Fraunces Fallback',serif;font-size:16px;color:#0F1A0D">${escHtml(p.name)}</span>
         ${p.sub ? `<span style="font-size:12.5px;color:#3D5038">${escHtml(p.sub)}</span>` : ''}
         <span style="font-size:12.5px;font-weight:600;color:#004C3F;margin-top:4px">Voir la fiche →</span>
       </a>`).join('')
@@ -122,7 +122,7 @@ export function injectProsIntoVillePages({ root, prefix, metier, pluriel = `${me
 <section style="background:rgba(99,214,131,.08);border-top:1px solid rgba(0,76,63,.08);border-bottom:1px solid rgba(0,76,63,.08);padding:34px 0">
   <div style="max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,40px)">
     <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#1e9d54;margin-bottom:10px">Dans l'annuaire</span>
-    <h2 style="font-family:'Fraunces',serif;font-size:clamp(20px,2.6vw,26px);font-weight:400;color:#0F1A0D;margin:0 0 14px">${list.length > 1 ? `${list.length} ${escHtml(pluriel)} disponibles` : `Un ${escHtml(metier)} disponible`} ${escHtml(aVille(villeName))}</h2>
+    <h2 style="font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(20px,2.6vw,26px);font-weight:400;color:#0F1A0D;margin:0 0 14px">${list.length > 1 ? `${list.length} ${escHtml(pluriel)} disponibles` : `Un ${escHtml(metier)} disponible`} ${escHtml(aVille(villeName))}</h2>
     <div style="display:flex;flex-wrap:wrap;gap:12px">${cards}</div>
   </div>
 </section>

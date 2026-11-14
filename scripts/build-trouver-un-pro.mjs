@@ -64,21 +64,21 @@ ${canonical ? `<link rel="canonical" href="${canonical}">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">`
 
 // Styles communs aux deux pages (demande et suivi)
 const BASE_CSS = `:root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#6E7F6B;--bd:rgba(0,76,63,.11);--gs:#EEF4F1;--amb:#FBF1DE;--ambt:#6B4300}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 button{font-family:inherit}
 .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(28px,5vw,56px) 0 clamp(84px,10vw,110px)}
 .s-in{max-width:1160px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
 .brd{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px}.brd a{color:rgba(255,255,255,.6);text-decoration:none}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:10px}
-h1{font-family:'Fraunces',serif;font-size:clamp(28px,4.2vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;max-width:780px;text-wrap:balance}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(28px,4.2vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;max-width:780px;text-wrap:balance}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:16px;color:rgba(255,255,255,.75);line-height:1.65;max-width:620px;margin-top:12px}
 .promises{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
@@ -86,7 +86,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .promises i{color:var(--y)}
 .pc{display:flex;gap:11px;align-items:center;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:9px 11px;text-decoration:none;color:inherit;min-width:0}
 .pc:hover{border-color:rgba(0,76,63,.35)}
-.pc .av{width:46px;height:46px;border-radius:12px;flex-shrink:0;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces',serif;font-size:17px;color:var(--g)}
+.pc .av{width:46px;height:46px;border-radius:12px;flex-shrink:0;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;color:var(--g)}
 .pc .tx{min-width:0;flex:1}
 .pc b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pc small{display:block;font-size:12.5px;color:var(--tl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -116,7 +116,7 @@ ${BASE_CSS}
 .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--g),#2F7D52);border-radius:5px;transition:width .3s}
 .fb{flex:1;padding:22px clamp(18px,3vw,30px) 8px;display:flex;flex-direction:column;gap:16px;animation:in .22s ease}
 @keyframes in{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.q{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,30px);font-weight:400;line-height:1.15;text-wrap:balance}
+.q{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(24px,3vw,30px);font-weight:400;line-height:1.15;text-wrap:balance}
 .sub{font-size:15px;color:var(--tm);line-height:1.6;margin-top:-8px;max-width:60ch}
 .opts{display:grid;gap:10px}
 @media(min-width:640px){.opts.two{grid-template-columns:1fr 1fr}}
@@ -139,7 +139,7 @@ ${BASE_CSS}
 .bigc .im span{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,51,41,.88);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:5px 10px}
 .bigc .im span i{color:var(--y)}
 .bigc .bd{padding:14px 16px 16px;display:grid;gap:6px}
-.bigc .t{font-family:'Fraunces',serif;font-size:21px;line-height:1.2}
+.bigc .t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:21px;line-height:1.2}
 .bigc ul{list-style:none;display:grid;gap:4px;font-size:13.5px;color:var(--tm)}
 .bigc li{display:flex;gap:7px}.bigc li i{color:#2F7D52;margin-top:2px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -207,7 +207,7 @@ details.more a{color:var(--g)}
 .ticket .th b{font-weight:600;letter-spacing:.3px}
 .ticket .th span{color:var(--y);font-size:12px}
 .ticket .tb{padding:14px 16px 16px;display:grid;gap:10px}
-.ticket .tt{font-family:'Fraunces',serif;font-size:21px;line-height:1.2}
+.ticket .tt{font-family:'Fraunces','Fraunces Fallback',serif;font-size:21px;line-height:1.2}
 .ticket .tt.empty{color:#B9B2A2}
 .rows{display:grid;gap:7px;font-size:14px}
 .rows div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed #EFEBE2;padding-bottom:6px}
@@ -218,7 +218,7 @@ details.more a{color:var(--g)}
 .ready{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ambt);background:var(--amb);border-radius:10px;padding:8px 10px}
 .ready.ok{color:#1e7a45;background:var(--gs)}
 .side-card{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:16px;display:grid;gap:10px}
-.side-card h3{font-family:'Fraunces',serif;font-weight:400;font-size:18px}
+.side-card h3{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:18px}
 .side-card ul{list-style:none;display:grid;gap:9px}
 .side-card li{display:flex;gap:9px;font-size:13.5px;color:var(--tm);line-height:1.5}
 .side-card li i{color:#2F7D52;font-size:17px;flex-shrink:0;margin-top:1px}
@@ -232,7 +232,7 @@ details.more a{color:var(--g)}
 .np-top{display:flex;gap:13px;align-items:center}
 .np-ic{width:46px;height:46px;border-radius:14px;background:#FFF1C9;color:#8A5A12;display:grid;place-items:center;font-size:22px;flex-shrink:0}
 .np-k{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A5A12}
-.np-t{font-family:'Fraunces',serif;font-size:21px;line-height:1.2;color:var(--td)}
+.np-t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:21px;line-height:1.2;color:var(--td)}
 .np-rows{display:grid;gap:10px}
 .np-rows div{display:flex;gap:10px;font-size:14px;color:var(--tm);line-height:1.5}
 .np-rows i{color:var(--g);font-size:17px;flex-shrink:0;margin-top:2px}
@@ -249,7 +249,7 @@ details.more a{color:var(--g)}
 .check label{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--tm);cursor:pointer;line-height:1.45}
 .check input{width:19px;height:19px;accent-color:var(--g);flex-shrink:0;margin-top:1px}
 .acts{display:flex;flex-wrap:wrap;gap:10px}
-.h2{font-family:'Fraunces',serif;font-weight:400;font-size:20px}
+.h2{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:20px}
 @media(min-width:980px){body[data-step=recap] .side .ticket{display:none}}
 @media(max-width:640px){.hero{padding-top:22px}.hero .lead{display:none}.promises{margin-top:12px;gap:6px}.promises span{font-size:12.5px;padding:5px 10px}.flow{min-height:auto;border-radius:18px}.wrap{margin-top:-74px}}
 </style>
@@ -772,11 +772,11 @@ ${BASE_CSS}
 .st{display:flex;gap:14px;align-items:flex-start}
 .st .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;flex-shrink:0;background:var(--gs);color:var(--g)}
 .st .ic.wait{background:var(--amb);color:var(--ambt)}
-.st h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(23px,3vw,28px);line-height:1.15}
+.st h2{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(23px,3vw,28px);line-height:1.15}
 .st p{font-size:15px;color:var(--tm);line-height:1.6;margin-top:4px}
 .relais{display:flex;gap:10px;align-items:center;font-size:14px;background:#FBFAF6;border:1px dashed rgba(0,76,63,.18);border-radius:13px;padding:11px 13px;color:var(--tm)}
 .relais i{color:#B98900;font-size:18px}
-h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
+h3{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:19px}
 .plist{display:grid;gap:8px}
 @media(min-width:640px){.plist{grid-template-columns:1fr 1fr}}
 .pc .state{flex-shrink:0;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;background:#F2EFE8;color:var(--tm)}

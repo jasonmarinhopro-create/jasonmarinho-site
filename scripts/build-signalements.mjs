@@ -128,13 +128,13 @@ function buildFichePage(item) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td)}
+body{margin:0;padding-top:64px;font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td)}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
 .sec{padding:clamp(48px,7vw,80px) 0}
@@ -148,24 +148,24 @@ a{color:inherit}
 .brd a:hover{color:#fff}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
 .lbl.dk{color:var(--g)}
-.h1{font-family:'Fraunces',serif;font-size:clamp(1.7rem,3.8vw,2.8rem);line-height:1.15;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:400}
+.h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.7rem,3.8vw,2.8rem);line-height:1.15;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:400}
 .lead{font-size:clamp(15px,1.5vw,17px);font-weight:300;line-height:1.7;color:rgba(255,255,255,.72);margin:0;max-width:680px}
 .hint-block{display:inline-flex;align-items:center;gap:12px;background:rgba(255,213,107,.08);border:1px solid rgba(255,213,107,.22);border-radius:10px;padding:10px 16px;margin:0 0 22px;flex-wrap:wrap}
 .hint-lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,213,107,.7)}
 .hint-lbl i{font-size:13px}
 .hint-val{font-family:'JetBrains Mono','SF Mono','Consolas',monospace;font-size:14.5px;font-weight:500;color:var(--y);letter-spacing:.5px}
-.h2{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:400;line-height:1.2;letter-spacing:-.02em;color:var(--td);margin:0 0 14px}
+.h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:400;line-height:1.2;letter-spacing:-.02em;color:var(--td);margin:0 0 14px}
 .h2 em{color:var(--g);font-style:italic;font-weight:300}
 .h2.lt{color:#fff}.h2.lt em{color:var(--y)}
 .p{font-size:15px;line-height:1.75;color:var(--tm);margin:0 0 14px;font-weight:400}
 .recit{background:#fff;border:1px solid var(--bd);border-left:3px solid var(--g);border-radius:12px;padding:clamp(20px,3vw,28px);font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:var(--td);font-weight:400}
 .list-num{display:flex;flex-direction:column;gap:14px;margin:24px 0 0}
 .list-num li{display:flex;gap:14px;align-items:flex-start;list-style:none}
-.list-num .num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;font-family:'Fraunces',serif;font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.list-num .num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px}
 .list-num .txt{font-size:14.5px;line-height:1.7;color:var(--tm)}
 .list-num .txt strong{color:var(--td);font-weight:600}
 .cta-box{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:18px;padding:clamp(28px,4vw,40px);text-align:center;color:#fff;margin-top:8px}
-.cta-box h2{font-family:'Fraunces',serif;font-size:clamp(1.3rem,2.3vw,1.7rem);margin:0 0 10px;font-weight:400;line-height:1.25;color:#fff}
+.cta-box h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.3rem,2.3vw,1.7rem);margin:0 0 10px;font-weight:400;line-height:1.25;color:#fff}
 .cta-box h2 em{color:var(--y);font-style:italic;font-weight:300}
 .cta-box p{font-size:14.5px;color:rgba(255,255,255,.6);margin:0 0 22px;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto}
 .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14.5px;padding:13px 24px;border-radius:10px;text-decoration:none;transition:all .2s}
@@ -339,13 +339,13 @@ function buildListPage(items) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57}
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td)}
+body{margin:0;padding-top:64px;font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--cr);color:var(--td)}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
 .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(56px,7vw,80px) 0}
@@ -354,7 +354,7 @@ a{color:inherit}
 .brd a{color:rgba(255,255,255,.5);text-decoration:none}
 .brd a:hover{color:#fff}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
-h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,2.8rem);line-height:1.15;color:#fff;margin:0 0 16px;font-weight:400}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2rem,4vw,2.8rem);line-height:1.15;color:#fff;margin:0 0 16px;font-weight:400}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:16px;line-height:1.7;color:rgba(255,255,255,.6);margin:0 0 14px;max-width:640px}
 .count-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;padding:7px 16px;font-size:13.5px;font-weight:600;color:#FFD56B;margin-top:8px}
@@ -362,7 +362,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .card{display:flex;flex-direction:column;gap:10px;padding:24px;background:#fff;border:1px solid rgba(0,76,63,.08);border-radius:14px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
-.card-h{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;line-height:1.3;letter-spacing:-.2px}
+.card-h{font-family:'Fraunces','Fraunces Fallback',serif;font-size:18px;font-weight:400;color:var(--td);margin:0;line-height:1.3;letter-spacing:-.2px}
 .card-hint{display:inline-flex;align-items:center;gap:6px;background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.15);border-radius:7px;padding:4px 9px;font-family:'JetBrains Mono','SF Mono','Consolas',monospace;font-size:12.5px;font-weight:500;color:var(--g);letter-spacing:.3px;align-self:flex-start}
 .card-hint i{font-size:11px;opacity:.7}
 .card-sum{font-size:14px;line-height:1.65;color:var(--tm);margin:0;flex:1}
@@ -375,7 +375,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .empty-state{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:18px;padding:clamp(36px,6vw,60px) clamp(24px,5vw,52px);text-align:center;max-width:680px;margin:0 auto}
 .empty-ico{width:64px;height:64px;border-radius:18px;background:rgba(0,76,63,.07);display:inline-flex;align-items:center;justify-content:center;margin-bottom:20px}
 .empty-ico i{font-size:30px;color:var(--g)}
-.empty-h{font-family:'Fraunces',serif;font-size:clamp(22px,2.4vw,28px);font-weight:400;color:var(--td);margin:0 0 12px;letter-spacing:-.3px;line-height:1.25}
+.empty-h{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(22px,2.4vw,28px);font-weight:400;color:var(--td);margin:0 0 12px;letter-spacing:-.3px;line-height:1.25}
 .empty-h em{color:var(--g);font-style:italic;font-weight:300}
 .empty-p{font-size:15px;line-height:1.75;color:var(--tm);margin:0 0 24px;max-width:520px;margin-left:auto;margin-right:auto}
 .empty-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}

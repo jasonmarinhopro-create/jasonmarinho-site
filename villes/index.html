@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -58,7 +58,7 @@
 <style>
   :root{--gd:#004c3f;--g:#63D683;--y:#FFD56B;--td:#111827;--tm:#374151;--tl:#6B7280;--bd:#E5E7EB;--bg:#F9FAFB;--cr:#F0FDF4}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--td);-webkit-font-smoothing:antialiased}
+  body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--bg);color:var(--td);-webkit-font-smoothing:antialiased}
   a{color:var(--gd);text-decoration:none}
   a:hover{text-decoration:underline}
   p a:not([class]),.faq-body a:not([class]){text-decoration:underline;text-underline-offset:2px}
@@ -70,19 +70,19 @@
   .breadcrumb a:hover{color:rgba(255,255,255,.8);text-decoration:none}
   .breadcrumb i{font-size:10px}
   .lbl{display:inline-block;background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.25);color:var(--y);font-size:12px;letter-spacing:.6px;text-transform:uppercase;font-weight:500;padding:5px 12px;border-radius:20px;margin-bottom:14px}
-  .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:300}
+  .h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2rem,4.5vw,3.4rem);line-height:1.1;letter-spacing:-.02em;color:#fff;margin:0 0 18px;font-weight:300}
   .h1 em{color:var(--y);font-style:italic;font-weight:300}
   .lead{font-size:clamp(15px,1.5vw,17px);color:rgba(255,255,255,.6);margin:0;max-width:680px;line-height:1.7}
 
   main{max-width:1240px;margin:0 auto;padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px)}
 
-  h2{font-family:'Fraunces',serif;font-size:clamp(1.4rem,2.3vw,1.9rem);font-weight:400;letter-spacing:-.5px;margin:0 0 24px;color:var(--td)}
+  h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.4rem,2.3vw,1.9rem);font-weight:400;letter-spacing:-.5px;margin:0 0 24px;color:var(--td)}
   h2 em{font-style:italic;color:var(--g);font-weight:300}
   p{color:var(--tm);font-size:15.5px;margin:0 0 32px}
 
   .search-wrap{position:relative;margin:0 0 28px;max-width:520px}
   .search-wrap i{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--tl);pointer-events:none}
-  .search-input{width:100%;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 18px 14px 46px;font:400 15px/1 'Outfit',sans-serif;color:var(--td);transition:border-color .2s,box-shadow .2s;outline:none}
+  .search-input{width:100%;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px 18px 14px 46px;font:400 15px/1 'Outfit','Outfit Fallback',sans-serif;color:var(--td);transition:border-color .2s,box-shadow .2s;outline:none}
   .search-input::placeholder{color:var(--tl)}
   .search-input:focus{border-color:var(--gd);box-shadow:0 0 0 3px rgba(0,76,63,.08)}
   .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--tl);padding:8px;border-radius:8px;display:none;align-items:center;justify-content:center;transition:color .15s,background .15s}
@@ -100,7 +100,7 @@
   .city-card-body{padding:24px 26px;flex:1;display:flex;flex-direction:column}
   .city-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(99,214,131,.12);color:#065f46;font-size:11.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:14px;width:fit-content}
   .city-tag i{font-size:12px}
-  .city-name{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:400;color:var(--td);margin:0 0 8px;letter-spacing:-.3px}
+  .city-name{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.4rem;font-weight:400;color:var(--td);margin:0 0 8px;letter-spacing:-.3px}
   .city-name em{font-style:italic;color:var(--gd);font-weight:300}
   .city-desc{font-size:14px;color:var(--tl);line-height:1.6;margin:0 0 16px;flex:1}
   .city-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
@@ -119,7 +119,7 @@
   .info-banner p{margin:0;font-size:15px;color:var(--tm)}
 
   .cta-banner{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:18px;padding:clamp(28px,4vw,44px);text-align:center}
-  .cta-banner h2{font-family:'Fraunces',serif;color:#fff;font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:400;margin:0 0 10px;letter-spacing:-.4px}
+  .cta-banner h2{font-family:'Fraunces','Fraunces Fallback',serif;color:#fff;font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:400;margin:0 0 10px;letter-spacing:-.4px}
   .cta-banner h2 em{color:var(--y);font-style:italic;font-weight:300}
   .cta-banner p{color:rgba(255,255,255,.6);font-size:15px;margin:0 0 20px;max-width:480px;margin-left:auto;margin-right:auto}
   .cta-banner .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
@@ -246,5 +246,6 @@
   }
 })();
 </script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body>
 </html>
