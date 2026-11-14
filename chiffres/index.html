@@ -52,6 +52,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .kpi b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;line-height:1.05}
 .kpi span{display:block;font-size:13px;color:rgba(255,255,255,.7);margin-top:2px}
 .kpi small{margin-left:auto;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(99,214,131,.16);color:#9BEDB2;white-space:nowrap}
+.kpi-dm{text-decoration:none;color:#fff;border:1px solid rgba(255,213,107,.35);background:rgba(255,213,107,.08);transition:background .2s,border-color .2s}.kpi-dm:hover{background:rgba(255,213,107,.14);border-color:rgba(255,213,107,.6)}.kpi-dm .kpi-last{display:block;font-style:normal;font-size:12.5px;color:var(--y);margin-top:4px}.kpi-dm .kpi-go{margin-left:auto;color:var(--y);font-size:18px}
 .kpi small.dn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65)}
 @media(max-width:560px){.kpi{flex-wrap:wrap}.kpi small{margin-left:54px}}
 .upd{font-size:12px;color:rgba(255,255,255,.55);text-align:right}
@@ -346,6 +347,7 @@ a.dm-city:hover{border-color:var(--g)}
         <div class="kpi"><i class="ph-bold ph-eye ic"></i><div><b data-k="imp"><span class="sk"></span></b><span>affichages dans Google sur 28 jours</span></div><small data-d="imp" hidden></small></div>
         <div class="kpi"><i class="ph-bold ph-cursor-click ic"></i><div><b data-k="clk"><span class="sk"></span></b><span>clics depuis Google sur 28 jours</span></div><small data-d="clk" hidden></small></div>
         <div class="kpi"><i class="ph-bold ph-users-three ic"></i><div><b data-k="vis"><span class="sk"></span></b><span>visiteurs du site sur 30 jours</span></div><small data-d="vis" hidden></small></div>
+        <a class="kpi kpi-dm" href="#demandes"><i class="ph-bold ph-paper-plane-tilt ic"></i><div><b data-k="dm"><span class="sk"></span></b><span data-k-dm-l>demandes d’hôtes reçues</span><em class="kpi-last" data-dm-last hidden></em></div><i class="ph-bold ph-arrow-down kpi-go" aria-hidden="true"></i></a>
         <div class="upd" data-upd>Chargement des chiffres…</div>
       </div>
       <div class="err" data-err>Les chiffres ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</div>
@@ -359,6 +361,70 @@ a.dm-city:hover{border-color:var(--g)}
     <div class="fact"><b data-f="pages"><span class="sk dk"></span></b><span>pages du site vues dans Google sur 28 jours</span></div>
     <div class="fact"><b data-f="cities">122</b><span>pages de ville pour les photographes, les équipes de ménage et le dépannage</span></div>
     <div class="fact"><b data-f="ctr"><span class="sk dk"></span></b><span>des affichages se transforment en clic (taux de clic)</span></div>
+  </div>
+</section>
+
+<section class="sec" id="demandes">
+  <div class="s-in">
+    <div class="dm">
+      <div>
+        <div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes · en toute transparence</div>
+        <h2>Chaque demande compte, <em>même la première</em></h2>
+        <p class="dm-lead">Combien d’hôtes ont vraiment demandé un photographe, un vidéaste, une équipe de ménage ou un pro du dépannage ? Le service est jeune : je préfère te montrer les vrais chiffres, petits ou grands. Ils se mettent à jour tout seuls à chaque demande.</p>
+        <div class="dm-priv">
+          <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour toutes les 10 minutes</span>
+          <span><i class="ph-bold ph-shield-check"></i>Métier, ville et mois seulement</span>
+        </div>
+      </div>
+      <div class="dm-total" aria-live="polite">
+        <span data-dm-since>Demandes reçues</span>
+        <b data-dm-total><span class="sk"></span></b>
+        <div class="dm-split">
+          <div><i class="ph-bold ph-camera"></i><div><b data-dm-photo>·</b><small>photographe ou vidéaste</small></div></div>
+          <div><i class="ph-bold ph-broom"></i><div><b data-dm-menage>·</b><small>équipe de ménage</small></div></div>
+          <div><i class="ph-bold ph-wrench"></i><div><b data-dm-depannage>·</b><small>dépannage</small></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-cards">
+      <div class="dm-c">
+        <h3>D’où elles viennent</h3>
+        <div class="dm-row"><span>Formulaire « Trouver un pro »</span><b data-dm-src="formulaire">·</b></div>
+        <div class="dm-bar"><i data-dm-bar="formulaire" style="width:0"></i></div>
+        <div class="dm-row"><span>Bouton « Contacter » d’une fiche</span><b data-dm-src="fiche">·</b></div>
+        <div class="dm-bar"><i class="y" data-dm-bar="fiche" style="width:0"></i></div>
+        <div class="dm-row"><span>Appel ou message à Jason</span><b data-dm-src="direct">·</b></div>
+        <div class="dm-bar"><i class="b" data-dm-bar="direct" style="width:0"></i></div>
+      </div>
+      <div class="dm-c">
+        <h3>Ce qu’elles sont devenues</h3>
+        <div class="dm-et"><span class="d" style="background:#004C3F"></span>Ouvertes par un pro<b data-dm-et="ouverte">·</b></div>
+        <div class="dm-et"><span class="d" style="background:#C9A227"></span>Transmises, pas encore ouvertes<b data-dm-et="transmise">·</b></div>
+        <div class="dm-et"><span class="d" style="background:#B9C4BC"></span>En attente d’un pro dans la zone<b data-dm-et="sans_pro">·</b></div>
+      </div>
+      <div class="dm-c">
+        <h3>Mois par mois</h3>
+        <div class="dm-months" data-dm-months></div>
+        <div class="dm-mlab" data-dm-mlab></div>
+      </div>
+    </div>
+
+    <div class="dm-cols">
+      <div>
+        <h3 class="t">Par ville</h3>
+        <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
+      </div>
+      <div>
+        <h3 class="t">Le fil des demandes</h3>
+        <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
+      </div>
+    </div>
+
+    <div class="dm-note">
+      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
+      <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
+    </div>
   </div>
 </section>
 
@@ -424,71 +490,8 @@ a.dm-city:hover{border-color:var(--g)}
   </div>
 </section>
 
-<section class="sec cr" id="demandes">
-  <div class="s-in">
-    <div class="dm">
-      <div>
-        <div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes · en toute transparence</div>
-        <h2>Chaque demande compte, <em>même la première</em></h2>
-        <p class="dm-lead">Combien d’hôtes ont vraiment demandé un photographe, un vidéaste, une équipe de ménage ou un pro du dépannage ? Le service est jeune : je préfère te montrer les vrais chiffres, petits ou grands. Ils se mettent à jour tout seuls à chaque demande.</p>
-        <div class="dm-priv">
-          <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour toutes les 10 minutes</span>
-          <span><i class="ph-bold ph-shield-check"></i>Métier, ville et mois seulement</span>
-        </div>
-      </div>
-      <div class="dm-total" aria-live="polite">
-        <span data-dm-since>Demandes reçues</span>
-        <b data-dm-total><span class="sk"></span></b>
-        <div class="dm-split">
-          <div><i class="ph-bold ph-camera"></i><div><b data-dm-photo>·</b><small>photographe ou vidéaste</small></div></div>
-          <div><i class="ph-bold ph-broom"></i><div><b data-dm-menage>·</b><small>équipe de ménage</small></div></div>
-          <div><i class="ph-bold ph-wrench"></i><div><b data-dm-depannage>·</b><small>dépannage</small></div></div>
-        </div>
-      </div>
-    </div>
 
-    <div class="dm-cards">
-      <div class="dm-c">
-        <h3>D’où elles viennent</h3>
-        <div class="dm-row"><span>Formulaire « Trouver un pro »</span><b data-dm-src="formulaire">·</b></div>
-        <div class="dm-bar"><i data-dm-bar="formulaire" style="width:0"></i></div>
-        <div class="dm-row"><span>Bouton « Contacter » d’une fiche</span><b data-dm-src="fiche">·</b></div>
-        <div class="dm-bar"><i class="y" data-dm-bar="fiche" style="width:0"></i></div>
-        <div class="dm-row"><span>Appel ou message à Jason</span><b data-dm-src="direct">·</b></div>
-        <div class="dm-bar"><i class="b" data-dm-bar="direct" style="width:0"></i></div>
-      </div>
-      <div class="dm-c">
-        <h3>Ce qu’elles sont devenues</h3>
-        <div class="dm-et"><span class="d" style="background:#004C3F"></span>Ouvertes par un pro<b data-dm-et="ouverte">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#C9A227"></span>Transmises, pas encore ouvertes<b data-dm-et="transmise">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#B9C4BC"></span>En attente d’un pro dans la zone<b data-dm-et="sans_pro">·</b></div>
-      </div>
-      <div class="dm-c">
-        <h3>Mois par mois</h3>
-        <div class="dm-months" data-dm-months></div>
-        <div class="dm-mlab" data-dm-mlab></div>
-      </div>
-    </div>
-
-    <div class="dm-cols">
-      <div>
-        <h3 class="t">Par ville</h3>
-        <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
-      </div>
-      <div>
-        <h3 class="t">Le fil des demandes</h3>
-        <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
-      </div>
-    </div>
-
-    <div class="dm-note">
-      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
-      <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
+<section class="sec cr">
   <div class="s-in">
     <div class="sec-head">
       <div class="lbl">Bien lire ces chiffres</div>
@@ -687,12 +690,18 @@ a.dm-city:hover{border-color:var(--g)}
     var tot = $('[data-dm-total]');
     if (!D) {
       if (tot) tot.textContent = '–';
+      setNum('[data-k="dm"]', '–');
       ['[data-dm-photo]','[data-dm-menage]','[data-dm-depannage]'].forEach(function(x){ setNum(x, '–'); });
       var c0 = $('[data-dm-cities]'); if (c0) c0.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
       var f0 = $('[data-dm-fil]'); if (f0) f0.innerHTML = '';
       return;
     }
     if (tot) tot.textContent = n(D.total);
+    // Chiffre de l'en-tête (14/11/2026, Jason : « plus mis en avant ») : total et dernière demande
+    setNum('[data-k="dm"]', n(D.total));
+    var kl = $('[data-k-dm-l]'); if (kl) kl.textContent = (D.total > 1 ? 'demandes d’hôtes' : 'demande d’hôte') + (D.total ? ' depuis ' + monthFr(D.since) : ' pour le moment');
+    var last = (D.fil || [])[0], kd = $('[data-dm-last]');
+    if (kd && last) { kd.textContent = 'Dernière : ' + ({ photographe: 'un photographe', menage: 'une équipe de ménage', depannage: 'un pro du dépannage' }[last.metier] || 'un pro') + (last.slug ? ' à ' + last.label : '') + ', ' + monthFr(last.month); kd.hidden = false; }
     var since = $('[data-dm-since]');
     if (since) since.textContent = D.total ? (D.total > 1 ? 'Demandes reçues' : 'Demande reçue') + ' depuis ' + monthFr(D.since) : 'Demande reçue pour le moment';
     var ex = $('[data-dm-excl]'), X = D.excluded || { test: 0, exemple: 0 };

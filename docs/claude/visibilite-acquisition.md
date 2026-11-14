@@ -81,3 +81,9 @@ Demandes de Jason (« plus équilibré », « savoir comment c'est possible et n
 - **Bouton Copier** (`copyBtn`, `data-copy`, presse-papiers avec repli `execCommand`) sur chaque recherche du tableau et des cartes de ville, avec la phrase : copie, colle dans Google, ta place peut différer (personne, lieu, appareil, moyenne sur 28 jours).
 
 - **Visibilité admin, 07/11/2026** : onglet Villes, le dépliage d'une ville montre ses 4 pages (Ménage, Photographe, Dépannage, Devenir hôte) en cartes 2 sur 2 (1 au téléphone), même celles que Google n'a pas encore montrées (villes de `CITY_PAGE_SLUGS`, `groupCities(..., { hasAllPages, visitorsByPath })`), avec clics, affichages, visiteurs, et pour les métiers les pros inscrits de la ville et leurs demandes. Onglet Fiches pros : seulement les fiches payées (`paidPros` dans `admin-build.ts`), plus de filtre « Payées » ni de badge « payée ».
+
+## /chiffres : demandes d'hôtes remises en avant (14/11/2026)
+
+Jason : « la partie demande d'hôte en toute transparence devrait être plus mise en avant » (revient sur le placement du 17/10). Section `#demandes` déplacée juste après la bande de chiffres (avant « Les chiffres de ta ville ») ; 4e chiffre dans l'en-tête, cliquable vers `#demandes` : total, « depuis <mois> », et la dernière demande (« un photographe à Biarritz, nov. 2026 », métier, ville et mois seulement, tirés de `demandes.fil[0]`). Aucune modification de l'API.
+- Fraîcheur vérifiée le même jour : API recalculée à 6 h 20 UTC, Google jusqu'au J-2 (retard normal de Search Console), demandes à jour. Rien ne passe par Claude : la page ne dépend pas des crédits.
+- Dépannage à 0 en première page : pages créées le 31/10, dans `sitemap-depannage.xml` ; délai de classement normal.
