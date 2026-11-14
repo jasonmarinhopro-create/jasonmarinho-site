@@ -24,6 +24,7 @@ import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 import ShellFallback from '@/components/layout/ShellFallback'
 import LaunchSplashOut from '@/components/layout/LaunchSplashOut'
+import MenuLivePush from '@/components/layout/MenuLive'
 import PerfReporter from '@/components/perf/PerfReporter'
 import LastSeenPing from '@/components/layout/LastSeenPing'
 import { perfTimer } from '@/lib/perf/server-timing'
@@ -98,47 +99,17 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // monté (rendu null) pour écouter cet événement de restauration.
   const onboardingOff = isOnProSpace || !!profile.onboarding_completed_at
 
-  const emptyOnboarding = { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
-
-  const [cachedActualites, spacesResult, activeProperty, menu, cachedFormations] = await Promise.all([
+  const [cachedActualites, spacesResult, activeProperty, cachedFormations] = await Promise.all([
     actualitesPromise,
     spacesPromise,
     activePropertyPromise,
-    menuPromise,
     formationsPromise,
   ])
-  const trackInput = {
-    userId: profile.userId,
-    completedSteps: profile.onboarding_completed_steps,
-    chezNousOnboardedAt: profile.chez_nous_onboarded_at,
-    onboardingStep: profile.onboarding_step,
-    stripeOnboardingComplete: profile.stripe_onboarding_complete,
-  }
-  // Repli requête par requête seulement si la fonction menu_state a échoué
-  const [onboardingState, appNotifUnread, chezNousUnread] = await Promise.all([
-    onboardingOff ? emptyOnboarding
-      : menu?.onboarding ? buildTracksState(menu.onboarding, trackInput)
-      : detectTracksProgressCached(trackInput),
-    menu ? menu.notifUnread : getUnreadCount(),
-    menu ? menu.chezNousUnread : getChezNousUnreadCount(),
-  ])
-  timer.mark(onboardingOff ? 'menu et cloche' : 'menu, cloche et parcours')
+  timer.mark('cadre')
   timer.done()
 
   const isAdmin = profile.role === 'admin'
   const planLabel = planToLabel(profile.plan, profile.role)
-  const onboardingCompleted = onboardingState.totalDone === onboardingState.totalSteps
-  const showOnboarding = !onboardingOff && !onboardingCompleted
-
-  // Backfill paresseux : la détection vient de tourner et conclut "terminé",
-  // mais le flag n'était pas encore posé → on l'écrit une fois (fire-and-forget)
-  // pour que les prochaines navs sautent detectTracksProgress.
-  if (!onboardingOff && onboardingCompleted && !profile.onboarding_completed_at) {
-    void persistOnboardingCompleted(profile.userId)
-  }
-
-  const doneByTrack: Record<string, string[]> = {}
-  onboardingState.tracks.forEach(t => { doneByTrack[t.key] = Array.from(t.doneSteps) })
 
   // Point « du neuf » du menu hôte : actualités des hôtes seulement
   const latestPublishedAt = forAudience(cachedActualites, 'hote')[0]?.published_at ?? null
@@ -151,32 +122,8 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // pas les annonces de formations (migration 163)
   const newFormationAt = profile.masquer_annonces_formations ? null : derniereNouvelleFormationAt(cachedFormations)
 
-  // Menu des pros (17/10/2026) : point « du neuf » sur les actualités de leur
-  // métier et compteur des demandes pas encore ouvertes
   const hasSpace = (k: 'photographer' | 'cleaner' | 'depannage') => spacesResult.spaces.some(sp => sp.key === k && sp.active)
-  // Une date de visite par espace pro (23/10/2026) : ouvrir les actualités des
-  // hôtes effaçait le point des espaces photographe et ménage
-  const isPro = hasSpace('photographer') || hasSpace('cleaner') || hasSpace('depannage')
-  const [proDemandes, proSeen] = isPro
-    ? await Promise.all([
-        menu?.demandes ?? loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner'), depannage: hasSpace('depannage') }),
-        menu?.actusSeen ?? loadProActusSeen(profile.userId, profile.last_seen_actualites_at),
-      ])
-    : [null, null]
-  const proNav = proDemandes && proSeen
-    ? {
-        demandes: proDemandes,
-        newActus: {
-          photographer: hasNewFor(cachedActualites, 'photographe', proSeen.photographer),
-          cleaner: hasNewFor(cachedActualites, 'menage', proSeen.cleaner),
-          depannage: proSeen.depannage === undefined ? false : hasNewFor(cachedActualites, 'depannage', proSeen.depannage),
-        },
-      }
-    : undefined
-  // Compteur hôte sur « Contrats & paiements » : seulement si l'espace hôte est actif
-  const contratsTodo = !spacesResult.spaces.some(sp => sp.key === 'host' && sp.active) ? 0
-    : menu ? contractTodoCount(contractTodos(menu.contracts, parisToday()))
-    : await loadContractTodoCount(profile.userId)
+  const hostActive = spacesResult.spaces.some(sp => sp.key === 'host' && sp.active)
 
   return (
     <ThemeProvider>
@@ -187,8 +134,6 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           newFormationAt={newFormationAt}
-          proNav={proNav}
-          contratsTodo={contratsTodo}
           hasStripeAccount={profile.stripe_onboarding_complete}
           allProperties={activeProperty.allProperties}
           activePropertyId={activeProperty.propertyId}
@@ -207,11 +152,6 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           newFormationAt={newFormationAt}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
-          proNav={proNav}
-          contratsTodo={contratsTodo}
-          initialAppNotifUnread={appNotifUnread}
-          initialChezNousUnread={chezNousUnread}
-          showOnboardingBtn={showOnboarding}
           hasStripeAccount={profile.stripe_onboarding_complete}
           spaces={spacesResult.spaces}
           // Forwarded to mobile drawer Sidebar (via Header) — sinon menu user mobile
@@ -225,17 +165,17 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
             <PageFadeWrapper>{children}</PageFadeWrapper>
           </Suspense>
         </main>
-        {showOnboarding && (
-          <OnboardingTracks
-            pinnedTrack={profile.onboarding_pinned_track}
-            completedSteps={profile.onboarding_completed_steps}
-            doneByTrack={doneByTrack}
-            dismissed={profile.onboarding_dismissed}
-            completed={onboardingCompleted}
-            persistedStep={profile.onboarding_step}
-            plan={profile.plan}
+        {/* Compteurs du menu, cloche et parcours : après le cadre et la page */}
+        <Suspense fallback={null}>
+          <MenuLiveLoader
+            menuPromise={menuPromise}
+            pathname={pathname}
+            profile={profile}
+            onboardingOff={onboardingOff}
+            spaces={{ photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner'), depannage: hasSpace('depannage'), host: hostActive }}
+            cachedActualites={cachedActualites}
           />
-        )}
+        </Suspense>
         <InstallAppWidget />
         <PerfReporter />
         <LastSeenPing />
@@ -243,6 +183,95 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
       </div>
     </ThemeProvider>
   )
+}
+
+type ShellProfile = NonNullable<Awaited<ReturnType<typeof getProfile>>>
+
+async function MenuLiveLoader({ menuPromise, pathname, profile, onboardingOff, spaces, cachedActualites }: {
+  menuPromise: ReturnType<typeof loadMenuState>
+  pathname: string
+  profile: ShellProfile
+  onboardingOff: boolean
+  spaces: { photographer: boolean; cleaner: boolean; depannage: boolean; host: boolean }
+  cachedActualites: Awaited<ReturnType<typeof getCachedPublishedActualites>>
+}) {
+  // Une erreur ici laisse seulement les compteurs à zéro : jamais la page
+  try {
+  const timer = perfTimer('menu ' + pathname)
+  const menu = await menuPromise
+  const emptyOnboarding = { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
+  const trackInput = {
+    userId: profile.userId,
+    completedSteps: profile.onboarding_completed_steps,
+    chezNousOnboardedAt: profile.chez_nous_onboarded_at,
+    onboardingStep: profile.onboarding_step,
+    stripeOnboardingComplete: profile.stripe_onboarding_complete,
+  }
+  // Repli requête par requête seulement si la fonction menu_state a échoué
+  const [onboardingState, appNotifUnread, chezNousUnread] = await Promise.all([
+    onboardingOff ? emptyOnboarding
+      : menu?.onboarding ? buildTracksState(menu.onboarding, trackInput)
+      : detectTracksProgressCached(trackInput),
+    menu ? menu.notifUnread : getUnreadCount(),
+    menu ? menu.chezNousUnread : getChezNousUnreadCount(),
+  ])
+  const onboardingCompleted = onboardingState.totalDone === onboardingState.totalSteps
+  const showOnboarding = !onboardingOff && !onboardingCompleted
+
+  // Backfill paresseux : la détection conclut "terminé" mais le flag n'était
+  // pas encore posé → on l'écrit une fois (fire-and-forget)
+  if (!onboardingOff && onboardingCompleted && !profile.onboarding_completed_at) {
+    void persistOnboardingCompleted(profile.userId)
+  }
+  const doneByTrack: Record<string, string[]> = {}
+  onboardingState.tracks.forEach(t => { doneByTrack[t.key] = Array.from(t.doneSteps) })
+
+  // Menu des pros : point « du neuf » sur les actualités de leur métier et
+  // compteur des demandes pas encore ouvertes (une date de visite par espace)
+  const isPro = spaces.photographer || spaces.cleaner || spaces.depannage
+  const [proDemandes, proSeen] = isPro
+    ? await Promise.all([
+        menu?.demandes ?? loadProNewDemandes(profile.userId, { photographer: spaces.photographer, cleaner: spaces.cleaner, depannage: spaces.depannage }),
+        menu?.actusSeen ?? loadProActusSeen(profile.userId, profile.last_seen_actualites_at),
+      ])
+    : [null, null]
+  const proNav = proDemandes && proSeen
+    ? {
+        demandes: proDemandes,
+        newActus: {
+          photographer: hasNewFor(cachedActualites, 'photographe', proSeen.photographer),
+          cleaner: hasNewFor(cachedActualites, 'menage', proSeen.cleaner),
+          depannage: proSeen.depannage === undefined ? false : hasNewFor(cachedActualites, 'depannage', proSeen.depannage),
+        },
+      }
+    : undefined
+  // Compteur hôte sur « Contrats & paiements » : seulement si l'espace hôte est actif
+  const contratsTodo = !spaces.host ? 0
+    : menu ? contractTodoCount(contractTodos(menu.contracts, parisToday()))
+    : await loadContractTodoCount(profile.userId)
+  timer.mark(onboardingOff ? 'menu et cloche' : 'menu, cloche et parcours')
+  timer.done()
+
+  return (
+    <>
+      <MenuLivePush value={{ proNav, contratsTodo, appNotifUnread, chezNousUnread, showOnboarding }} />
+      {showOnboarding && (
+        <OnboardingTracks
+          pinnedTrack={profile.onboarding_pinned_track}
+          completedSteps={profile.onboarding_completed_steps}
+          doneByTrack={doneByTrack}
+          dismissed={profile.onboarding_dismissed}
+          completed={onboardingCompleted}
+          persistedStep={profile.onboarding_step}
+          plan={profile.plan}
+        />
+      )}
+    </>
+  )
+  } catch (err) {
+    console.error('[menu différé]', err)
+    return null
+  }
 }
 
 const styles: Record<string, React.CSSProperties> = {

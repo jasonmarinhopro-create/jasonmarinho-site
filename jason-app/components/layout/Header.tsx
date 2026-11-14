@@ -1,4 +1,5 @@
 'use client'
+import { useMenuLive } from './MenuLive'
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
@@ -174,7 +175,12 @@ interface HeaderProps {
   activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, newFormationAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav, contratsTodo = 0, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, newFormationAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav: proNavProp, contratsTodo: contratsTodoProp = 0, showOnboardingBtn: showOnboardingProp = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
+  // Compteurs du menu arrivés après le cadre (MenuLive, 14/11/2026)
+  const live = useMenuLive()
+  const proNav = live?.proNav ?? proNavProp
+  const contratsTodo = live?.contratsTodo ?? contratsTodoProp
+  const showOnboardingBtn = live?.showOnboarding ?? showOnboardingProp
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -193,6 +199,11 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // rendu ; le fetch client ci-dessous ne sert qu'à rafraîchir en arrière-plan
   // sans bloquer l'affichage initial.
   const [appNotifUnread, setAppNotifUnread] = useState(initialAppNotifUnread)
+  useEffect(() => {
+    if (!live) return
+    setAppNotifUnread(live.appNotifUnread)
+    setChezNousUnread(live.chezNousUnread)
+  }, [live])
   const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
   const [userName] = useState(initialUserName ?? '')
   const [titleFromStore, setTitleFromStore] = useState<string | null>(null)

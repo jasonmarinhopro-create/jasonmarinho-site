@@ -88,6 +88,16 @@ export async function getChannelBreakdown(admin: SupabaseClient, hours = 24): Pr
 // Acquisition channels change continuously, but the admin chart does not need
 // a database scan on every navigation or every live-traffic poll. Cache this
 // global aggregate for five minutes; authorization is checked by each caller.
+// Ouverture de la Vue d'ensemble (14/11/2026) : la page attendait ce comptage
+// en direct (3,7 s lors d'un ralenti de la base). Valeur gardée 30 s, servie
+// tout de suite puis recalculée en arrière-plan ; l'écran la rafraîchit
+// ensuite lui-même via /api/admin/live-traffic.
+export const getCachedLiveVisitors = unstable_cache(
+  async () => getLiveVisitorsCount(getServiceClient()),
+  ['admin-live-visitors-v1'],
+  { revalidate: 30 },
+)
+
 export const getCachedChannelBreakdown = unstable_cache(
   async () => getChannelBreakdown(getServiceClient(), 24),
   ['admin-channel-breakdown-v1'],
