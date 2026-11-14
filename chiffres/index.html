@@ -373,6 +373,8 @@ a.dm-city:hover{border-color:var(--g)}
 .d1-m>button[aria-pressed=true]{background:var(--g);border-color:var(--g)}
 .d1-m>button[aria-pressed=true] b,.d1-m>button[aria-pressed=true] span{color:#fff}
 .d1-m>button[aria-pressed=true] i{background:rgba(255,213,107,.18);color:var(--y)}
+.vfm{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}.vfm button{font:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--bd);background:#fff;color:var(--tm);cursor:pointer;transition:background .2s,color .2s,border-color .2s}.vfm button:hover{border-color:rgba(0,76,63,.3);color:var(--g)}.vfm button[aria-pressed=true]{background:var(--g);border-color:var(--g);color:#fff}
+.vr-grid.one{grid-template-columns:1fr}[data-vk][hidden]{display:none!important}
 .dm-fh{font-size:13px;color:var(--tl);margin:12px 0 0;min-height:1.4em}.dm-fh button{background:none;border:0;padding:0;font:inherit;font-weight:600;color:var(--g);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .d1-m i{width:38px;height:38px;border-radius:11px;background:rgba(0,76,63,.08);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .d1-m b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1}
@@ -769,7 +771,7 @@ a.dm-city:hover{border-color:var(--g)}
   var DMN = { photographe: 'photographe ou vidéaste', menage: 'équipe de ménage', depannage: 'dépannage' };
   document.querySelectorAll('[data-dmf]').forEach(function(b){
     b.addEventListener('click', function(){
-      var k = b.getAttribute('data-dmf'); DMF = DMF === k ? null : k;
+      var k = b.getAttribute('data-dmf'); DMF = DMF === k ? null : k; VF = DMF; applyVf();
       document.querySelectorAll('[data-dmf]').forEach(function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-dmf') === DMF)); });
       var fh = $('[data-dm-fh]');
       if (fh) fh.innerHTML = DMF ? 'Seulement les demandes ' + (DMF === 'depannage' ? 'de dépannage' : 'd’' + (DMF === 'menage' ? 'équipe de ménage' : 'un photographe ou vidéaste')) + '. <button type="button" data-dmf-x>Tout voir</button>' : 'Touche un métier pour ne voir que ses demandes et ses villes.';
@@ -779,12 +781,12 @@ a.dm-city:hover{border-color:var(--g)}
   });
   function cityDemandes(label, slug, dm, pros, photoOnly){
     if (!dm) return '';
-    var row = function(lbl, k){ var p = pros ? pros[k] || 0 : null; return '<div><span>' + lbl + '</span><strong>' + n(dm[k]) + ' demande' + (dm[k] > 1 ? 's' : '') + (p === null ? '' : ' · ' + n(p) + ' pro' + (p > 1 ? 's' : '')) + '</strong></div>'; };
+    var row = function(lbl, k){ var p = pros ? pros[k] || 0 : null; return '<div data-vk="' + k + '"><span>' + lbl + '</span><strong>' + n(dm[k]) + ' demande' + (dm[k] > 1 ? 's' : '') + (p === null ? '' : ' · ' + n(p) + ' pro' + (p > 1 ? 's' : '')) + '</strong></div>'; };
     var txt = dm.total
       ? (dm.total > 1 ? 'Envoyées' : 'Envoyée') + ' aux pros les plus proches. Je publie le métier, la ville et le mois, jamais rien sur l’hôte.'
       : 'Pas encore de demande ici. Elle apparaîtra dès qu’un hôte de ' + esc(label) + ' décrira son besoin ou contactera un pro.';
     return '<div class="vd"><div><div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes à ' + esc(label) + '</div>' +
-      '<div class="vd-n"><b>' + n(dm.total) + '</b><span>demande' + (dm.total > 1 ? 's' : '') + ' reçue' + (dm.total > 1 ? 's' : '') + '</span></div><p>' + txt + '</p></div>' +
+      '<div class="vd-n" data-vd-t="' + (dm.total || 0) + '" data-vd-p="' + (dm.photographe || 0) + '" data-vd-m="' + (dm.menage || 0) + '" data-vd-d="' + (dm.depannage || 0) + '"><b>' + n(dm.total) + '</b><span>demande' + (dm.total > 1 ? 's' : '') + ' reçue' + (dm.total > 1 ? 's' : '') + '</span></div><p>' + txt + '</p></div>' +
       '<div class="vd-rows">' + row('Photographe &amp; vidéaste', 'photographe') + (photoOnly ? '' : row('Équipe de ménage', 'menage') + row('Dépannage', 'depannage')) +
       '<p class="vd-cta"><a class="a1" href="' + (photoOnly ? '/annuaires/photographes/inscription' : '/pour-qui/photographes') + '">Je suis pro à ' + esc(label) + '</a><a class="a2" href="/trouver-un-pro?' + (photoOnly ? 'metier=photographe&amp;' : '') + 'ville=' + encodeURIComponent(label) + '">Je cherche un pro</a></p></div></div>';
   }
@@ -869,7 +871,7 @@ a.dm-city:hover{border-color:var(--g)}
       depannage: { icon: 'ph-wrench', title: 'Dépannage à ', pro: ['pro du dépannage présenté', 'pros du dépannage présentés'] },
       hote: { icon: 'ph-house-line', title: 'Guide hôte · ', pro: null }
     }[kind];
-    var h = '<div class="vp"><div class="vp-h"><i class="ph-bold ' + META.icon + '"></i><div><b>' + esc(META.title + city) + '</b><a href="' + esc(p.path) + '">Voir la page <i class="ph-bold ph-arrow-right"></i></a></div></div>';
+    var h = '<div class="vp" data-vk="' + kind + '"><div class="vp-h"><i class="ph-bold ' + META.icon + '"></i><div><b>' + esc(META.title + city) + '</b><a href="' + esc(p.path) + '">Voir la page <i class="ph-bold ph-arrow-right"></i></a></div></div>';
     if (META.pro && pros) {
       var k = pros[kind] || 0;
       h += '<div class="vp-pros"><i class="ph-bold ph-users-three"></i>' + (k ? n(k) + ' ' + META.pro[k > 1 ? 1 : 0] + ' sur la page' : 'Aucun pro présenté pour le moment : la place est libre') + '</div>';
@@ -905,7 +907,7 @@ a.dm-city:hover{border-color:var(--g)}
     var c = d.city, label = c.label;
     var period = d.period ? 'Google du ' + dateFr(d.period.start) + ' au ' + dateFr(d.period.end) + ' · visiteurs sur 30 jours' : 'Chiffres de Google indisponibles pour le moment';
     var html = '<div class="vr-h"><div><h3>' + esc(label) + '</h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div>' +
-      cityDemandes(label, c.slug, d.demandes, c.pros, !!c.pays) + '<div class="vr-grid">' +
+      vfBar(c) + cityDemandes(label, c.slug, d.demandes, c.pros, !!c.pays) + '<div class="vr-grid">' +
       pageCard('photographe', label, c.pages.photographe, c.pros) +
       (c.pages.menage ? pageCard('menage', label, c.pages.menage, c.pros) : '') +
       (c.pages.depannage ? pageCard('depannage', label, c.pages.depannage, c.pros) : '') +
@@ -913,9 +915,35 @@ a.dm-city:hover{border-color:var(--g)}
       (c.pays ? '<div class="vp"><div class="vp-h"><i class="ph-bold ph-globe-hemisphere-west"></i><div><b>' + esc(label + ' (' + c.pays + ')') + '</b></div></div><p class="vp-empty">Première ville hors de France : seule la page des photographes et vidéastes est ouverte, avec les règles du ' + (c.pays === 'Canada' ? 'Québec' : 'pays') + ', pas celles de la France. Les pages ménage et hôtes ouvriront si elles sont demandées.</p><button type="button" class="vr-share" data-intl-ask="' + esc(label) + '"><i class="ph-bold ph-paper-plane-tilt"></i>Demander une autre page</button></div>' : '') +
       '</div><div class="vr-note"><i class="ph-bold ph-info"></i><span>Ce sont les chiffres bruts de Google Search Console, sans tri : la place est une moyenne sur 28 jours (elle varie selon la personne et l’appareil), un affichage n’est pas un client. Les petites villes et les pages récentes partent de peu, et ça se voit ici.</span></div>';
     vres.innerHTML = html;
+    applyVf();
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = label;
     setUrl(c.slug);
   }
+  // Filtre par métier dans la recherche par ville (14/11/2026, Jason) : même choix que
+  // le filtre des demandes, gardé d'une ville à l'autre
+  var VF = null;
+  function vfBar(c){
+    var K = [['', 'Tout'], ['photographe', 'Photographe ou vidéaste'], ['menage', 'Ménage'], ['depannage', 'Dépannage'], ['hote', 'Guide hôte']]
+      .filter(function(x){ return !x[0] || x[0] === 'photographe' || c.pages[x[0]]; });
+    if (K.length < 3) return '';
+    return '<div class="vfm" role="group" aria-label="Filtrer par métier">' + K.map(function(x){ return '<button type="button" data-vf="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>';
+  }
+  function applyVf(){
+    if (!vres) return;
+    vres.querySelectorAll('[data-vf]').forEach(function(b){ b.setAttribute('aria-pressed', String((b.getAttribute('data-vf') || null) === VF)); });
+    vres.querySelectorAll('[data-vk]').forEach(function(el){ el.hidden = !!VF && el.getAttribute('data-vk') !== VF; });
+    var g = vres.querySelector('.vr-grid'); if (g) g.classList.toggle('one', !!VF);
+    var vn = vres.querySelector('.vd-n[data-vd-t]');
+    if (vn) {
+      var key = { photographe: 'p', menage: 'm', depannage: 'd' }[VF] || 't', x = +vn.getAttribute('data-vd-' + key) || 0, pl = x > 1 ? 's' : '';
+      vn.querySelector('b').textContent = n(x);
+      vn.querySelector('span').textContent = 'demande' + pl + ' reçue' + pl + (key === 't' ? '' : ' pour ce métier');
+    }
+  }
+  if (vres) vres.addEventListener('click', function(e){
+    var b = e.target.closest('[data-vf]'); if (!b) return;
+    VF = b.getAttribute('data-vf') || null; applyVf();
+  });
   function suggestions(q){
     var t = normT(q); if (t.length < 2) return [];
     var head = t.slice(0, 3);
@@ -964,7 +992,7 @@ a.dm-city:hover{border-color:var(--g)}
     if (!q || !vres) return;
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = q;
     vres.innerHTML = '<p class="empty">Recherche des chiffres de ' + esc(q) + '…</p>';
-    if (scroll) { var sec = $('#ta-ville'); if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    if (scroll) pinTa();
     fetch(API + '?ville=' + encodeURIComponent(q)).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
       if (d.found && d.city) renderCity(d);
       else if (d.found) vres.innerHTML = '<p class="empty">Les chiffres de cette ville ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</p>';
@@ -1003,7 +1031,15 @@ a.dm-city:hover{border-color:var(--g)}
         .catch(function(){ btn.disabled = false; msg.className = 'vf-msg ko'; msg.textContent = 'La demande n’est pas partie. Vérifie ta connexion et réessaie.'; });
     });
   }
-  try { var startQ = new URL(location.href).searchParams.get('ville'); if (startQ) searchCity(startQ.replace(/-/g, ' '), true); } catch (e) {}
+  // Arrivée sur ?ville=… ou #ta-ville : les blocs au-dessus se remplissent après coup et repoussent la section.
+  // On la garde en haut de l'écran tant que la page grandit, jusqu'au premier geste du visiteur (6 s au plus).
+  var PIN = location.hash === '#ta-ville';
+  function pinTa(){ PIN = true; var sec = $('#ta-ville'); if (sec) sec.scrollIntoView({ block: 'start' }); }
+  function unpin(){ PIN = false; }
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function(ev){ addEventListener(ev, unpin, { passive: true, once: true }); });
+  setTimeout(unpin, 6000);
+  if (window.ResizeObserver) new ResizeObserver(function(){ if (PIN) pinTa(); }).observe(document.body);
+  try { var startQ = new URL(location.href).searchParams.get('ville'); if (startQ) searchCity(startQ.replace(/-/g, ' '), true); else if (PIN) pinTa(); } catch (e) {}
 
   fetch(API).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
     fillVilles(d.villes);
