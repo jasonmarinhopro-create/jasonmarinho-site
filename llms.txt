@@ -31,7 +31,7 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 - [Contrats & paiements](https://jasonmarinho.com/services/contrats): Contrat de location saisonnière signé en ligne (FR, PT, EN), loyer payé par carte via Stripe sur le compte de l'hôte, caution par empreinte bancaire, facture numérotée
 - [Planning ménage](https://jasonmarinho.com/services/planning-menage): Ménages calculés à partir des réservations Airbnb, Booking et directes, lien de planning pour l'équipe, photos de fin de ménage
 - [Déclarations voyageurs](https://jasonmarinho.com/services/declarations-voyageurs): Fiche individuelle de police pré-remplie (France), envoi SIBA (Portugal), check-in en ligne
-- [Audit de la fiche Google](https://jasonmarinho.com/services/audit-gbp/): Audit de la fiche Google Business Profile des hôtes, intégré à la plateforme
+- [Audit de la fiche Google](https://jasonmarinho.com/services/audit-gbp/): audit express gratuit et sans compte de la fiche Google d'un hébergement à partir de son lien Google Maps ou de son nom : note sur 100 et priorités. Audit complet en 24 points et historique dans l'espace membre.
 - [Questions & réponses](https://jasonmarinho.com/services/entre-hotes): Les hôtes inscrits posent leurs questions, réponse sous 48 h par Jason Marinho ou un hôte expérimenté
 - [Partenaires](https://jasonmarinho.com/partenaires): Outils recommandés, offres négociées pour les membres (Driing, Lodgify…), comparatifs et catalogue des outils LCD
 - [Offre Indy](https://jasonmarinho.com/partenaires/indy): Indy pour la compta LMNP, la liasse 2031 et la facture électronique, premier mois offert (lien affilié)
@@ -58,6 +58,7 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 
 ## Simulateurs gratuits
 
+- [Analyse d'annonce Airbnb](https://jasonmarinho.com/services/analyse-annonce-airbnb) : note sur 100 et améliorations classées par priorité à partir du lien d'une annonce Airbnb, par règles, sans compte.
 - [Simulateurs LCD](https://jasonmarinho.com/services/simulateurs) : 8 simulateurs gratuits pour la location courte durée.
 - [Estimateur de revenus](https://jasonmarinho.com/services/simulateurs/revenus-lcd) : revenu brut et net d'un logement dans plus de 80 villes en Europe, sans compte.
 - [Prix par nuit](https://jasonmarinho.com/services/simulateurs/prix-lcd) : prix conseillé selon la ville, le mois et la plateforme, sans compte.

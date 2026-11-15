@@ -7,6 +7,7 @@ import { parseTab } from '@/lib/visibility/admin-rules'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { perfTimer } from '@/lib/perf/server-timing'
 import VisibiliteView from './VisibiliteView'
+import AnalysesCard from './AnalysesCard'
 
 export const metadata = { title: 'Visibilité, Admin' }
 export const dynamic = 'force-dynamic'
@@ -62,6 +63,7 @@ export default async function VisibilitePage({ searchParams }: { searchParams: {
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
       <VisibiliteView data={data} tab={tab} />
+      {(tab === 'ensemble' || tab === 'partenaires') && <div style={{ marginTop: 16 }}><AnalysesCard outil="airbnb" /><AnalysesCard outil="gbp" /></div>}
     </div>
   )
 }

@@ -9,7 +9,7 @@
 // non utilisés depuis un moment repartent lentement.
 //
 // Toutes les 5 minutes : un appel à l'authentification, un à l'API de la
-// base (fonction du menu, qui renvoie tout de suite sans session) et une
+// base (fonction is_admin, qui renvoie tout de suite sans session) et une
 // lecture minuscule. Moins de 900 appels par jour, sans écriture.
 import { NextResponse } from 'next/server'
 
@@ -43,7 +43,11 @@ export async function GET(req: Request) {
   })
   const results = await Promise.all([
     timed('auth', () => fetch(`${url}/auth/v1/health`, opts(anon))),
-    timed('menu', () => fetch(`${url}/rest/v1/rpc/menu_state`, opts(anon, { method: 'POST', body: '{}' }))),
+    // is_admin() : ouverte sans session (répond « false » tout de suite). Avant
+    // le 15/11/2026 on appelait menu_state, réservée aux membres connectés :
+    // la base notait « permission denied for function menu_state » toutes les
+    // 5 minutes (288 erreurs par jour dans les rapports Supabase).
+    timed('menu', () => fetch(`${url}/rest/v1/rpc/is_admin`, opts(anon, { method: 'POST', body: '{}' }))),
     // Lecture publique minuscule (actualités publiées, règle d'accès publique) : pas de clé service
     timed('lecture', () => fetch(`${url}/rest/v1/actualites?select=id&limit=1`, opts(anon, { method: 'HEAD' }))),
   ])

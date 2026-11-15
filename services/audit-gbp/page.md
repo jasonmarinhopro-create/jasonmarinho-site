@@ -1,39 +1,28 @@
-# Audit Google Business Profile, Outil intégré
+# Audit express de la fiche Google
 
-L'**audit Google Business Profile (GBP)** est un outil disponible dans l'espace membre de la plateforme Jason Marinho. Il permet aux hôtes de location courte durée d'analyser la qualité et la complétude de leur fiche Google Business Profile.
+L'**audit express de la fiche Google** est un outil gratuit et sans compte de jasonmarinho.com. L'hôte colle le lien Google Maps de son logement, ou écrit son nom et sa ville, et obtient une note sur 100 avec la liste de ce qu'il faut corriger en premier.
 
-## À quoi ça sert
+## Ce que l'audit express note
 
-Google My Business (rebaptisé Google Business Profile) est un levier clé pour les hôtes qui souhaitent attirer des voyageurs locaux ou des réservations directes. Une fiche mal remplie ou peu optimisée nuit à la visibilité sur Google Maps et Google Search.
+- **Identité (30 points)** : catégorie d'hébergement, lien de réservation, téléphone, adresse
+- **Avis (40 points)** : note moyenne et nombre d'avis
+- **Photos (15 points)** : photos visibles sur la fiche
+- **État de la fiche (15 points)** : fiche ouverte, horaires, catégories secondaires
 
-L'outil d'audit permet de :
-- obtenir un score de complétude de sa fiche GBP
-- identifier les éléments manquants (photos, catégories, horaires, description, Q&A)
-- recevoir des recommandations concrètes pour améliorer sa fiche
-- suivre ses progrès d'optimisation au fil du temps
+Le barème est celui de Jason Marinho, fondé sur des règles fixes, sans intelligence artificielle. Il ne reproduit pas l'algorithme de Google, qui n'est pas public.
 
-## Comment ça fonctionne
+## D'où viennent les informations
 
-1. L'hôte se connecte à son espace membre sur app.jasonmarinho.com
-2. Il accède à la section "Audit GBP" dans le tableau de bord
-3. Il saisit l'URL ou le nom de sa fiche Google Business Profile
-4. L'outil analyse la fiche et génère un rapport détaillé
-5. Des actions prioritaires sont recommandées selon les lacunes détectées
+De l'accès officiel que Google donne aux fiches publiques. L'outil ne se connecte pas au compte Google de l'hôte et ne modifie rien.
 
-## Pourquoi Google Business Profile est crucial pour les hôtes LCD
+## Ce que l'audit express ne voit pas
 
-- Les voyageurs recherchent souvent leur hébergement sur Google Maps
-- Une fiche GBP bien renseignée génère des appels, des demandes de direction et des clics vers le site direct
-- Les avis Google ont un impact direct sur la réputation en ligne de l'hôte
-- L'association GBP + site de réservation directe permet de s'affranchir des commissions Airbnb
+Les posts, les réponses aux avis, les questions-réponses et la description ne sont pas lisibles par cet accès. L'**audit complet en 24 points**, dans l'espace membre gratuit (app.jasonmarinho.com), les couvre et garde l'historique des audits pour suivre ses progrès.
 
-## Formation associée
+## Limites
 
-Jason Marinho propose également une formation complète dédiée à Google My Business pour les hôtes LCD :
-https://jasonmarinho.com/services/formations/google-my-business-lcd/
+L'audit express est limité à 30 audits par jour pour rester dans la part gratuite de Google.
 
-## URL d'accès
+## Lien
 
-Page de présentation publique : https://jasonmarinho.com/services/audit-gbp/
-
-Outil dans l'espace membre : https://app.jasonmarinho.com/dashboard/audit-gbp
+https://jasonmarinho.com/services/audit-gbp

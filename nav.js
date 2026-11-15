@@ -575,6 +575,7 @@
             + '<div class="n-svc3-col">'
               + '<div class="n-svc3-h"><i class="ph ph-calculator"></i>Chiffrer & investir</div>'
               + '<div class="n-svc3-cap">Simulateurs gratuits</div>'
+              + '<a href="/services/analyse-annonce-airbnb"><i class="ph ph-star"></i>Analyse d\'annonce Airbnb</a>'
               + '<a href="/services/simulateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
               + '<a href="/services/simulateurs/prix-lcd"><i class="ph ph-tag"></i>Prix par nuit</a>'
               + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
@@ -777,6 +778,7 @@
         + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérifier un voyageur</a>'
         + '<a href="/services" class="mob-sublink">Tous les services <i class="ph-bold ph-arrow-right"></i></a>'
         + '<span class="mob-stitle">Chiffrer & investir</span>'
+        + '<a href="/services/analyse-annonce-airbnb"><i class="ph ph-star"></i>Analyse d\'annonce Airbnb</a>'
         + '<a href="/services/simulateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
         + '<a href="/services/simulateurs/prix-lcd"><i class="ph ph-tag"></i>Prix par nuit</a>'
         + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
@@ -1382,6 +1384,34 @@
       try {
         var a = e.target && e.target.closest ? e.target.closest('a[rel~="sponsored"]') : null;
         if (!a || !a.href) return;
+        var body = JSON.stringify({ session_id: sid, path: window.location.pathname, url: a.href });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track/click', new Blob([body], { type: 'application/json' }));
+        } else {
+          fetch('/api/track/click', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+        }
+      } catch (err) { /* fail-silent */ }
+    }, true);
+
+    /* Passage vers Driing (15/11/2026, demande de Jason) : chaque lien vers
+       driing.co part avec utm_source=jasonmarinho.com, utm_medium=site et
+       utm_campaign=<page de départ>, pour que le CRM Driing sache de quelle
+       page vient le visiteur, et le clic est compté chez nous (partenaire
+       « driing » de la page Visibilité). */
+    document.addEventListener('click', function (e) {
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('a[href*="driing.co"]') : null;
+        if (!a || !a.href) return;
+        var u = new URL(a.href);
+        if (!/(^|\.)driing\.co$/i.test(u.hostname)) return;
+        if (!u.searchParams.has('utm_source')) {
+          var page = window.location.pathname.replace(/^\/+|\/+$/g, '').replace(/[^a-zA-Z0-9]+/g, '-').slice(0, 80) || 'accueil';
+          u.searchParams.set('utm_source', 'jasonmarinho.com');
+          u.searchParams.set('utm_medium', 'site');
+          u.searchParams.set('utm_campaign', page);
+          a.href = u.toString();
+        }
+        if (a.getAttribute('rel') && /\bsponsored\b/.test(a.getAttribute('rel'))) return;
         var body = JSON.stringify({ session_id: sid, path: window.location.pathname, url: a.href });
         if (navigator.sendBeacon) {
           navigator.sendBeacon('/api/track/click', new Blob([body], { type: 'application/json' }));

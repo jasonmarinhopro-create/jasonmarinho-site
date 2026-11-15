@@ -8,7 +8,7 @@
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
 import { listFacebookComments, listInstagramComments, replyToComment } from '@/lib/social/meta'
-import { cleanReply, isOwnComment } from '@/lib/social/comment-rules'
+import { cleanReply, isOwnComment, isPostGone } from '@/lib/social/comment-rules'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/social/comments')
@@ -61,8 +61,10 @@ export async function syncComments(): Promise<{ posts: number; added: number; er
       const fresh = list.filter(c => c.text.trim() && !isOwnComment(c, account))
       added += await storeComments(fresh.map(c => ({ platform: t.platform, commentId: c.commentId, parentId: c.parentId, postExternalId: t.external_post_id, text: c.text, authorName: c.authorName, createdAt: c.createdAt })))
     } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      if (isPostGone(message)) { log.warn('relève des commentaires : post supprimé chez Meta', { platform: t.platform }); continue }
       errors++
-      log.error('relève des commentaires', { platform: t.platform, err: err instanceof Error ? err.message : String(err) })
+      log.error('relève des commentaires', { platform: t.platform, err: message })
     }
   }
   return { posts: targets?.length ?? 0, added, errors }

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analyse gratuite de ton annonce Airbnb | Jason Marinho</title>
+  <meta name="description" content="Colle le lien de ton annonce Airbnb : note sur 100 et liste des améliorations à faire, classées par priorité, calculées par des règles claires. Gratuit, sans compte.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/analyse-annonce-airbnb">
+  <meta property="og:title" content="Analyse gratuite de ton annonce Airbnb : note sur 100 et priorités">
+  <meta property="og:description" content="Colle le lien de ton annonce Airbnb : note sur 100 et liste des améliorations à faire, classées par priorité, calculées par des règles claires. Gratuit, sans compte.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/analyse-annonce-airbnb">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2026-06">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=2026-06">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
+<link rel="manifest" href="/manifest.json?v=2026-06">
+  <meta name="theme-color" content="#004C3F">
+
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
+<!-- FONTLOAD:START -->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
+<!-- FONTLOAD:END -->
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
+  <style>
+    :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,.10)}
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;padding-top:64px;font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td)}
+    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+    img{max-width:100%;height:auto} a{color:inherit}
+    .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
+    .sec{padding:clamp(56px,7vw,96px) 0} .sec.cr{background:var(--cr)} .sec.dk{background:var(--gd)}
+    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:16px}
+    .lbl.dk{color:var(--g)}
+    .h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.12;letter-spacing:-.02em;color:#fff;margin:0 0 20px;font-weight:400}
+    .h1 em{color:var(--y);font-style:italic;font-weight:300}
+    .h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 16px;font-weight:400;color:var(--td)}
+    .h2.lt{color:#fff} .h2 em{color:var(--g);font-style:italic;font-weight:300} .h2.lt em{color:var(--y)}
+    .h3{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.3rem;font-weight:500;color:var(--td);margin:0 0 10px;letter-spacing:-.01em}
+    .sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;color:rgba(255,255,255,.65);margin:0 0 32px;max-width:680px}
+    .sub.dk{color:var(--tm)} .sub.mx{max-width:760px}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 26px;border-radius:10px;text-decoration:none;transition:background .2s,transform .2s,box-shadow .2s}
+    .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+    .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.78);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-ol:hover{border-color:rgba(255,255,255,.55);color:#fff}
+    .btn-g{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,76,63,.22);color:var(--g);font-weight:500;font-size:14px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:all .2s}
+    .btn-g:hover{background:var(--g);color:#fff;border-color:var(--g)}
+    .chk{width:20px;height:20px;border-radius:50%;background:rgba(0,76,63,.10);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:11px;flex-shrink:0}
+    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(72px,10vw,120px) 0 clamp(56px,7vw,90px);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
+    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
+    .hero-in{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px);position:relative;z-index:1}
+    .hero-brd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.38);margin-bottom:32px;flex-wrap:wrap}
+    .hero-brd a{color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s} .hero-brd a:hover{color:#fff} .hero-brd span{font-size:11px}
+    .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .meta-bd{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border-radius:7px;padding:6px 12px}
+    .meta-bd i{color:rgba(255,213,107,.55)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    .ck-list{list-style:none;padding:0;margin:20px 0;display:flex;flex-direction:column;gap:10px}
+    .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
+    .ck-list li .chk{margin-top:2px}
+    .item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:28px}
+    .item-card{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:24px;transition:box-shadow .2s,transform .2s}
+    .item-card:hover{box-shadow:0 12px 32px rgba(0,76,63,.08);transform:translateY(-2px)}
+    .item-card p{font-size:14px;line-height:1.65;color:var(--tm);margin:0}
+    .case-list{display:flex;flex-direction:column;gap:22px;margin-top:28px}
+    .case{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:28px}
+    .case-t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.15rem;font-weight:500;color:var(--g);margin:0 0 14px;letter-spacing:-.01em}
+    .case ol{margin:0;padding:0 0 0 22px;color:var(--tm);font-size:14.5px;line-height:1.7}
+    .case ol li{margin-bottom:5px}
+    .faq-list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+    .faq-it{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px 26px}
+    .faq-it summary{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.05rem;font-weight:500;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+    .faq-it summary::-webkit-details-marker{display:none}
+    .faq-it summary::after{content:'+';font-family:'Outfit','Outfit Fallback',sans-serif;font-size:1.4rem;font-weight:300;color:var(--g);transition:transform .2s}
+    .faq-it[open] summary::after{transform:rotate(45deg)}
+    .faq-it p{margin:14px 0 0;font-size:14.5px;line-height:1.7;color:var(--tm)}
+    .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:22px;padding:clamp(36px,5vw,56px);text-align:center;color:#fff}
+    .rel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:1000px;margin:24px auto 0}
+    .rel-card{display:flex;flex-direction:column;gap:8px;background:var(--w);border:1px solid var(--bd);border-radius:14px;padding:20px;text-decoration:none;color:inherit;transition:all .2s}
+    .rel-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,76,63,.08);border-color:rgba(0,76,63,.18)}
+    .rel-ic{width:38px;height:38px;border-radius:10px;background:var(--cr);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:18px;flex-shrink:0}
+    .rel-card:hover .rel-ic{background:var(--g);color:var(--y)}
+    .rel-k{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-top:6px}
+    .rel-t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:15.5px;font-weight:500;color:var(--td);line-height:1.3}
+    .rel-d{font-size:13px;color:var(--tm);line-height:1.5}
+
+.az{--ring:603.19;position:relative;min-height:calc(100vh - 64px);min-height:calc(100svh - 64px);display:flex;align-items:center;justify-content:center;overflow:hidden;color:#fff;background:radial-gradient(ellipse 70% 60% at 50% 0%,#0a5a49 0%,transparent 70%),radial-gradient(ellipse 60% 50% at 85% 100%,rgba(255,213,107,.10),transparent 70%),linear-gradient(170deg,#001a11 0%,#003329 60%,#00261e 100%);padding:clamp(40px,7vw,90px) clamp(16px,5vw,48px)}
+.az-orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;pointer-events:none;animation:azFloat 14s ease-in-out infinite}
+.az-orb.a{width:340px;height:340px;background:rgba(255,213,107,.16);top:-90px;right:-60px}
+.az-orb.b{width:420px;height:420px;background:rgba(0,120,98,.5);bottom:-160px;left:-120px;animation-delay:-7s}
+@keyframes azFloat{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,26px)}}
+.az-in{position:relative;z-index:1;width:100%;max-width:820px;text-align:center}
+.az-eye{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,213,107,.8);margin-bottom:22px}
+.az-eye i{width:6px;height:6px;border-radius:50%;background:var(--y);box-shadow:0 0 0 5px rgba(255,213,107,.15)}
+.az-h1{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(2.4rem,7vw,5rem);line-height:1.04;letter-spacing:-.03em;margin:0 0 20px}
+.az-h1 em{font-style:italic;font-weight:300;color:var(--y)}
+.az-sub{font-size:clamp(15px,1.6vw,18px);line-height:1.6;color:rgba(255,255,255,.66);max-width:520px;margin:0 auto 34px}
+.az-form{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px;max-width:640px;margin:0 auto;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:border .25s,box-shadow .25s,background .25s}
+.az-form:focus-within{border:1px solid rgba(255,213,107,.7);box-shadow:0 0 0 6px rgba(255,213,107,.10);background:rgba(255,255,255,.10)}
+.az-input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:16px;padding:14px 8px 14px 20px}
+.az-input::placeholder{color:rgba(255,255,255,.4)}
+.az-go{flex-shrink:0;display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:inherit;font-weight:600;font-size:15px;color:var(--gd);background:var(--y);border-radius:999px;padding:15px 26px;transition:transform .2s,box-shadow .2s,background .2s}
+.az-go:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 10px 28px rgba(255,213,107,.35)}
+.az-go:disabled{opacity:.6;cursor:default;transform:none;box-shadow:none}
+@media(max-width:560px){.az-form{flex-direction:column;border-radius:22px;padding:10px}.az-input{width:100%;text-align:center;padding:14px 10px}.az-go{width:100%;justify-content:center}}
+.az-err{min-height:22px;margin:14px 0 0;font-size:14px;font-weight:500;color:#ffb4a1}
+.az-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-top:22px;font-size:13px;color:rgba(255,255,255,.5)}
+.az-meta span{display:inline-flex;align-items:center;gap:7px}
+.az-meta span::before{content:"";width:4px;height:4px;border-radius:50%;background:rgba(255,213,107,.7)}
+.az-demo{margin-top:18px;background:none;border:0;cursor:pointer;font:inherit;font-size:13.5px;color:rgba(255,255,255,.72);text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(255,213,107,.6)}
+.az-demo:hover{color:#fff}
+.az-view{transition:opacity .35s ease,transform .35s ease}
+.az-view[hidden]{display:none}
+.az-view.out{opacity:0;transform:translateY(-12px)}
+.az-view.in{animation:azIn .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes azIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* Lecture */
+.sc{max-width:460px;margin:0 auto;text-align:left}
+.sc-card{position:relative;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:22px 24px}
+.sc-beam{position:absolute;left:0;right:0;height:90px;top:-90px;background:linear-gradient(180deg,transparent,rgba(255,213,107,.16) 60%,rgba(255,213,107,.5));border-bottom:1px solid rgba(255,213,107,.8);animation:scBeam 1.9s cubic-bezier(.5,0,.5,1) infinite;pointer-events:none}
+@keyframes scBeam{to{top:100%}}
+.sc-t{font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,213,107,.8);margin-bottom:14px}
+.sc-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px solid rgba(255,255,255,.08);font-size:15px;color:rgba(255,255,255,.5);transition:color .3s}
+.sc-row:first-of-type{border-top:0}
+.sc-row b{font-weight:500;color:rgba(255,255,255,.28);font-variant-numeric:tabular-nums;transition:color .3s}
+.sc-row.ok{color:#fff}
+.sc-row.ok b{color:var(--y)}
+.sc-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);flex-shrink:0;display:grid;place-items:center;transition:all .3s}
+.sc-row.ok .sc-dot{background:var(--y);border:1.5px solid var(--y);transform:scale(1.08)}
+.sc-dot svg{width:10px;height:10px;opacity:0;transition:opacity .2s}
+.sc-row.ok .sc-dot svg{opacity:1}
+.sc-l{display:flex;align-items:center;gap:12px}
+
+/* Résultat : bandeau */
+.rs{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(24px,5vw,56px);align-items:center;text-align:left;max-width:820px;margin:0 auto}
+@media(max-width:700px){.rs{grid-template-columns:1fr;text-align:center;justify-items:center}}
+.rg{position:relative;width:clamp(200px,34vw,260px);aspect-ratio:1}
+.rg svg{width:100%;height:100%;transform:rotate(-90deg)}
+.rg circle{fill:none;stroke-width:10;stroke-linecap:round}
+.rg .t{stroke:rgba(255,255,255,.09)}
+.rg .p{stroke:rgba(255,213,107,.28);stroke-dasharray:603.19;stroke-dashoffset:603.19;transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)}
+.rg .s{stroke:var(--y);stroke-dasharray:603.19;stroke-dashoffset:603.19;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 10px rgba(255,213,107,.45))}
+.rg-n{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.rg-n b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(3.6rem,10vw,5.4rem);line-height:1;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.rg-n span{font-size:13px;color:rgba(255,255,255,.5);margin-top:2px}
+.rg-spark{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;background:var(--y);opacity:0;pointer-events:none}
+.rg.win .rg-spark{animation:rgSpark .9s ease-out both}
+@keyframes rgSpark{0%{opacity:1;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-90px) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-170px) scale(.3)}}
+.rs-v{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(1.7rem,3.6vw,2.6rem);line-height:1.12;letter-spacing:-.02em;margin:0 0 10px}
+.rs-v em{font-style:italic;font-weight:300;color:var(--y)}
+.rs-name{font-size:15px;color:rgba(255,255,255,.85);margin:0 0 4px;overflow-wrap:anywhere}
+.rs-facts{font-size:13.5px;color:rgba(255,255,255,.5);margin:0 0 18px}
+.rs-pot{display:inline-flex;align-items:center;gap:10px;font-size:13.5px;color:rgba(255,255,255,.8);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:9px 16px}
+.rs-pot b{color:var(--y);font-variant-numeric:tabular-nums}
+.rs-part{font-size:13px;line-height:1.55;color:rgba(255,255,255,.6);margin:14px 0 0;max-width:440px}
+.rs-again{display:inline-block;margin-top:16px;background:none;border:0;cursor:pointer;font:inherit;font-size:13.5px;color:rgba(255,255,255,.6);text-decoration:underline;text-underline-offset:4px}
+.rs-again:hover{color:#fff}
+.az.done{min-height:0;padding-top:clamp(48px,7vw,84px);padding-bottom:clamp(48px,7vw,84px)}
+
+/* Résultat : détail */
+.rd{background:var(--w);padding:clamp(40px,6vw,80px) clamp(16px,5vw,48px)}
+.rd[hidden]{display:none}
+.rd-in{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(28px,4vw,56px);align-items:start}
+@media(max-width:900px){.rd-in{grid-template-columns:1fr}}
+.rd-k{font-size:11.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--g);margin:0 0 10px}
+.rd-h{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.02em;line-height:1.15;color:var(--td);margin:0 0 8px}
+.rd-h em{font-style:italic;font-weight:300;color:var(--g)}
+.rd-p{font-size:15px;line-height:1.6;color:var(--tm);margin:0 0 22px}
+.pr{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.pr li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:start;background:#fff;border:1px solid var(--bd);border-radius:20px;padding:20px;cursor:pointer;transition:transform .2s,box-shadow .2s,border .2s,background .2s;opacity:0;animation:azIn .5s cubic-bezier(.2,.8,.2,1) forwards}
+.pr li:hover{transform:translateY(-2px);box-shadow:0 14px 34px -18px rgba(0,76,63,.35)}
+.pr li:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+.pr-i{font-family:'Fraunces','Fraunces Fallback',serif;font-size:1.5rem;line-height:1;color:rgba(0,76,63,.28);font-variant-numeric:tabular-nums;padding-top:2px}
+.pr-s{display:block;font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin-bottom:5px}
+.pr strong{display:block;font-size:16px;font-weight:600;color:var(--td);line-height:1.35;margin-bottom:5px}
+.pr p{margin:0;font-size:14px;line-height:1.6;color:var(--tm)}
+.pr a{display:inline-block;margin-top:9px;font-size:13.5px;font-weight:600;color:var(--g)}
+.pr-r{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.pr-g{font-size:13px;font-weight:700;color:#7a4b00;background:rgba(255,213,107,.5);border-radius:999px;padding:4px 10px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pr-c{width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(0,76,63,.25);display:grid;place-items:center;transition:all .25s}
+.pr-c svg{width:14px;height:14px;opacity:0;transform:scale(.5);transition:all .25s}
+.pr li.on{background:rgba(0,76,63,.045);border:1px solid rgba(0,76,63,.22)}
+.pr li.on .pr-c{background:var(--g);border:1.5px solid var(--g)}
+.pr li.on .pr-c svg{opacity:1;transform:none}
+.pr li.on strong{text-decoration:line-through;text-decoration-color:rgba(0,76,63,.35);color:var(--tm)}
+.pr li.on .pr-g{background:var(--g);color:#fff}
+@media(max-width:520px){.pr li{grid-template-columns:minmax(0,1fr) auto;padding:18px}.pr-i{display:none}}
+.pr-more{font-size:13.5px;color:var(--tl);margin:14px 0 0}
+.xr{display:flex;flex-direction:column;gap:16px}
+@media(min-width:901px){.xr{position:sticky;top:88px}}
+.xc{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:22px}
+.xc h3{font-size:11.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--tl);margin:0 0 14px}
+.xc-note{font-size:13px;line-height:1.55;color:var(--tm);margin:12px 0 0}
+.xc-note b{color:var(--td)}
+.br{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline;font-size:14px;color:var(--td);margin-top:12px}
+.br:first-of-type{margin-top:0}
+.br span:nth-child(2){font-size:13px;color:var(--tl);font-variant-numeric:tabular-nums}
+.br i{grid-column:1/-1;height:6px;border-radius:99px;background:rgba(0,76,63,.09);overflow:hidden;display:block}
+.br i u{display:block;height:100%;width:0;border-radius:99px;background:var(--g);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.mo{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-end}
+.mo span{display:block;border-radius:3px;background:rgba(0,76,63,.16);opacity:0;animation:moIn .4s ease forwards}
+.mo .l{width:26px;height:17px;background:var(--g)}
+.mo .v{width:13px;height:19px}
+@keyframes moIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.tm{border:1px solid var(--bd);border-radius:16px;padding:14px;background:var(--cr)}
+.tm-img{height:86px;border-radius:10px;background:linear-gradient(135deg,rgba(0,76,63,.18),rgba(255,213,107,.35))}
+.tm-t{font-size:15px;font-weight:600;color:var(--td);margin:10px 0 2px;line-height:1.35;overflow-wrap:anywhere}
+.tm-t s{text-decoration:none;color:rgba(15,26,13,.28)}
+.tm-s{font-size:12.5px;color:var(--tl)}
+.eq{display:flex;flex-wrap:wrap;gap:7px}
+.eq span{display:inline-flex;align-items:center;gap:6px;font-size:13px;border-radius:999px;padding:6px 12px;border:1px dashed rgba(0,76,63,.3);color:var(--tl)}
+.eq span.ok{border:1px solid var(--g);background:var(--g);color:#fff}
+.eq span.no{border:1px dashed rgba(163,52,31,.45);color:#8a3a26;text-decoration:line-through}
+.eq svg{width:11px;height:11px}
+.fo{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;font-size:14px;line-height:1.5;color:var(--tm)}
+.fo li{display:flex;gap:10px;align-items:flex-start}
+.fo svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;color:var(--g)}
+
+/* Suite */
+.nx{background:var(--w);padding:0 clamp(16px,5vw,48px) clamp(48px,6vw,80px)}
+.nx[hidden]{display:none}
+.nx-in{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:16px}
+@media(max-width:900px){.nx-in{grid-template-columns:1fr}}
+.dr{position:relative;overflow:hidden;border-radius:26px;padding:clamp(26px,4vw,44px);color:#fff;background:radial-gradient(ellipse 60% 80% at 100% 0%,rgba(255,213,107,.16),transparent 70%),linear-gradient(150deg,#001a11,#003329)}
+.dr h2{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.15;letter-spacing:-.02em;margin:10px 0 12px}
+.dr h2 em{font-style:italic;font-weight:300;color:var(--y)}
+.dr p{font-size:15px;line-height:1.65;color:rgba(255,255,255,.7);margin:0 0 22px;max-width:520px}
+.dr .az-eye{margin-bottom:0}
+.nl{border:1px solid var(--bd);border-radius:26px;padding:clamp(24px,3vw,34px);background:#fff;display:flex;flex-direction:column;justify-content:center}
+.nl strong{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:500;font-size:1.2rem;color:var(--td);line-height:1.3}
+.nl p{font-size:14px;line-height:1.6;color:var(--tm);margin:8px 0 16px}
+.nl-f{display:flex;gap:8px;flex-wrap:wrap}
+.nl-f input[type=email]{flex:1;min-width:170px;font:inherit;font-size:15px;color:var(--td);background:var(--w);border:1px solid rgba(0,76,63,.18);border-radius:12px;padding:12px 14px}
+.nl-f input[type=email]:focus{outline:2px solid var(--g);outline-offset:1px}
+.nl-f button{font:inherit;font-weight:600;font-size:14px;cursor:pointer;color:#fff;background:var(--g);border:0;border-radius:12px;padding:12px 18px}
+.nl-m{font-size:13px;color:var(--tl);margin:10px 0 0;min-height:18px}
+
+/* Méthode */
+.me{background:var(--cr);padding:clamp(48px,6vw,84px) clamp(16px,5vw,48px)}
+.me-in{max-width:820px;margin:0 auto}
+.me-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:26px 0 8px}
+@media(max-width:760px){.me-g{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.me-c{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:18px 16px}
+.me-c b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:2rem;line-height:1;color:var(--g)}
+.me-c span{display:block;font-size:14px;font-weight:600;color:var(--td);margin:8px 0 4px}
+.me-c small{display:block;font-size:12.5px;line-height:1.5;color:var(--tl)}
+.me-src{font-size:12.5px;line-height:1.7;color:var(--tl);margin:18px 0 0}
+.me-src a{color:var(--g)}
+.me .faq-list{margin-top:34px}
+@media(prefers-reduced-motion:reduce){.az-orb,.sc-beam,.mo span,.pr li,.az-view.in{animation:none!important;opacity:1!important}.rg .s,.rg .p,.br i u{transition:none!important}}
+  </style>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Analyse d'annonce Airbnb", "description": "Note sur 100 et améliorations classées par priorité pour une annonce Airbnb.", "url": "https://jasonmarinho.com/services/analyse-annonce-airbnb", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "inLanguage": "fr"}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://jasonmarinho.com/"}, {"@type": "ListItem", "position": 2, "name": "Services", "item": "https://jasonmarinho.com/services"}, {"@type": "ListItem", "position": 3, "name": "Analyse d'annonce Airbnb", "item": "https://jasonmarinho.com/services/analyse-annonce-airbnb"}]}</script>
+  <script type="application/ld+json" data-schema-faq>{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "L'outil connaît-il l'algorithme d'Airbnb ?", "acceptedAnswer": {"@type": "Answer", "text": "Non, personne ne le connaît : Airbnb ne publie pas le détail de son classement. Le barème est le nôtre. Il s'appuie sur des repères publics (longueur du titre, critères des Coups de cœur voyageurs) et sur ce qui fait une annonce complète et claire. Aucune intelligence artificielle : ce sont des règles fixes, les mêmes pour tout le monde."}}, {"@type": "Question", "name": "Que lit l'outil quand je colle mon lien ?", "acceptedAnswer": {"@type": "Answer", "text": "Uniquement la page publique de ton annonce, celle que voit n'importe quel voyageur : titre, description, photos, équipements, note et avis. Il ne se connecte pas à ton compte Airbnb et ne modifie rien."}}, {"@type": "Question", "name": "Mon annonce est-elle enregistrée ?", "acceptedAnswer": {"@type": "Answer", "text": "Nous gardons le numéro de l'annonce analysée et sa note, pour vérifier que l'outil donne des résultats justes. Rien sur toi : ni nom, ni e-mail, ni adresse IP."}}, {"@type": "Question", "name": "Une note de 100 garantit-elle plus de réservations ?", "acceptedAnswer": {"@type": "Answer", "text": "Non. Une annonce complète et claire met les chances de ton côté, mais le prix, l'emplacement, la saison et tes avis comptent autant."}}]}</script>
+  <script defer src="/nav.js"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
+</script>
+</head>
+<body>
+
+<main>
+<section class="az" id="az">
+  <div class="az-orb a"></div><div class="az-orb b"></div>
+  <div class="az-in">
+
+    <div class="az-view" id="v-idle">
+      <div class="az-eye"><i></i>Analyse d'annonce Airbnb</div>
+      <h1 class="az-h1">Ton annonce,<br><em>notée en quelques secondes.</em></h1>
+      <p class="az-sub">Colle le lien de ton annonce Airbnb. Tu repars avec une note sur 100 et ce qu'il faut corriger en premier.</p>
+      <form class="az-form" id="az-form" novalidate>
+        <input class="az-input" id="az-lien" type="url" inputmode="url" placeholder="https://www.airbnb.fr/rooms/…" aria-label="Lien de ton annonce Airbnb" autocomplete="off">
+        <button type="submit" class="az-go" id="az-go">Analyser <i class="ph-bold ph-arrow-right"></i></button>
+      </form>
+      <p class="az-err" id="az-err" role="alert"></p>
+      <div class="az-meta"><span>Gratuit</span><span>Sans compte</span><span>Aucune IA, des règles claires</span><span>Seule ta page publique est lue</span></div>
+      <button type="button" class="az-demo" id="az-demo">Pas d'annonce sous la main ? Voir un exemple</button>
+    </div>
+
+    <div class="az-view" id="v-scan" hidden>
+      <div class="sc">
+        <div class="sc-card">
+          <div class="sc-beam"></div>
+          <div class="sc-t">Lecture de ton annonce</div>
+          <div class="sc-row" data-k="titre"><span class="sc-l"><span class="sc-dot"><svg viewBox="0 0 12 12" fill="none" stroke="#003329" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg></span>Titre</span><b>…</b></div>
+          <div class="sc-row" data-k="description"><span class="sc-l"><span class="sc-dot"><svg viewBox="0 0 12 12" fill="none" stroke="#003329" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg></span>Description</span><b>…</b></div>
+          <div class="sc-row" data-k="photos"><span class="sc-l"><span class="sc-dot"><svg viewBox="0 0 12 12" fill="none" stroke="#003329" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg></span>Photos</span><b>…</b></div>
+          <div class="sc-row" data-k="equipements"><span class="sc-l"><span class="sc-dot"><svg viewBox="0 0 12 12" fill="none" stroke="#003329" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg></span>Équipements</span><b>…</b></div>
+          <div class="sc-row" data-k="avis"><span class="sc-l"><span class="sc-dot"><svg viewBox="0 0 12 12" fill="none" stroke="#003329" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg></span>Avis</span><b>…</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="az-view" id="v-res" hidden aria-live="polite">
+      <div class="rs">
+        <div class="rg" id="rg">
+          <svg viewBox="0 0 220 220" aria-hidden="true"><circle class="t" cx="110" cy="110" r="96"/><circle class="p" id="rg-p" cx="110" cy="110" r="96"/><circle class="s" id="rg-s" cx="110" cy="110" r="96"/></svg>
+          <div class="rg-n"><b id="rg-n">0</b><span>sur 100</span></div>
+        </div>
+        <div>
+          <h2 class="rs-v" id="rs-v"></h2>
+          <p class="rs-name" id="rs-name"></p>
+          <p class="rs-facts" id="rs-facts"></p>
+          <div class="rs-pot" id="rs-pot"></div>
+          <p class="rs-part" id="rs-part" hidden>Analyse partielle : Airbnb n'a pas livré le détail des photos et des équipements cette fois. La note porte sur le titre, la description et les avis. Réessaie dans quelques minutes.</p>
+          <div><button type="button" class="rs-again" id="rs-again">Analyser une autre annonce</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="rd" id="rd" hidden>
+  <div class="rd-in">
+    <div>
+      <p class="rd-k">Plan d'action</p>
+      <h2 class="rd-h">Tes priorités, <em>dans l'ordre</em></h2>
+      <p class="rd-p">Coche ce que tu corriges : ta note grimpe en direct.</p>
+      <ul class="pr" id="pr"></ul>
+      <p class="pr-more" id="pr-more" hidden></p>
+    </div>
+    <aside class="xr" id="xr"></aside>
+  </div>
+</section>
+
+<section class="nx" id="nx" hidden>
+  <div class="nx-in">
+    <div class="dr">
+      <div class="az-eye"><i></i>Et après</div>
+      <h2>Une annonce soignée se loue aussi <em>sans commission</em></h2>
+      <p>Driing est la plateforme de réservation en direct que j'ai co-fondée : tu y publies la même annonce et tu ne paies aucune commission sur tes réservations.</p>
+      <a class="az-go" href="https://www.driing.co/" target="_blank" rel="noopener" style="text-decoration:none">Découvrir Driing <i class="ph-bold ph-arrow-right"></i></a>
+    </div>
+    <div class="nl">
+      <strong>Une idée par mois pour ta location</strong>
+      <p>La lettre Le Check-in : ce qui change, un outil, un bon plan. Désinscription en un clic.</p>
+      <div class="nl-f">
+        <input type="email" id="nl-mail" placeholder="ton@email.com" aria-label="Ton e-mail" autocomplete="email">
+        <input type="text" id="nl-web" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;border:0;padding:0">
+        <button type="button" id="nl-btn">S'inscrire</button>
+      </div>
+      <p class="nl-m" id="nl-msg" role="status"></p>
+    </div>
+  </div>
+</section>
+
+<section class="me">
+  <div class="me-in">
+    <p class="rd-k">Comment la note est calculée</p>
+    <h2 class="rd-h">Des règles fixes, <em>que tu peux vérifier</em></h2>
+    <p class="rd-p" style="margin-bottom:0">Airbnb ne publie pas le détail de son classement, et aucun outil ne le connaît. Le barème est le nôtre : il mesure si ton annonce est complète, claire et rassurante. Pas d'intelligence artificielle, les mêmes règles pour tout le monde.</p>
+    <div class="me-g">
+      <div class="me-c"><b>20</b><span>Titre</span><small>50 caractères au plus, l'essentiel dans les 32 premiers, un atout concret.</small></div>
+      <div class="me-c"><b>20</b><span>Description</span><small>Longueur, paragraphes, cinq sujets attendus.</small></div>
+      <div class="me-c"><b>25</b><span>Photos</span><small>Nombre, format paysage, légendes, rangement par pièce.</small></div>
+      <div class="me-c"><b>20</b><span>Équipements</span><small>Dix équipements de base que les voyageurs filtrent.</small></div>
+      <div class="me-c"><b>15</b><span>Avis et hôte</span><small>Note, nombre d'avis, taux de réponse, Superhôte.</small></div>
+    </div>
+    <p class="me-src">Les seuils des photos et des équipements sont notre repère, pas une règle d'Airbnb. Sources des repères chiffrés : <a href="https://news.airbnb.com/fr/airbnb-lance-les-coups-de-coeur-voyageurs" rel="noopener" target="_blank">Airbnb, « Airbnb lance les Coups de cœur voyageurs »</a> (moyenne de 4,9 et cinq avis) ; <a href="https://help.guestyforhosts.com/hc/en-gb/articles/11783015183133" rel="noopener" target="_blank">Guesty, « Airbnb Listing Title Character Limitation »</a> (titre de 50 caractères) ; <a href="https://www.rentalscaleup.com/fr/mise-a-jour-2022-airbnb-repond-aux-preoccupations-concernant-les-titres-dannonces-la-visibilite-des-annonces-et-les-categories-attribuees/" rel="noopener" target="_blank">Rental Scale-Up</a> (32 caractères visibles sur mobile). Relevés en novembre 2026.</p>
+    <div class="faq-list">
+      <details class="faq-it"><summary>L'outil connaît-il l'algorithme d'Airbnb ?</summary><p>Non, personne ne le connaît : Airbnb ne publie pas le détail de son classement. Le barème est le nôtre. Il s'appuie sur des repères publics (longueur du titre, critères des Coups de cœur voyageurs) et sur ce qui fait une annonce complète et claire. Aucune intelligence artificielle : ce sont des règles fixes, les mêmes pour tout le monde.</p></details>
+      <details class="faq-it"><summary>Que lit l'outil quand je colle mon lien ?</summary><p>Uniquement la page publique de ton annonce, celle que voit n'importe quel voyageur : titre, description, photos, équipements, note et avis. Il ne se connecte pas à ton compte Airbnb et ne modifie rien.</p></details>
+      <details class="faq-it"><summary>Mon annonce est-elle enregistrée ?</summary><p>Nous gardons le numéro de l'annonce analysée et sa note, pour vérifier que l'outil donne des résultats justes. Rien sur toi : ni nom, ni e-mail, ni adresse IP.</p></details>
+      <details class="faq-it"><summary>Une note de 100 garantit-elle plus de réservations ?</summary><p>Non. Une annonce complète et claire met les chances de ton côté, mais le prix, l'emplacement, la saison et tes avis comptent autant.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<script defer src="/footer.js"></script>
+<script src="/analyse-annonce-regles.js"></script>
+<script>
+(function(){
+  var A = window.AnalyseAnnonce; if (!A) return;
+  var $ = function(id){ return document.getElementById(id); };
+  var RING = 603.19, t0 = Date.now();
+  var calme = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CHECK = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg>';
+  var LABELS = { titre: 'Titre', description: 'Description', photos: 'Photos', equipements: 'Équipements', confiance: 'Avis et hôte' };
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function fr(n){ return String(n).replace('.', ','); }
+  function attendre(ms){ return new Promise(function(ok){ setTimeout(ok, calme ? 0 : ms); }); }
+
+  /* Annonce fictive pour la démonstration */
+  var EXEMPLE = { complet: true, titre: 'SUPERBE T2 !!!', description: 'Appartement lumineux proche du centre. Cuisine équipée et une chambre avec un grand lit.',
+    photos: { total: 9, paysage: 3, legendes: 0, pieces: ['Salon', 'Chambre 1'] },
+    equipements: { presents: ['Wifi', 'Cuisine', 'Chauffage', 'Télévision', 'Équipements de base', 'Lave-linge'], absents: ['Détecteur de fumée'] },
+    note: 4.62, avis: 3, sousNotes: { proprete: 4.3, exactitude: 4.7, arrivee: 4.8, communication: 5, emplacement: 4.9, qualitePrix: 4.6 },
+    superhote: false, coupDeCoeur: false, tauxReponse: 80, capacite: 4 };
+
+  var vues = { idle: $('v-idle'), scan: $('v-scan'), res: $('v-res') }, courante = 'idle';
+  function montrer(nom){
+    if (nom === courante) return Promise.resolve();
+    var a = vues[courante], b = vues[nom];
+    a.classList.remove('in'); a.classList.add('out');
+    return attendre(300).then(function(){
+      a.hidden = true; a.classList.remove('out');
+      b.hidden = false; b.classList.add('in'); courante = nom;
+    });
+  }
+  function erreur(t){ $('az-err').textContent = t || ''; }
+
+  function lecture(a){
+    var v = {
+      titre: a.titre ? a.titre.length + ' caractères' : 'absent',
+      description: a.description ? a.description.length + ' caractères' : 'absente',
+      photos: a.complet ? a.photos.total + ' photos' : 'non détaillées',
+      equipements: a.complet ? a.equipements.presents.length + ' cochés' : 'non détaillés',
+      avis: a.avis ? fr(a.note) + ' sur 5, ' + a.avis + ' avis' : 'pas encore d\'avis'
+    };
+    var rows = [].slice.call(document.querySelectorAll('.sc-row')), p = Promise.resolve();
+    rows.forEach(function(r){
+      p = p.then(function(){ return attendre(380); }).then(function(){ r.querySelector('b').textContent = v[r.getAttribute('data-k')]; r.classList.add('ok'); });
+    });
+    return p.then(function(){ return attendre(550); });
+  }
+  function razLecture(){ [].forEach.call(document.querySelectorAll('.sc-row'), function(r){ r.classList.remove('ok'); r.querySelector('b').textContent = '…'; }); }
+
+  var etat = null;
+  function compter(el, de, vers){
+    if (calme || de === vers) { el.textContent = vers; return; }
+    var debut = null, duree = 900;
+    (function pas(t){
+      if (debut === null) debut = t;
+      var k = Math.min((t - debut) / duree, 1), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = Math.round(de + (vers - de) * e);
+      if (k < 1) requestAnimationFrame(pas);
+    })(performance.now());
+  }
+  function anneau(){
+    var gain = 0;
+    etat.r.conseils.forEach(function(c, i){ if (etat.faits[i]) gain += c.perte; });
+    var note = Math.min(100, Math.round(etat.r.score + gain * 100 / etat.max));
+    $('rg-s').style.strokeDashoffset = RING * (1 - note / 100);
+    $('rg-p').style.strokeDashoffset = 0;
+    compter($('rg-n'), etat.note, note);
+    var reste = etat.r.conseils.length - etat.faits.filter(Boolean).length;
+    $('rs-pot').innerHTML = note >= 100 ? 'Tout est coché : <b>100 sur 100</b>'
+      : gain ? 'Avec tes corrections : <b>' + note + ' sur 100</b>, encore ' + reste + ' à traiter'
+      : etat.r.conseils.length ? 'Ton potentiel : <b>100 sur 100</b> en ' + etat.r.conseils.length + ' corrections' : 'Rien à corriger : <b>bravo</b>';
+    if (note >= 100 && etat.note < 100 && !calme) feter();
+    etat.note = note;
+  }
+  function feter(){
+    var g = $('rg');
+    [].forEach.call(g.querySelectorAll('.rg-spark'), function(s){ s.remove(); });
+    for (var i = 0; i < 16; i++) { var s = document.createElement('i'); s.className = 'rg-spark'; s.style.setProperty('--a', (i * 22.5) + 'deg'); s.style.animationDelay = (i % 4) * 40 + 'ms'; g.appendChild(s); }
+    g.classList.remove('win'); void g.offsetWidth; g.classList.add('win');
+  }
+
+  function detail(a, r){
+    var h = '';
+    r.conseils.slice(0, 10).forEach(function(c, i){
+      h += '<li role="checkbox" aria-checked="false" tabindex="0" data-i="' + i + '" style="animation-delay:' + (i * 70) + 'ms">'
+        + '<span class="pr-i">' + (i < 9 ? '0' : '') + (i + 1) + '</span>'
+        + '<span><span class="pr-s">' + esc(LABELS[c.section] || '') + '</span><strong>' + esc(c.titre) + '</strong><p>' + esc(c.texte) + '</p>'
+        + (c.lien ? '<a href="' + esc(c.lien.href) + '">' + esc(c.lien.label) + ' <i class="ph-bold ph-arrow-right"></i></a>' : '') + '</span>'
+        + '<span class="pr-r"><span class="pr-g">+' + Math.max(1, Math.round(c.perte * 100 / etat.max)) + '</span><span class="pr-c">' + CHECK.replace('currentColor', '#fff') + '</span></span></li>';
+    });
+    $('pr').innerHTML = h || '<li style="cursor:default;opacity:1;animation:none;grid-template-columns:1fr"><span><strong>Rien à corriger</strong><p>Ton annonce coche toutes les règles du barème.</p></span></li>';
+    var plus = r.conseils.length - 10;
+    $('pr-more').hidden = plus <= 0; if (plus > 0) $('pr-more').textContent = 'Et ' + plus + ' réglages de moindre importance : relance l\'analyse après avoir traité les premiers.';
+
+    var x = '<div class="xc"><h3>Détail de la note</h3>';
+    r.sections.forEach(function(s){ x += '<div class="br"><span>' + esc(s.label) + '</span><span>' + s.score + ' / ' + s.max + '</span><i><u data-w="' + Math.round(s.score / s.max * 100) + '"></u></i></div>'; });
+    x += '</div>';
+
+    if (a.titre) {
+      var vu = a.titre.slice(0, 32), reste = a.titre.slice(32);
+      x += '<div class="xc"><h3>Ton titre sur mobile</h3><div class="tm"><div class="tm-img"></div><div class="tm-t">' + esc(vu) + (reste ? '<s>' + esc(reste) + '</s>' : '') + '</div><div class="tm-s">' + (a.avis ? fr(a.note) + ' · ' + a.avis + ' avis' : 'Nouveau') + '</div></div>'
+        + '<p class="xc-note">' + (reste ? 'En gris : la partie de ton titre qui peut être coupée dans les résultats sur téléphone (au-delà de 32 caractères).' : 'Ton titre tient en entier dans les résultats sur téléphone.') + '</p></div>';
+    }
+    if (a.complet && a.photos.total) {
+      var n = Math.min(a.photos.total, 60), pl = Math.round(a.photos.paysage / a.photos.total * n), m = '';
+      for (var i = 0; i < n; i++) m += '<span class="' + (i < pl ? 'l' : 'v') + '" style="animation-delay:' + (i * 18) + 'ms"></span>';
+      x += '<div class="xc"><h3>Tes ' + a.photos.total + ' photos</h3><div class="mo">' + m + '</div><p class="xc-note"><b>' + a.photos.paysage + ' en paysage</b>, ' + (a.photos.total - a.photos.paysage) + ' verticales. ' + (a.photos.legendes ? a.photos.legendes + ' avec légende.' : 'Aucune légende.') + '</p></div>';
+    }
+    if (a.complet) {
+      var e = '';
+      A.EQUIPEMENTS.forEach(function(q){
+        var ok = a.equipements.presents.some(function(t){ return q.re.test(t); });
+        var no = !ok && a.equipements.absents.some(function(t){ return q.re.test(t); });
+        e += '<span class="' + (ok ? 'ok' : no ? 'no' : '') + '">' + (ok ? CHECK : '') + esc(q.label) + '</span>';
+      });
+      x += '<div class="xc"><h3>Équipements de base</h3><div class="eq">' + e + '</div><p class="xc-note">En vert : coché. En pointillé : non coché. Barré : affiché comme absent sur ton annonce.</p></div>';
+    }
+    if (r.forts.length) {
+      x += '<div class="xc"><h3>Déjà bien</h3><ul class="fo">';
+      r.forts.forEach(function(f){ x += '<li>' + CHECK + '<span>' + esc(f) + '</span></li>'; });
+      x += '</ul></div>';
+    }
+    $('xr').innerHTML = x;
+    setTimeout(function(){ [].forEach.call(document.querySelectorAll('.br u'), function(u){ u.style.width = u.getAttribute('data-w') + '%'; }); }, 60);
+  }
+
+  function resultat(a){
+    var r = A.analyser(a), max = 0;
+    r.sections.forEach(function(s){ max += s.max; });
+    etat = { a: a, r: r, max: max, note: 0, faits: r.conseils.map(function(){ return false; }) };
+    var mots = r.verdict.split(' '), fin = mots.pop();
+    $('rs-v').innerHTML = esc(mots.join(' ')) + ' <em>' + esc(fin) + '</em>';
+    $('rs-name').textContent = a.titre || '';
+    var f = [];
+    if (a.complet) f.push(a.photos.total + ' photos', a.equipements.presents.length + ' équipements');
+    f.push(a.avis ? fr(a.note) + ' sur 5 (' + a.avis + ' avis)' : 'pas encore d\'avis');
+    if (a.capacite) f.push(a.capacite + ' voyageurs');
+    $('rs-facts').textContent = f.join(' · ');
+    $('rs-part').hidden = !r.partiel;
+    $('rg-n').textContent = '0'; $('rg-s').style.strokeDashoffset = RING; $('rg-p').style.strokeDashoffset = RING; $('rg').classList.remove('win');
+    detail(a, r);
+    return montrer('res').then(function(){
+      $('az').classList.add('done'); $('rd').hidden = false; $('nx').hidden = false;
+      setTimeout(anneau, 80);
+    });
+  }
+
+  function basculer(li){
+    var i = Number(li.getAttribute('data-i'));
+    etat.faits[i] = !etat.faits[i];
+    li.classList.toggle('on', etat.faits[i]); li.setAttribute('aria-checked', String(etat.faits[i]));
+    anneau();
+  }
+  $('pr').addEventListener('click', function(ev){
+    if (ev.target.closest('a')) return;
+    var li = ev.target.closest('li[data-i]'); if (li) basculer(li);
+  });
+  $('pr').addEventListener('keydown', function(ev){
+    if (ev.key !== ' ' && ev.key !== 'Enter') return;
+    var li = ev.target.closest('li[data-i]'); if (li) { ev.preventDefault(); basculer(li); }
+  });
+
+  function lancer(charge){
+    erreur(''); razLecture(); $('az-go').disabled = true;
+    var debut = Date.now();
+    return montrer('scan').then(charge).then(function(a){
+      return attendre(Math.max(0, 600 - (Date.now() - debut))).then(function(){ return lecture(a); }).then(function(){ return resultat(a); });
+    }).catch(function(e){
+      return montrer('idle').then(function(){ erreur(e && e.message ? e.message : 'La lecture a échoué. Réessaie dans quelques minutes.'); });
+    }).then(function(){ $('az-go').disabled = false; });
+  }
+
+  $('az-form').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var lien = ($('az-lien').value || '').trim();
+    if (!/airbnb\.[a-z.]+\/rooms\/(plus\/)?\d+/i.test(lien)) { erreur('Colle le lien de la page de ton annonce : il contient « /rooms/ » suivi d\'un numéro.'); return; }
+    lancer(function(){
+      return fetch('/api/analyse-annonce', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lien: lien }) })
+        .then(function(res){ return res.json().catch(function(){ return null; }).then(function(j){
+          if (!res.ok || !j || !j.annonce) throw new Error((j && j.error) || 'La lecture a échoué. Réessaie dans quelques minutes.');
+          return j.annonce;
+        }); }, function(){ throw new Error('Erreur réseau. Vérifie ta connexion et réessaie.'); });
+    });
+  });
+  $('az-demo').addEventListener('click', function(){ lancer(function(){ return Promise.resolve(EXEMPLE); }); });
+  $('rs-again').addEventListener('click', function(){
+    $('rd').hidden = true; $('nx').hidden = true; $('az').classList.remove('done'); $('az-lien').value = '';
+    montrer('idle').then(function(){ window.scrollTo({ top: 0, behavior: calme ? 'auto' : 'smooth' }); $('az-lien').focus(); });
+  });
+
+  $('nl-btn').addEventListener('click', function(){
+    var mail = $('nl-mail'), msg = $('nl-msg'), b = $('nl-btn'), email = (mail.value || '').trim();
+    if (!email || email.indexOf('@') < 1) { msg.textContent = 'Saisis une adresse e-mail valide.'; return; }
+    b.disabled = true; msg.textContent = 'Envoi…';
+    fetch('/api/newsletter/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, website: $('nl-web').value || '', ts: t0 }) })
+      .then(function(res){ msg.textContent = res.ok ? 'Bienvenue ! Vérifie ta boîte mail.' : 'Déjà inscrit ou erreur, réessaie.'; if (res.ok) mail.value = ''; })
+      .catch(function(){ msg.textContent = 'Erreur réseau, réessaie.'; })
+      .then(function(){ b.disabled = false; });
+  });
+})();
+</script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
+</body>
+</html>

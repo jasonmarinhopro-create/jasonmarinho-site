@@ -10,13 +10,18 @@
 // peut changer son SKU : revoir ce fichier dans ce cas.
 // https://developers.google.com/maps/billing-and-pricing/pricing
 
-export type PlacesSku = 'text_search_enterprise' | 'text_search_ids' | 'place_details_atmosphere'
+export type PlacesSku = 'text_search_enterprise' | 'text_search_ids' | 'text_search_names' | 'place_details_atmosphere'
 
 export const PLACES_BUDGET: Record<PlacesSku, { label: string; free: number; cap: number }> = {
   // Import de contacts (prospection) : nom, site, téléphone, adresse
   text_search_enterprise: { label: 'Recherche Google Maps (import de contacts)', free: 1000, cap: 900 },
   // Audit express : recherche de l'identifiant seul (places.id)
   text_search_ids: { label: 'Recherche de la fiche (audit express)', free: 1000, cap: 900 },
+  // Audit express public : fiches candidates avec nom et adresse, pour laisser
+  // l'hôte choisir la sienne (15/11/2026). Ces champs relèvent du SKU Pro
+  // (5 000 gratuits) ; plafond volontairement aligné sur le plus petit quota
+  // gratuit (1 000) pour ne jamais payer, même si Google reclassait ces champs.
+  text_search_names: { label: 'Recherche de la fiche avec nom et adresse (audit express public)', free: 1000, cap: 900 },
   // Audit express : détails de la fiche (avis, horaires, résumé)
   place_details_atmosphere: { label: 'Détails de la fiche (audit express)', free: 1000, cap: 900 },
 }
