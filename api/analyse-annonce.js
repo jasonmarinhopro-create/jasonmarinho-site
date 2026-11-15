@@ -1,8 +1,9 @@
 // POST /api/analyse-annonce { lien } : lit la page publique d'une annonce
 // Airbnb et rend les faits utiles à l'analyse (15/11/2026, demande de Jason).
 // La note est calculée dans le navigateur par /analyse-annonce-regles.js.
-// Aucune IA, aucun service tiers. Seul un compteur anonyme est tenu (note sur
-// 100 et lecture complète ou non, table annonce_analyses) : ni lien ni visiteur. Lecture et extraction
+// Aucune IA, aucun service tiers. Chaque analyse est notée dans la table
+// annonce_analyses (numéro de l'annonce, note, sous-notes) pour le suivi de
+// l'admin : rien sur le visiteur. Lecture et extraction
 // dans scripts/api-analyse/lire-annonce.cjs (code partagé hors de api/ :
 // 6 fonctions sur les 12 permises).
 //
@@ -23,19 +24,26 @@ const GARDE_MS = 15 * 60 * 1000
 // sert la page complète (mesuré le 15/11/2026). Pas d'imitation de navigateur.
 const USER_AGENT = 'curl/8.5.0'
 
-// Compteur de l'admin (migration 189) : la note et « lecture complète »,
-// rien sur l'annonce ni sur le visiteur. Un échec n'empêche jamais de répondre.
-async function compter(annonce) {
+// Suivi de l'admin (migrations 189 et 190) : l'annonce, la note et « lecture
+// complète », rien sur le visiteur. Un échec n'empêche jamais de répondre.
+async function compter(annonce, id) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) return
+  const r = analyser(annonce)
+  const base = { score: r.score, complet: !!annonce.complet }
+  // Numéro de l'annonce et sous-notes (migration 190) : pour que Jason vérifie
+  // la fiabilité de l'outil. Sans la migration (400), on compte sans eux.
+  const detail = { ...base, annonce_id: id, sections: r.sections.map(s => ({ id: s.id, score: s.score, max: s.max })) }
+  const post = body => fetch(`${url}/rest/v1/annonce_analyses`, {
+    method: 'POST',
+    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(2500),
+  })
   try {
-    await fetch(`${url}/rest/v1/annonce_analyses`, {
-      method: 'POST',
-      headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-      body: JSON.stringify({ score: analyser(annonce).score, complet: !!annonce.complet }),
-      signal: AbortSignal.timeout(2500),
-    })
+    const res = await post(detail)
+    if (res.status === 400) await post(base)
   } catch (err) { console.warn('[analyse-annonce] compteur', { err: err && err.name }) }
 }
 
@@ -67,7 +75,7 @@ module.exports = async function handler(req, res) {
   if (!id) return res.status(400).json({ error: 'Ce lien n\'est pas celui d\'une annonce Airbnb. Il doit ressembler à https://www.airbnb.fr/rooms/123456.' })
 
   const garde = cache.get(id)
-  if (garde && Date.now() - garde.t < GARDE_MS) { await compter(garde.data.annonce); return res.status(200).json(garde.data) }
+  if (garde && Date.now() - garde.t < GARDE_MS) { await compter(garde.data.annonce, id); return res.status(200).json(garde.data) }
 
   try {
     const r = await fetch('https://www.airbnb.fr/rooms/' + id, {
@@ -90,7 +98,7 @@ module.exports = async function handler(req, res) {
     const data = { lien: 'https://www.airbnb.fr/rooms/' + id, annonce: a }
     if (cache.size > 200) cache.clear()
     cache.set(id, { t: Date.now(), data })
-    await compter(a)
+    await compter(a, id)
     return res.status(200).json(data)
   } catch (err) {
     console.warn('[analyse-annonce] échec', { err: err && err.name })

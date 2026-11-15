@@ -3,23 +3,24 @@
 // sur la Vue d'ensemble et l'onglet Partenaires de la page Visibilité.
 import { MagnifyingGlass, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import RelativeTime from '@/components/ui/RelativeTime'
-import { loadAnnonceAnalysesStats } from '@/lib/admin/annonce-analyses'
+import { loadAnnonceAnalysesStats, loadAnnonceAnalysesRecentes } from '@/lib/admin/annonce-analyses'
 import { fmtInt } from '@/lib/visibility/admin-rules'
 import { v, ACCENT } from './ui'
 
 const num: React.CSSProperties = { fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 30, color: 'var(--text)', lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' }
 const lab: React.CSSProperties = { fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.45 }
+const SECTIONS: Record<string, string> = { titre: 'Titre', description: 'Description', photos: 'Photos', equipements: 'Équipements', confiance: 'Avis et hôte' }
 const cell: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }
 
 export default async function AnalysesCard() {
-  const s = await loadAnnonceAnalysesStats()
+  const [s, recentes] = await Promise.all([loadAnnonceAnalysesStats(), loadAnnonceAnalysesRecentes()])
   return (
     <section style={{ ...v.card, marginBottom: 16 }}>
       <div style={v.head}>
         <span style={v.icon}><MagnifyingGlass size={18} weight="bold" /></span>
         <div style={{ flex: '1 1 240px', minWidth: 0 }}>
           <h2 style={v.title}>Analyses d’annonce Airbnb</h2>
-          <p style={v.sub}>Nombre d’analyses réussies sur la page publique. Seules la date et la note sont gardées, jamais le lien.</p>
+          <p style={v.sub}>Analyses réussies sur la page publique. On garde l’annonce analysée et sa note, rien sur le visiteur.</p>
         </div>
         <a href="https://jasonmarinho.com/services/analyse-annonce-airbnb" target="_blank" rel="noopener" style={v.btn}>
           Voir la page <ArrowRight size={14} weight="bold" />
@@ -47,6 +48,26 @@ export default async function AnalysesCard() {
             <strong style={{ ...num, fontSize: 20, lineHeight: 1.5 }}>{s.derniere ? <RelativeTime iso={s.derniere} /> : 'Aucune'}</strong>
             <span style={lab}>dernière analyse</span>
           </div>
+        </div>
+      )}
+      {recentes.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
+          <span style={v.colHead}>Dernières analyses</span>
+          {recentes.map((a, i) => (
+            <div key={i} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px 16px', padding: '10px 12px', borderRadius: 12, background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+              <strong style={{ fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 22, color: ACCENT, minWidth: 74, fontVariantNumeric: 'tabular-nums' }}>{a.score} / 100</strong>
+              <span style={{ ...lab, flex: '1 1 260px', minWidth: 0 }}>
+                {a.sections.length > 0
+                  ? a.sections.map(sec => `${SECTIONS[sec.id] ?? sec.id} ${sec.score}/${sec.max}`).join(' · ')
+                  : 'Détail non enregistré'}
+                {!a.complet && ' · lecture partielle'}
+              </span>
+              <span style={{ ...lab, whiteSpace: 'nowrap' }}><RelativeTime iso={a.date} /></span>
+              {a.lien
+                ? <a href={a.lien} target="_blank" rel="noopener noreferrer" style={v.btn}>Ouvrir l’annonce <ArrowRight size={14} weight="bold" /></a>
+                : <span style={lab}>Lien non enregistré</span>}
+            </div>
+          ))}
         </div>
       )}
     </section>

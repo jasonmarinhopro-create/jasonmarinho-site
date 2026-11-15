@@ -420,3 +420,10 @@ Jason : « 9 s pour ouvrir le mode admin », « optimiser à fond avant Supabase
 - `app_jobs_ping()` était appelable sans connexion par l'API : droits retirés (migration 188, comme `social_dispatch_ping`). `is_admin()` reste appelable (les règles d'accès des tables l'utilisent, elle ne renvoie que vrai ou faux pour l'appelant). `issue_next_invoice_number` vérifie déjà que l'appelant est le bailleur. Protection « mots de passe compromis » : réservée à Supabase Pro.
 - « document is not defined » sur `/auth/login` (122 fois en 7 jours) : corrigé par le commit du 14/11 à 21 h 59 UTC, plus aucune occurrence depuis.
 - Erreurs Meta « Object with ID … does not exist » à chaque passage de `social-ops` : deux posts supprimés sur Facebook et Instagram, pas un jeton en panne. `isPostGone` (`lib/social/comment-rules.ts`, testé) : avertissement au lieu d'une erreur.
+
+## Erreurs dans les rapports Supabase (15/11/2026)
+
+Jason : « je remarque beaucoup d'erreurs sur Supabase » (88 % de réussite sur 24 h, 306 erreurs Postgres). Relevé des journaux :
+- **Postgres, ~12 erreurs par heure en continu** : « permission denied for function menu_state ». Le cron `/api/cron/warm` (toutes les 5 min) appelait `menu_state` sans session, alors qu'elle est réservée aux membres connectés. Corrigé : il appelle `is_admin()`, ouverte sans session. Ces erreurs ne gênaient personne mais faussaient le taux de réussite.
+- **API, 503 et 504 par rafales sur toutes les tables à la fois** (`site_visits`, `profiles`, fiches pros) : la machine gratuite saturée, comme les 28-30/10 et le 02/11. Le 15/11 après-midi : quatre déploiements en deux heures (chacun relit les fiches pros) plus l'admin ouvert. Aucun correctif dans le code : c'est l'offre Supabase Pro (décision de Jason, attendue après le Black Friday). Regrouper les fusions dans `main` limite ces rafales.
+- Le reste (quelques délais dépassés, renouvellements de session en double) : même cause.
