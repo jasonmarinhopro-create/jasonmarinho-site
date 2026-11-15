@@ -49,8 +49,12 @@ for (const [slug, c] of Object.entries(covers)) {
 
   let out = src.replace(RE, '')
   if (!out.includes('<div class="art-body">')) { missing++; continue }
-  out = out.replace('<div class="art-body">\n', `<div class="art-body">\n${bloc}`)
-  if (!out.includes('<!-- COVER:START -->')) out = out.replace('<div class="art-body">', `<div class="art-body">\n${bloc}`)
+  // sans_figure : image de partage seulement, pas de photo en haut du texte
+  // (article Driing, 15/11/2026 : Jason préfère la capture de driing.co)
+  if (!c.sans_figure) {
+    out = out.replace('<div class="art-body">\n', `<div class="art-body">\n${bloc}`)
+    if (!out.includes('<!-- COVER:START -->')) out = out.replace('<div class="art-body">', `<div class="art-body">\n${bloc}`)
+  }
   // Images de partage : toutes les balises existantes pointent vers la couverture
   out = out.replace(/<meta property="og:image" content="[^"]*">/g, `<meta property="og:image" content="${url}">`)
     .replace(/<meta name="twitter:image" content="[^"]*">/g, `<meta name="twitter:image" content="${url}">`)
