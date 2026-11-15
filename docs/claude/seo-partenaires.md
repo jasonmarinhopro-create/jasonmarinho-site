@@ -114,3 +114,12 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 ## /tarifs : refonte en 5 blocs essayée puis annulée (14/11/2026)
 
 Refonte faite le 14/11 (choix du métier dans l'en-tête, listes raccourcies, tableau replié, bande de réassurance) puis annulée le même jour à la demande de Jason (« je préférais largement l'ancienne version de la page prix ») : page remise à l'identique (commit 015020b annulé). Ne pas la refaire sans son accord.
+
+## Analyse d'annonce Airbnb (15/11/2026, idée de Jason)
+
+Page publique `/services/analyse-annonce-airbnb` (écrite à la main, pas de générateur), sans compte : l'hôte colle titre et description, saisit photos, note, avis, coche 10 équipements et 4 réglages ; note sur 100 et conseils classés par points perdus. But : porte d'entrée gratuite qui renvoie vers Driing (bloc « Et après », lien suivi par `nav.js`) et vers la lettre (`/api/newsletter/subscribe`).
+- **Moteur** : `/analyse-annonce-regles.js` (racine du site, calcul pur dans le navigateur, rien n'est envoyé), testé par `jason-app/lib/site/analyse-annonce.test.ts`. Barème : titre 20, description 25, photos 20, équipements 20, avis et réservation 15.
+- **Règle d'écriture** : le barème est le nôtre ; ne jamais écrire qu'il reproduit l'algorithme d'Airbnb (non public, le test le vérifie). Repères sourcés sur la page : titre 50 caractères, 32 visibles sur mobile, Coups de cœur voyageurs 4,9 et 5 avis.
+- **Pas de lecture par lien** (demande de Jason : « des gens demandent simplement le lien ») : interdit par les conditions d'Airbnb et bloqué depuis un hébergeur ; les outils qui le font paient un service d'aspiration. Décision de Jason à prendre avant d'y toucher.
+- Aucune fonction serverless ajoutée (5 sur 12). Menu : colonne « Chiffrer & investir » de `nav.js` (ordinateur et mobile), `sitemap.xml`, `llms.txt`.
+- Suite possible : analyse par IA (payante), résultat envoyé par e-mail, compteur d'analyses lancées.
