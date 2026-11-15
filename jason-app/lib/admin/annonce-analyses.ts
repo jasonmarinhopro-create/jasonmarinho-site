@@ -40,6 +40,46 @@ const cached = unstable_cache(async () => {
   return stats
 }, ['annonce-analyses-stats-v1'], { revalidate: 300, tags: ['annonce-analyses'] })
 
+export interface AnnonceAnalyse {
+  date: string
+  score: number
+  complet: boolean
+  /** Lien de l'annonce, refait à partir de son numéro ; null pour les lignes d'avant la migration 190 */
+  lien: string | null
+  sections: Array<{ id: string; score: number; max: number }>
+}
+
+/** Dernières analyses rendues par annonce_analyses_recentes ; lignes illisibles ignorées. Pur, testé. */
+export function parseAnnonceAnalyses(raw: unknown): AnnonceAnalyse[] {
+  if (!Array.isArray(raw)) return []
+  const out: AnnonceAnalyse[] = []
+  for (const x of raw) {
+    if (!x || typeof x !== 'object') continue
+    const r = x as Record<string, unknown>
+    if (typeof r.created_at !== 'string' || typeof r.score !== 'number') continue
+    const id = typeof r.annonce_id === 'string' && /^\d{5,24}$/.test(r.annonce_id) ? r.annonce_id : null
+    const sections = Array.isArray(r.sections)
+      ? r.sections.flatMap(sec => {
+          const o = sec as Record<string, unknown> | null
+          return o && typeof o.id === 'string' && typeof o.score === 'number' && typeof o.max === 'number' ? [{ id: o.id, score: o.score, max: o.max }] : []
+        })
+      : []
+    out.push({ date: r.created_at, score: Math.round(r.score), complet: r.complet !== false, lien: id ? `https://www.airbnb.fr/rooms/${id}` : null, sections })
+  }
+  return out
+}
+
+const cachedRecent = unstable_cache(async () => {
+  const { data, error } = await getServiceClient().rpc('annonce_analyses_recentes', { p_limit: 20 })
+  if (error) throw new Error(error.message)
+  return parseAnnonceAnalyses(data)
+}, ['annonce-analyses-recentes-v1'], { revalidate: 300, tags: ['annonce-analyses'] })
+
+/** Vide avant la migration 190 ou en cas d'erreur. À n'appeler qu'après la vérification du rôle admin. */
+export async function loadAnnonceAnalysesRecentes(): Promise<AnnonceAnalyse[]> {
+  try { return await cachedRecent() } catch { return [] }
+}
+
 /** À n'appeler qu'après la vérification du rôle admin (page Visibilité). */
 export async function loadAnnonceAnalysesStats(): Promise<AnnonceAnalysesStats | null> {
   try { return await cached() } catch { return null }
