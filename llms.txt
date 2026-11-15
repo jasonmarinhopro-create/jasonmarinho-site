@@ -58,6 +58,7 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 
 ## Simulateurs gratuits
 
+- [Analyse d'annonce Airbnb](https://jasonmarinho.com/services/analyse-annonce-airbnb) : note sur 100 et améliorations classées par priorité à partir du lien d'une annonce Airbnb, par règles, sans compte.
 - [Simulateurs LCD](https://jasonmarinho.com/services/simulateurs) : 8 simulateurs gratuits pour la location courte durée.
 - [Estimateur de revenus](https://jasonmarinho.com/services/simulateurs/revenus-lcd) : revenu brut et net d'un logement dans plus de 80 villes en Europe, sans compte.
 - [Prix par nuit](https://jasonmarinho.com/services/simulateurs/prix-lcd) : prix conseillé selon la ville, le mois et la plateforme, sans compte.
