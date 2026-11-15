@@ -1,0 +1,2558 @@
+{
+  "tarification-dynamique-lcd": {
+    "query": "hotel room booking price laptop",
+    "photos": [
+      {
+        "id": 6180728,
+        "w": 6555,
+        "h": 4375,
+        "photographer": "Max Vakhtbovych",
+        "photographer_url": "https://www.pexels.com/@artbovich",
+        "alt": "Interior of workplace with opened netbook on white table near wall with lamp",
+        "page": "https://www.pexels.com/photo/laptop-placed-on-table-near-lamp-in-room-6180728/",
+        "src": "https://images.pexels.com/photos/6180728/pexels-photo-6180728.jpeg",
+        "thumb": "https://images.pexels.com/photos/6180728/pexels-photo-6180728.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 15148878,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Sezer Uzunoğlu",
+        "photographer_url": "https://www.pexels.com/@sezer-uzunoglu-1349466",
+        "alt": "A man sits in a cozy hotel room in Cyprus, working on a laptop while enjoying a coffee.",
+        "page": "https://www.pexels.com/photo/photo-of-a-man-in-a-white-shirt-sitting-while-working-on-a-laptop-15148878/",
+        "src": "https://images.pexels.com/photos/15148878/pexels-photo-15148878.jpeg",
+        "thumb": "https://images.pexels.com/photos/15148878/pexels-photo-15148878.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 36014518,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mayara Caroline  Mombelli",
+        "photographer_url": "https://www.pexels.com/@mayaramombellifotografias",
+        "alt": "Two people working in a cozy setting with laptops and books, fostering collaboration.",
+        "page": "https://www.pexels.com/photo/casual-work-environment-with-laptop-and-books-36014518/",
+        "src": "https://images.pexels.com/photos/36014518/pexels-photo-36014518.png",
+        "thumb": "https://images.pexels.com/photos/36014518/pexels-photo-36014518.png?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 12663090,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Anna Shvets",
+        "photographer_url": "https://www.pexels.com/@shvetsa",
+        "alt": "Woman working on a laptop in a hotel lounge with a stunning city view.",
+        "page": "https://www.pexels.com/photo/a-woman-sitting-on-the-sofa-using-a-laptop-12663090/",
+        "src": "https://images.pexels.com/photos/12663090/pexels-photo-12663090.jpeg",
+        "thumb": "https://images.pexels.com/photos/12663090/pexels-photo-12663090.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6633801,
+        "w": 6416,
+        "h": 4277,
+        "photographer": "Cup of  Couple",
+        "photographer_url": "https://www.pexels.com/@cup-of-couple",
+        "alt": "A man in a teal blazer shops online using his laptop and credit card while sitting on a bed.",
+        "page": "https://www.pexels.com/photo/a-man-shopping-online-while-on-the-bed-6633801/",
+        "src": "https://images.pexels.com/photos/6633801/pexels-photo-6633801.jpeg",
+        "thumb": "https://images.pexels.com/photos/6633801/pexels-photo-6633801.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5077049,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "cottonbro studio",
+        "photographer_url": "https://www.pexels.com/@cottonbro",
+        "alt": "Hands typing on laptop searching Airbnb for accommodation options with map view.",
+        "page": "https://www.pexels.com/photo/person-using-macbook-pro-on-white-table-5077049/",
+        "src": "https://images.pexels.com/photos/5077049/pexels-photo-5077049.jpeg",
+        "thumb": "https://images.pexels.com/photos/5077049/pexels-photo-5077049.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "livret-accueil-digital-creer-location-courte-duree": {
+    "query": "welcome book guest house table",
+    "photos": [
+      {
+        "id": 40214560,
+        "w": 6244,
+        "h": 4168,
+        "photographer": "Tristan W",
+        "photographer_url": "https://www.pexels.com/@tristenpictures",
+        "alt": "Inviting wedding reception table with guest book, pens, and photo decorations.",
+        "page": "https://www.pexels.com/photo/wedding-reception-guest-book-table-setup-40214560/",
+        "src": "https://images.pexels.com/photos/40214560/pexels-photo-40214560.jpeg",
+        "thumb": "https://images.pexels.com/photos/40214560/pexels-photo-40214560.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 19758073,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Esma Atak",
+        "photographer_url": "https://www.pexels.com/@esma-atak-46104031",
+        "alt": "Charming outdoor setup with instant camera and festive decorations perfect for summer gatherings.",
+        "page": "https://www.pexels.com/photo/a-polaroid-camera-and-accessories-for-taking-pictures-on-the-table-at-a-party-19758073/",
+        "src": "https://images.pexels.com/photos/19758073/pexels-photo-19758073.jpeg",
+        "thumb": "https://images.pexels.com/photos/19758073/pexels-photo-19758073.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 39741750,
+        "w": 7008,
+        "h": 4672,
+        "photographer": "Riedelmax .",
+        "photographer_url": "https://www.pexels.com/@riedelmax",
+        "alt": "Inviting vintage reading room with classic armchairs and bookshelves in natural light.",
+        "page": "https://www.pexels.com/photo/cozy-vintage-reading-room-with-classic-furniture-39741750/",
+        "src": "https://images.pexels.com/photos/39741750/pexels-photo-39741750.jpeg",
+        "thumb": "https://images.pexels.com/photos/39741750/pexels-photo-39741750.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 31168389,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "🇻🇳🇻🇳 Việt Anh Nguyễn 🇻🇳🇻🇳",
+        "photographer_url": "https://www.pexels.com/@vi-t-anh-nguy-n-2150409023",
+        "alt": "A warm and inviting dining room with natural light and elegant floral decoration.",
+        "page": "https://www.pexels.com/photo/cozy-sunlit-dining-room-with-floral-decor-31168389/",
+        "src": "https://images.pexels.com/photos/31168389/pexels-photo-31168389.jpeg",
+        "thumb": "https://images.pexels.com/photos/31168389/pexels-photo-31168389.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 40495055,
+        "w": 7580,
+        "h": 5053,
+        "photographer": "Faheem Ahamad",
+        "photographer_url": "https://www.pexels.com/@faheem-ahamad-422934800",
+        "alt": "A luxurious hotel lobby featuring an elegant concierge desk with lamps and ornate decor.",
+        "page": "https://www.pexels.com/photo/elegant-hotel-concierge-desk-in-luxurious-lobby-40495055/",
+        "src": "https://images.pexels.com/photos/40495055/pexels-photo-40495055.jpeg",
+        "thumb": "https://images.pexels.com/photos/40495055/pexels-photo-40495055.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6293016,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Daniel Richard",
+        "photographer_url": "https://www.pexels.com/@daniel-richard-8570713",
+        "alt": "Beautiful rustic wedding reception table setup with decorations, candies, and guestbook.",
+        "page": "https://www.pexels.com/photo/candies-left-on-table-during-reception-6293016/",
+        "src": "https://images.pexels.com/photos/6293016/pexels-photo-6293016.jpeg",
+        "thumb": "https://images.pexels.com/photos/6293016/pexels-photo-6293016.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "fixer-prix-minimum-airbnb-lcd": {
+    "query": "price tag keys house",
+    "photos": [
+      {
+        "id": 29899813,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Keys with a house model, Euro bills, and charts suggesting real estate and financial themes.",
+        "page": "https://www.pexels.com/photo/real-estate-concepts-with-house-model-and-euro-bills-29899813/",
+        "src": "https://images.pexels.com/photos/29899813/pexels-photo-29899813.jpeg",
+        "thumb": "https://images.pexels.com/photos/29899813/pexels-photo-29899813.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34023965,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Euro currency, keys, and miniature houses symbolize real estate and finance concepts.",
+        "page": "https://www.pexels.com/photo/euro-banknotes-and-keys-with-miniature-houses-34023965/",
+        "src": "https://images.pexels.com/photos/34023965/pexels-photo-34023965.jpeg",
+        "thumb": "https://images.pexels.com/photos/34023965/pexels-photo-34023965.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 1111319,
+        "w": 6016,
+        "h": 4000,
+        "photographer": "Miguel Á. Padriñán",
+        "photographer_url": "https://www.pexels.com/@padrinan",
+        "alt": "Elegant minimalist card with a string, ideal for labeling or pricing against a black background.",
+        "page": "https://www.pexels.com/photo/white-product-label-1111319/",
+        "src": "https://images.pexels.com/photos/1111319/pexels-photo-1111319.jpeg",
+        "thumb": "https://images.pexels.com/photos/1111319/pexels-photo-1111319.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 27695207,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Flat lay of a house key on Euro bills representing real estate investment and finance.",
+        "page": "https://www.pexels.com/photo/real-estate-finance-template-background-27695207/",
+        "src": "https://images.pexels.com/photos/27695207/pexels-photo-27695207.jpeg",
+        "thumb": "https://images.pexels.com/photos/27695207/pexels-photo-27695207.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6441571,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Ann Hannes",
+        "photographer_url": "https://www.pexels.com/@ann-hannes-45017",
+        "alt": "Aesthetic minimalist hanging tags on black background for branding.",
+        "page": "https://www.pexels.com/photo/blank-hang-tags-with-a-black-background-6441571/",
+        "src": "https://images.pexels.com/photos/6441571/pexels-photo-6441571.jpeg",
+        "thumb": "https://images.pexels.com/photos/6441571/pexels-photo-6441571.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7986986,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Tamanna Rumee",
+        "photographer_url": "https://www.pexels.com/@tamanna-rumee-52377920",
+        "alt": "Red sale tags aligned diagonally on a red background, perfect for retail promotions.",
+        "page": "https://www.pexels.com/photo/sale-text-on-red-background-7986986/",
+        "src": "https://images.pexels.com/photos/7986986/pexels-photo-7986986.jpeg",
+        "thumb": "https://images.pexels.com/photos/7986986/pexels-photo-7986986.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "partenaires-lcd-outils-valides-terrain-hotes": {
+    "query": "toolbox laptop desk",
+    "photos": [
+      {
+        "id": 4491918,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Ivan S",
+        "photographer_url": "https://www.pexels.com/@ivan-s",
+        "alt": "Carpenter using laptop for woodwork designs at a workbench in a workshop.",
+        "page": "https://www.pexels.com/photo/a-person-using-a-laptop-while-on-the-carpentry-workbench-4491918/",
+        "src": "https://images.pexels.com/photos/4491918/pexels-photo-4491918.jpeg",
+        "thumb": "https://images.pexels.com/photos/4491918/pexels-photo-4491918.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4491881,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Ivan S",
+        "photographer_url": "https://www.pexels.com/@ivan-s",
+        "alt": "A craftsman wearing a mask, working on a laptop in a woodworking shop.",
+        "page": "https://www.pexels.com/photo/man-using-a-laptop-at-a-wood-workshop-4491881/",
+        "src": "https://images.pexels.com/photos/4491881/pexels-photo-4491881.jpeg",
+        "thumb": "https://images.pexels.com/photos/4491881/pexels-photo-4491881.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5846175,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Tima Miroshnichenko",
+        "photographer_url": "https://www.pexels.com/@tima-miroshnichenko",
+        "alt": "Black and white image of a workshop with a laptop displaying blueprints on a workbench, surrounded by tools.",
+        "page": "https://www.pexels.com/photo/a-grayscale-photo-of-a-laptop-on-a-work-table-5846175/",
+        "src": "https://images.pexels.com/photos/5846175/pexels-photo-5846175.jpeg",
+        "thumb": "https://images.pexels.com/photos/5846175/pexels-photo-5846175.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 3846554,
+        "w": 7680,
+        "h": 5120,
+        "photographer": "Andrea Piacquadio",
+        "photographer_url": "https://www.pexels.com/@olly",
+        "alt": "From above of modern laptop laying at table among different tools and equipment in workshop",
+        "page": "https://www.pexels.com/photo/laptop-on-table-in-workshop-3846554/",
+        "src": "https://images.pexels.com/photos/3846554/pexels-photo-3846554.jpeg",
+        "thumb": "https://images.pexels.com/photos/3846554/pexels-photo-3846554.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4491908,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Ivan S",
+        "photographer_url": "https://www.pexels.com/@ivan-s",
+        "alt": "A creative woodworking workspace with tools, notebook, and laptop on a wooden table.",
+        "page": "https://www.pexels.com/photo/black-and-silver-hand-tool-on-brown-wooden-table-4491908/",
+        "src": "https://images.pexels.com/photos/4491908/pexels-photo-4491908.jpeg",
+        "thumb": "https://images.pexels.com/photos/4491908/pexels-photo-4491908.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4491879,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Ivan S",
+        "photographer_url": "https://www.pexels.com/@ivan-s",
+        "alt": "A carpenter in a workshop using a laptop, surrounded by tools and wood.",
+        "page": "https://www.pexels.com/photo/man-in-red-white-and-blue-plaid-dress-shirt-and-blue-denim-jeans-sitting-on-brown-4491879/",
+        "src": "https://images.pexels.com/photos/4491879/pexels-photo-4491879.jpeg",
+        "thumb": "https://images.pexels.com/photos/4491879/pexels-photo-4491879.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "check-in-location-courte-duree-boite-a-cles-serrure-connectee": {
+    "query": "key lock box door",
+    "photos": [
+      {
+        "id": 33009524,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Jan van der Wolf",
+        "photographer_url": "https://www.pexels.com/@jan-van-der-wolf-11680885",
+        "alt": "A vibrant image of a red locker door with a key in the lock, featuring bold primary colors.",
+        "page": "https://www.pexels.com/photo/colorful-locker-with-key-in-bright-red-door-33009524/",
+        "src": "https://images.pexels.com/photos/33009524/pexels-photo-33009524.jpeg",
+        "thumb": "https://images.pexels.com/photos/33009524/pexels-photo-33009524.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8466227,
+        "w": 6561,
+        "h": 4374,
+        "photographer": "cottonbro studio",
+        "photographer_url": "https://www.pexels.com/@cottonbro",
+        "alt": "Close-up of industrial safes with manual locks and keys, highlighting security features.",
+        "page": "https://www.pexels.com/photo/safes-with-keys-and-knobs-8466227/",
+        "src": "https://images.pexels.com/photos/8466227/pexels-photo-8466227.jpeg",
+        "thumb": "https://images.pexels.com/photos/8466227/pexels-photo-8466227.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 13963754,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Vladimir Srajber",
+        "photographer_url": "https://www.pexels.com/@vladimirsrajber",
+        "alt": "Detailed view of a steel keyhole on a door ensuring security and privacy.",
+        "page": "https://www.pexels.com/photo/close-up-photograph-of-a-keyhole-13963754/",
+        "src": "https://images.pexels.com/photos/13963754/pexels-photo-13963754.jpeg",
+        "thumb": "https://images.pexels.com/photos/13963754/pexels-photo-13963754.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 12496893,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Alexey Demidov",
+        "photographer_url": "https://www.pexels.com/@alexeydemidov",
+        "alt": "Detailed shot of keys hanging in a door lock on a wooden surface, warm tones.",
+        "page": "https://www.pexels.com/photo/a-close-up-shot-of-silver-keys-12496893/",
+        "src": "https://images.pexels.com/photos/12496893/pexels-photo-12496893.jpeg",
+        "thumb": "https://images.pexels.com/photos/12496893/pexels-photo-12496893.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 38573375,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Jan van der Wolf",
+        "photographer_url": "https://www.pexels.com/@jan-van-der-wolf-11680885",
+        "alt": "Red metal storage unit door with padlock and number 0004 sign on white panel.",
+        "page": "https://www.pexels.com/photo/red-storage-unit-with-padlock-and-number-38573375/",
+        "src": "https://images.pexels.com/photos/38573375/pexels-photo-38573375.jpeg",
+        "thumb": "https://images.pexels.com/photos/38573375/pexels-photo-38573375.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 39088230,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Jan van der Wolf",
+        "photographer_url": "https://www.pexels.com/@jan-van-der-wolf-11680885",
+        "alt": "Dimly lit rows of lockers with keys, creating a geometric pattern in an indoor setting.",
+        "page": "https://www.pexels.com/photo/row-of-lockers-with-keys-in-dimly-lit-hallway-39088230/",
+        "src": "https://images.pexels.com/photos/39088230/pexels-photo-39088230.jpeg",
+        "thumb": "https://images.pexels.com/photos/39088230/pexels-photo-39088230.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "assurance-location-courte-duree-airbnb-couverture": {
+    "query": "house keys contract signing",
+    "photos": [
+      {
+        "id": 12955837,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Atlantic Ambience",
+        "photographer_url": "https://www.pexels.com/@freestockpro",
+        "alt": "Miniature wooden house with keys and contract symbolizing real estate transactions.",
+        "page": "https://www.pexels.com/photo/wooden-house-moder-keys-and-contract-on-table-12955837/",
+        "src": "https://images.pexels.com/photos/12955837/pexels-photo-12955837.jpeg",
+        "thumb": "https://images.pexels.com/photos/12955837/pexels-photo-12955837.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7937717,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Pavel Danilyuk",
+        "photographer_url": "https://www.pexels.com/@pavel-danilyuk",
+        "alt": "Close-up of a real estate transaction with euro bill, keys, and floor plan.",
+        "page": "https://www.pexels.com/photo/a-client-handing-payment-to-a-realtor-7937717/",
+        "src": "https://images.pexels.com/photos/7937717/pexels-photo-7937717.jpeg",
+        "thumb": "https://images.pexels.com/photos/7937717/pexels-photo-7937717.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8815930,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Kampus Production",
+        "photographer_url": "https://www.pexels.com/@kampus",
+        "alt": "Business colleagues celebrating a successful deal with a handshake and keys exchange.",
+        "page": "https://www.pexels.com/photo/businessman-and-clients-holding-keys-8815930/",
+        "src": "https://images.pexels.com/photos/8815930/pexels-photo-8815930.jpeg",
+        "thumb": "https://images.pexels.com/photos/8815930/pexels-photo-8815930.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29899813,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Keys with a house model, Euro bills, and charts suggesting real estate and financial themes.",
+        "page": "https://www.pexels.com/photo/real-estate-concepts-with-house-model-and-euro-bills-29899813/",
+        "src": "https://images.pexels.com/photos/29899813/pexels-photo-29899813.jpeg",
+        "thumb": "https://images.pexels.com/photos/29899813/pexels-photo-29899813.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7937682,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Pavel Danilyuk",
+        "photographer_url": "https://www.pexels.com/@pavel-danilyuk",
+        "alt": "Close-up of a business professional holding a house key and architectural plans, symbolizing real estate.",
+        "page": "https://www.pexels.com/photo/close-up-shot-of-keychain-on-person-s-hand-7937682/",
+        "src": "https://images.pexels.com/photos/7937682/pexels-photo-7937682.jpeg",
+        "thumb": "https://images.pexels.com/photos/7937682/pexels-photo-7937682.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8112163,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Pavel Danilyuk",
+        "photographer_url": "https://www.pexels.com/@pavel-danilyuk",
+        "alt": "Business professional handing keys to smiling clients at an office desk during a consultation.",
+        "page": "https://www.pexels.com/photo/smiling-employee-holding-keys-over-table-near-sitting-clients-8112163/",
+        "src": "https://images.pexels.com/photos/8112163/pexels-photo-8112163.jpeg",
+        "thumb": "https://images.pexels.com/photos/8112163/pexels-photo-8112163.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls": {
+    "query": "laptop dashboard home office",
+    "photos": [
+      {
+        "id": 577210,
+        "w": 6144,
+        "h": 4069,
+        "photographer": "Lukas Blazek",
+        "photographer_url": "https://www.pexels.com/@goumbik",
+        "alt": "Sleek laptop showcasing data analytics and graphs on the screen in a bright room.",
+        "page": "https://www.pexels.com/photo/close-up-photo-of-gray-laptop-577210/",
+        "src": "https://images.pexels.com/photos/577210/pexels-photo-577210.jpeg",
+        "thumb": "https://images.pexels.com/photos/577210/pexels-photo-577210.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 577195,
+        "w": 6144,
+        "h": 4069,
+        "photographer": "Lukas Blazek",
+        "photographer_url": "https://www.pexels.com/@goumbik",
+        "alt": "Overhead view of a laptop showing data visualizations and charts on its screen.",
+        "page": "https://www.pexels.com/photo/turned-on-laptop-computer-577195/",
+        "src": "https://images.pexels.com/photos/577195/pexels-photo-577195.jpeg",
+        "thumb": "https://images.pexels.com/photos/577195/pexels-photo-577195.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 12969403,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Atlantic Ambience",
+        "photographer_url": "https://www.pexels.com/@freestockpro",
+        "alt": "A laptop displaying an analytics dashboard with real-time data tracking and analysis tools.",
+        "page": "https://www.pexels.com/photo/close-up-shot-of-a-laptop-computer-12969403/",
+        "src": "https://images.pexels.com/photos/12969403/pexels-photo-12969403.jpeg",
+        "thumb": "https://images.pexels.com/photos/12969403/pexels-photo-12969403.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7887816,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Leeloo The First",
+        "photographer_url": "https://www.pexels.com/@leeloothefirst",
+        "alt": "Top view of financial analysis tools on a desk including a laptop, smartphone, and graphs.",
+        "page": "https://www.pexels.com/photo/mobile-phone-and-clipboard-on-the-keyboard-of-a-laptop-7887816/",
+        "src": "https://images.pexels.com/photos/7887816/pexels-photo-7887816.jpeg",
+        "thumb": "https://images.pexels.com/photos/7887816/pexels-photo-7887816.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7013070,
+        "w": 6210,
+        "h": 4140,
+        "photographer": "Firmbee.com",
+        "photographer_url": "https://www.pexels.com/@firmbee-com-22729701",
+        "alt": "A person in a blue jacket analyzing business analytics on a laptop outdoors during winter.",
+        "page": "https://www.pexels.com/photo/person-using-black-laptop-7013070/",
+        "src": "https://images.pexels.com/photos/7013070/pexels-photo-7013070.png",
+        "thumb": "https://images.pexels.com/photos/7013070/pexels-photo-7013070.png?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7739824,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Sami  Abdullah",
+        "photographer_url": "https://www.pexels.com/@onbab",
+        "alt": "A cozy home office setup with a laptop on a wooden desk surrounded by warm lighting and decor.",
+        "page": "https://www.pexels.com/photo/close-up-shot-of-a-laptop-on-a-wooden-table-7739824/",
+        "src": "https://images.pexels.com/photos/7739824/pexels-photo-7739824.jpeg",
+        "thumb": "https://images.pexels.com/photos/7739824/pexels-photo-7739824.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "gmb-questions-reponses-hotes-lcd-optimiser": {
+    "query": "customer questions laptop coffee",
+    "photos": [
+      {
+        "id": 4353597,
+        "w": 8256,
+        "h": 5504,
+        "photographer": "Ketut Subiyanto",
+        "photographer_url": "https://www.pexels.com/@ketut-subiyanto",
+        "alt": "Positive young Asian female in apron with white cup of hot beverage working on modern netbook in light kitchen against white wall",
+        "page": "https://www.pexels.com/photo/cheerful-woman-with-cup-of-beverage-working-on-laptop-4353597/",
+        "src": "https://images.pexels.com/photos/4353597/pexels-photo-4353597.jpeg",
+        "thumb": "https://images.pexels.com/photos/4353597/pexels-photo-4353597.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4353588,
+        "w": 8256,
+        "h": 5504,
+        "photographer": "Ketut Subiyanto",
+        "photographer_url": "https://www.pexels.com/@ketut-subiyanto",
+        "alt": "Cheerful surprised diverse colleagues in aprons using modern netbook and sharing business ideas while gathering at table with cup of drink in light cozy kitchen",
+        "page": "https://www.pexels.com/photo/positive-waitresses-working-on-laptop-and-discussing-work-4353588/",
+        "src": "https://images.pexels.com/photos/4353588/pexels-photo-4353588.jpeg",
+        "thumb": "https://images.pexels.com/photos/4353588/pexels-photo-4353588.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4353603,
+        "w": 8256,
+        "h": 5504,
+        "photographer": "Ketut Subiyanto",
+        "photographer_url": "https://www.pexels.com/@ketut-subiyanto",
+        "alt": "Cheerful smiling young diverse female waitresses in aprons with cup of hot beverage browsing netbook while standing near wooden table in light kitchen",
+        "page": "https://www.pexels.com/photo/happy-cafe-colleagues-surfing-laptop-in-kitchen-4353603/",
+        "src": "https://images.pexels.com/photos/4353603/pexels-photo-4353603.jpeg",
+        "thumb": "https://images.pexels.com/photos/4353603/pexels-photo-4353603.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8472574,
+        "w": 8192,
+        "h": 5464,
+        "photographer": "Cup of  Couple",
+        "photographer_url": "https://www.pexels.com/@cup-of-couple",
+        "alt": "A person holds a brown coffee cup near a laptop on a clean white desk, perfect for remote work themes.",
+        "page": "https://www.pexels.com/photo/shallow-focus-photo-of-a-person-holding-a-cup-of-coffee-8472574/",
+        "src": "https://images.pexels.com/photos/8472574/pexels-photo-8472574.jpeg",
+        "thumb": "https://images.pexels.com/photos/8472574/pexels-photo-8472574.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6829468,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Kampus Production",
+        "photographer_url": "https://www.pexels.com/@kampus",
+        "alt": "Close-up of two people having coffee and working on a laptop at a wooden table.",
+        "page": "https://www.pexels.com/photo/a-woman-holding-a-cup-of-coffee-6829468/",
+        "src": "https://images.pexels.com/photos/6829468/pexels-photo-6829468.jpeg",
+        "thumb": "https://images.pexels.com/photos/6829468/pexels-photo-6829468.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5942726,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "A minimalist workspace featuring a laptop and a cup of coffee on a white desk, perfect for remote work inspiration.",
+        "page": "https://www.pexels.com/photo/top-view-of-an-open-laptop-and-a-cup-of-coffe-on-the-table-5942726/",
+        "src": "https://images.pexels.com/photos/5942726/pexels-photo-5942726.jpeg",
+        "thumb": "https://images.pexels.com/photos/5942726/pexels-photo-5942726.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "budget-annuel-hote-lcd-grille-couts": {
+    "query": "euro banknotes budget notebook",
+    "photos": [
+      {
+        "id": 34637758,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Willfried Wende",
+        "photographer_url": "https://www.pexels.com/@fotoblend",
+        "alt": "Close-up of rolled Euro banknotes and coins on a table, symbolizing finance and savings.",
+        "page": "https://www.pexels.com/photo/rolled-euro-banknotes-and-coins-on-table-34637758/",
+        "src": "https://images.pexels.com/photos/34637758/pexels-photo-34637758.jpeg",
+        "thumb": "https://images.pexels.com/photos/34637758/pexels-photo-34637758.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 31988944,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Close-up of assorted euro banknotes symbolizing finance, currency, and budget management.",
+        "page": "https://www.pexels.com/photo/euro-banknotes-in-a-pile-indicating-wealth-and-finance-31988944/",
+        "src": "https://images.pexels.com/photos/31988944/pexels-photo-31988944.jpeg",
+        "thumb": "https://images.pexels.com/photos/31988944/pexels-photo-31988944.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 10356910,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Tim Heckmann",
+        "photographer_url": "https://www.pexels.com/@lonnyphotography",
+        "alt": "Euro coins and bills on a price list, symbolizing finance and economy.",
+        "page": "https://www.pexels.com/photo/money-euro-corporate-money-background-10356910/",
+        "src": "https://images.pexels.com/photos/10356910/pexels-photo-10356910.png",
+        "thumb": "https://images.pexels.com/photos/10356910/pexels-photo-10356910.png?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 1842373,
+        "w": 6016,
+        "h": 4000,
+        "photographer": "Lukasz Radziejewski",
+        "photographer_url": "https://www.pexels.com/@lukaszradziejewski",
+        "alt": "Detailed image of multiple 50 Euro bills stacked, showcasing currency design.",
+        "page": "https://www.pexels.com/photo/stacks-of-50-euro-banknotes-1842373/",
+        "src": "https://images.pexels.com/photos/1842373/pexels-photo-1842373.jpeg",
+        "thumb": "https://images.pexels.com/photos/1842373/pexels-photo-1842373.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7934520,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Ibrahim Boran",
+        "photographer_url": "https://www.pexels.com/@ibrahimboran",
+        "alt": "Image of various Euro banknotes spread out, captured in Berlin.",
+        "page": "https://www.pexels.com/photo/close-up-photo-of-cash-money-7934520/",
+        "src": "https://images.pexels.com/photos/7934520/pexels-photo-7934520.jpeg",
+        "thumb": "https://images.pexels.com/photos/7934520/pexels-photo-7934520.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 10149287,
+        "w": 7872,
+        "h": 5251,
+        "photographer": "Engin Akyurt",
+        "photographer_url": "https://www.pexels.com/@enginakyurt",
+        "alt": "Detailed close-up of Euro banknotes and coin, showcasing European currency likeness.",
+        "page": "https://www.pexels.com/photo/a-coin-and-paper-bills-in-close-up-shot-10149287/",
+        "src": "https://images.pexels.com/photos/10149287/pexels-photo-10149287.jpeg",
+        "thumb": "https://images.pexels.com/photos/10149287/pexels-photo-10149287.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "automatiser-caution-swikly-youka-test-terrain": {
+    "query": "contactless card payment smartphone",
+    "photos": [
+      {
+        "id": 4226272,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Anna Shvets",
+        "photographer_url": "https://www.pexels.com/@shvetsa",
+        "alt": "A woman processes a contactless payment using her smartphone at a payment terminal.",
+        "page": "https://www.pexels.com/photo/a-woman-paying-using-her-smartphone-4226272/",
+        "src": "https://images.pexels.com/photos/4226272/pexels-photo-4226272.jpeg",
+        "thumb": "https://images.pexels.com/photos/4226272/pexels-photo-4226272.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5849594,
+        "w": 10800,
+        "h": 6334,
+        "photographer": "Monstera Production",
+        "photographer_url": "https://www.pexels.com/@gabby-k",
+        "alt": "Decorative cardboard appliques of POS terminal with credit card near cellphone with app on screen during money transaction on blue background",
+        "page": "https://www.pexels.com/photo/cutout-paper-illustration-of-payment-terminal-with-check-and-smartphone-5849594/",
+        "src": "https://images.pexels.com/photos/5849594/pexels-photo-5849594.jpeg",
+        "thumb": "https://images.pexels.com/photos/5849594/pexels-photo-5849594.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5239822,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "A person uses a smartphone for contactless payment with a payment terminal, while receiving a shopping bag.",
+        "page": "https://www.pexels.com/photo/a-person-using-mobile-phone-to-pay-cashless-5239822/",
+        "src": "https://images.pexels.com/photos/5239822/pexels-photo-5239822.jpeg",
+        "thumb": "https://images.pexels.com/photos/5239822/pexels-photo-5239822.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7621381,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Ivan S",
+        "photographer_url": "https://www.pexels.com/@ivan-s",
+        "alt": "A smartphone displaying an ecommerce site with a credit card, set on a wooden surface, depicting online shopping.",
+        "page": "https://www.pexels.com/photo/credit-cards-and-a-smartphone-on-a-white-wall-7621381/",
+        "src": "https://images.pexels.com/photos/7621381/pexels-photo-7621381.jpeg",
+        "thumb": "https://images.pexels.com/photos/7621381/pexels-photo-7621381.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4226273,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Anna Shvets",
+        "photographer_url": "https://www.pexels.com/@shvetsa",
+        "alt": "Close-up of a woman making a contactless payment using a smartphone over a card reader",
+        "page": "https://www.pexels.com/photo/a-woman-paying-using-her-smartphone-4226273/",
+        "src": "https://images.pexels.com/photos/4226273/pexels-photo-4226273.jpeg",
+        "thumb": "https://images.pexels.com/photos/4226273/pexels-photo-4226273.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6353669,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Anete Lusina",
+        "photographer_url": "https://www.pexels.com/@anete-lusina",
+        "alt": "Crop anonymous male in casual clothes entering credit card details on smartphone on street in daylight",
+        "page": "https://www.pexels.com/photo/man-holding-credit-card-and-browsing-smartphone-on-street-6353669/",
+        "src": "https://images.pexels.com/photos/6353669/pexels-photo-6353669.jpeg",
+        "thumb": "https://images.pexels.com/photos/6353669/pexels-photo-6353669.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "lmnp-vs-lmp-changement-2026-impact": {
+    "query": "paperwork calculator coffee desk",
+    "photos": [
+      {
+        "id": 6939517,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Vlad Deep",
+        "photographer_url": "https://www.pexels.com/@vlad-deep-29415806",
+        "alt": "High-angle view of a business workspace with documents, coffee, currency, and smartphone calculator.",
+        "page": "https://www.pexels.com/photo/person-holding-a-cup-of-coffee-6939517/",
+        "src": "https://images.pexels.com/photos/6939517/pexels-photo-6939517.jpeg",
+        "thumb": "https://images.pexels.com/photos/6939517/pexels-photo-6939517.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8297044,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "Woman accountant calculating financial documents at office desk.",
+        "page": "https://www.pexels.com/photo/woman-in-polo-long-sleeves-computing-using-a-calculator-8297044/",
+        "src": "https://images.pexels.com/photos/8297044/pexels-photo-8297044.jpeg",
+        "thumb": "https://images.pexels.com/photos/8297044/pexels-photo-8297044.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7680745,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Woman writing with calculator on desk, managing finances indoors.",
+        "page": "https://www.pexels.com/photo/a-woman-writing-on-a-sticky-note-7680745/",
+        "src": "https://images.pexels.com/photos/7680745/pexels-photo-7680745.jpeg",
+        "thumb": "https://images.pexels.com/photos/7680745/pexels-photo-7680745.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8297031,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "Close-up of person using a calculator with financial documents in an office.",
+        "page": "https://www.pexels.com/photo/person-in-long-sleeve-shirt-holding-a-calculator-8297031/",
+        "src": "https://images.pexels.com/photos/8297031/pexels-photo-8297031.jpeg",
+        "thumb": "https://images.pexels.com/photos/8297031/pexels-photo-8297031.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7247409,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Leeloo The First",
+        "photographer_url": "https://www.pexels.com/@leeloothefirst",
+        "alt": "Hands of a person examining tax forms labeled as scam with calculator and papers.",
+        "page": "https://www.pexels.com/photo/a-person-holding-a-tax-form-7247409/",
+        "src": "https://images.pexels.com/photos/7247409/pexels-photo-7247409.jpeg",
+        "thumb": "https://images.pexels.com/photos/7247409/pexels-photo-7247409.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7680744,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Businesswoman calculates expenses using receipts and calculator at desk. Ideal for finance, accounting themes.",
+        "page": "https://www.pexels.com/photo/person-holding-oink-calculator-7680744/",
+        "src": "https://images.pexels.com/photos/7680744/pexels-photo-7680744.jpeg",
+        "thumb": "https://images.pexels.com/photos/7680744/pexels-photo-7680744.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "assurance-lcd-5-garanties-indispensables-2026": {
+    "query": "home insurance contract signing",
+    "photos": [
+      {
+        "id": 7736032,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "Hands holding pens filling out a home insurance policy document for coverage details.",
+        "page": "https://www.pexels.com/photo/a-home-insurance-policy-7736032/",
+        "src": "https://images.pexels.com/photos/7736032/pexels-photo-7736032.jpeg",
+        "thumb": "https://images.pexels.com/photos/7736032/pexels-photo-7736032.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 3760067,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Andrea Piacquadio",
+        "photographer_url": "https://www.pexels.com/@olly",
+        "alt": "Side view of faceless formal man giving pen and paper to focused female with clenched hands at table on meeting",
+        "page": "https://www.pexels.com/photo/crop-businessman-giving-contract-to-woman-to-sign-3760067/",
+        "src": "https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg",
+        "thumb": "https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8441787,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Kampus Production",
+        "photographer_url": "https://www.pexels.com/@kampus",
+        "alt": "Elderly man signing important business document at desk in office setting.",
+        "page": "https://www.pexels.com/photo/elderly-man-signing-an-application-form-8441787/",
+        "src": "https://images.pexels.com/photos/8441787/pexels-photo-8441787.jpeg",
+        "thumb": "https://images.pexels.com/photos/8441787/pexels-photo-8441787.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8441817,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Kampus Production",
+        "photographer_url": "https://www.pexels.com/@kampus",
+        "alt": "Close-up of a hand signing insurance documents in an office setting.",
+        "page": "https://www.pexels.com/photo/hand-with-pen-on-documents-on-desk-8441817/",
+        "src": "https://images.pexels.com/photos/8441817/pexels-photo-8441817.jpeg",
+        "thumb": "https://images.pexels.com/photos/8441817/pexels-photo-8441817.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7821684,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Two professionals exchanging documents in an office setting, focusing on paperwork and data analysis.",
+        "page": "https://www.pexels.com/photo/handing-out-of-documents-7821684/",
+        "src": "https://images.pexels.com/photos/7821684/pexels-photo-7821684.jpeg",
+        "thumb": "https://images.pexels.com/photos/7821684/pexels-photo-7821684.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8441792,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Kampus Production",
+        "photographer_url": "https://www.pexels.com/@kampus",
+        "alt": "Elderly woman signing paperwork in modern office with consultant.",
+        "page": "https://www.pexels.com/photo/elderly-woman-signing-documents-in-office-8441792/",
+        "src": "https://images.pexels.com/photos/8441792/pexels-photo-8441792.jpeg",
+        "thumb": "https://images.pexels.com/photos/8441792/pexels-photo-8441792.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "numero-enregistrement-lcd-obtenir-etapes-pratiques": {
+    "query": "official stamp document office",
+    "photos": [
+      {
+        "id": 6627938,
+        "w": 6654,
+        "h": 4436,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Healthcare worker in scrubs reviewing patient files with a stamp and clipboard.",
+        "page": "https://www.pexels.com/photo/a-man-sitting-at-the-table-6627938/",
+        "src": "https://images.pexels.com/photos/6627938/pexels-photo-6627938.jpeg",
+        "thumb": "https://images.pexels.com/photos/6627938/pexels-photo-6627938.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7654126,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Pavel Danilyuk",
+        "photographer_url": "https://www.pexels.com/@pavel-danilyuk",
+        "alt": "African American man focused on stamping documents at an office desk with a laptop and folders.",
+        "page": "https://www.pexels.com/photo/man-in-white-long-sleeves-working-in-the-office-7654126/",
+        "src": "https://images.pexels.com/photos/7654126/pexels-photo-7654126.jpeg",
+        "thumb": "https://images.pexels.com/photos/7654126/pexels-photo-7654126.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4922356,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Ekaterina Belinskaya",
+        "photographer_url": "https://www.pexels.com/@ekaterinabelinskaya",
+        "alt": "Close-up view of an open passport displaying various travel stamps in an airport setting.",
+        "page": "https://www.pexels.com/photo/person-holding-an-opened-passport-4922356/",
+        "src": "https://images.pexels.com/photos/4922356/pexels-photo-4922356.jpeg",
+        "thumb": "https://images.pexels.com/photos/4922356/pexels-photo-4922356.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6627936,
+        "w": 6235,
+        "h": 4157,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Medical professional in scrubs reviewing documents at an office desk.",
+        "page": "https://www.pexels.com/photo/a-man-sitting-at-the-table-6627936/",
+        "src": "https://images.pexels.com/photos/6627936/pexels-photo-6627936.jpeg",
+        "thumb": "https://images.pexels.com/photos/6627936/pexels-photo-6627936.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6627939,
+        "w": 6654,
+        "h": 4436,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Healthcare worker stamping documents in a clinic setting, ensuring efficient workflow.",
+        "page": "https://www.pexels.com/photo/a-man-sitting-at-the-table-6627939/",
+        "src": "https://images.pexels.com/photos/6627939/pexels-photo-6627939.jpeg",
+        "thumb": "https://images.pexels.com/photos/6627939/pexels-photo-6627939.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6661035,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Close-up of a person inspecting vintage stamps with a magnifying glass and gloves.",
+        "page": "https://www.pexels.com/photo/a-woman-using-a-magnifying-glass-on-postage-stamps-6661035/",
+        "src": "https://images.pexels.com/photos/6661035/pexels-photo-6661035.jpeg",
+        "thumb": "https://images.pexels.com/photos/6661035/pexels-photo-6661035.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "bruit-reglement-interieur-lcd-efficace": {
+    "query": "quiet hours apartment night",
+    "photos": [
+      {
+        "id": 15180445,
+        "w": 7728,
+        "h": 5152,
+        "photographer": "Yusuf Çelik",
+        "photographer_url": "https://www.pexels.com/@zandatsu",
+        "alt": "A dimly lit urban balcony with chairs and a table at night, creating a moody atmosphere.",
+        "page": "https://www.pexels.com/photo/balcony-of-residential-building-15180445/",
+        "src": "https://images.pexels.com/photos/15180445/pexels-photo-15180445.jpeg",
+        "thumb": "https://images.pexels.com/photos/15180445/pexels-photo-15180445.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 12568022,
+        "w": 6222,
+        "h": 4148,
+        "photographer": "Egor Komarov",
+        "photographer_url": "https://www.pexels.com/@egorkomarov",
+        "alt": "A nighttime view of lit windows, casting a warm glow with visible plants inside.",
+        "page": "https://www.pexels.com/photo/windows-in-building-at-night-12568022/",
+        "src": "https://images.pexels.com/photos/12568022/pexels-photo-12568022.jpeg",
+        "thumb": "https://images.pexels.com/photos/12568022/pexels-photo-12568022.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 15180443,
+        "w": 7728,
+        "h": 5152,
+        "photographer": "Yusuf Çelik",
+        "photographer_url": "https://www.pexels.com/@zandatsu",
+        "alt": "A serene nighttime view of a modern building entrance with surrounding foliage, creating a warm and inviting atmosphere.",
+        "page": "https://www.pexels.com/photo/leaves-near-building-wall-and-door-at-night-15180443/",
+        "src": "https://images.pexels.com/photos/15180443/pexels-photo-15180443.jpeg",
+        "thumb": "https://images.pexels.com/photos/15180443/pexels-photo-15180443.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6029629,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Sebastiaan Stam",
+        "photographer_url": "https://www.pexels.com/@sebastiaan9977",
+        "alt": "Night view of a modern building facade illuminated by soft lighting in Breda, Netherlands.",
+        "page": "https://www.pexels.com/photo/a-concrete-building-at-night-6029629/",
+        "src": "https://images.pexels.com/photos/6029629/pexels-photo-6029629.jpeg",
+        "thumb": "https://images.pexels.com/photos/6029629/pexels-photo-6029629.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 30320854,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Zeynep Sude  Emek",
+        "photographer_url": "https://www.pexels.com/@zeynep-sude-emek-193601188",
+        "alt": "Aerial view of an urban rooftop at night with chairs and satellite dishes.",
+        "page": "https://www.pexels.com/photo/nighttime-rooftop-with-satellite-dishes-and-chairs-30320854/",
+        "src": "https://images.pexels.com/photos/30320854/pexels-photo-30320854.jpeg",
+        "thumb": "https://images.pexels.com/photos/30320854/pexels-photo-30320854.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5535927,
+        "w": 6110,
+        "h": 4073,
+        "photographer": "Malcolm Garret",
+        "photographer_url": "https://www.pexels.com/@malcolm-garret-3023588",
+        "alt": "Illuminated night view of Hoboken cityscape with crescent moon and urban buildings.",
+        "page": "https://www.pexels.com/photo/city-buildings-during-night-time-5535927/",
+        "src": "https://images.pexels.com/photos/5535927/pexels-photo-5535927.jpeg",
+        "thumb": "https://images.pexels.com/photos/5535927/pexels-photo-5535927.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "tarif-conciergerie-lcd-grille-marche-2026": {
+    "query": "pricing table notebook pen",
+    "photos": [
+      {
+        "id": 4559527,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Ketut Subiyanto",
+        "photographer_url": "https://www.pexels.com/@ketut-subiyanto",
+        "alt": "Modern netbook with empty screen placed near brown notebook and papers on round table against blurred green garden",
+        "page": "https://www.pexels.com/photo/laptop-and-diary-on-table-in-garden-4559527/",
+        "src": "https://images.pexels.com/photos/4559527/pexels-photo-4559527.jpeg",
+        "thumb": "https://images.pexels.com/photos/4559527/pexels-photo-4559527.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7947633,
+        "w": 6219,
+        "h": 4146,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Top view of a workspace with graph, notebook, pens, and smart watch.",
+        "page": "https://www.pexels.com/photo/a-notebook-and-pen-on-the-table-7947633/",
+        "src": "https://images.pexels.com/photos/7947633/pexels-photo-7947633.jpeg",
+        "thumb": "https://images.pexels.com/photos/7947633/pexels-photo-7947633.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8276240,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "PNW Production",
+        "photographer_url": "https://www.pexels.com/@pnw-prod",
+        "alt": "Flat lay of a productivity planner with calculator, pen, and eyeglasses for efficient office work.",
+        "page": "https://www.pexels.com/photo/eyeglasses-notebook-and-calculator-8276240/",
+        "src": "https://images.pexels.com/photos/8276240/pexels-photo-8276240.jpeg",
+        "thumb": "https://images.pexels.com/photos/8276240/pexels-photo-8276240.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 19905187,
+        "w": 6804,
+        "h": 4536,
+        "photographer": "Ahmed ؜",
+        "photographer_url": "https://www.pexels.com/@mutecevvil",
+        "alt": "2024 planner with 'buy', 'hold', 'sell' notes and pens on a rustic wooden surface.",
+        "page": "https://www.pexels.com/photo/notes-on-calendar-19905187/",
+        "src": "https://images.pexels.com/photos/19905187/pexels-photo-19905187.jpeg",
+        "thumb": "https://images.pexels.com/photos/19905187/pexels-photo-19905187.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8652325,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Max Bonda",
+        "photographer_url": "https://www.pexels.com/@maxbond",
+        "alt": "An open notebook with handwritten notes resting on a wooden desk beside a laptop and pen.",
+        "page": "https://www.pexels.com/photo/a-black-pen-on-notebook-8652325/",
+        "src": "https://images.pexels.com/photos/8652325/pexels-photo-8652325.jpeg",
+        "thumb": "https://images.pexels.com/photos/8652325/pexels-photo-8652325.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5905755,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Katerina Holmes",
+        "photographer_url": "https://www.pexels.com/@katerina-holmes",
+        "alt": "Crop anonymous African American female contemplating at table with stationery and netbook in office",
+        "page": "https://www.pexels.com/photo/pensive-black-woman-with-notebook-and-laptop-at-table-5905755/",
+        "src": "https://images.pexels.com/photos/5905755/pexels-photo-5905755.jpeg",
+        "thumb": "https://images.pexels.com/photos/5905755/pexels-photo-5905755.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "top-7-erreurs-nouveaux-hotes-lcd-eviter": {
+    "query": "mistake eraser pencil notebook",
+    "photos": [
+      {
+        "id": 7718848,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "MART  PRODUCTION",
+        "photographer_url": "https://www.pexels.com/@mart-production",
+        "alt": "Close-up still life image featuring a pencil and colorful notebooks on a dark background.",
+        "page": "https://www.pexels.com/photo/gray-pencil-beside-brown-notebook-7718848/",
+        "src": "https://images.pexels.com/photos/7718848/pexels-photo-7718848.jpeg",
+        "thumb": "https://images.pexels.com/photos/7718848/pexels-photo-7718848.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5748810,
+        "w": 8256,
+        "h": 5504,
+        "photographer": "Skyler Ewing",
+        "photographer_url": "https://www.pexels.com/@skyler-ewing-266953",
+        "alt": "Set of multicolored pencils in cup holder placed on table with eraser on copybook and ripe red apple on black background",
+        "page": "https://www.pexels.com/photo/colored-pencils-on-table-with-notebook-5748810/",
+        "src": "https://images.pexels.com/photos/5748810/pexels-photo-5748810.jpeg",
+        "thumb": "https://images.pexels.com/photos/5748810/pexels-photo-5748810.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 38797904,
+        "w": 8064,
+        "h": 6048,
+        "photographer": "TLK GentooExpressions",
+        "photographer_url": "https://www.pexels.com/@gentooexpressions",
+        "alt": "Top view of a spiral notebook with pencils and eraser, ideal for school or office use.",
+        "page": "https://www.pexels.com/photo/spiral-notebook-with-pencils-and-eraser-on-desk-38797904/",
+        "src": "https://images.pexels.com/photos/38797904/pexels-photo-38797904.jpeg",
+        "thumb": "https://images.pexels.com/photos/38797904/pexels-photo-38797904.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7718704,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "MART  PRODUCTION",
+        "photographer_url": "https://www.pexels.com/@mart-production",
+        "alt": "A minimalist top view of an office desk setup featuring a laptop, notebook, and stationery items.",
+        "page": "https://www.pexels.com/photo/office-stationery-on-black-background-7718704/",
+        "src": "https://images.pexels.com/photos/7718704/pexels-photo-7718704.jpeg",
+        "thumb": "https://images.pexels.com/photos/7718704/pexels-photo-7718704.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5088019,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "olia danilevich",
+        "photographer_url": "https://www.pexels.com/@olia-danilevich",
+        "alt": "Flat lay of school stationery including a notebook, pencils, and geometry tools on a beige background.",
+        "page": "https://www.pexels.com/photo/spiral-notebook-pencils-and-paper-clips-flatlay-5088019/",
+        "src": "https://images.pexels.com/photos/5088019/pexels-photo-5088019.jpeg",
+        "thumb": "https://images.pexels.com/photos/5088019/pexels-photo-5088019.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8099595,
+        "w": 7671,
+        "h": 5114,
+        "photographer": "DS stories",
+        "photographer_url": "https://www.pexels.com/@ds-stories",
+        "alt": "Collection of colorful stationery items arranged neatly on a pink background.",
+        "page": "https://www.pexels.com/photo/school-and-office-supplies-on-a-pink-surface-8099595/",
+        "src": "https://images.pexels.com/photos/8099595/pexels-photo-8099595.jpeg",
+        "thumb": "https://images.pexels.com/photos/8099595/pexels-photo-8099595.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "formulaire-fiche-police-lcd-obligatoire": {
+    "query": "hotel check in desk passport",
+    "photos": [
+      {
+        "id": 7820325,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "A woman wearing a mask checks in at a hotel reception desk.",
+        "page": "https://www.pexels.com/photo/a-woman-standing-at-the-counter-7820325/",
+        "src": "https://images.pexels.com/photos/7820325/pexels-photo-7820325.jpeg",
+        "thumb": "https://images.pexels.com/photos/7820325/pexels-photo-7820325.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7820374,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "Woman wearing mask and hat checking in at hotel front desk, symbolizing travel and safety.",
+        "page": "https://www.pexels.com/photo/a-woman-holding-a-card-7820374/",
+        "src": "https://images.pexels.com/photos/7820374/pexels-photo-7820374.jpeg",
+        "thumb": "https://images.pexels.com/photos/7820374/pexels-photo-7820374.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4907441,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Ketut Subiyanto",
+        "photographer_url": "https://www.pexels.com/@ketut-subiyanto",
+        "alt": "Two travelers check in at a hotel reception, smiling and engaging with the staff.",
+        "page": "https://www.pexels.com/photo/woman-in-gray-t-shirt-checking-in-and-smiling-4907441/",
+        "src": "https://images.pexels.com/photos/4907441/pexels-photo-4907441.jpeg",
+        "thumb": "https://images.pexels.com/photos/4907441/pexels-photo-4907441.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7820359,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "Close-up of a hotel receptionist receiving a credit card from a guest, highlighting a transaction at check-in.",
+        "page": "https://www.pexels.com/photo/man-handing-a-credit-card-to-a-hotel-receptionist-7820359/",
+        "src": "https://images.pexels.com/photos/7820359/pexels-photo-7820359.jpeg",
+        "thumb": "https://images.pexels.com/photos/7820359/pexels-photo-7820359.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7820326,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "A close-up of a hotel check-in process with a smartphone and card transaction at the reception desk.",
+        "page": "https://www.pexels.com/photo/people-holding-a-guest-card-7820326/",
+        "src": "https://images.pexels.com/photos/7820326/pexels-photo-7820326.jpeg",
+        "thumb": "https://images.pexels.com/photos/7820326/pexels-photo-7820326.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4907442,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Ketut Subiyanto",
+        "photographer_url": "https://www.pexels.com/@ketut-subiyanto",
+        "alt": "Two women enjoying a cheerful check-in at a hostel reception desk.",
+        "page": "https://www.pexels.com/photo/women-receiving-a-hotel-room-card-at-the-reception-desk-4907442/",
+        "src": "https://images.pexels.com/photos/4907442/pexels-photo-4907442.jpeg",
+        "thumb": "https://images.pexels.com/photos/4907442/pexels-photo-4907442.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "seo-local-hote-lcd-google-maps-visibilite": {
+    "query": "smartphone map local street",
+    "photos": [
+      {
+        "id": 5448160,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Theo  Decker",
+        "photographer_url": "https://www.pexels.com/@theo-decker",
+        "alt": "Close-up of hands with bracelets navigating on smartphone using GPS app outdoors.",
+        "page": "https://www.pexels.com/photo/person-wearing-bracelets-holding-black-phone-5448160/",
+        "src": "https://images.pexels.com/photos/5448160/pexels-photo-5448160.jpeg",
+        "thumb": "https://images.pexels.com/photos/5448160/pexels-photo-5448160.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5448155,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Theo  Decker",
+        "photographer_url": "https://www.pexels.com/@theo-decker",
+        "alt": "A stylish professional adult using a smartphone with a navigation app on an urban street.",
+        "page": "https://www.pexels.com/photo/a-person-holding-a-cellphone-5448155/",
+        "src": "https://images.pexels.com/photos/5448155/pexels-photo-5448155.jpeg",
+        "thumb": "https://images.pexels.com/photos/5448155/pexels-photo-5448155.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5921677,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "AS Photography",
+        "photographer_url": "https://www.pexels.com/@asphotography",
+        "alt": "A smartphone displaying GPS map of New York City secured in a car mount during daylight.",
+        "page": "https://www.pexels.com/photo/close-up-of-the-maps-on-a-smartphone-5921677/",
+        "src": "https://images.pexels.com/photos/5921677/pexels-photo-5921677.jpeg",
+        "thumb": "https://images.pexels.com/photos/5921677/pexels-photo-5921677.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6169868,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Tima Miroshnichenko",
+        "photographer_url": "https://www.pexels.com/@tima-miroshnichenko",
+        "alt": "Close-up of a smartphone displaying a navigation app in a car, highlighting modern technology use while driving.",
+        "page": "https://www.pexels.com/photo/person-using-black-android-smartphone-6169868/",
+        "src": "https://images.pexels.com/photos/6169868/pexels-photo-6169868.jpeg",
+        "thumb": "https://images.pexels.com/photos/6169868/pexels-photo-6169868.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 30954662,
+        "w": 7008,
+        "h": 4672,
+        "photographer": "William Hadley",
+        "photographer_url": "https://www.pexels.com/@williamhadleyus",
+        "alt": "A smartphone with GPS navigation app mounted on a car dashboard during a road trip.",
+        "page": "https://www.pexels.com/photo/smartphone-gps-navigation-on-car-dashboard-30954662/",
+        "src": "https://images.pexels.com/photos/30954662/pexels-photo-30954662.jpeg",
+        "thumb": "https://images.pexels.com/photos/30954662/pexels-photo-30954662.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 3243090,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Vojta Kovařík",
+        "photographer_url": "https://www.pexels.com/@vojta-kovarik-388639",
+        "alt": "Top view of travel essentials including a map, camera, phone, watch, and lens on a wooden surface.",
+        "page": "https://www.pexels.com/photo/smartphone-beside-watch-and-camera-3243090/",
+        "src": "https://images.pexels.com/photos/3243090/pexels-photo-3243090.jpeg",
+        "thumb": "https://images.pexels.com/photos/3243090/pexels-photo-3243090.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "profil-hote-airbnb-bio-photo-confiance": {
+    "query": "smiling host welcoming door",
+    "photos": [
+      {
+        "id": 5737831,
+        "w": 6275,
+        "h": 4183,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Friends surprising a hostess with sunflowers at the doorway, sharing smiles and joy.",
+        "page": "https://www.pexels.com/photo/a-woman-standing-on-a-doorway-in-front-of-people-bringing-flowers-5737831/",
+        "src": "https://images.pexels.com/photos/5737831/pexels-photo-5737831.jpeg",
+        "thumb": "https://images.pexels.com/photos/5737831/pexels-photo-5737831.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 14036030,
+        "w": 6192,
+        "h": 4130,
+        "photographer": "Quang Nguyen Vinh",
+        "photographer_url": "https://www.pexels.com/@quang-nguyen-vinh-222549",
+        "alt": "A smiling woman in vibrant traditional attire peers through a rustic wooden doorway.",
+        "page": "https://www.pexels.com/photo/a-smiling-woman-standing-beside-the-brown-wooden-doors-14036030/",
+        "src": "https://images.pexels.com/photos/14036030/pexels-photo-14036030.jpeg",
+        "thumb": "https://images.pexels.com/photos/14036030/pexels-photo-14036030.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6517722,
+        "w": 6456,
+        "h": 4304,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Smiling friends interacting with festive wreaths and Christmas attire at doorway.",
+        "page": "https://www.pexels.com/photo/man-and-women-talking-in-doorway-at-christmas-6517722/",
+        "src": "https://images.pexels.com/photos/6517722/pexels-photo-6517722.jpeg",
+        "thumb": "https://images.pexels.com/photos/6517722/pexels-photo-6517722.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 10549095,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Jeff Vinluan",
+        "photographer_url": "https://www.pexels.com/@jeff-vinluan-20921030",
+        "alt": "Smiling woman stands at the entrance of a cozy cabin, welcoming the day.",
+        "page": "https://www.pexels.com/photo/smiling-woman-standing-in-the-entrance-to-a-cabin-10549095/",
+        "src": "https://images.pexels.com/photos/10549095/pexels-photo-10549095.jpeg",
+        "thumb": "https://images.pexels.com/photos/10549095/pexels-photo-10549095.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 14036022,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Quang Nguyen Vinh",
+        "photographer_url": "https://www.pexels.com/@quang-nguyen-vinh-222549",
+        "alt": "A woman in traditional attire stands at a rustic wooden doorway, smiling warmly.",
+        "page": "https://www.pexels.com/photo/woman-standing-behind-the-wooden-door-while-wearing-traditional-clothes-14036022/",
+        "src": "https://images.pexels.com/photos/14036022/pexels-photo-14036022.jpeg",
+        "thumb": "https://images.pexels.com/photos/14036022/pexels-photo-14036022.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6647028,
+        "w": 6424,
+        "h": 4283,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "A volunteer visits an elderly person at home, creating a warm connection.",
+        "page": "https://www.pexels.com/photo/person-opening-the-door-for-the-volunteers-6647028/",
+        "src": "https://images.pexels.com/photos/6647028/pexels-photo-6647028.jpeg",
+        "thumb": "https://images.pexels.com/photos/6647028/pexels-photo-6647028.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "saisonnalite-tarif-region-france-lcd-2026": {
+    "query": "provence village summer",
+    "photos": [
+      {
+        "id": 33706628,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Gaetan THURIN",
+        "photographer_url": "https://www.pexels.com/@gaetanthurin",
+        "alt": "Explore the stunning medieval architecture and scenic landscapes of Gordes.",
+        "page": "https://www.pexels.com/photo/charming-hilltop-village-in-gordes-france-33706628/",
+        "src": "https://images.pexels.com/photos/33706628/pexels-photo-33706628.jpeg",
+        "thumb": "https://images.pexels.com/photos/33706628/pexels-photo-33706628.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29837835,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "AXP Photography",
+        "photographer_url": "https://www.pexels.com/@axp-photography-500641970",
+        "alt": "Captivating aerial view of Gordes, a historic hilltop village in Provence, France.",
+        "page": "https://www.pexels.com/photo/picturesque-village-of-gordes-in-provence-29837835/",
+        "src": "https://images.pexels.com/photos/29837835/pexels-photo-29837835.jpeg",
+        "thumb": "https://images.pexels.com/photos/29837835/pexels-photo-29837835.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 38069761,
+        "w": 7628,
+        "h": 5088,
+        "photographer": "Susanne Jutzeler, suju-foto",
+        "photographer_url": "https://www.pexels.com/@suju",
+        "alt": "Picturesque view of a medieval village with stone houses and lush greenery in Provence, France.",
+        "page": "https://www.pexels.com/photo/charming-medieval-village-landscape-in-provence-38069761/",
+        "src": "https://images.pexels.com/photos/38069761/pexels-photo-38069761.jpeg",
+        "thumb": "https://images.pexels.com/photos/38069761/pexels-photo-38069761.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29837852,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "AXP Photography",
+        "photographer_url": "https://www.pexels.com/@axp-photography-500641970",
+        "alt": "Stunning view from a quaint village in Provence, France, with traditional architecture and lush landscape.",
+        "page": "https://www.pexels.com/photo/charming-provencal-village-overlooking-scenic-valley-29837852/",
+        "src": "https://images.pexels.com/photos/29837852/pexels-photo-29837852.jpeg",
+        "thumb": "https://images.pexels.com/photos/29837852/pexels-photo-29837852.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29837837,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "AXP Photography",
+        "photographer_url": "https://www.pexels.com/@axp-photography-500641970",
+        "alt": "A picturesque view of Gordes village on a sunny day in Provence-Alpes-Côte d'Azur, France.",
+        "page": "https://www.pexels.com/photo/scenic-view-of-gordes-in-provence-france-29837837/",
+        "src": "https://images.pexels.com/photos/29837837/pexels-photo-29837837.jpeg",
+        "thumb": "https://images.pexels.com/photos/29837837/pexels-photo-29837837.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 32749694,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Gaetan THURIN",
+        "photographer_url": "https://www.pexels.com/@gaetanthurin",
+        "alt": "Charming hillside village of Gordes in Provence, showcasing historic architecture and lush greenery.",
+        "page": "https://www.pexels.com/photo/scenic-view-of-gordes-village-in-provence-france-32749694/",
+        "src": "https://images.pexels.com/photos/32749694/pexels-photo-32749694.jpeg",
+        "thumb": "https://images.pexels.com/photos/32749694/pexels-photo-32749694.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "last-minute-vs-early-booking-strategie-2026": {
+    "query": "travel booking calendar planning",
+    "photos": [
+      {
+        "id": 7581018,
+        "w": 6592,
+        "h": 4395,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Close-up of a person writing a lunch reminder on an October calendar with a purple pen.",
+        "page": "https://www.pexels.com/photo/person-writing-on-a-calendar-7581018/",
+        "src": "https://images.pexels.com/photos/7581018/pexels-photo-7581018.jpeg",
+        "thumb": "https://images.pexels.com/photos/7581018/pexels-photo-7581018.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 15635242,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Walls.io",
+        "photographer_url": "https://www.pexels.com/@walls-io-440716388",
+        "alt": "Close-up of a desk with a keyboard and a calendar open to a marketing strategy note.",
+        "page": "https://www.pexels.com/photo/notes-in-a-calendar-and-keyboard-15635242/",
+        "src": "https://images.pexels.com/photos/15635242/pexels-photo-15635242.jpeg",
+        "thumb": "https://images.pexels.com/photos/15635242/pexels-photo-15635242.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5408684,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Leeloo The First",
+        "photographer_url": "https://www.pexels.com/@leeloothefirst",
+        "alt": "Top view of hands using a planner with coffee and accessories, focused on May 2021 calendar.",
+        "page": "https://www.pexels.com/photo/a-person-writing-on-a-desk-calendar-5408684/",
+        "src": "https://images.pexels.com/photos/5408684/pexels-photo-5408684.jpeg",
+        "thumb": "https://images.pexels.com/photos/5408684/pexels-photo-5408684.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5594261,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mike Murray",
+        "photographer_url": "https://www.pexels.com/@content-prod-co",
+        "alt": "Colorful office supplies including markers and paperclips, perfect for planning and organization.",
+        "page": "https://www.pexels.com/photo/notebook-among-paperclips-5594261/",
+        "src": "https://images.pexels.com/photos/5594261/pexels-photo-5594261.jpeg",
+        "thumb": "https://images.pexels.com/photos/5594261/pexels-photo-5594261.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7845451,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Neat workspace with a calendar, plant, and stationery on a red desk.",
+        "page": "https://www.pexels.com/photo/a-desk-calendar-with-notes-and-post-its-on-orange-desk-7845451/",
+        "src": "https://images.pexels.com/photos/7845451/pexels-photo-7845451.jpeg",
+        "thumb": "https://images.pexels.com/photos/7845451/pexels-photo-7845451.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5908729,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Overhead view of a modern workspace featuring an open planner and laptop on a tidy desk.",
+        "page": "https://www.pexels.com/photo/laptop-and-calendar-on-desk-5908729/",
+        "src": "https://images.pexels.com/photos/5908729/pexels-photo-5908729.jpeg",
+        "thumb": "https://images.pexels.com/photos/5908729/pexels-photo-5908729.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "prix-min-max-airbnb-fourchette-tarifaire": {
+    "query": "euro price tag shop",
+    "photos": [
+      {
+        "id": 39618508,
+        "w": 7728,
+        "h": 5152,
+        "photographer": "Maciek Dostatni",
+        "photographer_url": "https://www.pexels.com/@maciek-dostatni-2163040001",
+        "alt": "A bustling outdoor market with a variety of gourds and a price sign of €1.50.",
+        "page": "https://www.pexels.com/photo/vibrant-farmers-market-display-of-gourds-39618508/",
+        "src": "https://images.pexels.com/photos/39618508/pexels-photo-39618508.jpeg",
+        "thumb": "https://images.pexels.com/photos/39618508/pexels-photo-39618508.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7441481,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Atlantic Ambience",
+        "photographer_url": "https://www.pexels.com/@freestockpro",
+        "alt": "From above of blue jeans with retail price and size label placed on white table",
+        "page": "https://www.pexels.com/photo/jeans-with-price-ticket-on-white-table-7441481/",
+        "src": "https://images.pexels.com/photos/7441481/pexels-photo-7441481.jpeg",
+        "thumb": "https://images.pexels.com/photos/7441481/pexels-photo-7441481.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 1111319,
+        "w": 6016,
+        "h": 4000,
+        "photographer": "Miguel Á. Padriñán",
+        "photographer_url": "https://www.pexels.com/@padrinan",
+        "alt": "Elegant minimalist card with a string, ideal for labeling or pricing against a black background.",
+        "page": "https://www.pexels.com/photo/white-product-label-1111319/",
+        "src": "https://images.pexels.com/photos/1111319/pexels-photo-1111319.jpeg",
+        "thumb": "https://images.pexels.com/photos/1111319/pexels-photo-1111319.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8476605,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Kampus Production",
+        "photographer_url": "https://www.pexels.com/@kampus",
+        "alt": "Close-up of a hand choosing a mango among fresh produce at a market in Portugal.",
+        "page": "https://www.pexels.com/photo/a-person-holding-a-mango-fruit-8476605/",
+        "src": "https://images.pexels.com/photos/8476605/pexels-photo-8476605.jpeg",
+        "thumb": "https://images.pexels.com/photos/8476605/pexels-photo-8476605.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7986984,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Tamanna Rumee",
+        "photographer_url": "https://www.pexels.com/@tamanna-rumee-52377920",
+        "alt": "Diagonal row of red sale tags on a red background. Ideal for advertising promotions.",
+        "page": "https://www.pexels.com/photo/red-sale-placards-lined-in-row-7986984/",
+        "src": "https://images.pexels.com/photos/7986984/pexels-photo-7986984.jpeg",
+        "thumb": "https://images.pexels.com/photos/7986984/pexels-photo-7986984.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 14853183,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jimmy Liao",
+        "photographer_url": "https://www.pexels.com/@jimmy-liao-3615017",
+        "alt": "Explore a lively market stall displaying a range of goods with bold sales tags.",
+        "page": "https://www.pexels.com/photo/variety-of-products-on-plastic-trays-14853183/",
+        "src": "https://images.pexels.com/photos/14853183/pexels-photo-14853183.jpeg",
+        "thumb": "https://images.pexels.com/photos/14853183/pexels-photo-14853183.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "superhost-airbnb-criteres-methode-2026": {
+    "query": "gold trophy award desk",
+    "photos": [
+      {
+        "id": 6345332,
+        "w": 6524,
+        "h": 4349,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "A collection of trophies and medals displayed on a white desk, symbolizing success and victory.",
+        "page": "https://www.pexels.com/photo/trophies-and-medals-on-a-white-table-6345332/",
+        "src": "https://images.pexels.com/photos/6345332/pexels-photo-6345332.jpeg",
+        "thumb": "https://images.pexels.com/photos/6345332/pexels-photo-6345332.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6565255,
+        "w": 6063,
+        "h": 4042,
+        "photographer": "cottonbro studio",
+        "photographer_url": "https://www.pexels.com/@cottonbro",
+        "alt": "A close-up of a hand reaching for a shiny trophy on a wooden shelf, symbolizing success.",
+        "page": "https://www.pexels.com/photo/a-person-holding-a-trophy-6565255/",
+        "src": "https://images.pexels.com/photos/6565255/pexels-photo-6565255.jpeg",
+        "thumb": "https://images.pexels.com/photos/6565255/pexels-photo-6565255.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34021984,
+        "w": 9504,
+        "h": 6336,
+        "photographer": "ViAn Photography",
+        "photographer_url": "https://www.pexels.com/@vian-photography-1491190549",
+        "alt": "Lineup of gold trophies on a table outdoors with apartment backdrop.",
+        "page": "https://www.pexels.com/photo/array-of-gold-trophies-on-outdoor-table-34021984/",
+        "src": "https://images.pexels.com/photos/34021984/pexels-photo-34021984.jpeg",
+        "thumb": "https://images.pexels.com/photos/34021984/pexels-photo-34021984.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6345322,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Young person displays football trophies and medals on a desk, showcasing athletic pride.",
+        "page": "https://www.pexels.com/photo/boy-sitting-behind-a-desk-and-looking-at-a-bunch-of-medals-and-cups-6345322/",
+        "src": "https://images.pexels.com/photos/6345322/pexels-photo-6345322.jpeg",
+        "thumb": "https://images.pexels.com/photos/6345322/pexels-photo-6345322.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6565250,
+        "w": 6077,
+        "h": 4051,
+        "photographer": "cottonbro studio",
+        "photographer_url": "https://www.pexels.com/@cottonbro",
+        "alt": "A collection of trophies with a framed black and white portrait on a shelf.",
+        "page": "https://www.pexels.com/photo/trophies-and-a-framed-photo-6565250/",
+        "src": "https://images.pexels.com/photos/6565250/pexels-photo-6565250.jpeg",
+        "thumb": "https://images.pexels.com/photos/6565250/pexels-photo-6565250.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7005503,
+        "w": 6345,
+        "h": 4230,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "A collection of sports trophies and memorabilia representing achievement and success on a blue background.",
+        "page": "https://www.pexels.com/photo/variety-of-sport-trophies-7005503/",
+        "src": "https://images.pexels.com/photos/7005503/pexels-photo-7005503.jpeg",
+        "thumb": "https://images.pexels.com/photos/7005503/pexels-photo-7005503.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "duree-minimum-sejour-airbnb-criteres-choisir": {
+    "query": "calendar planner nights",
+    "photos": [
+      {
+        "id": 6172482,
+        "w": 6083,
+        "h": 4055,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Person writing important notes in a desk calendar with a pen, set in an office.",
+        "page": "https://www.pexels.com/photo/a-person-writing-on-calendar-6172482/",
+        "src": "https://images.pexels.com/photos/6172482/pexels-photo-6172482.jpeg",
+        "thumb": "https://images.pexels.com/photos/6172482/pexels-photo-6172482.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6170766,
+        "w": 6549,
+        "h": 4366,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Detailed shot of a person's hand writing notes on a calendar using a blue marker.",
+        "page": "https://www.pexels.com/photo/a-person-writing-on-the-calendar-using-a-blue-marker-6170766/",
+        "src": "https://images.pexels.com/photos/6170766/pexels-photo-6170766.jpeg",
+        "thumb": "https://images.pexels.com/photos/6170766/pexels-photo-6170766.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29509518,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Matheus Bertelli",
+        "photographer_url": "https://www.pexels.com/@bertellifotografia",
+        "alt": "A desk calendar displaying the month of September with a spiral binding, in a minimalist design.",
+        "page": "https://www.pexels.com/photo/close-up-of-september-desk-calendar-page-29509518/",
+        "src": "https://images.pexels.com/photos/29509518/pexels-photo-29509518.jpeg",
+        "thumb": "https://images.pexels.com/photos/29509518/pexels-photo-29509518.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6690931,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Tara Winstead",
+        "photographer_url": "https://www.pexels.com/@tara-winstead",
+        "alt": "A weekly planner rests on a knitted fabric, providing a cozy vibe for planning.",
+        "page": "https://www.pexels.com/photo/weekly-planner-on-a-knitted-fabric-6690931/",
+        "src": "https://images.pexels.com/photos/6690931/pexels-photo-6690931.jpeg",
+        "thumb": "https://images.pexels.com/photos/6690931/pexels-photo-6690931.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29509531,
+        "w": 6669,
+        "h": 4446,
+        "photographer": "Matheus Bertelli",
+        "photographer_url": "https://www.pexels.com/@bertellifotografia",
+        "alt": "Simple minimalist calendar page for December with clean design.",
+        "page": "https://www.pexels.com/photo/minimalist-december-calendar-page-29509531/",
+        "src": "https://images.pexels.com/photos/29509531/pexels-photo-29509531.jpeg",
+        "thumb": "https://images.pexels.com/photos/29509531/pexels-photo-29509531.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7581018,
+        "w": 6592,
+        "h": 4395,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Close-up of a person writing a lunch reminder on an October calendar with a purple pen.",
+        "page": "https://www.pexels.com/photo/person-writing-on-a-calendar-7581018/",
+        "src": "https://images.pexels.com/photos/7581018/pexels-photo-7581018.jpeg",
+        "thumb": "https://images.pexels.com/photos/7581018/pexels-photo-7581018.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "cyclotourisme-lcd-7-actions-attirer-voyageurs-velo": {
+    "query": "bicycle countryside road",
+    "photos": [
+      {
+        "id": 19183774,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Xuân Thống Trần",
+        "photographer_url": "https://www.pexels.com/@thongtran95",
+        "alt": "Elderly person and woman cycling along a rural path with scenic farmland view.",
+        "page": "https://www.pexels.com/photo/people-riding-on-bicycle-on-a-road-in-the-countryside-19183774/",
+        "src": "https://images.pexels.com/photos/19183774/pexels-photo-19183774.jpeg",
+        "thumb": "https://images.pexels.com/photos/19183774/pexels-photo-19183774.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29057960,
+        "w": 6960,
+        "h": 4208,
+        "photographer": "Shantum Singh",
+        "photographer_url": "https://www.pexels.com/@shantumsingh",
+        "alt": "Two boys cycling on a rural road in Deeg, Uttar Pradesh, India with a black dog nearby.",
+        "page": "https://www.pexels.com/photo/rural-cycling-scene-in-deeg-india-29057960/",
+        "src": "https://images.pexels.com/photos/29057960/pexels-photo-29057960.jpeg",
+        "thumb": "https://images.pexels.com/photos/29057960/pexels-photo-29057960.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 16798306,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Thomas Svensson",
+        "photographer_url": "https://www.pexels.com/@thomas-svensson-1505611",
+        "alt": "Senior adult cycling on a gravel path surrounded by lush countryside scenery.",
+        "page": "https://www.pexels.com/photo/a-person-riding-a-bicycle-16798306/",
+        "src": "https://images.pexels.com/photos/16798306/pexels-photo-16798306.jpeg",
+        "thumb": "https://images.pexels.com/photos/16798306/pexels-photo-16798306.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 40276967,
+        "w": 7728,
+        "h": 5152,
+        "photographer": "Barry Dickson",
+        "photographer_url": "https://www.pexels.com/@barry-dickson-2164656769",
+        "alt": "A woman with a bicycle enjoys a serene sunset in a picturesque rural landscape, surrounded by fields and distant hills.",
+        "page": "https://www.pexels.com/photo/woman-cycling-in-lush-countryside-at-sunset-40276967/",
+        "src": "https://images.pexels.com/photos/40276967/pexels-photo-40276967.jpeg",
+        "thumb": "https://images.pexels.com/photos/40276967/pexels-photo-40276967.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29092503,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Tanin Ahmed",
+        "photographer_url": "https://www.pexels.com/@tanin-ahmed-98051413",
+        "alt": "A father assists his son learning to ride a bicycle on a sunny day in Mirpur, Bangladesh.",
+        "page": "https://www.pexels.com/photo/father-teaching-son-to-ride-a-bicycle-in-rural-bangladesh-29092503/",
+        "src": "https://images.pexels.com/photos/29092503/pexels-photo-29092503.jpeg",
+        "thumb": "https://images.pexels.com/photos/29092503/pexels-photo-29092503.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 10202926,
+        "w": 6079,
+        "h": 4053,
+        "photographer": "Ron Lach",
+        "photographer_url": "https://www.pexels.com/@ron-lach",
+        "alt": "Couple walking bicycles on a scenic rural dirt road under a cloudy sky.",
+        "page": "https://www.pexels.com/photo/man-and-woman-with-bicycles-among-fields-10202926/",
+        "src": "https://images.pexels.com/photos/10202926/pexels-photo-10202926.jpeg",
+        "thumb": "https://images.pexels.com/photos/10202926/pexels-photo-10202926.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "passer-4-7-a-4-9-etoiles-airbnb-methode-6-points": {
+    "query": "five star review smartphone",
+    "photos": [
+      {
+        "id": 11894045,
+        "w": 6129,
+        "h": 4086,
+        "photographer": "Towfiqu barbhuiya",
+        "photographer_url": "https://www.pexels.com/@towfiqu-barbhuiya-3440682",
+        "alt": "Tablet with five yellow stars on a blue background, ideal for rating concepts.",
+        "page": "https://www.pexels.com/photo/five-stars-over-blackboard-11894045/",
+        "src": "https://images.pexels.com/photos/11894045/pexels-photo-11894045.jpeg",
+        "thumb": "https://images.pexels.com/photos/11894045/pexels-photo-11894045.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5053740,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "cottonbro studio",
+        "photographer_url": "https://www.pexels.com/@cottonbro",
+        "alt": "Person using smartphone at table with notebook and coffee, ideal for tech and lifestyle themes.",
+        "page": "https://www.pexels.com/photo/person-in-blue-denim-jacket-holding-black-smartphone-5053740/",
+        "src": "https://images.pexels.com/photos/5053740/pexels-photo-5053740.jpeg",
+        "thumb": "https://images.pexels.com/photos/5053740/pexels-photo-5053740.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5416770,
+        "w": 6016,
+        "h": 4000,
+        "photographer": "Vika Glitter",
+        "photographer_url": "https://www.pexels.com/@vika-glitter-392079",
+        "alt": "Cheerful young female in red cardigan and checkered shirt pointing at smartphone while standing against white background and looking at camera",
+        "page": "https://www.pexels.com/photo/smiling-woman-with-smartphone-looking-at-camera-5416770/",
+        "src": "https://images.pexels.com/photos/5416770/pexels-photo-5416770.jpeg",
+        "thumb": "https://images.pexels.com/photos/5416770/pexels-photo-5416770.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 11214822,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Chris F",
+        "photographer_url": "https://www.pexels.com/@chris-f-38966",
+        "alt": "Black and white photo of a smartphone on a tree-patterned fabric surface.",
+        "page": "https://www.pexels.com/photo/grayscale-photo-of-a-smartphone-11214822/",
+        "src": "https://images.pexels.com/photos/11214822/pexels-photo-11214822.jpeg",
+        "thumb": "https://images.pexels.com/photos/11214822/pexels-photo-11214822.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 969462,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "FOX ^.ᆽ.^= ∫",
+        "photographer_url": "https://www.pexels.com/@fox-58267",
+        "alt": "Close-up of a hand holding a smartphone with app icons and a nature wallpaper.",
+        "page": "https://www.pexels.com/photo/person-holding-black-android-smartphone-with-black-case-969462/",
+        "src": "https://images.pexels.com/photos/969462/pexels-photo-969462.jpeg",
+        "thumb": "https://images.pexels.com/photos/969462/pexels-photo-969462.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8385213,
+        "w": 6019,
+        "h": 4013,
+        "photographer": "Tara Winstead",
+        "photographer_url": "https://www.pexels.com/@tara-winstead",
+        "alt": "Inspirational quote displayed on a smartphone screen with a monochrome aesthetic.",
+        "page": "https://www.pexels.com/photo/cancer-support-text-on-phone-screen-8385213/",
+        "src": "https://images.pexels.com/photos/8385213/pexels-photo-8385213.jpeg",
+        "thumb": "https://images.pexels.com/photos/8385213/pexels-photo-8385213.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "voyageurs-surnumeraires-lcd-6-actions-personnes-en-plus-non-declarees": {
+    "query": "crowded living room party friends",
+    "photos": [
+      {
+        "id": 8885124,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "MART  PRODUCTION",
+        "photographer_url": "https://www.pexels.com/@mart-production",
+        "alt": "Four friends enjoying a fun night indoors with snacks and laughter.",
+        "page": "https://www.pexels.com/photo/group-of-friends-having-a-good-conversation-while-sitting-on-a-couch-8885124/",
+        "src": "https://images.pexels.com/photos/8885124/pexels-photo-8885124.jpeg",
+        "thumb": "https://images.pexels.com/photos/8885124/pexels-photo-8885124.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6463611,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Tima Miroshnichenko",
+        "photographer_url": "https://www.pexels.com/@tima-miroshnichenko",
+        "alt": "Excited friends celebrate a gender reveal with balloons and confetti indoors.",
+        "page": "https://www.pexels.com/photo/happy-people-looking-at-the-blue-confetti-in-the-air-6463611/",
+        "src": "https://images.pexels.com/photos/6463611/pexels-photo-6463611.jpeg",
+        "thumb": "https://images.pexels.com/photos/6463611/pexels-photo-6463611.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34925494,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Filip Sestrenek",
+        "photographer_url": "https://www.pexels.com/@filip-sestrenek-195922998",
+        "alt": "Lively party scene with DJ and dancing crowd at a nightclub, bursting with energy.",
+        "page": "https://www.pexels.com/photo/energetic-nightclub-party-with-dj-performance-34925494/",
+        "src": "https://images.pexels.com/photos/34925494/pexels-photo-34925494.jpeg",
+        "thumb": "https://images.pexels.com/photos/34925494/pexels-photo-34925494.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 20826894,
+        "w": 6720,
+        "h": 3780,
+        "photographer": "Luca Istrate",
+        "photographer_url": "https://www.pexels.com/@lukzy",
+        "alt": "A lively group of teenagers dancing indoors at a party with vibrant lighting and joyous expressions.",
+        "page": "https://www.pexels.com/photo/teenagers-having-a-party-20826894/",
+        "src": "https://images.pexels.com/photos/20826894/pexels-photo-20826894.jpeg",
+        "thumb": "https://images.pexels.com/photos/20826894/pexels-photo-20826894.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 18704243,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "QVEVRI  TBILISI",
+        "photographer_url": "https://www.pexels.com/@bestgeorgianfood",
+        "alt": "Woman enjoying a lively nightclub party with a smiling crowd.",
+        "page": "https://www.pexels.com/photo/blonde-woman-with-a-wide-smile-in-a-crowd-at-a-party-18704243/",
+        "src": "https://images.pexels.com/photos/18704243/pexels-photo-18704243.jpeg",
+        "thumb": "https://images.pexels.com/photos/18704243/pexels-photo-18704243.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8763175,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Kevin  Malik",
+        "photographer_url": "https://www.pexels.com/@kevin-malik",
+        "alt": "Three friends having fun playing a game at home, enjoying a relaxed and joyful evening together.",
+        "page": "https://www.pexels.com/photo/smiling-guys-playing-at-home-party-8763175/",
+        "src": "https://images.pexels.com/photos/8763175/pexels-photo-8763175.jpeg",
+        "thumb": "https://images.pexels.com/photos/8763175/pexels-photo-8763175.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "caution-lcd-5-regles-juridiques-2026-prelever-sans-risque": {
+    "query": "house keys euro banknotes",
+    "photos": [
+      {
+        "id": 7937717,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Pavel Danilyuk",
+        "photographer_url": "https://www.pexels.com/@pavel-danilyuk",
+        "alt": "Close-up of a real estate transaction with euro bill, keys, and floor plan.",
+        "page": "https://www.pexels.com/photo/a-client-handing-payment-to-a-realtor-7937717/",
+        "src": "https://images.pexels.com/photos/7937717/pexels-photo-7937717.jpeg",
+        "thumb": "https://images.pexels.com/photos/7937717/pexels-photo-7937717.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 29899813,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Keys with a house model, Euro bills, and charts suggesting real estate and financial themes.",
+        "page": "https://www.pexels.com/photo/real-estate-concepts-with-house-model-and-euro-bills-29899813/",
+        "src": "https://images.pexels.com/photos/29899813/pexels-photo-29899813.jpeg",
+        "thumb": "https://images.pexels.com/photos/29899813/pexels-photo-29899813.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 27695207,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Flat lay of a house key on Euro bills representing real estate investment and finance.",
+        "page": "https://www.pexels.com/photo/real-estate-finance-template-background-27695207/",
+        "src": "https://images.pexels.com/photos/27695207/pexels-photo-27695207.jpeg",
+        "thumb": "https://images.pexels.com/photos/27695207/pexels-photo-27695207.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 31988944,
+        "w": 7952,
+        "h": 5304,
+        "photographer": "Jakub Zerdzicki",
+        "photographer_url": "https://www.pexels.com/@jakubzerdzicki",
+        "alt": "Close-up of assorted euro banknotes symbolizing finance, currency, and budget management.",
+        "page": "https://www.pexels.com/photo/euro-banknotes-in-a-pile-indicating-wealth-and-finance-31988944/",
+        "src": "https://images.pexels.com/photos/31988944/pexels-photo-31988944.jpeg",
+        "thumb": "https://images.pexels.com/photos/31988944/pexels-photo-31988944.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 30991552,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Willfried Wende",
+        "photographer_url": "https://www.pexels.com/@fotoblend",
+        "alt": "Stack of euro banknotes and scattered coins symbolizing wealth and finance.",
+        "page": "https://www.pexels.com/photo/euro-banknotes-and-coins-on-surface-30991552/",
+        "src": "https://images.pexels.com/photos/30991552/pexels-photo-30991552.jpeg",
+        "thumb": "https://images.pexels.com/photos/30991552/pexels-photo-30991552.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34637758,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Willfried Wende",
+        "photographer_url": "https://www.pexels.com/@fotoblend",
+        "alt": "Close-up of rolled Euro banknotes and coins on a table, symbolizing finance and savings.",
+        "page": "https://www.pexels.com/photo/rolled-euro-banknotes-and-coins-on-table-34637758/",
+        "src": "https://images.pexels.com/photos/34637758/pexels-photo-34637758.jpeg",
+        "thumb": "https://images.pexels.com/photos/34637758/pexels-photo-34637758.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "repondre-avis-5-etoiles-airbnb-transformer-reservations": {
+    "query": "smartphone review hand",
+    "photos": [
+      {
+        "id": 32141312,
+        "w": 7008,
+        "h": 4672,
+        "photographer": "Szabó Viktor",
+        "photographer_url": "https://www.pexels.com/@szaboviktor",
+        "alt": "A hand holding a sleek smartphone in a tech-savvy office environment, showcasing its design.",
+        "page": "https://www.pexels.com/photo/hand-holding-modern-smartphone-in-office-setting-32141312/",
+        "src": "https://images.pexels.com/photos/32141312/pexels-photo-32141312.jpeg",
+        "thumb": "https://images.pexels.com/photos/32141312/pexels-photo-32141312.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 17467883,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Soundarapandian MS",
+        "photographer_url": "https://www.pexels.com/@soundarapandian-ms-150090807",
+        "alt": "Close-up of a hand holding a smartphone outdoors with a blurred bokeh background.",
+        "page": "https://www.pexels.com/photo/close-up-of-a-person-holding-a-samartphone-outside-17467883/",
+        "src": "https://images.pexels.com/photos/17467883/pexels-photo-17467883.jpeg",
+        "thumb": "https://images.pexels.com/photos/17467883/pexels-photo-17467883.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 969462,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "FOX ^.ᆽ.^= ∫",
+        "photographer_url": "https://www.pexels.com/@fox-58267",
+        "alt": "Close-up of a hand holding a smartphone with app icons and a nature wallpaper.",
+        "page": "https://www.pexels.com/photo/person-holding-black-android-smartphone-with-black-case-969462/",
+        "src": "https://images.pexels.com/photos/969462/pexels-photo-969462.jpeg",
+        "thumb": "https://images.pexels.com/photos/969462/pexels-photo-969462.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 1367229,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Diana ✨",
+        "photographer_url": "https://www.pexels.com/@didsss",
+        "alt": "A person's hand holding a smartphone, showcasing modern technology and connectivity.",
+        "page": "https://www.pexels.com/photo/person-holding-space-grey-iphone-1367229/",
+        "src": "https://images.pexels.com/photos/1367229/pexels-photo-1367229.jpeg",
+        "thumb": "https://images.pexels.com/photos/1367229/pexels-photo-1367229.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 9541314,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Natan Karnushin",
+        "photographer_url": "https://www.pexels.com/@natan-karnushin-107012945",
+        "alt": "A close-up image of a hand holding a smartphone outdoors, showcasing a nature background.",
+        "page": "https://www.pexels.com/photo/a-person-holding-a-smart-phone-9541314/",
+        "src": "https://images.pexels.com/photos/9541314/pexels-photo-9541314.jpeg",
+        "thumb": "https://images.pexels.com/photos/9541314/pexels-photo-9541314.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 17467837,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Soundarapandian MS",
+        "photographer_url": "https://www.pexels.com/@soundarapandian-ms-150090807",
+        "alt": "A hand holding a smartphone outdoors with bokeh effect in the background.",
+        "page": "https://www.pexels.com/photo/close-up-of-a-smartphone-17467837/",
+        "src": "https://images.pexels.com/photos/17467837/pexels-photo-17467837.jpeg",
+        "thumb": "https://images.pexels.com/photos/17467837/pexels-photo-17467837.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "indy-lmnp-location-courte-duree-avis-2026": {
+    "query": "accounting software laptop coffee",
+    "photos": [
+      {
+        "id": 34803973,
+        "w": 6048,
+        "h": 4032,
+        "photographer": "Daniil Komov",
+        "photographer_url": "https://www.pexels.com/@dkomov",
+        "alt": "Close-up of laptop with coding software and a motivational coffee mug on a desk.",
+        "page": "https://www.pexels.com/photo/laptop-with-coding-software-and-coffee-mug-34803973/",
+        "src": "https://images.pexels.com/photos/34803973/pexels-photo-34803973.jpeg",
+        "thumb": "https://images.pexels.com/photos/34803973/pexels-photo-34803973.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34803976,
+        "w": 6048,
+        "h": 4032,
+        "photographer": "Daniil Komov",
+        "photographer_url": "https://www.pexels.com/@dkomov",
+        "alt": "Close-up of a laptop screen with code and a coffee mug, perfect for tech abstract themes.",
+        "page": "https://www.pexels.com/photo/laptop-with-code-displayed-and-coffee-mug-nearby-34803976/",
+        "src": "https://images.pexels.com/photos/34803976/pexels-photo-34803976.jpeg",
+        "thumb": "https://images.pexels.com/photos/34803976/pexels-photo-34803976.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34803977,
+        "w": 6048,
+        "h": 4032,
+        "photographer": "Daniil Komov",
+        "photographer_url": "https://www.pexels.com/@dkomov",
+        "alt": "Laptop displaying code editor on a desk with a coffee mug beside it, suggesting a workspace or home office setting.",
+        "page": "https://www.pexels.com/photo/open-laptop-with-coding-on-screen-and-coffee-mug-34803977/",
+        "src": "https://images.pexels.com/photos/34803977/pexels-photo-34803977.jpeg",
+        "thumb": "https://images.pexels.com/photos/34803977/pexels-photo-34803977.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34803979,
+        "w": 6048,
+        "h": 4032,
+        "photographer": "Daniil Komov",
+        "photographer_url": "https://www.pexels.com/@dkomov",
+        "alt": "Laptop displaying code editor with coffee mug on desk, perfect for tech themes.",
+        "page": "https://www.pexels.com/photo/modern-workspace-with-coding-laptop-and-coffee-34803979/",
+        "src": "https://images.pexels.com/photos/34803979/pexels-photo-34803979.jpeg",
+        "thumb": "https://images.pexels.com/photos/34803979/pexels-photo-34803979.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34803969,
+        "w": 6048,
+        "h": 4032,
+        "photographer": "Daniil Komov",
+        "photographer_url": "https://www.pexels.com/@dkomov",
+        "alt": "A close-up of a laptop displaying code in a dimly lit room with a coffee mug nearby.",
+        "page": "https://www.pexels.com/photo/focused-coding-session-with-laptop-and-coffee-34803969/",
+        "src": "https://images.pexels.com/photos/34803969/pexels-photo-34803969.jpeg",
+        "thumb": "https://images.pexels.com/photos/34803969/pexels-photo-34803969.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 34803983,
+        "w": 6048,
+        "h": 4032,
+        "photographer": "Daniil Komov",
+        "photographer_url": "https://www.pexels.com/@dkomov",
+        "alt": "A comfortable workspace showcasing a laptop with code, a coffee mug, and a notepad.",
+        "page": "https://www.pexels.com/photo/cozy-workspace-with-coding-on-laptop-screen-34803983/",
+        "src": "https://images.pexels.com/photos/34803983/pexels-photo-34803983.jpeg",
+        "thumb": "https://images.pexels.com/photos/34803983/pexels-photo-34803983.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "creer-societe-conciergerie-en-ligne-legalplace-2026": {
+    "query": "company registration paperwork pen",
+    "photos": [
+      {
+        "id": 6929017,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Leeloo The First",
+        "photographer_url": "https://www.pexels.com/@leeloothefirst",
+        "alt": "Top view of a tax form with a pen and eyeglasses on a marble surface, perfect for finance themes.",
+        "page": "https://www.pexels.com/photo/ballpen-on-a-blank-document-beside-an-eyeglasses-6929017/",
+        "src": "https://images.pexels.com/photos/6929017/pexels-photo-6929017.jpeg",
+        "thumb": "https://images.pexels.com/photos/6929017/pexels-photo-6929017.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7821566,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "Close-up of financial documents with pens highlighting important data points.",
+        "page": "https://www.pexels.com/photo/close-up-photo-of-a-document-with-pens-on-top-7821566/",
+        "src": "https://images.pexels.com/photos/7821566/pexels-photo-7821566.jpeg",
+        "thumb": "https://images.pexels.com/photos/7821566/pexels-photo-7821566.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8301233,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "Kindel Media",
+        "photographer_url": "https://www.pexels.com/@kindelmedia",
+        "alt": "Close-up view of hands signing an adoption form with a pen atop a white table.",
+        "page": "https://www.pexels.com/photo/peron-writing-on-a-report-of-adoption-document-8301233/",
+        "src": "https://images.pexels.com/photos/8301233/pexels-photo-8301233.jpeg",
+        "thumb": "https://images.pexels.com/photos/8301233/pexels-photo-8301233.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7821463,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "A credit card authorization form placed on a wooden desk, highlighting business paperwork essentials.",
+        "page": "https://www.pexels.com/photo/white-printer-paper-on-brown-wooden-table-7821463/",
+        "src": "https://images.pexels.com/photos/7821463/pexels-photo-7821463.jpeg",
+        "thumb": "https://images.pexels.com/photos/7821463/pexels-photo-7821463.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 17616803,
+        "w": 7008,
+        "h": 4672,
+        "photographer": "Connor Scott McManus",
+        "photographer_url": "https://www.pexels.com/@connorscottmcmanus",
+        "alt": "Close-up of a person writing in an outdoor logbook on a table.",
+        "page": "https://www.pexels.com/photo/close-up-of-a-man-writing-in-a-book-17616803/",
+        "src": "https://images.pexels.com/photos/17616803/pexels-photo-17616803.jpeg",
+        "thumb": "https://images.pexels.com/photos/17616803/pexels-photo-17616803.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6814521,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "cottonbro studio",
+        "photographer_url": "https://www.pexels.com/@cottonbro",
+        "alt": "Professional setting of a business meeting with individuals signing documents on a conference table.",
+        "page": "https://www.pexels.com/photo/a-person-signing-a-contract-6814521/",
+        "src": "https://images.pexels.com/photos/6814521/pexels-photo-6814521.jpeg",
+        "thumb": "https://images.pexels.com/photos/6814521/pexels-photo-6814521.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "cloture-comptable-lcd-2026-7-actions-avant-31-decembre": {
+    "query": "year end accounting notebook calculator",
+    "photos": [
+      {
+        "id": 6863204,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Nataliya Vaitkevich",
+        "photographer_url": "https://www.pexels.com/@n-voitkevich",
+        "alt": "Flat lay of tax essentials with calculator, notebook, and stamps on a green background.",
+        "page": "https://www.pexels.com/photo/notebook-and-stamps-on-green-surface-6863204/",
+        "src": "https://images.pexels.com/photos/6863204/pexels-photo-6863204.jpeg",
+        "thumb": "https://images.pexels.com/photos/6863204/pexels-photo-6863204.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4386325,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "From above of crop anonymous financier counting profit while writing down information on notepad near pile of paper money on table",
+        "page": "https://www.pexels.com/photo/crop-unrecognizable-accountant-counting-savings-using-notebook-and-calculator-4386325/",
+        "src": "https://images.pexels.com/photos/4386325/pexels-photo-4386325.jpeg",
+        "thumb": "https://images.pexels.com/photos/4386325/pexels-photo-4386325.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 8296970,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "Accountant analyzing financial documents with a calculator on a desk, highlighting business tasks.",
+        "page": "https://www.pexels.com/photo/a-person-examining-documents-8296970/",
+        "src": "https://images.pexels.com/photos/8296970/pexels-photo-8296970.jpeg",
+        "thumb": "https://images.pexels.com/photos/8296970/pexels-photo-8296970.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7491011,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "RDNE Stock project",
+        "photographer_url": "https://www.pexels.com/@rdne",
+        "alt": "An African American woman using a calculator and notepad for budgeting.",
+        "page": "https://www.pexels.com/photo/woman-uses-calculator-7491011/",
+        "src": "https://images.pexels.com/photos/7491011/pexels-photo-7491011.jpeg",
+        "thumb": "https://images.pexels.com/photos/7491011/pexels-photo-7491011.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 5466806,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "olia danilevich",
+        "photographer_url": "https://www.pexels.com/@olia-danilevich",
+        "alt": "A hand calculates financial figures using a calculator with stacks of cash nearby on a wooden table.",
+        "page": "https://www.pexels.com/photo/a-person-holding-black-desk-calculator-5466806/",
+        "src": "https://images.pexels.com/photos/5466806/pexels-photo-5466806.jpeg",
+        "thumb": "https://images.pexels.com/photos/5466806/pexels-photo-5466806.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7111529,
+        "w": 6406,
+        "h": 4271,
+        "photographer": "Tara Winstead",
+        "photographer_url": "https://www.pexels.com/@tara-winstead",
+        "alt": "Close-up of calculators and a sticky note labeled 'Tax Season', symbolizing tax preparation.",
+        "page": "https://www.pexels.com/photo/black-calculators-with-yellow-sticky-note-on-top-7111529/",
+        "src": "https://images.pexels.com/photos/7111529/pexels-photo-7111529.jpeg",
+        "thumb": "https://images.pexels.com/photos/7111529/pexels-photo-7111529.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "prestataire-menage-lcd-basse-saison-garder-hotes-revenu-stable": {
+    "query": "cleaning supplies apartment",
+    "photos": [
+      {
+        "id": 7513103,
+        "w": 6010,
+        "h": 4007,
+        "photographer": "SHVETS production",
+        "photographer_url": "https://www.pexels.com/@shvets-production",
+        "alt": "Latex gloves and spray detergent placed on table in stylish living room in daytime",
+        "page": "https://www.pexels.com/photo/cleaning-products-placed-on-table-in-living-room-7513103/",
+        "src": "https://images.pexels.com/photos/7513103/pexels-photo-7513103.jpeg",
+        "thumb": "https://images.pexels.com/photos/7513103/pexels-photo-7513103.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7513111,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "SHVETS production",
+        "photographer_url": "https://www.pexels.com/@shvets-production",
+        "alt": "Yellow latex gloves placed near spray detergent bottle and rag on round table against comfortable chair in living room in daytime",
+        "page": "https://www.pexels.com/photo/cleaning-products-placed-on-table-against-armchair-in-living-room-7513111/",
+        "src": "https://images.pexels.com/photos/7513111/pexels-photo-7513111.jpeg",
+        "thumb": "https://images.pexels.com/photos/7513111/pexels-photo-7513111.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 3871614,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Anastasiya Gepp",
+        "photographer_url": "https://www.pexels.com/@anastasiya-gepp-654466",
+        "alt": "Woman wearing plaid shirt holding cleaning supplies and spray bottle, smiling at camera in studio setting.",
+        "page": "https://www.pexels.com/photo/a-woman-holding-a-bottle-sprayer-3871614/",
+        "src": "https://images.pexels.com/photos/3871614/pexels-photo-3871614.jpeg",
+        "thumb": "https://images.pexels.com/photos/3871614/pexels-photo-3871614.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7513109,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "SHVETS production",
+        "photographer_url": "https://www.pexels.com/@shvets-production",
+        "alt": "From above of yellow latex gloves placed near rag and spray detergent on table against wooden floor in daytime",
+        "page": "https://www.pexels.com/photo/latex-gloves-and-bottle-of-cleaning-product-placed-on-table-in-room-7513109/",
+        "src": "https://images.pexels.com/photos/7513109/pexels-photo-7513109.jpeg",
+        "thumb": "https://images.pexels.com/photos/7513109/pexels-photo-7513109.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 4021256,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Anton Uniqueton",
+        "photographer_url": "https://www.pexels.com/@uniqueton",
+        "alt": "Close-up of hands wearing gloves cleaning a surface with disinfectant spray.",
+        "page": "https://www.pexels.com/photo/person-wearing-blue-gloves-cleaning-4021256/",
+        "src": "https://images.pexels.com/photos/4021256/pexels-photo-4021256.jpeg",
+        "thumb": "https://images.pexels.com/photos/4021256/pexels-photo-4021256.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7513064,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "SHVETS production",
+        "photographer_url": "https://www.pexels.com/@shvets-production",
+        "alt": "Side view of young calm female in protective latex gloves sprinkling liquid detergent from plastic bottle on mirror in light room",
+        "page": "https://www.pexels.com/photo/calm-female-sprinkling-detergent-on-mirror-in-apartment-7513064/",
+        "src": "https://images.pexels.com/photos/7513064/pexels-photo-7513064.jpeg",
+        "thumb": "https://images.pexels.com/photos/7513064/pexels-photo-7513064.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "devis-menage-lcd-6-regles-transformer-demande-hote-client-recurrent": {
+    "query": "invoice notebook cleaning service",
+    "photos": [
+      {
+        "id": 27200519,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Berna",
+        "photographer_url": "https://www.pexels.com/@mibernaa",
+        "alt": "Woman unpacks a cardboard notebook in a cozy indoor setting, promoting eco-friendly packaging.",
+        "page": "https://www.pexels.com/photo/a-person-holding-a-box-with-a-white-paper-on-top-27200519/",
+        "src": "https://images.pexels.com/photos/27200519/pexels-photo-27200519.jpeg",
+        "thumb": "https://images.pexels.com/photos/27200519/pexels-photo-27200519.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7680681,
+        "w": 6720,
+        "h": 4480,
+        "photographer": "https://kaboompics.com/",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "alt": "Close-up of a tidy desk with receipts, documents, and office stationery for business organization.",
+        "page": "https://www.pexels.com/photo/receipts-and-documents-on-top-of-a-desk-7680681/",
+        "src": "https://images.pexels.com/photos/7680681/pexels-photo-7680681.jpeg",
+        "thumb": "https://images.pexels.com/photos/7680681/pexels-photo-7680681.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 7545333,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "SHVETS production",
+        "photographer_url": "https://www.pexels.com/@shvets-production",
+        "alt": "Business person handling paper receipts, meticulously organized.",
+        "page": "https://www.pexels.com/photo/person-holding-a-receipt-7545333/",
+        "src": "https://images.pexels.com/photos/7545333/pexels-photo-7545333.jpeg",
+        "thumb": "https://images.pexels.com/photos/7545333/pexels-photo-7545333.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 3944419,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "cottonbro studio",
+        "photographer_url": "https://www.pexels.com/@cottonbro",
+        "alt": "Open notebook with planner pages, surrounded by notebooks and pampas grass on a white background.",
+        "page": "https://www.pexels.com/photo/white-printer-paper-on-white-table-3944419/",
+        "src": "https://images.pexels.com/photos/3944419/pexels-photo-3944419.jpeg",
+        "thumb": "https://images.pexels.com/photos/3944419/pexels-photo-3944419.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 28077390,
+        "w": 6240,
+        "h": 4160,
+        "photographer": "Nic Wood",
+        "photographer_url": "https://www.pexels.com/@nic-scrollstoppingphotos",
+        "alt": "Flat lay of vintage office setup featuring a rotary phone, calculator, and stationery.",
+        "page": "https://www.pexels.com/photo/1980s-vintage-desktop-28077390/",
+        "src": "https://images.pexels.com/photos/28077390/pexels-photo-28077390.jpeg",
+        "thumb": "https://images.pexels.com/photos/28077390/pexels-photo-28077390.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 6991435,
+        "w": 6669,
+        "h": 4446,
+        "photographer": "DS stories",
+        "photographer_url": "https://www.pexels.com/@ds-stories",
+        "alt": "Flat lay of an open spiral notebook and a crumpled paper on a white background, perfect for mockup designs.",
+        "page": "https://www.pexels.com/photo/a-blank-notebook-and-creased-paper-6991435/",
+        "src": "https://images.pexels.com/photos/6991435/pexels-photo-6991435.jpeg",
+        "thumb": "https://images.pexels.com/photos/6991435/pexels-photo-6991435.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "communiquer-equipe-menage-lcd-6-regles-turnover-fluide": {
+    "query": "cleaning team housekeeping briefing",
+    "photos": [
+      {
+        "id": 9462326,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Liliana Drew",
+        "photographer_url": "https://www.pexels.com/@liliana-drew",
+        "alt": "Two female housekeepers in uniform efficiently prepare a bed in a bright, well-lit room.",
+        "page": "https://www.pexels.com/photo/housekeepers-changing-bed-sheets-9462326/",
+        "src": "https://images.pexels.com/photos/9462326/pexels-photo-9462326.jpeg",
+        "thumb": "https://images.pexels.com/photos/9462326/pexels-photo-9462326.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 9462628,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Liliana Drew",
+        "photographer_url": "https://www.pexels.com/@liliana-drew",
+        "alt": "Two housekeepers working together making a bed in a hotel room during the day.",
+        "page": "https://www.pexels.com/photo/women-making-bed-together-9462628/",
+        "src": "https://images.pexels.com/photos/9462628/pexels-photo-9462628.jpeg",
+        "thumb": "https://images.pexels.com/photos/9462628/pexels-photo-9462628.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 9462336,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Liliana Drew",
+        "photographer_url": "https://www.pexels.com/@liliana-drew",
+        "alt": "Two women in uniforms arranging bed linens in a clean and bright bedroom.",
+        "page": "https://www.pexels.com/photo/housekeeping-putting-pillow-cases-on-the-pillows-9462336/",
+        "src": "https://images.pexels.com/photos/9462336/pexels-photo-9462336.jpeg",
+        "thumb": "https://images.pexels.com/photos/9462336/pexels-photo-9462336.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 9462745,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Liliana Drew",
+        "photographer_url": "https://www.pexels.com/@liliana-drew",
+        "alt": "Two housekeepers in uniform fixing a hotel room bed with fresh linen and pillows.",
+        "page": "https://www.pexels.com/photo/two-women-fixing-a-bed-together-9462745/",
+        "src": "https://images.pexels.com/photos/9462745/pexels-photo-9462745.jpeg",
+        "thumb": "https://images.pexels.com/photos/9462745/pexels-photo-9462745.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 9462786,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Liliana Drew",
+        "photographer_url": "https://www.pexels.com/@liliana-drew",
+        "alt": "Hotel housekeeping staff efficiently clean and arrange a guest room bed.",
+        "page": "https://www.pexels.com/photo/two-women-making-the-bed-9462786/",
+        "src": "https://images.pexels.com/photos/9462786/pexels-photo-9462786.jpeg",
+        "thumb": "https://images.pexels.com/photos/9462786/pexels-photo-9462786.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 9462333,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Liliana Drew",
+        "photographer_url": "https://www.pexels.com/@liliana-drew",
+        "alt": "Two housekeepers professionally making a bed in a bright, comfortable room.",
+        "page": "https://www.pexels.com/photo/women-putting-bed-sheet-in-a-bed-9462333/",
+        "src": "https://images.pexels.com/photos/9462333/pexels-photo-9462333.jpeg",
+        "thumb": "https://images.pexels.com/photos/9462333/pexels-photo-9462333.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  },
+  "classement-meuble-tourisme-lcd-6-etapes-obtenir-abattement-2027": {
+    "query": "hotel stars sign wall",
+    "photos": [
+      {
+        "id": 7821349,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "Mikhail Nilov",
+        "photographer_url": "https://www.pexels.com/@mikhail-nilov",
+        "alt": "Elegant hotel reception area with illuminated signage and decor.",
+        "page": "https://www.pexels.com/photo/brown-wall-with-hanging-lights-7821349/",
+        "src": "https://images.pexels.com/photos/7821349/pexels-photo-7821349.jpeg",
+        "thumb": "https://images.pexels.com/photos/7821349/pexels-photo-7821349.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 13524936,
+        "w": 6000,
+        "h": 4000,
+        "photographer": "David McElwee",
+        "photographer_url": "https://www.pexels.com/@davidmcelwee",
+        "alt": "Close-up of a vintage Smiley's Hotel sign on a white wooden building surrounded by greenery.",
+        "page": "https://www.pexels.com/photo/a-wooden-signage-hanging-outside-a-house-13524936/",
+        "src": "https://images.pexels.com/photos/13524936/pexels-photo-13524936.jpeg",
+        "thumb": "https://images.pexels.com/photos/13524936/pexels-photo-13524936.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 39334683,
+        "w": 8256,
+        "h": 5504,
+        "photographer": "Abdou HILALI STUDIO",
+        "photographer_url": "https://www.pexels.com/@abdou-hilali-studio-169329705",
+        "alt": "Luxurious bedroom featuring star-themed wallpaper and stylish design elements.",
+        "page": "https://www.pexels.com/photo/elegant-bedroom-with-starry-night-decor-39334683/",
+        "src": "https://images.pexels.com/photos/39334683/pexels-photo-39334683.jpeg",
+        "thumb": "https://images.pexels.com/photos/39334683/pexels-photo-39334683.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 40908961,
+        "w": 6016,
+        "h": 4016,
+        "photographer": "Jan van der Wolf",
+        "photographer_url": "https://www.pexels.com/@jan-van-der-wolf-11680885",
+        "alt": "Vibrant wall mural with traffic signs in a sunny urban setting.",
+        "page": "https://www.pexels.com/photo/colorful-urban-wall-with-traffic-signs-40908961/",
+        "src": "https://images.pexels.com/photos/40908961/pexels-photo-40908961.jpeg",
+        "thumb": "https://images.pexels.com/photos/40908961/pexels-photo-40908961.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 33332305,
+        "w": 6091,
+        "h": 4061,
+        "photographer": "Th2city Santana",
+        "photographer_url": "https://www.pexels.com/@th2city",
+        "alt": "Exterior view of Turista Hotel and urban graffiti on a city street building facade.",
+        "page": "https://www.pexels.com/photo/urban-hotel-with-graffiti-in-city-street-33332305/",
+        "src": "https://images.pexels.com/photos/33332305/pexels-photo-33332305.jpeg",
+        "thumb": "https://images.pexels.com/photos/33332305/pexels-photo-33332305.jpeg?auto=compress&cs=tinysrgb&h=350"
+      },
+      {
+        "id": 3926335,
+        "w": 7680,
+        "h": 5120,
+        "photographer": "Andrea Piacquadio",
+        "photographer_url": "https://www.pexels.com/@olly",
+        "alt": "Sign with room numbers and arrow in golden frame hanging on white wall in modern hotel",
+        "page": "https://www.pexels.com/photo/sign-with-rooms-numbers-hanging-on-white-wall-in-modern-hotel-3926335/",
+        "src": "https://images.pexels.com/photos/3926335/pexels-photo-3926335.jpeg",
+        "thumb": "https://images.pexels.com/photos/3926335/pexels-photo-3926335.jpeg?auto=compress&cs=tinysrgb&h=350"
+      }
+    ]
+  }
+}
