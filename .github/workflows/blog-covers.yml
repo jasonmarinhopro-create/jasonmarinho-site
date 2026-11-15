@@ -60,7 +60,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for p in .github/blog-covers img/blog data/blog-covers.json; do [ -e "$p" ] && git add "$p"; done
+          for p in .github/blog-covers img/blog data/blog-covers.json; do if [ -e "$p" ]; then git add "$p"; fi; done
           git commit -m "blog: couvertures (${{ steps.m.outputs.mode }})" || exit 0
           for i in 1 2 3; do
             git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
