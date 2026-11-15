@@ -131,6 +131,20 @@
 .az-view.in{animation:azIn .5s cubic-bezier(.2,.8,.2,1) both}
 @keyframes azIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
+/* Choix de la fiche */
+.ch{max-width:560px;margin:0 auto;text-align:left}
+.ch-h{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 8px;text-align:center}
+.ch-h em{font-style:italic;font-weight:300;color:var(--y)}
+.ch-p{font-size:15px;line-height:1.6;color:rgba(255,255,255,.62);margin:0 0 20px;text-align:center}
+.ch-l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ch-b{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;align-items:center;text-align:left;font:inherit;color:#fff;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:14px 18px;transition:background .2s,border .2s,transform .2s}
+.ch-b:hover,.ch-b:focus-visible{background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.6);transform:translateY(-1px);outline:0}
+.ch-b strong{font-size:15.5px;font-weight:600;overflow-wrap:anywhere}
+.ch-b span{grid-column:1;font-size:13px;color:rgba(255,255,255,.55);overflow-wrap:anywhere}
+.ch-b i{grid-row:1 / span 2;grid-column:2;color:var(--y)}
+.ch-n{display:block;margin:16px auto 0;background:none;border:0;cursor:pointer;font:inherit;font-size:13.5px;color:rgba(255,255,255,.7);text-decoration:underline;text-underline-offset:4px}
+.ch-n:hover{color:#fff}
+
 /* Lecture */
 .sc{max-width:460px;margin:0 auto;text-align:left}
 .sc-card{position:relative;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:22px 24px}
@@ -307,6 +321,15 @@
       </div>
     </div>
 
+    <div class="az-view" id="v-choix" hidden>
+      <div class="ch">
+        <h2 class="ch-h">Laquelle est <em>ta fiche ?</em></h2>
+        <p class="ch-p" id="ch-p"></p>
+        <ul class="ch-l" id="ch-l"></ul>
+        <button type="button" class="ch-n" id="ch-n">Aucune de celles-ci</button>
+      </div>
+    </div>
+
     <div class="az-view" id="v-res" hidden aria-live="polite">
       <div class="rs">
         <div class="rg" id="rg">
@@ -409,7 +432,7 @@
     ],
     forts: ['Ta fiche est ouverte et a plusieurs catégories.'] };
 
-  var vues = { idle: $('v-idle'), scan: $('v-scan'), res: $('v-res') }, courante = 'idle';
+  var vues = { idle: $('v-idle'), scan: $('v-scan'), choix: $('v-choix'), res: $('v-res') }, courante = 'idle';
   function montrer(nom){
     if (nom === courante) return Promise.resolve();
     var a = vues[courante], b = vues[nom];
@@ -524,10 +547,37 @@
   $('pr').addEventListener('click', function(ev){ if (ev.target.closest('a')) return; var li = ev.target.closest('li[data-i]'); if (li) basculer(li); });
   $('pr').addEventListener('keydown', function(ev){ if (ev.key !== ' ' && ev.key !== 'Enter') return; var li = ev.target.closest('li[data-i]'); if (li) { ev.preventDefault(); basculer(li); } });
 
+  /* Plusieurs fiches portent ce nom : l'hôte choisit la sienne */
+  function proposer(j){
+    var h = '';
+    j.choix.forEach(function(c){
+      h += '<li><button type="button" class="ch-b" data-id="' + esc(c.id) + '"><strong>' + esc(c.nom || 'Fiche sans nom') + '</strong><i class="ph-bold ph-arrow-right"></i><span>' + esc([c.categorie, c.adresse].filter(Boolean).join(' · ') || 'Adresse non affichée') + '</span></button></li>';
+    });
+    $('ch-l').innerHTML = h;
+    $('ch-p').textContent = 'Plusieurs fiches Google correspondent à « ' + (j.cherche || '') + ' ». Choisis la tienne.';
+    return montrer('choix');
+  }
+  $('ch-l').addEventListener('click', function(ev){
+    var b = ev.target.closest('.ch-b'); if (b) lancer(function(){ return appeler({ id: b.getAttribute('data-id') }); });
+  });
+  $('ch-n').addEventListener('click', function(){
+    montrer('idle').then(function(){ erreur('Écris le nom de ton logement suivi de sa ville, par exemple « Gîte des Pins Hossegor ».'); $('az-lien').focus(); });
+  });
+
+  function appeler(corps){
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corps) })
+      .then(function(res){ return res.json().catch(function(){ return null; }).then(function(j){
+        if (res.ok && j && j.choix && j.choix.length) return { choix: j };
+        if (!res.ok || !j || !j.audit) throw new Error((j && j.error) || 'L\'audit a échoué. Réessaie dans quelques minutes.');
+        return j.audit;
+      }); }, function(){ throw new Error('Erreur réseau. Vérifie ta connexion et réessaie.'); });
+  }
+
   function lancer(charge){
     erreur(''); razLecture(); $('az-go').disabled = true;
     var debut = Date.now();
     return montrer('scan').then(charge).then(function(r){
+      if (r && r.choix) return proposer(r.choix);
       return attendre(Math.max(0, 600 - (Date.now() - debut))).then(function(){ return lecture(r); }).then(function(){ return resultat(r); });
     }).catch(function(e){
       return montrer('idle').then(function(){ erreur(e && e.message ? e.message : 'L\'audit a échoué. Réessaie dans quelques minutes.'); });
@@ -538,13 +588,7 @@
     ev.preventDefault();
     var q = ($('az-lien').value || '').trim();
     if (q.length < 3) { erreur('Colle le lien Google Maps de ta fiche, ou écris le nom de ton logement et sa ville.'); return; }
-    lancer(function(){
-      return fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ q: q }) })
-        .then(function(res){ return res.json().catch(function(){ return null; }).then(function(j){
-          if (!res.ok || !j || !j.audit) throw new Error((j && j.error) || 'L\'audit a échoué. Réessaie dans quelques minutes.');
-          return j.audit;
-        }); }, function(){ throw new Error('Erreur réseau. Vérifie ta connexion et réessaie.'); });
-    });
+    lancer(function(){ return appeler({ q: q }); });
   });
   $('az-demo').addEventListener('click', function(){ lancer(function(){ return Promise.resolve(EXEMPLE); }); });
   $('rs-again').addEventListener('click', function(){
