@@ -34,6 +34,23 @@ function headers(origin: string | null) {
 }
 const json = (req: Request, body: unknown, status = 200) => NextResponse.json(body, { status, headers: headers(req.headers.get('origin')) })
 
+function isShareGoogle(adresse: string): boolean {
+  try { const u = new URL(adresse); return isGoogleMapsUrl(adresse) && u.pathname === '/share.google' } catch { return false }
+}
+
+/** Adresse vers laquelle Google redirige (une seule étape, vers Google seulement) ; chaîne vide sinon. */
+async function suiteDe(adresse: string): Promise<string> {
+  try {
+    const r = await fetch(adresse, {
+      method: 'GET', redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(8000),
+      headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36' },
+    })
+    const suite = r.headers.get('location') ?? ''
+    const absolue = suite ? new URL(suite, adresse).toString() : ''
+    return absolue && (isGoogleMapsUrl(absolue) || /^https:\/\/consent\.google\./.test(absolue)) ? absolue : ''
+  } catch { return '' }
+}
+
 export async function OPTIONS(req: Request) {
   return new Response(null, {
     status: 204,
@@ -71,7 +88,11 @@ export async function POST(req: Request) {
       const direct = extractPlaceIdFromUrl(adresse)
       if (direct && direct.startsWith('ChIJ')) id = direct
       else {
-        const nom = nameFromGoogleUrl(adresse)
+        let nom = nameFromGoogleUrl(adresse)
+        // Lien « Partager » : google.com/share.google?q=<code> ne révèle la
+        // fiche (redirection vers /search?q=<nom>) qu'à une lecture complète,
+        // pas à la demande d'en-têtes faite par resolveMapsUrl.
+        if (!nom && isShareGoogle(adresse)) nom = nameFromGoogleUrl(await suiteDe(adresse))
         if (!nom) {
           let forme = 'illisible'
           try { const u = new URL(adresse); forme = `${u.hostname}${u.pathname.slice(0, 40)} [${[...u.searchParams.keys()].slice(0, 8).join(',')}]` } catch { /* adresse illisible */ }
