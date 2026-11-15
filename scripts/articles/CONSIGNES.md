@@ -179,6 +179,7 @@ export default {
   date: 'YYYY-MM-DD',
   categorySlug: 'ressources',
   readTime: 7,
+  photo: 'cozy guest bedroom', // recherche Pexels de la couverture (voir plus bas)
   lead: "Paragraphe d'accroche court.",
   sections: [
     {
@@ -204,6 +205,15 @@ export default {
   ],
 }
 ```
+
+### Photo de couverture (`photo`, obligatoire depuis le 15/11/2026)
+
+Une recherche **en anglais**, 2 à 4 mots, qui décrit une scène concrète liée au
+sujet : un objet, une pièce, un lieu (« smart lock door », « folded white towels
+sheets », « christmas market france »). Pas de mot abstrait (« success »,
+« strategy »), pas de marque, pas de visage en gros plan. Le workflow
+« Couvertures blog » cherche la photo sur Pexels, la pose en haut de l'article
+et en image de partage. Ne touche à aucun fichier d'image toi-même.
 
 ## 7. Commit et push
 

@@ -73,6 +73,15 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 - -65 % sur Professional et Ultimate en annuel ou 2 ans, nouveaux clients, du 12/11 au 12/12/2026. Ventes suivies par le lien affilié, pas le code : toujours les deux ensemble. Commission majorée de 15 % sur les paiements du 1er au 30/11 (pour Jason, jamais affiché).
 - `nav.js` (fin) : encart daté avant la 1re mention du code Lodgify JASON15 de la page (« Bientôt » jusqu'au 11/11, puis bouton affilié `rel="sponsored noopener"` + « Lien affilié »), carte du catalogue `/partenaires` changée pendant l'offre, rien après le 12/12. Lettre du mois : `jason-app/lib/newsletter/promos.ts` (testé) remplace le bon plan des éditions qui proposent Lodgify, du 01/11 au 12/12.
 
+## Photos de couverture du blog (15/11/2026, Jason : « intéressant de mettre des photos ? automatiser avec Pexels, fais attention à la pertinence »)
+
+- Avant : aucune photo dans les articles, la même `couverture-jason.webp` en image de partage pour les 230. Une couverture par article : image de partage propre (Facebook, LinkedIn, WhatsApp), grande image pour Google Discover (`max-image-preview:large`, 1200 px), repère visuel en haut du texte. Pas de photos génériques au milieu du texte (aucun gain de classement, pages plus lourdes).
+- Recherche écrite à la main pour chacun des 225 articles : `data/blog-covers-queries.mjs` (anglais, scène concrète). Nouveaux articles : champ `photo` du `.mjs` (CONSIGNES, section 6).
+- `scripts/blog-covers.mjs` via le workflow « Couvertures blog » (push de `.github/covers-trigger` sur `claude/**` ou lancement à la main ; l'environnement de Claude ne joint pas api.pexels.com) : `chercher` (une proposition par article, planches numérotées dans `.github/blog-covers/`, rien en ligne), `variantes slug[=recherche]` (6 photos), `prendre tout|slug=id` (WebP 1200 x 630 et 600 x 315 dans `img/blog/`, `data/blog-covers.json`), `auto`, `driing`. Photos paysage d'au moins 1600 px, jamais deux fois la même. Secret `PEXELS_API_KEY` (ajouté par Jason le 15/11). API : 200 requêtes par heure, une toutes les 19 s.
+- `scripts/inject-blog-covers.mjs` (build-site.sh, idempotent, marqueurs COVER) : figure en tête de `.art-body` avec le photographe et Pexels, og:image / twitter:image, `image` du BlogPosting, `max-image-preview:large`.
+- Passage quotidien `auto` (articles des 30 derniers jours sans couverture) **commenté** dans le workflow tant que le rattrapage n'est pas vérifié.
+- Article Driing : photo de la page d'accueil de driing.co (maison avec piscine, demande de Jason) et vraie capture de la recherche Driing à la place de la maquette HTML (cartes de prix qui chevauchaient le titre) ; comparatif 1 260 / 1 490 / 1 474 € repris de driing.co en cartes.
+
 ## Accueil : section Partenaires sombre et animée (14/11/2026, version sombre choisie par Jason)
 
 - HTML écrit à la main dans `index.html` (pas de générateur) : carte à la une `[data-pfeat]` à 3 offres qui tournent toutes les 7 s, tuiles `.pt` qui se retournent (survol, toucher ou clavier), tuile jaune vers /partenaires, bande des avantages `.pa-mq`.
