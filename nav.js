@@ -1390,6 +1390,34 @@
         }
       } catch (err) { /* fail-silent */ }
     }, true);
+
+    /* Passage vers Driing (15/11/2026, demande de Jason) : chaque lien vers
+       driing.co part avec utm_source=jasonmarinho.com, utm_medium=site et
+       utm_campaign=<page de départ>, pour que le CRM Driing sache de quelle
+       page vient le visiteur, et le clic est compté chez nous (partenaire
+       « driing » de la page Visibilité). */
+    document.addEventListener('click', function (e) {
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('a[href*="driing.co"]') : null;
+        if (!a || !a.href) return;
+        var u = new URL(a.href);
+        if (!/(^|\.)driing\.co$/i.test(u.hostname)) return;
+        if (!u.searchParams.has('utm_source')) {
+          var page = window.location.pathname.replace(/^\/+|\/+$/g, '').replace(/[^a-zA-Z0-9]+/g, '-').slice(0, 80) || 'accueil';
+          u.searchParams.set('utm_source', 'jasonmarinho.com');
+          u.searchParams.set('utm_medium', 'site');
+          u.searchParams.set('utm_campaign', page);
+          a.href = u.toString();
+        }
+        if (a.getAttribute('rel') && /\bsponsored\b/.test(a.getAttribute('rel'))) return;
+        var body = JSON.stringify({ session_id: sid, path: window.location.pathname, url: a.href });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track/click', new Blob([body], { type: 'application/json' }));
+        } else {
+          fetch('/api/track/click', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+        }
+      } catch (err) { /* fail-silent */ }
+    }, true);
   } catch (e) { /* fail-silent */ }
 }());
 

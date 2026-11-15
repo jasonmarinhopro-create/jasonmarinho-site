@@ -112,7 +112,7 @@ export default function PartenairesView({
             Partenaire phare · Driing
           </div>
           <a
-            href="https://www.driing.co/"
+            href="https://www.driing.co/?utm_source=jasonmarinho.com&utm_medium=app&utm_campaign=partenaires-phare"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary"

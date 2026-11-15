@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cleanReply, isOwnComment } from './comment-rules'
+import { cleanReply, isOwnComment, isPostGone } from './comment-rules'
 
 describe('réponses aux commentaires', () => {
   it('reconnaît nos propres commentaires', () => {
@@ -16,5 +16,15 @@ describe('réponses aux commentaires', () => {
     expect(cleanReply('Va voir https://exemple.com')).toBeNull()
     expect(cleanReply('Tout est ici : https://jasonmarinho.com/blog/taxe-de-sejour')).toContain('jasonmarinho.com')
     expect(cleanReply('x'.repeat(601))).toBeNull()
+  })
+})
+
+describe('isPostGone', () => {
+  it('reconnaît un post supprimé chez Meta', () => {
+    expect(isPostGone("Unsupported get request. Object with ID '123' does not exist, cannot be loaded due to missing permissions, or does not support this operation.")).toBe(true)
+  })
+  it('laisse passer les autres erreurs', () => {
+    expect(isPostGone('Error validating access token: Session has expired')).toBe(false)
+    expect(isPostGone('fetch failed')).toBe(false)
   })
 })

@@ -414,3 +414,9 @@ Jason : « 9 s pour ouvrir le mode admin », « optimiser à fond avant Supabase
 - **Menu en différé** : `app/dashboard/layout.tsx` n'attend plus `menu_state` (cloche, contrats, demandes des pros, parcours). Le cadre et la page partent dès le profil, les espaces et le logement actif (tous en cache 5 min) ; `MenuLiveLoader` (Suspense) lit le menu ensuite et le relaie par `components/layout/MenuLive.tsx` (`useMenuLive`, lu par `Sidebar` et `Header`, props en repli). Une erreur du menu laisse les compteurs à zéro, jamais la page. Lors de la mesure du 14/11 à 22 h 53, ce menu représentait 6,4 s sur 8,6 s.
 - **Vue d'ensemble admin** : le nombre de visiteurs en direct (`site_visits`, 3,7 s lors d'un ralenti) est gardé 30 s (`getCachedLiveVisitors`) ; l'écran le rafraîchit ensuite via `/api/admin/live-traffic`.
 - **Ce qui reste** : l'Accueil hôte attend `home_state` (toutes ses données en une lecture). Le mettre en cache par utilisateur demanderait d'invalider à chaque séjour, contrat, revenu, ménage… : risque de données périmées, non fait. Seule la sortie de l'offre gratuite supprime les gels de la base.
+
+## Relevé de sécurité et d'erreurs (15/11/2026)
+
+- `app_jobs_ping()` était appelable sans connexion par l'API : droits retirés (migration 188, comme `social_dispatch_ping`). `is_admin()` reste appelable (les règles d'accès des tables l'utilisent, elle ne renvoie que vrai ou faux pour l'appelant). `issue_next_invoice_number` vérifie déjà que l'appelant est le bailleur. Protection « mots de passe compromis » : réservée à Supabase Pro.
+- « document is not defined » sur `/auth/login` (122 fois en 7 jours) : corrigé par le commit du 14/11 à 21 h 59 UTC, plus aucune occurrence depuis.
+- Erreurs Meta « Object with ID … does not exist » à chaque passage de `social-ops` : deux posts supprimés sur Facebook et Instagram, pas un jeton en panne. `isPostGone` (`lib/social/comment-rules.ts`, testé) : avertissement au lieu d'une erreur.
