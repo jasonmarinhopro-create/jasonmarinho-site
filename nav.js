@@ -575,7 +575,6 @@
             + '<div class="n-svc3-col">'
               + '<div class="n-svc3-h"><i class="ph ph-calculator"></i>Chiffrer & investir</div>'
               + '<div class="n-svc3-cap">Simulateurs gratuits</div>'
-              + '<a href="/services/analyse-annonce-airbnb"><i class="ph ph-star"></i>Analyse d\'annonce Airbnb</a>'
               + '<a href="/services/simulateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
               + '<a href="/services/simulateurs/prix-lcd"><i class="ph ph-tag"></i>Prix par nuit</a>'
               + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
