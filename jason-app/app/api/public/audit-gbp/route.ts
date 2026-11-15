@@ -9,8 +9,8 @@
 // appel au-delà du plafond gratuit. On garde la fiche auditée et sa note pour
 // le suivi de l'admin (annonce_analyses, outil « gbp »), rien sur le visiteur.
 import { NextResponse } from 'next/server'
-import { fetchPlaceFromMapsUrl, searchPlaceByText, getPlaceDetails } from '@/lib/audit-gbp/places-api'
-import { auditExpress, isGoogleMapsUrl } from '@/lib/audit-gbp/express'
+import { resolveMapsUrl, extractPlaceIdFromUrl, searchPlaceByText, getPlaceDetails } from '@/lib/audit-gbp/places-api'
+import { auditExpress, isGoogleMapsUrl, nameFromGoogleUrl } from '@/lib/audit-gbp/express'
 import { PlacesBudgetError } from '@/lib/google/places-budget'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { getServiceClient } from '@/lib/supabase/service'
@@ -60,13 +60,30 @@ export async function POST(req: Request) {
   if (!parJour.allowed) return json(req, { error: 'L’audit express a beaucoup servi aujourd’hui : il reprend demain. Tu peux faire l’audit complet dans ton espace gratuit.' }, 429)
 
   try {
-    let place
-    if (estLien) place = await fetchPlaceFromMapsUrl(q, apiKey)
-    else {
-      const id = await searchPlaceByText(q, apiKey)
-      if (!id) return json(req, { error: 'Aucune fiche Google trouvée avec ce nom. Ajoute la ville, ou colle le lien Google Maps de ta fiche.' }, 404)
-      place = await getPlaceDetails(id, apiKey)
+    // Lien : on suit les redirections (share.google, maps.app.goo.gl), puis on
+    // prend l'identifiant de la fiche s'il est dans l'adresse, sinon le nom de
+    // l'établissement. Jamais l'adresse elle-même comme texte de recherche :
+    // chaque essai raté consommerait la part gratuite de Google.
+    let id: string | null = null
+    let texte = q
+    if (estLien) {
+      const adresse = await resolveMapsUrl(q)
+      const direct = extractPlaceIdFromUrl(adresse)
+      if (direct && direct.startsWith('ChIJ')) id = direct
+      else {
+        const nom = nameFromGoogleUrl(adresse)
+        if (!nom) {
+          let forme = 'illisible'
+          try { const u = new URL(adresse); forme = `${u.hostname}${u.pathname.slice(0, 40)} [${[...u.searchParams.keys()].slice(0, 8).join(',')}]` } catch { /* adresse illisible */ }
+          log.warn('lien Google sans nom exploitable', { forme })
+          return json(req, { error: 'Ce lien ne nous dit pas de quelle fiche il s’agit. Écris plutôt le nom de ton logement et sa ville.' }, 404)
+        }
+        texte = nom
+      }
     }
+    if (!id) id = await searchPlaceByText(texte, apiKey)
+    if (!id) return json(req, { error: 'Aucune fiche Google trouvée avec ce nom. Ajoute la ville, ou colle le lien Google Maps de ta fiche.' }, 404)
+    const place = await getPlaceDetails(id, apiKey)
     const r = auditExpress(place)
 
     // Suivi de l'admin (migrations 189 à 191) : un échec n'empêche pas de répondre
@@ -85,7 +102,6 @@ export async function POST(req: Request) {
       return json(req, { error: 'L’audit express est en pause jusqu’au 1er du mois prochain (limite gratuite de Google atteinte). Tu peux faire l’audit complet dans ton espace gratuit.' }, 429)
     }
     const msg = err instanceof Error ? err.message : ''
-    if (msg.startsWith('Impossible de trouver')) return json(req, { error: 'Fiche introuvable avec ce lien. Écris plutôt le nom de ton logement et sa ville.' }, 404)
     log.error('Places API', { msg: msg.slice(0, 400) })
     return json(req, { error: 'Google n’a pas répondu. Réessaie dans quelques minutes.' }, 502)
   }

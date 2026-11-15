@@ -114,3 +114,29 @@ export function isGoogleMapsUrl(raw: string): boolean {
   const h = u.hostname.toLowerCase()
   return /^(www\.|maps\.)?google\.[a-z.]{2,6}$/.test(h) || h === 'maps.app.goo.gl' || h === 'goo.gl' || h === 'g.co' || h === 'share.google' || h === 'g.page'
 }
+
+/**
+ * Nom de l'établissement porté par une adresse Google (15/11/2026). Le bouton
+ * « Partager » d'une fiche donne un lien share.google qui mène à une recherche
+ * Google (/search?kgmid=…&q=Casa+do+Pedreiro), pas à /maps/place/… : sans
+ * cela, la fiche de Jason lui-même était « introuvable ». Rend aussi le nom
+ * d'un lien /maps/place/<nom>/ et d'un lien /maps?q=<nom>. Null sinon.
+ */
+export function nameFromGoogleUrl(raw: string): string | null {
+  let u: URL
+  try { u = new URL(raw) } catch { return null }
+  const h = u.hostname.toLowerCase()
+  // Page de consentement de Google (serveurs européens) : l'adresse voulue est dans « continue »
+  if (/^consent\.google\.[a-z.]{2,6}$/.test(h)) {
+    const suite = u.searchParams.get('continue')
+    return suite && !/consent\.google\./i.test(suite) ? nameFromGoogleUrl(suite) : null
+  }
+  if (!/^(www\.|maps\.)?google\.[a-z.]{2,6}$/.test(h)) return null
+  const place = u.pathname.match(/\/maps\/place\/([^/@]+)/)
+  let nom: string | null = null
+  if (place) { try { nom = decodeURIComponent(place[1].replace(/\+/g, ' ')) } catch { nom = null } }
+  else if (/^\/(search|maps)\/?$/.test(u.pathname)) nom = u.searchParams.get('q')
+  nom = (nom ?? '').trim()
+  if (nom.length < 2 || nom.length > 200 || /^place_id:/i.test(nom) || /^https?:/i.test(nom)) return null
+  return nom
+}
