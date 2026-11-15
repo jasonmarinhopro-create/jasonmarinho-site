@@ -249,7 +249,7 @@ function Fiche({ d, pros, suiviOk, onBack, patch }: {
       <section style={st.head}>
         <div style={{ flex: '1 1 320px', minWidth: 0 }}>
           <div style={st.eyebrow}><M.Icon size={13} weight="duotone" /> Demande d’hôte · reçue <RelativeTime iso={d.created_at} /></div>
-          <h2 style={st.h2}>{M.label === 'Ménage' ? 'Équipe de ménage' : 'Photographe'} à {d.ville}</h2>
+          <h2 style={st.h2}>{d.metier === 'menage' ? 'Équipe de ménage' : d.metier === 'depannage' ? `Dépannage${d.frequence ? ` : ${d.frequence.toLowerCase()}` : ''}` : 'Photographe'} à {d.ville}</h2>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
             <EtatPill etat={d.etat} />
             {d.admin_seen_at && <span style={st.muted}><Eye size={12} /> Vue</span>}

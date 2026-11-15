@@ -110,7 +110,7 @@ async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], va
     pros: pros.map(p => proMail(p, metier)),
     vague,
     suiviUrl: token ? suiviUrl(token) : null,
-    sansProQui: metier === 'menage' ? 'd’équipe de ménage inscrite' : besoinPhoto(d.frequence)?.video ? 'de vidéaste inscrit' : 'de photographe inscrit',
+    sansProQui: metier === 'menage' ? 'd’équipe de ménage inscrite' : metier === 'depannage' ? 'de pro du dépannage inscrit' : besoinPhoto(d.frequence)?.video ? 'de vidéaste inscrit' : 'de photographe inscrit',
     guideUrl: `${SITE}/annuaires/${T[metier].dir}`,
     partielNote: partiel(d, metier, pros),
     inscriptionUrl: `${SITE}/annuaires/${T[metier].dir}/inscription`,
