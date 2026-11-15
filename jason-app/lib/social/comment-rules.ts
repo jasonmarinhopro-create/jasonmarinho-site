@@ -23,3 +23,13 @@ export function cleanReply(raw: string | null | undefined): string | null {
   if (links.some(l => !/^https:\/\/(app\.)?jasonmarinho\.com(\/|$)/.test(l))) return null
   return text
 }
+
+/**
+ * Meta répond « Object with ID … does not exist » quand un post a été supprimé
+ * sur Facebook ou Instagram : rien à corriger chez nous, donc un avertissement
+ * et pas une erreur (15/11/2026 : deux posts supprimés remplissaient le
+ * journal d'erreurs à chaque passage).
+ */
+export function isPostGone(message: string): boolean {
+  return /does not exist|cannot be loaded due to missing permissions/i.test(message)
+}

@@ -40,6 +40,7 @@ export const PARTNERS: Record<string, PartnerInfo> = {
   'sport-decouverte': { name: 'Sport Découverte', reward: '8 % des réservations, premier clic, suivi de plus de 30 jours (conditions relevées en novembre 2026)', salesWhere: 'Affilae', affilae: true },
   legalplace: { name: 'LegalPlace', reward: 'Jusqu\'à 150 € par vente', salesWhere: 'Affilae', affilae: true },
   tiime: { name: 'Tiime', reward: 'Commission Affilae', salesWhere: 'Affilae', affilae: true },
+  driing: { name: 'Driing', reward: 'Aucune commission : plateforme co-fondée par Jason. Compte les passages du site vers Driing', salesWhere: 'CRM Driing (source jasonmarinho.com)', affilae: false },
   brevo: { name: 'Brevo', reward: '5 € par inscription gratuite, 100 € par abonnement payant (conditions relevées en octobre 2026, à vérifier dans PartnerStack)', salesWhere: 'PartnerStack', affilae: false, partnerstack: true },
 }
 

@@ -7,6 +7,7 @@ import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
 import { publishToFacebook, publishToInstagram, publishFacebookStory, prepareInstagramStories, publishInstagramStory, getFacebookPostInsights, getInstagramMediaInsights, InstagramMediaTimeoutError } from '@/lib/social/meta'
 import { logger } from '@/lib/logger'
+import { isPostGone } from '@/lib/social/comment-rules'
 
 const log = logger('lib/social/dispatch')
 
@@ -221,7 +222,8 @@ async function refreshTargetStats(
     return true
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    log.error('refresh stats échoué', { platform: target.platform, err: message })
+    if (isPostGone(message)) log.warn('refresh stats : post supprimé chez Meta', { platform: target.platform })
+    else log.error('refresh stats échoué', { platform: target.platform, err: message })
     return false
   }
 }

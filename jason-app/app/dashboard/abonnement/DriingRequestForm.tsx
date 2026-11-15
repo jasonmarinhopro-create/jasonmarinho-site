@@ -80,7 +80,7 @@ export default function DriingRequestForm({ userEmail, driingStatus: initialStat
             <Star size={14} weight="fill" />
             Faire la demande
           </button>
-          <a href="https://driing.co" target="_blank" rel="noopener noreferrer" style={s.btnBecome}>
+          <a href="https://www.driing.co/?utm_source=jasonmarinho.com&utm_medium=app&utm_campaign=abonnement" target="_blank" rel="noopener noreferrer" style={s.btnBecome}>
             Pas encore client Driing ?
             <ArrowSquareOut size={13} />
           </a>
@@ -117,7 +117,7 @@ export default function DriingRequestForm({ userEmail, driingStatus: initialStat
           </div>
           <p style={s.notClient}>
             Pas encore client Driing ?{' '}
-            <a href="https://driing.co" target="_blank" rel="noopener noreferrer" style={s.link}>
+            <a href="https://www.driing.co/?utm_source=jasonmarinho.com&utm_medium=app&utm_campaign=abonnement" target="_blank" rel="noopener noreferrer" style={s.link}>
               Devenir client Driing <ArrowSquareOut size={11} />
             </a>
           </p>
