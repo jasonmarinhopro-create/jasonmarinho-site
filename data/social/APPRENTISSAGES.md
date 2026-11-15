@@ -1,18 +1,20 @@
 # Apprentissages du community manager
 
 Mis à jour chaque dimanche soir par la routine (60 lignes au plus). Dernière
-mise à jour : 08/11/2026 (semaine 3, 11 posts automatiques au total).
+mise à jour : 15/11/2026 (semaine 4, 15 posts automatiques au total).
 
 ## Ce qu'on sait
 
-- Instagram : 2 à 4 j'aime par post, quel que soit le format. Les j'aime
-  montent sur plusieurs jours : juger un post à J+7. Facebook : 0 partout.
+- Instagram : 2 à 4 j'aime par post depuis 4 semaines, quel que soit le
+  format ou le public. Les j'aime montent sur plusieurs jours : juger un
+  post à J+7. Facebook : 0 partout.
 - Ce qui marche un peu mieux : les sujets très concrets pour un public précis
-  (dépannage, guide de ville de saison : Chamonix, Strasbourg).
+  (dépannage, ménage, conciergeries, guides de ville de saison).
 - Aucun commentaire depuis le début de la routine, même avec des questions
   qui se répondent en un mot (testé semaine 3).
-- Les stories partent bien tous les jours (0 jour manqué la semaine 2), mais
-  leurs j'aime restent à 0.
+- Les stories partent tous les jours tant que la routine passe à l'heure
+  (1 jour manqué la semaine 4, passages arrivés avec un jour de retard).
+  Leurs j'aime restent à 0.
 
 ## Règles du moment
 
@@ -20,8 +22,8 @@ mise à jour : 08/11/2026 (semaine 3, 11 posts automatiques au total).
   sans post préparées la veille ; le post du lendemain aussi, s'il manque.
 - Formats : jamais deux fois le même de suite.
 - Piliers sur 10 posts : 6 hôtes, 2 pros, 2 hôtels ou villes. Les posts pros
-  alternent photo, ménage et dépannage (photo 26/10, dépannage 02/11, ménage
-  09/11 : le prochain post pros sera photo).
+  alternent photo, ménage et dépannage (dernier : photo le 15/11 ; le
+  prochain post pros sera dépannage).
 - Sujets de saison quand c'est possible (ski et montagne, taxe de séjour,
   déclarations de fin d'année).
 - Chiffres : seulement ceux qui ont une source officielle sur la page. Un
@@ -38,5 +40,6 @@ mise à jour : 08/11/2026 (semaine 3, 11 posts automatiques au total).
 
 - La question dès la couverture, contre la question en fin de légende.
 - Le Reel contre le carrousel, à J+7.
-- Un post hôtels et conciergeries (aucun depuis le 24/10).
+- Un post hôtels (aucun depuis le 24/10 ; la page /photographe-hotel
+  redevient possible après le 08/12).
 - L'heure de 18 h (Paris) : à revoir après 4 semaines.
