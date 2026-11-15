@@ -397,7 +397,7 @@
 
   /* Fiche fictive pour la démonstration (même forme que la réponse du serveur) */
   var EXEMPLE = { score: 48, verdict: 'Du potentiel à aller chercher',
-    fiche: { nom: 'Les Hirondelles (exemple fictif)', ville: 'Annecy', categorie: 'Agence immobilière', note: 4.4, avis: 8, photos: 4, site: 'airbnb.fr', telephone: true },
+    fiche: { nom: 'Les Hirondelles (exemple fictif)', ville: 'Annecy', adresse: '3 rue de l’Exemple, 74000 Annecy', categorie: 'Agence immobilière', note: 4.4, avis: 8, photos: 4, site: 'airbnb.fr', telephone: true },
     sections: [ { id: 'identite', label: 'Identité', score: 17, max: 30 }, { id: 'avis', label: 'Avis', score: 16, max: 40 }, { id: 'photos', label: 'Photos', score: 4, max: 15 }, { id: 'etat', label: 'État de la fiche', score: 11, max: 15 } ],
     conseils: [
       { section: 'avis', perte: 14, titre: 'Récolte plus d’avis Google', texte: 'Tu as 8 avis. Chaque avis récent compte : envoie le lien « Donner un avis » de ta fiche à chaque voyageur le jour du départ.' },
@@ -482,10 +482,11 @@
     x += '</div>';
 
     x += '<div class="xc"><h3>Ta fiche vue par Google</h3><div class="tm"><div class="tm-t">' + esc(f.nom || 'Fiche sans nom') + '</div>'
-      + '<div class="tm-s">' + esc([f.categorie || 'Catégorie absente', f.ville].filter(Boolean).join(' · ')) + '</div>'
+      + '<div class="tm-s">' + esc(f.categorie || 'Catégorie absente') + '</div>'
+      + (f.adresse ? '<div class="tm-s" style="margin-top:4px">' + esc(f.adresse) + '</div>' : '')
       + '<div class="tm-s" style="margin-top:8px;color:var(--td);font-weight:600">' + (f.avis ? fr(f.note) + ' sur 5 · ' + f.avis + ' avis' : 'Pas encore d\'avis') + '</div></div>'
       + '<div class="eq" style="margin-top:12px"><span class="' + (f.telephone ? 'ok' : '') + '">' + (f.telephone ? CHECK : '') + 'Téléphone</span><span class="' + (f.site && !PLATEFORME.test(f.site) ? 'ok' : '') + '">' + (f.site && !PLATEFORME.test(f.site) ? CHECK : '') + (f.site ? 'Lien : ' + esc(f.site) : 'Pas de lien') + '</span><span class="' + (f.photos >= 10 ? 'ok' : '') + '">' + (f.photos >= 10 ? CHECK + '10 photos ou plus' : f.photos + ' photo' + (f.photos > 1 ? 's' : '')) + '</span></div>'
-      + '<p class="xc-note">Ce n\'est pas ta fiche ? Recommence en ajoutant la ville, ou colle le lien Google Maps.</p></div>';
+      + '<p class="xc-note">Ce n\'est pas ta fiche ? Recommence en écrivant le nom de ton logement suivi de sa ville.</p></div>';
 
     x += '<div class="xc"><h3>Ce que cet audit ne voit pas</h3><div class="eq"><span>Tes posts et leur fréquence</span><span>Tes réponses aux avis</span><span>Les questions-réponses</span><span>Ta description et tes attributs</span></div>'
       + '<p class="xc-note">Google ne les livre pas par cet accès. L\'audit complet en 24 points les couvre et garde ton historique, dans ton espace gratuit.</p>'
@@ -504,7 +505,7 @@
     etat = { r: r, note: 0, faits: r.conseils.map(function(){ return false; }) };
     var mots = r.verdict.split(' '), fin = mots.pop(), f = r.fiche;
     $('rs-v').innerHTML = esc(mots.join(' ')) + ' <em>' + esc(fin) + '</em>';
-    $('rs-name').textContent = [f.nom, f.ville].filter(Boolean).join(' · ');
+    $('rs-name').textContent = [f.nom, f.ville || f.adresse].filter(Boolean).join(' · ');
     $('rs-facts').textContent = [f.categorie, f.avis ? fr(f.note) + ' sur 5 (' + f.avis + ' avis)' : 'pas encore d\'avis', f.photos >= 10 ? '10 photos ou plus' : f.photos + ' photo' + (f.photos > 1 ? 's' : '')].filter(Boolean).join(' · ');
     $('rg-n').textContent = '0'; $('rg-s').style.strokeDashoffset = RING; $('rg-p').style.strokeDashoffset = RING; $('rg').classList.remove('win');
     detail(r);

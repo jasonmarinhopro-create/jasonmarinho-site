@@ -14,6 +14,8 @@ export interface ExpressSection { id: string; label: string; score: number; max:
 export interface ExpressFiche {
   nom: string
   ville: string
+  /** Adresse affichée par Google : sert à vérifier que c'est la bonne fiche */
+  adresse: string
   categorie: string
   note: number | null
   avis: number
@@ -103,7 +105,7 @@ export function auditExpress(place: PlaceDetails): ExpressResult {
   ]
   const score = sections.reduce((s, x) => s + x.score, 0)
   conseils.sort((a, b) => b.perte - a.perte)
-  return { score, verdict: expressVerdict(score), fiche: { nom, ville, categorie, note, avis, photos, site, telephone }, sections, conseils, forts }
+  return { score, verdict: expressVerdict(score), fiche: { nom, ville, adresse: place.shortFormattedAddress ?? place.formattedAddress ?? '', categorie, note, avis, photos, site, telephone }, sections, conseils, forts }
 }
 
 /** Lien Google Maps ou partage Google : seuls ces hôtes sont suivis (jamais une adresse quelconque). */

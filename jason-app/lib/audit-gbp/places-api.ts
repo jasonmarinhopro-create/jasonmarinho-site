@@ -115,7 +115,10 @@ export function extractBusinessNameFromUrl(url: string): string | null {
 }
 
 // ─── Recherche un lieu par texte (fallback si pas de place_id direct) ───
-export async function searchPlaceByText(query: string, apiKey: string): Promise<string | null> {
+// includedType (15/11/2026) : « lodging » pour ne chercher que parmi les
+// hébergements. Sans lui, un nom courant renvoie un homonyme (l'audit public
+// de « Casa do Pedreiro » tombait sur un magasin de matériaux).
+export async function searchPlaceByText(query: string, apiKey: string, includedType?: string): Promise<string | null> {
   await takePlacesCall('text_search_ids')
   const res = await fetch(`${PLACES_API_BASE}/places:searchText`, {
     method: 'POST',
@@ -127,6 +130,8 @@ export async function searchPlaceByText(query: string, apiKey: string): Promise<
     body: JSON.stringify({
       textQuery: query,
       maxResultCount: 1,
+      languageCode: 'fr',
+      ...(includedType ? { includedType, strictTypeFiltering: true } : {}),
     }),
   })
 
@@ -141,7 +146,8 @@ export async function searchPlaceByText(query: string, apiKey: string): Promise<
 // ─── Récupère les détails d'un lieu par son ID ───
 export async function getPlaceDetails(placeId: string, apiKey: string): Promise<PlaceDetails> {
   await takePlacesCall('place_details_atmosphere')
-  const res = await fetch(`${PLACES_API_BASE}/places/${encodeURIComponent(placeId)}`, {
+  // languageCode=fr : nom de la catégorie en français (« Location de vacances », pas « Vacation rental »)
+  const res = await fetch(`${PLACES_API_BASE}/places/${encodeURIComponent(placeId)}?languageCode=fr`, {
     method: 'GET',
     headers: {
       'X-Goog-Api-Key': apiKey,

@@ -102,6 +102,8 @@ export async function POST(req: Request) {
         texte = nom
       }
     }
+    // D'abord parmi les hébergements (évite les homonymes), puis sans filtre
+    if (!id) id = await searchPlaceByText(texte, apiKey, 'lodging')
     if (!id) id = await searchPlaceByText(texte, apiKey)
     if (!id) return json(req, { error: 'Aucune fiche Google trouvée avec ce nom. Ajoute la ville, ou colle le lien Google Maps de ta fiche.' }, 404)
     const place = await getPlaceDetails(id, apiKey)
