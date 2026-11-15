@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 vi.mock('server-only', () => ({}))
 vi.mock('@/lib/supabase/service', () => ({ getServiceClient: () => ({}) }))
 
-import { auditExpress, isGoogleMapsUrl, expressVerdict } from './express'
+import { auditExpress, isGoogleMapsUrl, expressVerdict, nameFromGoogleUrl } from './express'
 import type { PlaceDetails } from './places-api'
 
 const complete: PlaceDetails = {
@@ -77,6 +77,25 @@ describe('liens Google Maps acceptés', () => {
   it('refuse tout autre site', () => {
     for (const u of ['https://evil.test/maps/place/x', 'https://google.com.evil.test/maps', 'https://www.airbnb.fr/rooms/1', 'javascript:alert(1)', 'Gîte des Pins Hossegor', '']) {
       expect(isGoogleMapsUrl(u)).toBe(false)
+    }
+  })
+})
+
+describe('nom de l’établissement dans une adresse Google', () => {
+  it('lien de partage résolu en recherche Google', () => {
+    expect(nameFromGoogleUrl('https://www.google.com/search?kgmid=/g/11nvd408c3&hl=fr-FR&q=Casa+do+Pedreiro&shndl=17&source=sh/x/kp')).toBe('Casa do Pedreiro')
+  })
+  it('lien Google Maps classique', () => {
+    expect(nameFromGoogleUrl('https://www.google.com/maps/place/G%C3%AEte+des+Pins/@43.6,-1.4,17z')).toBe('Gîte des Pins')
+    expect(nameFromGoogleUrl('https://maps.google.com/maps?q=Gite+des+Pins+Hossegor')).toBe('Gite des Pins Hossegor')
+  })
+  it('page de consentement Google : nom lu dans l’adresse de suite', () => {
+    expect(nameFromGoogleUrl('https://consent.google.com/ml?continue=' + encodeURIComponent('https://www.google.com/search?kgmid=/g/11nvd408c3&q=Casa+do+Pedreiro') + '&gl=GB')).toBe('Casa do Pedreiro')
+    expect(nameFromGoogleUrl('https://consent.google.com/ml?gl=GB')).toBeNull()
+  })
+  it('rien d’exploitable : null', () => {
+    for (const u of ['https://www.google.com/share.google?q=ex3VsvVXPZmND7e9i', 'https://www.google.com/maps/@43.6,-1.4,17z', 'https://www.google.com/search?q=place_id:ChIJxxx', 'https://evil.test/search?q=Casa', 'pas une adresse', 'https://www.google.com/search?q=a']) {
+      expect(nameFromGoogleUrl(u)).toBeNull()
     }
   })
 })
