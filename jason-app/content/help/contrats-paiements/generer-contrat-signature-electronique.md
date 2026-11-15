@@ -3,7 +3,7 @@ title: "Créer un contrat et le faire signer en ligne"
 excerpt: "L'assistant en 5 étapes, l'email envoyé au voyageur et ce qu'il voit."
 order: 1
 relatedPages: [/dashboard/contrats, /dashboard/voyageurs]
-updatedAt: "2026-09-29"
+updatedAt: "2026-11-15"
 ---
 
 ## Avant de commencer
@@ -35,7 +35,13 @@ Dans la fiche de ton logement, la carte **Contrat** garde tes règles : arrhes o
 
 ## Sans envoyer ton RIB
 
-Coche **Paiement en ligne (Stripe)** : le voyageur paie par carte sur la page du contrat, l'argent arrive sur ton compte Stripe (aucune commission sur la réservation, seulement 2 % + 0,30 € de frais de paiement), et il ne voit jamais ton IBAN. Pour la caution, le voyageur reçoit un lien 2 jours avant l'arrivée : le montant est bloqué sur sa carte, pas encaissé. Stripe se connecte dans **Mon compte → Encaissements**.
+Coche **Carte bancaire en ligne (Stripe)** : le voyageur paie par carte sur la page du contrat, sans créer de compte (il saisit seulement sa carte sur la page de paiement sécurisée de Stripe), l'argent arrive sur ton compte Stripe (aucune commission sur la réservation, seulement 2 % + 0,30 € de frais de paiement), et il ne voit jamais ton IBAN. Pour la caution, le voyageur reçoit un lien 2 jours avant l'arrivée : le montant est bloqué sur sa carte, pas encaissé. Stripe se connecte dans **Mon compte → Encaissements**.
+
+À ne pas confondre avec **Carte bancaire sur place (TPE)** : là, le voyageur paie avec ton terminal de paiement à l'arrivée, et la page du contrat n'affiche aucun bouton.
+
+## PayPal
+
+Enregistre ton lien PayPal.me dans **Mon compte → Encaissements**. Quand PayPal fait partie des moyens de paiement d'un contrat, le voyageur voit après la signature un bouton **Payer avec PayPal** qui ouvre PayPal avec le montant déjà rempli. L'argent arrive directement sur ton compte PayPal : pense à marquer le paiement comme reçu de ton côté.
 
 ## L'envoi
 
@@ -43,7 +49,7 @@ Coche **Paiement en ligne (Stripe)** : le voyageur paie par carte sur la page du
 
 ## Ce que voit le voyageur
 
-Une page avec le contrat complet, qu'il peut lire en **français, portugais ou anglais** d'un clic, sans créer de compte. Il indique sa nationalité, signe au doigt ou à la souris, puis voit les moyens de paiement prévus.
+Une page avec le contrat complet, qu'il peut lire en **français, portugais ou anglais** d'un clic, sans créer de compte. Il indique sa nationalité et signe de la façon qui lui convient : au doigt ou à la souris, en écrivant son nom, ou en important une photo de sa signature. Il voit ensuite les moyens de paiement prévus.
 
 ## Après la signature
 

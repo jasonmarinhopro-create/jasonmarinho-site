@@ -1,4 +1,5 @@
 'use client'
+import { useMenuLive } from './MenuLive'
 
 import { writeAdminModeCookie } from '@/lib/admin-mode'
 import { useState, useEffect, useRef, useMemo, useTransition } from 'react'
@@ -221,8 +222,12 @@ interface SidebarProps {
   contratsTodo?: number
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, newFormationAt = null, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav, contratsTodo = 0 }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, newFormationAt = null, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav: proNavProp, contratsTodo: contratsTodoProp = 0 }: SidebarProps) {
   const pathname = usePathname()
+  // Compteurs arrivés après le cadre (MenuLive), sinon ceux passés en props
+  const live = useMenuLive()
+  const proNav = live?.proNav ?? proNavProp
+  const contratsTodo = live?.contratsTodo ?? contratsTodoProp
   // Le rôle pro est dérivé du pathname côté client : le layout (server) est
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
   // depuis `headers()` reste figée après un client-nav. usePathname() lui

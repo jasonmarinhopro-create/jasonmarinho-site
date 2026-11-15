@@ -26,7 +26,7 @@ function block(slug, prep, ville) {
   <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between">
     <div style="flex:1 1 320px;min-width:0">
       <div style="font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#004C3F;margin-bottom:8px"><i class="ph-bold ph-calculator"></i> Estimation gratuite</div>
-      <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:clamp(22px,3vw,28px);line-height:1.2;color:#0F1A0D;margin:0 0 8px">Combien peut rapporter ton logement ${prep} ${ville} ?</h2>
+      <h2 style="font-family:'Fraunces','Fraunces Fallback',serif;font-weight:500;font-size:clamp(22px,3vw,28px);line-height:1.2;color:#0F1A0D;margin:0 0 8px">Combien peut rapporter ton logement ${prep} ${ville} ?</h2>
       <p style="margin:0;font-size:14.5px;line-height:1.65;color:#3D5038">Occupation, prix moyen par nuit et revenu annuel ${prep} ${ville}, mois par mois, en 30 secondes. Ensuite, garde ton estimation et prépare ton prévisionnel dans ton compte gratuit.</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;flex:1 1 220px;max-width:340px;min-width:0">

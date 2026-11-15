@@ -211,12 +211,12 @@ export const SIGNATURE_CSS = `
 .vt-facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
 .vt-facts.n3 .vt-f:last-child{grid-column:span 2}
 .vt-facts .vt-f{background:#062b22;padding:14px 16px;min-width:0}
-.vt-facts .vt-f-v{font-family:'Fraunces',serif;font-size:24px;line-height:1.15;color:#fff;overflow-wrap:anywhere}
+.vt-facts .vt-f-v{font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;line-height:1.15;color:#fff;overflow-wrap:anywhere}
 .vt-facts .vt-f-l{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
 .vt-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
 .vt-strip.n3{grid-template-columns:repeat(3,minmax(0,1fr))}.vt-strip.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .vt-strip .vt-f{border-left:2px solid var(--g);padding-left:12px;min-width:0}
-.vt-strip .vt-f-v{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;color:var(--td);overflow-wrap:anywhere}
+.vt-strip .vt-f-v{font-family:'Fraunces','Fraunces Fallback',serif;font-size:21px;line-height:1.15;color:var(--td);overflow-wrap:anywhere}
 .vt-strip .vt-f-l{font-size:12px;color:var(--tl);margin-top:2px}
 @media(max-width:640px){.vt-strip,.vt-strip.n3{grid-template-columns:1fr 1fr}.vt-strip.n3 .vt-f:last-child{grid-column:span 2}}
 .vt-zone{display:grid;grid-template-columns:190px minmax(0,1fr);gap:22px;align-items:center}
@@ -226,8 +226,8 @@ export const SIGNATURE_CSS = `
 .vt-map-land{fill:rgba(0,76,63,.05);stroke:rgba(0,76,63,.35);stroke-width:1.2;stroke-linejoin:round}
 .vt-map-ring{fill:rgba(0,76,63,.12);stroke:rgba(0,76,63,.3);stroke-width:1}
 .vt-map-dot{fill:var(--g);stroke:#fff;stroke-width:2}
-.vt-map-t{font:600 13px 'Outfit',sans-serif;fill:var(--g);paint-order:stroke;stroke:#fff;stroke-width:3px}
-.vt-zone-v{font-family:'Fraunces',serif;font-size:24px;color:var(--td);line-height:1.15}
+.vt-map-t{font:600 13px 'Outfit','Outfit Fallback',sans-serif;fill:var(--g);paint-order:stroke;stroke:#fff;stroke-width:3px}
+.vt-zone-v{font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;color:var(--td);line-height:1.15}
 .vt-zone-t>p{font-size:14px;color:var(--tm);line-height:1.6;margin-top:4px}
 .vt-zone-t .vt-villes{margin-top:12px}
 .vt-zone-t .vt-zone-n{font-size:12.5px;color:var(--tl);margin-top:12px}

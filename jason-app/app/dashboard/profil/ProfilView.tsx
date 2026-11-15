@@ -32,6 +32,8 @@ export type ProfilData = {
   google?: boolean
   /** Conditions générales de vente (migration 181), vide si absentes */
   cgv?: string
+  /** Nom PayPal.me (migration 187) ; null si la colonne manque encore */
+  paypalMe?: string | null
   pd: {
     stripe_account_id: string | null
     stripe_onboarding_complete: boolean | null
@@ -52,7 +54,7 @@ function fmtMemberSince(iso: string): string {
   try { return new Date(iso).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', timeZone: 'Europe/Paris' }) } catch { return '' }
 }
 
-export default function ProfilView({ userId, email, createdAt, fullName, planLabel, subscription, autresRevenusPro, pd, google = false, cgv = '' }: ProfilData) {
+export default function ProfilView({ userId, email, createdAt, fullName, planLabel, subscription, autresRevenusPro, pd, google = false, cgv = '', paypalMe = null }: ProfilData) {
   const initials = fullName
     ? fullName.split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : email.charAt(0).toUpperCase()
@@ -128,6 +130,7 @@ export default function ProfilView({ userId, email, createdAt, fullName, planLab
             stripeComplete={pd?.stripe_onboarding_complete ?? false}
             initialIban={pd?.iban ?? ''}
             initialBic={pd?.bic ?? ''}
+            initialPaypal={paypalMe}
             initialAdresse={pd?.adresse ?? ''}
             initialEntrepriseNumero={pd?.entreprise_numero ?? ''}
             initialMentionTva={pd?.mention_tva ?? ''}

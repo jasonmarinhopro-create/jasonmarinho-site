@@ -7,6 +7,7 @@ import DepositSection from './DepositSection'
 import type { DepositWindowState } from '@/lib/stripe/deposit-window'
 import PaymentSection from './PaymentSection'
 import IbanSection from './IbanSection'
+import PaypalSection from './PaypalSection'
 import ContractIbanBlock from './ContractIbanBlock'
 import { getContractTemplate } from '@/lib/contract-templates'
 import { getCountry } from '@/lib/countries'
@@ -76,6 +77,8 @@ interface Props {
   n: number
   hostIban: string | null
   hostBic: string | null
+  /** Nom PayPal.me de l'hôte, si PayPal fait partie des moyens de paiement */
+  hostPaypal?: string | null
   stripeReady: boolean
   paymentEnabled: boolean
   paymentAlreadyDone: boolean
@@ -107,7 +110,7 @@ const LANG_NAME: Record<UiLang, string> = { fr: 'Français', pt: 'Português', e
 
 export default function ContractView({
   token, contract, contractPays, initialLang, isViewerBailleur, expired, cancelled, alreadySigned, n,
-  hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, paidTotal, hasDeposit, depositAlreadyHeld, depositStatus, depositHoldUntil, depositCaptured, depositState, depositOpens,
+  hostIban, hostBic, hostPaypal, stripeReady, paymentEnabled, paymentAlreadyDone, paidTotal, hasDeposit, depositAlreadyHeld, depositStatus, depositHoldUntil, depositCaptured, depositState, depositOpens,
   acomptePercent, montantAcompte, montantSolde, paymentParam, depositParam, preview,
 }: Props) {
   const [lang, setLang] = useState<UiLang>(initialLang)
@@ -546,7 +549,7 @@ export default function ContractView({
         )}
 
         {/* ── Paiements (uniquement si actionnable : Stripe prêt ou IBAN configuré) ── */}
-        {!preview && alreadySigned && ((paymentEnabled && stripeReady) || (hasDeposit && stripeReady) || hostIban) && (
+        {!preview && alreadySigned && ((paymentEnabled && stripeReady) || (hasDeposit && stripeReady) || hostIban || hostPaypal) && (
           <div style={paymentsBlock} className="no-print">
             <p style={paymentsTitle}>{t.finalizeTitle}</p>
 
@@ -585,6 +588,18 @@ export default function ContractView({
                   </div>
                 )}
               </>
+            )}
+
+            {/* PayPal (lien PayPal.me de l'hôte, montant rempli) */}
+            {hostPaypal && (
+              <PaypalSection
+                name={hostPaypal}
+                amount={montantAcompte}
+                soldeAmount={acomptePercent < 100 ? montantSolde : undefined}
+                reference={`LOC-${contract.id.slice(0, 8).toUpperCase()}`}
+                lang={lang}
+                soldeQuand={soldeQuand(lang, soldeH)}
+              />
             )}
 
             {/* 3. Virement bancaire IBAN (si le bailleur a configuré son IBAN) */}

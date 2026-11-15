@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -30,7 +30,7 @@
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#6E7F6B;--bd:rgba(0,76,63,.11);--gs:#EEF4F1;--amb:#FBF1DE;--ambt:#6B4300}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 button{font-family:inherit}
 .s-in{max-width:1160px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
@@ -39,15 +39,15 @@ button{font-family:inherit}
 @media(min-width:960px){.hero-grid{grid-template-columns:minmax(0,1fr) 340px}}
 .brd{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px}.brd a{color:rgba(255,255,255,.65);text-decoration:none}
 .eye{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:12px}
-h1{font-family:'Fraunces',serif;font-size:clamp(30px,4.6vw,50px);font-weight:400;line-height:1.08;letter-spacing:-.6px;max-width:680px}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(30px,4.6vw,50px);font-weight:400;line-height:1.08;letter-spacing:-.6px;max-width:680px}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:16px;color:rgba(255,255,255,.75);line-height:1.7;max-width:620px;margin-top:16px}
 .ticks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px;font-size:14px;color:rgba(255,255,255,.85)}
 .ticks span{display:inline-flex;align-items:center;gap:7px}.ticks i{color:var(--y)}
 .price{background:rgba(255,255,255,.06);border:1px solid rgba(255,213,107,.25);border-radius:18px;padding:22px}
 .price-eye{font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.55)}
-.price-n{font-family:'Fraunces',serif;font-size:44px;font-weight:300;line-height:1;margin:10px 0 4px;color:#fff}
-.price-n small{font-family:'Outfit',sans-serif;font-size:14px;color:rgba(255,255,255,.6);font-weight:400;margin-left:4px}
+.price-n{font-family:'Fraunces','Fraunces Fallback',serif;font-size:44px;font-weight:300;line-height:1;margin:10px 0 4px;color:#fff}
+.price-n small{font-family:'Outfit','Outfit Fallback',sans-serif;font-size:14px;color:rgba(255,255,255,.6);font-weight:400;margin-left:4px}
 .price-sub{font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.55}
 .places{display:none;align-items:center;gap:7px;margin-top:14px;padding:7px 12px;border-radius:999px;background:rgba(255,213,107,.14);color:var(--y);font-size:12.5px;font-weight:600}
 .price-foot{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
@@ -63,7 +63,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--g),#2F7D52);border-radius:5px;transition:width .3s}
 .fb{flex:1;padding:22px clamp(18px,3vw,30px) 8px;display:flex;flex-direction:column;gap:16px;animation:in .22s ease}
 @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.q{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,30px);font-weight:400;line-height:1.15;text-wrap:balance}
+.q{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(24px,3vw,30px);font-weight:400;line-height:1.15;text-wrap:balance}
 .q:focus{outline:none}
 .sub{font-size:15px;color:var(--tm);line-height:1.6;margin-top:-8px;max-width:62ch}
 .opts{display:grid;gap:10px}
@@ -86,7 +86,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .bigc .im span{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,51,41,.88);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:5px 10px}
 .bigc .im span i{color:var(--y)}
 .bigc .bd{padding:12px 14px 14px;display:grid;gap:4px}
-.bigc .t{font-family:'Fraunces',serif;font-size:19px;line-height:1.2}
+.bigc .t{font-family:'Fraunces','Fraunces Fallback',serif;font-size:19px;line-height:1.2}
 .bigc .d{font-size:13px;color:var(--tm);line-height:1.45}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:1.5px solid var(--bd);background:#fff;border-radius:999px;padding:9px 14px;font-size:14px;font-weight:500;color:var(--td);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
@@ -161,9 +161,9 @@ textarea.in{min-height:120px;resize:vertical;line-height:1.55}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 /* Récapitulatif : la fiche telle que les hôtes la verront */
 .fiche{border:1px solid var(--bd);border-radius:18px;overflow:hidden;background:#fff}
-.fiche .cov{aspect-ratio:21/9;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces',serif;font-size:54px;color:var(--g);font-weight:300;letter-spacing:2px}
+.fiche .cov{aspect-ratio:21/9;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces','Fraunces Fallback',serif;font-size:54px;color:var(--g);font-weight:300;letter-spacing:2px}
 .fiche .fb2{padding:16px 18px 18px;display:grid;gap:10px}
-.fiche .nm{font-family:'Fraunces',serif;font-size:24px;line-height:1.15}
+.fiche .nm{font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;line-height:1.15}
 .fiche .mt{font-size:14px;color:var(--tm)}
 .fiche .tags{display:flex;flex-wrap:wrap;gap:6px}
 .fiche .tags span{font-size:12px;font-weight:600;color:var(--g);background:var(--gs);border-radius:999px;padding:4px 10px}
@@ -188,15 +188,15 @@ textarea.in{min-height:120px;resize:vertical;line-height:1.55}
 .side{display:flex;flex-direction:column;gap:16px}
 @media(min-width:980px){.side{position:sticky;top:84px}}
 .box{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:20px}
-.box h3{font-family:'Fraunces',serif;font-size:17px;font-weight:400;margin-bottom:12px}
+.box h3{font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;font-weight:400;margin-bottom:12px}
 .box-eye{font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-bottom:10px}
 .pc{border:1px solid var(--bd);border-radius:14px;overflow:hidden;background:#fff}
 .pc-media{aspect-ratio:3/2;background:#EEEAE1 center/cover no-repeat;display:flex;align-items:center;justify-content:center;position:relative}
-.pc-ini{font-family:'Fraunces',serif;font-weight:300;font-size:56px;color:var(--g);letter-spacing:2px;line-height:1}
+.pc-ini{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:300;font-size:56px;color:var(--g);letter-spacing:2px;line-height:1}
 .pc-media small{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(0,76,63,.55);font-weight:500}
 .pc-media.has small{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.4)}
 .pc-body{padding:14px 16px;display:flex;flex-direction:column;gap:3px}
-.pc-name{font-family:'Fraunces',serif;font-size:18px;color:var(--td);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-name{font-family:'Fraunces','Fraunces Fallback',serif;font-size:18px;color:var(--td);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pc-meta{font-size:12.5px;color:var(--tm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pc-extra{font-size:12px;color:var(--tl);min-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pc-foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:13px;color:var(--tm)}
@@ -214,7 +214,7 @@ textarea.in{min-height:120px;resize:vertical;line-height:1.55}
 .links a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;color:var(--g);font-size:13.5px;font-weight:600;text-decoration:none}
 .links a:hover{border-color:rgba(0,76,63,.3)}
 .faq{max-width:1160px;margin:0 auto 64px;padding:0 clamp(16px,5vw,40px)}
-.faq h2{font-family:'Fraunces',serif;font-size:24px;font-weight:400;margin-bottom:14px}
+.faq h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:24px;font-weight:400;margin-bottom:14px}
 .faq-grid{display:grid;gap:12px}
 @media(min-width:760px){.faq-grid{grid-template-columns:1fr 1fr}}
 .faq-item{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
@@ -831,5 +831,6 @@ textarea.in{min-height:120px;resize:vertical;line-height:1.55}
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 <script src="/suggestions.js" defer></script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body>
 </html>

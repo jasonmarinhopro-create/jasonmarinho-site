@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { saveProfileName, saveIban, saveAdresse, saveFacturation, deleteAccount } from './actions'
+import { saveProfileName, saveIban, savePaypal, saveAdresse, saveFacturation, deleteAccount } from './actions'
 import HostInvoicingNotice from '@/components/finances/HostInvoicingNotice'
 import { PAYMENT_FEES, PAYMENT_FEES_LABEL } from '@/lib/stripe/payment-fees'
 import {
@@ -16,6 +16,8 @@ interface Props {
   stripeComplete: boolean
   initialIban?: string
   initialBic?: string
+  /** Nom PayPal.me ; null tant que la migration 187 manque (champ masqué) */
+  initialPaypal?: string | null
   initialAdresse?: string
   initialEntrepriseNumero?: string
   initialMentionTva?: string
@@ -152,7 +154,7 @@ function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSPropertie
 // ─── Main component ─────────────────────────────────────────────────────────
 export default function ProfilForm({
   initialFullName, email, stripeAccountId, stripeComplete,
-  initialIban = '', initialBic = '', initialAdresse = '',
+  initialIban = '', initialBic = '', initialPaypal = null, initialAdresse = '',
   initialEntrepriseNumero = '', initialMentionTva = '',
 }: Props) {
   const [isPending, startTransition] = useTransition()
@@ -178,6 +180,13 @@ export default function ProfilForm({
   const [ibanPending, startIbanTransition] = useTransition()
   const [ibanSaved,   setIbanSaved] = useState(false)
   const [ibanError,   setIbanError] = useState('')
+
+  const [editPaypal, setEditPaypal]       = useState(false)
+  const [paypalValue, setPaypalValue]     = useState(initialPaypal ?? '')
+  const [paypalDraft, setPaypalDraft]     = useState(initialPaypal ?? '')
+  const [paypalPending, startPaypalTransition] = useTransition()
+  const [paypalSaved, setPaypalSaved]     = useState(false)
+  const [paypalError, setPaypalError]     = useState('')
 
   const [editAdresse, setEditAdresse]   = useState(false)
   const [adresseValue, setAdresseValue] = useState(initialAdresse)
@@ -238,6 +247,17 @@ export default function ProfilForm({
       setTimeout(() => setIbanSaved(false), 2500)
     })
   }
+  function handlePaypalSave() {
+    setPaypalError('')
+    startPaypalTransition(async () => {
+      const result = await savePaypal(paypalDraft)
+      if (result.error) { setPaypalError(result.error); return }
+      setPaypalValue(result.name ?? ''); setPaypalDraft(result.name ?? '')
+      setPaypalSaved(true); setEditPaypal(false)
+      setTimeout(() => setPaypalSaved(false), 2500)
+    })
+  }
+
   function handleIbanCancel() { setIbanValue(initialIban); setBicValue(initialBic); setIbanError(''); setEditIban(false) }
 
   function handleAdresseSave() {
@@ -351,7 +371,7 @@ export default function ProfilForm({
         iconColor="var(--accent-text)"
         iconBg="var(--accent-bg)"
         title="Encaissements"
-        description="Stripe pour le loyer par carte et la caution, IBAN pour les virements. Les deux figurent dans tes contrats."
+        description="Stripe pour le paiement par carte en ligne et la caution, IBAN pour les virements, PayPal.me pour PayPal. Ils figurent dans tes contrats."
       >
         {/* Stripe */}
         <FieldRow label="Paiements & Cautions (Stripe)" icon={<CreditCard size={12} />}>
@@ -444,6 +464,54 @@ export default function ProfilForm({
             </div>
           )}
         </FieldRow>
+
+        {/* PayPal (migration 187) : bouton « Payer avec PayPal » sur le contrat signé */}
+        {initialPaypal !== null && (
+          <>
+            <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0 20px' }} />
+            <div id="paypal" style={{ scrollMarginTop: '80px' }} />
+            <FieldRow label="PayPal (lien PayPal.me)" icon={<Wallet size={12} />}>
+              {paypalSaved && <div style={{ ...stripeBanner('success'), marginBottom: '10px' }}><Check size={13} weight="bold" /> Lien PayPal enregistré.</div>}
+              {editPaypal ? (
+                <div>
+                  <input
+                    type="text" value={paypalDraft}
+                    onChange={e => setPaypalDraft(e.target.value)}
+                    style={f.input}
+                    placeholder="paypal.me/TonNom" autoFocus
+                  />
+                  <p style={{ margin: '8px 0 0', fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5 }}>
+                    Ton lien se trouve dans l&apos;application PayPal, rubrique PayPal.me. Laisse vide pour le retirer.
+                  </p>
+                  {paypalError && <div style={f.errorBox}><Warning size={13} />{paypalError}</div>}
+                  <div style={f.saveRow}>
+                    <button onClick={handlePaypalSave} disabled={paypalPending} className="btn-primary" style={{ fontSize: '13px', padding: '9px 18px' }}>
+                      {paypalPending ? 'Sauvegarde…' : 'Enregistrer'}
+                    </button>
+                    <button onClick={() => { setPaypalDraft(paypalValue); setPaypalError(''); setEditPaypal(false) }} className="jm-profil-cancel-btn" style={f.cancelBtn}>Annuler</button>
+                  </div>
+                </div>
+              ) : paypalValue ? (
+                <div style={f.valueRow}>
+                  <div>
+                    <p style={{ margin: '0 0 2px', fontSize: '13px', color: 'var(--text)' }}>paypal.me/{paypalValue}</p>
+                    <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-3)' }}>Bouton « Payer avec PayPal » sur tes contrats signés qui proposent PayPal.</p>
+                  </div>
+                  <button onClick={() => setEditPaypal(true)} className="jm-profil-edit-btn" style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
+                    Ajoute ton lien PayPal.me : quand PayPal fait partie des moyens de paiement d&apos;un contrat, le voyageur aura un bouton pour te payer, montant déjà rempli.
+                  </p>
+                  <button onClick={() => setEditPaypal(true)} style={addBtn('var(--accent-text)', 'var(--accent-bg)', 'var(--accent-border)')}>
+                    + Ajouter mon lien PayPal
+                  </button>
+                </div>
+              )}
+            </FieldRow>
+          </>
+        )}
 
       </SectionCard>
 

@@ -212,10 +212,10 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     methodes_keys: initialLogement?.methodes_paiement ?? 'virement',
     ...(() => {
       const labels: Record<string, string> = {
-        virement: 'Virement bancaire', stripe: 'Paiement en ligne (Stripe)',
+        virement: 'Virement bancaire', stripe: 'Carte bancaire en ligne (Stripe)',
         especes: 'Espèces', cheque: 'Chèque', paypal: 'PayPal',
-        airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire',
-        les_deux: 'Virement bancaire ou paiement en ligne (Stripe)',
+        airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire sur place (TPE)',
+        les_deux: 'Virement bancaire ou carte bancaire en ligne (Stripe)',
       }
       const m = initialLogement?.methodes_paiement ?? 'virement'
       const parts = m.split(',').map((s: string) => s.trim()).filter(Boolean)
@@ -253,13 +253,13 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
   function paymentFieldsFromLogement(methodes: string | null | undefined) {
     const labels: Record<string, string> = {
       virement: 'Virement bancaire',
-      stripe: 'Paiement en ligne (Stripe)',
+      stripe: 'Carte bancaire en ligne (Stripe)',
       especes: 'Espèces',
       cheque: 'Chèque',
       paypal: 'PayPal',
       airbnb: 'Airbnb / Booking (plateforme)',
-      carte: 'Carte bancaire',
-      les_deux: 'Virement bancaire ou paiement en ligne (Stripe)',
+      carte: 'Carte bancaire sur place (TPE)',
+      les_deux: 'Virement bancaire ou carte bancaire en ligne (Stripe)',
     }
     if (!methodes) return { stripe_payment_enabled: false, modalites_paiement: 'Virement bancaire' }
     const parts = methodes.split(',').map(s => s.trim()).filter(Boolean)
@@ -921,17 +921,17 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginTop: '4px' }}>
                   {([
                     { value: 'virement', label: 'Virement bancaire',     disabled: false },
-                    { value: 'stripe',   label: 'Paiement en ligne (Stripe)',      disabled: !bailleur.stripeReady },
+                    { value: 'stripe',   label: 'Carte bancaire en ligne (Stripe)',      disabled: !bailleur.stripeReady },
                     { value: 'especes',  label: 'Espèces',               disabled: false },
                     { value: 'cheque',   label: 'Chèque',                disabled: false },
                     { value: 'paypal',   label: 'PayPal',               disabled: false },
                     { value: 'airbnb',   label: 'Airbnb / Booking',      disabled: false },
-                    { value: 'carte',    label: 'Carte bancaire (TPE)',   disabled: false },
+                    { value: 'carte',    label: 'Carte bancaire sur place (TPE)',   disabled: false },
                   ] as { value: string; label: string; disabled: boolean }[]).map(opt => {
                     const LABELS: Record<string, string> = {
-                      virement: 'Virement bancaire', stripe: 'Paiement en ligne (Stripe)',
+                      virement: 'Virement bancaire', stripe: 'Carte bancaire en ligne (Stripe)',
                       especes: 'Espèces', cheque: 'Chèque', paypal: 'PayPal',
-                      airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire',
+                      airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire sur place (TPE)',
                     }
                     const keys = form.methodes_keys.split(',').map(s => s.trim()).filter(Boolean)
                     const checked = keys.includes(opt.value)
@@ -970,6 +970,23 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                     )
                   })}
                 </div>
+                {(() => {
+                  const keys = form.methodes_keys.split(',').map(s => s.trim())
+                  return (
+                    <>
+                      {keys.includes('carte') && !keys.includes('stripe') && (
+                        <p style={{ margin: '8px 0 0', fontSize: '11px', color: 'var(--text-3)', lineHeight: 1.5 }}>
+                          « Sur place (TPE) » : le voyageur paie avec ton terminal à l&apos;arrivée. Pour qu&apos;il paie par carte depuis le contrat, choisis aussi <strong>Carte bancaire en ligne</strong>.
+                        </p>
+                      )}
+                      {keys.includes('paypal') && (
+                        <p style={{ margin: '8px 0 0', fontSize: '11px', color: 'var(--text-3)', lineHeight: 1.5 }}>
+                          PayPal : le voyageur aura un bouton « Payer avec PayPal » après la signature si ton lien PayPal.me est enregistré dans <strong>Mon compte, Encaissements</strong>.
+                        </p>
+                      )}
+                    </>
+                  )
+                })()}
                 {!bailleur.stripeReady && (
                   <p style={{ margin: '8px 0 0', fontSize: '11px', color: 'var(--text-3)', lineHeight: 1.5 }}>
                     <Lock size={11} weight="bold" style={{ verticalAlign: '-1px' }} /> Paiement en ligne pas encore activé : connecte Stripe dans <strong>Mon compte, Encaissements</strong>.

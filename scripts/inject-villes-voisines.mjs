@@ -57,7 +57,7 @@ const SECTION_STYLE = {
 function block(k, region, others) {
   const chips = others.map(s => chip(`/${k.prefix}${s}`, k.label(villeDe.get(s).nom))).join('\n      ')
   const inner = `<div style="background:#F7F5F0;border:1px solid rgba(0,76,63,.09);border-radius:18px;padding:clamp(20px,3vw,28px)">
-      <p style="font-family:'Fraunces',serif;font-size:clamp(18px,2.1vw,22px);color:#0F1A0D;margin:0 0 4px">${k.titre}</p>
+      <p style="font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(18px,2.1vw,22px);color:#0F1A0D;margin:0 0 4px">${k.titre}</p>
       <p style="font-size:13.5px;color:#3D5038;margin:0 0 14px;line-height:1.6">${region}</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px">
       ${chips}

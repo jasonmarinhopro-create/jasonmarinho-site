@@ -468,7 +468,7 @@ export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '', c
 export const SECTEUR_CSS = `
 .sct-stats{display:flex;flex-wrap:wrap;gap:12px 22px;margin:0 0 14px}
 .sct-stats>div{border-left:2px solid var(--g);padding-left:11px;min-width:0}
-.sct-v{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;color:var(--td)}
+.sct-v{font-family:'Fraunces','Fraunces Fallback',serif;font-size:21px;line-height:1.15;color:var(--td)}
 .sct-l{font-size:12px;color:var(--tl);margin-top:2px}
 .sct-map{position:relative;border-radius:12px;overflow:hidden;background:#E8EEEA}
 .sct-svg{display:block;width:100%;height:auto;touch-action:manipulation}
@@ -485,7 +485,7 @@ export const SECTEUR_CSS = `
 .sct-svg .ic:hover,.sct-svg .id:hover{fill:rgba(0,76,63,.2)}
 .sct-svg path.hl{fill:#FFD56B!important;stroke:var(--g)}
 .sct-svg .rad{fill:none;stroke:var(--g);stroke-dasharray:6 6;stroke-width:1.5;pointer-events:none}
-.sct-svg text{font-family:'Outfit',sans-serif;pointer-events:none}
+.sct-svg text{font-family:'Outfit','Outfit Fallback',sans-serif;pointer-events:none}
 .sct-svg .dl{font-size:10px;font-weight:600;fill:#8A958F;letter-spacing:1.5px;text-anchor:middle}
 .sct-svg .lb{pointer-events:none}
 .sct-svg .lb circle{fill:var(--g)}
@@ -496,7 +496,7 @@ export const SECTEUR_CSS = `
 .sct-svg .lb.pole text{font-size:14px}
 .sct-chip.pole{font-weight:600}
 .sct-svg .land.mt{stroke:#DCE3DE;stroke-width:.7}
-.sct-pill{position:absolute;z-index:1;font:600 13px/1 'Outfit',sans-serif;color:var(--td);background:#fff;border:1.5px solid var(--g);border-radius:999px;padding:5px 10px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,40,30,.12);cursor:pointer}
+.sct-pill{position:absolute;z-index:1;font:600 13px/1 'Outfit','Outfit Fallback',sans-serif;color:var(--td);background:#fff;border:1.5px solid var(--g);border-radius:999px;padding:5px 10px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,40,30,.12);cursor:pointer}
 .sct-pill.on,.sct-pill:hover{background:var(--g);color:#fff}
 .sct-chip.pole small{font-weight:400;color:var(--tl);margin-left:2px}
 .sct-svg .ctr text{font-size:14px}
@@ -509,7 +509,7 @@ export const SECTEUR_CSS = `
 .sct-tip{position:absolute;pointer-events:none;background:#13241F;color:#fff;font-size:12.5px;line-height:1.35;padding:6px 10px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-125%);z-index:2}
 .sct-tip[hidden]{display:none}
 .sct-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.sct-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#F1F5F2;border:1px solid rgba(0,76,63,.14);color:var(--g);font:600 13px 'Outfit',sans-serif;text-decoration:none;cursor:pointer}
+.sct-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#F1F5F2;border:1px solid rgba(0,76,63,.14);color:var(--g);font:600 13px 'Outfit','Outfit Fallback',sans-serif;text-decoration:none;cursor:pointer}
 .sct-chip small{font-weight:500;color:var(--tl)}
 .sct-chip.on{background:var(--g);border-color:var(--g);color:#fff}
 .sct-chip.on small{color:rgba(255,255,255,.75)}
@@ -520,10 +520,10 @@ export const SECTEUR_CSS = `
 .sct-in{display:flex;align-items:center;gap:8px;border:1.5px solid rgba(0,76,63,.16);border-radius:12px;padding:0 13px;background:#fff}
 .sct-in:focus-within{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.1)}
 .sct-in i{color:var(--tl)}
-.sct-in input{flex:1;min-width:0;border:0;outline:0;padding:12px 0;font:400 16px 'Outfit',sans-serif;color:var(--td);background:transparent}
+.sct-in input{flex:1;min-width:0;border:0;outline:0;padding:12px 0;font:400 16px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);background:transparent}
 .sct-sug{position:absolute;left:0;right:0;z-index:5;margin-top:6px;background:#fff;border:1px solid rgba(0,76,63,.14);border-radius:12px;box-shadow:0 14px 34px rgba(0,26,17,.12);overflow:hidden}
 .sct-sug[hidden]{display:none}
-.sct-sug button{display:flex;justify-content:space-between;gap:12px;width:100%;padding:11px 14px;border:0;background:none;text-align:left;font:400 14.5px 'Outfit',sans-serif;color:var(--td);cursor:pointer}
+.sct-sug button{display:flex;justify-content:space-between;gap:12px;width:100%;padding:11px 14px;border:0;background:none;text-align:left;font:400 14.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);cursor:pointer}
 .sct-sug button small{color:var(--tl)}
 .sct-sug button:hover,.sct-sug button.on{background:#F1F5F2}
 .sct-r{margin:10px 0 0;font-size:14px;line-height:1.55;color:var(--tm)}

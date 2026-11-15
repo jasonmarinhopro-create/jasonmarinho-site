@@ -140,7 +140,7 @@ function buildSection(page) {
     .rel-card:hover .rel-ico i{color:var(--y)}
     .rel-body{display:flex;flex-direction:column;gap:6px;flex:1}
     .rel-kind{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol,#556B2F)}
-    .rel-title{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.2px}
+    .rel-title{font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.2px}
     .rel-desc{font-size:13px;font-weight:300;color:var(--tm);line-height:1.55;flex:1}
     .rel-cta{font-size:13px;font-weight:600;color:var(--g);display:flex;align-items:center;gap:6px;margin-top:4px}
     .rel-cta i{font-size:12px}

@@ -24,7 +24,7 @@ describe('aperçu du contrat', () => {
     expect(p.contract.montant_loyer).toBe(300)
   })
   it('moyens de paiement et IBAN', () => {
-    expect(paymentLabels('stripe')).toBe('Paiement en ligne (Stripe)')
+    expect(paymentLabels('stripe')).toBe('Carte bancaire en ligne (Stripe)')
     expect(showsIban('Paiement en ligne (Stripe)', true)).toBe(false)
     expect(showsIban('Virement bancaire, Paiement en ligne (Stripe)', true)).toBe(true)
     expect(showsIban('Espèces', false)).toBe(true)

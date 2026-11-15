@@ -119,13 +119,13 @@ function pageShell({ title, desc, canonical, jsonLd, body }) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);padding-top:64px}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
 .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(48px,7vw,80px) 0 clamp(44px,6vw,64px);color:#fff;position:relative;overflow:hidden}
@@ -135,7 +135,7 @@ a{color:inherit}
 .brd a{color:rgba(255,255,255,.55);text-decoration:none}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
 .lbl.dk{color:var(--g)}
-h1{font-family:'Fraunces',serif;font-size:clamp(30px,4.5vw,48px);font-weight:400;line-height:1.1;letter-spacing:-.5px;margin:0 0 16px}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(30px,4.5vw,48px);font-weight:400;line-height:1.1;letter-spacing:-.5px;margin:0 0 16px}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:clamp(15px,1.5vw,16.5px);color:rgba(255,255,255,.68);line-height:1.75;max-width:660px;margin:0 0 26px}
 .lead strong{color:#fff;font-weight:600}
@@ -145,12 +145,12 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);font-weight:500;font-size:14px;padding:12px 20px;border-radius:10px;text-decoration:none;transition:all .2s}
 .btn-ol:hover{border-color:rgba(255,255,255,.55);color:#fff}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px;padding-top:26px;border-top:1px solid rgba(255,255,255,.09);max-width:660px}
-.stat-n{font-family:'Fraunces',serif;font-size:clamp(22px,2.6vw,30px);color:var(--y);font-weight:400;line-height:1.1}
+.stat-n{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(22px,2.6vw,30px);color:var(--y);font-weight:400;line-height:1.1}
 .stat-l{font-size:12px;color:rgba(255,255,255,.5);margin-top:5px;line-height:1.45}
 @media(max-width:560px){.stats{grid-template-columns:1fr 1fr}}
 .sec{padding:clamp(44px,6vw,68px) 0}
 .sec.cr{background:var(--cr)}
-h2{font-family:'Fraunces',serif;font-size:clamp(22px,2.8vw,30px);font-weight:400;color:var(--td);letter-spacing:-.3px;line-height:1.2;margin:0 0 14px}
+h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(22px,2.8vw,30px);font-weight:400;color:var(--td);letter-spacing:-.3px;line-height:1.2;margin:0 0 14px}
 h2 em{color:var(--g);font-style:italic;font-weight:300}
 .sec p{font-size:15px;line-height:1.8;color:var(--tm);max-width:760px}
 .sec p+p{margin-top:12px}
@@ -159,14 +159,14 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 @media(max-width:760px){.grid-2{grid-template-columns:1fr}}
 .card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:24px}
 .cr .card{background:#fff}
-.card h3{font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);margin:0 0 10px}
+.card h3{font-family:'Fraunces','Fraunces Fallback',serif;font-size:17px;font-weight:400;color:var(--td);margin:0 0 10px}
 .card p,.card li{font-size:14px;line-height:1.75;color:var(--tm)}
 .tarif-table{width:100%;border-collapse:collapse;margin-top:24px;background:#fff;border:1px solid var(--bd);border-radius:14px;overflow:hidden;font-size:14px}
 .tarif-table th{background:rgba(0,76,63,.05);text-align:left;padding:13px 16px;font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--g);border-bottom:1px solid var(--bd)}
 .tarif-table td{padding:14px 16px;border-bottom:1px solid var(--bd);color:var(--tm);line-height:1.6;vertical-align:top}
 .tarif-table tr:last-child td{border-bottom:none}
 .tarif-table td:first-child{font-weight:600;color:var(--td);white-space:nowrap}
-.tarif-table .prix{font-family:'Fraunces',serif;font-weight:600;color:var(--g);white-space:nowrap}
+.tarif-table .prix{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:600;color:var(--g);white-space:nowrap}
 @media(max-width:560px){.tarif-table th,.tarif-table td{padding:10px 10px;font-size:13px}.tarif-table td:first-child,.tarif-table .prix{white-space:normal}}
 .check-list{list-style:none;margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;max-width:760px}
 @media(max-width:640px){.check-list{grid-template-columns:1fr}}
@@ -178,7 +178,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .faq details{background:#fff;border:1px solid var(--bd);border-radius:12px;margin-top:10px;overflow:hidden}
 .faq summary{padding:16px 20px;font-size:15px;font-weight:600;color:var(--td);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:'+';font-family:'Fraunces',serif;font-size:20px;color:var(--g);flex-shrink:0}
+.faq summary::after{content:'+';font-family:'Fraunces','Fraunces Fallback',serif;font-size:20px;color:var(--g);flex-shrink:0}
 .faq details[open] summary::after{content:'–'}
 .faq .faq-a{padding:0 20px 18px;font-size:14px;line-height:1.75;color:var(--tm)}
 .pro-band{background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);border-radius:18px;padding:clamp(28px,4vw,44px);color:#fff;display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin-top:8px}
@@ -190,7 +190,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .link-card{display:flex;flex-direction:column;gap:6px;padding:18px 20px;background:#fff;border:1px solid var(--bd);border-radius:13px;text-decoration:none;transition:transform .18s,box-shadow .18s}
 .link-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,76,63,.10)}
 .link-card .lc-t{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g)}
-.link-card .lc-h{font-family:'Fraunces',serif;font-size:16px;color:var(--td);line-height:1.3}
+.link-card .lc-h{font-family:'Fraunces','Fraunces Fallback',serif;font-size:16px;color:var(--td);line-height:1.3}
 .link-card .lc-a{font-size:12.5px;font-weight:600;color:var(--g);margin-top:4px;display:inline-flex;align-items:center;gap:5px}
 </style>
 ${jsonLd}
@@ -608,7 +608,7 @@ export function buildDepannagePage(v) {
     <span class="lbl dk">Les pannes fréquentes</span>
     <h2>Ce qui casse le plus <em>en location courte durée</em></h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px">
-      ${pannes.map(([ic, t, d]) => `<div style="background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px"><i class="ph-bold ${ic}" style="font-size:22px;color:var(--g)"></i><h3 style="font-family:'Fraunces',serif;font-weight:400;font-size:18px;margin:8px 0 6px;color:var(--td)">${t}</h3><p style="font-size:14px;line-height:1.6;color:var(--tm);margin:0">${d}</p></div>`).join('\n      ')}
+      ${pannes.map(([ic, t, d]) => `<div style="background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px"><i class="ph-bold ${ic}" style="font-size:22px;color:var(--g)"></i><h3 style="font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:18px;margin:8px 0 6px;color:var(--td)">${t}</h3><p style="font-size:14px;line-height:1.6;color:var(--tm);margin:0">${d}</p></div>`).join('\n      ')}
     </div>
   </div>
 </section>

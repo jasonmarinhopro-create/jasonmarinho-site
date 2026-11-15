@@ -218,7 +218,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'var(--text)', letterSpacing: '-0.5px', marginBottom: '8px',
   },
   subtitle: { fontSize: '14px', fontWeight: 400, color: 'var(--text-2)', marginBottom: '32px', lineHeight: 1.55 },
-  form: { display: 'flex', flexDirection: 'column' as const, gap: '20px', animation: 'fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both' },
+  form: { display: 'flex', flexDirection: 'column' as const, gap: '20px' },
   field: { display: 'flex', flexDirection: 'column' as const, gap: '8px' },
   label: { fontSize: '13px', fontWeight: 600, color: 'var(--text-2)' },
   eyeBtn: {

@@ -39,7 +39,7 @@ function block(prefix, slug) {
     <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;padding:clamp(20px,3vw,30px);border-radius:18px;background:linear-gradient(150deg,#001a11,#003329 55%,#00463a);color:#fff">
       <div style="flex:1 1 360px;min-width:0">
         <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:8px">Gratuit · sans commission</div>
-        <h2 style="font-family:'Fraunces',serif;font-weight:400;font-size:clamp(21px,2.6vw,28px);line-height:1.2;margin:0 0 8px;color:#fff">Pas le temps de chercher ? <em style="color:#FFD56B;font-weight:300">Les pros viennent à toi</em></h2>
+        <h2 style="font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(21px,2.6vw,28px);line-height:1.2;margin:0 0 8px;color:#fff">Pas le temps de chercher ? <em style="color:#FFD56B;font-weight:300">Les pros viennent à toi</em></h2>
         <p style="margin:0;font-size:15px;line-height:1.65;color:rgba(255,255,255,.75)">${m.decris ?? 'Décris ton logement en une minute'} : ta demande part aux 3 ${m.qui} les plus proches ${esc(aVille(ville))}, qui te répondent directement. Sans réponse sous 48 h, d’autres prennent le relais.</p>
       </div>
       <a href="${href}" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:10px;background:#FFD56B;color:#003329;font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap"><i class="ph-bold ph-paper-plane-tilt"></i> Décrire mon besoin</a>

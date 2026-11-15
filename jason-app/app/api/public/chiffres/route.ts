@@ -59,6 +59,8 @@ export async function GET(req: Request) {
         city: s.cities?.[path] ?? null,
         rank: [...(s.cityRanks?.photographe ?? []), ...(s.cityRanks?.menage ?? []), ...(s.cityRanks?.depannage ?? []), ...(s.cityRanks?.hote ?? [])].find(r => r.path === path) ?? null,
         demandes: demandes && cityOfPath(path) ? demandesOfCity(demandes, cityOfPath(path)!) : null,
+        // Pastille des pages de ville (14/11/2026) : total du site et dernière demande (métier, ville, mois)
+        demandesSite: demandes ? { total: demandes.total, since: demandes.since, last: demandes.fil[0] ?? null } : null,
         site: s.google ? { impressions: s.google.impressions, clicks: s.google.clicks, visitors: s.visitors?.last30 ?? null } : null,
         threshold: s.threshold,
       }, { headers: headers(origin) })

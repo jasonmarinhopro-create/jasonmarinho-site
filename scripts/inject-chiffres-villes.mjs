@@ -16,7 +16,7 @@ const check = process.argv.includes('--check')
 const RE = /<!-- CHIFFRES-VILLE:START -->[\s\S]*?<!-- CHIFFRES-VILLE:END -->\n?/
 // Styles autonomes (les gabarits de ville n'ont pas ceux des pages de zone)
 const CSS = '.cv-wrap{max-width:1100px;margin:0 auto;padding:clamp(28px,4vw,48px) clamp(16px,5vw,48px)}'
-  + '.cv-wrap .zs{max-width:none;margin:0;padding:0}.cv-wrap h2{font-family:Fraunces,serif;font-weight:400;font-size:clamp(22px,2.6vw,30px);color:var(--td,#0F1A0D);margin:0 0 6px;line-height:1.2}.cv-wrap h2 em{color:var(--g,#004C3F);font-style:italic}'
+  + '.cv-wrap .zs{max-width:none;margin:0;padding:0}.cv-wrap h2{font-family:Fraunces,Fraunces Fallback,serif;font-weight:400;font-size:clamp(22px,2.6vw,30px);color:var(--td,#0F1A0D);margin:0 0 6px;line-height:1.2}.cv-wrap h2 em{color:var(--g,#004C3F);font-style:italic}'
   + '.cv-wrap .zs>p{color:var(--tm,#4a5a4f);font-size:14.5px;line-height:1.6;margin:0 0 16px;max-width:760px}'
   + '.cv-wrap .zs-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}.cv-wrap .zs-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:14px;padding:16px 18px}'
   + '.cv-wrap .zs-card h3{font-size:20px;font-weight:700;color:var(--td,#0F1A0D);margin:0 0 6px;display:flex;align-items:center;gap:8px}.cv-wrap .zs-card h3 i{color:var(--g,#004C3F)}'

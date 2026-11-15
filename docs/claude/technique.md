@@ -393,3 +393,24 @@ Jason : « je ne peux pas me permettre d'avoir des pics, il faut que tout soit s
 - Page principale des fiches (photographe, ménage, dépannage) : « vues du mois » gardées 10 min (`lib/pros/views-cached.ts`, jamais quand la table est indisponible).
 - Planning ménage : les lectures de la fiche annuaire partent dès le début ; liens des photos en un appel par client au lieu d'un par ménage.
 - Statistiques : voir plus haut (cache 5 min). Demandes et Carnet clients : 2 lectures (fiche puis liste), laissées telles quelles.
+
+## Ouverture des pages « à froid » sans saut ni petit zoom (14/11/2026)
+
+Jason : « petit zoom et dézoom » et « saut de page » à l'ouverture du site après une longue absence, « opacité, rebond » sur la connexion. Mesuré avec cache vide et réseau lent (560 ms, 1,6 Mbit/s) : les polices arrivent vers 2,2-2,5 s, `nav.js` vers 4 s.
+- **Polices de secours calibrées** (`fonts/site-fonts.css`, `?v=` changé partout) : `Fraunces Fallback` (Times) et `Outfit Fallback` (Arial) avec `size-adjust` et `ascent/descent-override` mesurés dans une vraie page (Fraunces est ~25 % plus large que Times à cause de sa taille optique, ses lignes 12 % plus hautes). Chaque pile du site nomme la face de secours juste après la vraie : `'Fraunces','Fraunces Fallback',serif` (remplacement fait dans les pages, `nav.js`, `footer.js` et les générateurs ; à garder dans toute nouvelle page).
+- **Bandeau du haut posé avant le premier affichage** : `fillTop` (remonter le premier bandeau coloré sous la barre) était fait par `nav.js` seulement ; arrivé tard, on voyait une bande claire de 64 px puis le bandeau sauter. Même calcul en ligne en fin de page (`FILLTOP`, posé par `scripts/inject-font-loading.mjs` au build).
+- Résultat (CLS à froid) : annuaires 0,074 → 0,000, ménage Lyon 0,078 → 0,0015, études et blog divisés par 5 à 30.
+- App : plus d'entrée animée (`fadeUp`) du formulaire sur Connexion, Mot de passe oublié et Nouveau mot de passe.
+
+## Connexion : « vert, puis blanc, puis vert » (14/11/2026)
+
+Cause : `app/auth/login/LoginClient.tsx` enveloppait tout le formulaire dans un `<Suspense>` au fallback **blanc** (`useSearchParams` impose un Suspense ; la page étant statique, le serveur n'envoyait que ce fallback, le vrai écran arrivait avec le JavaScript). Correctif : le fallback rend l'écran de connexion lui-même (`LoginInner` avec `asParam=""`), `LoginWithParams` lit `?as=` et `?google=echec` dans le navigateur. Le client Supabase est créé au premier usage (`sb()`), jamais pendant le rendu (le serveur n'a pas `document.cookie`). **Règle : jamais de fallback vide ou blanc devant un écran entier** ; rendre la version par défaut de l'écran.
+
+## Ouverture de l'app : menu en différé (14/11/2026)
+
+Jason : « 9 s pour ouvrir le mode admin », « optimiser à fond avant Supabase Pro ». Mesures (`app_errors`, route `perf`, 7 jours) : layout lent 200 fois, Accueil hôte 26 s de moyenne côté serveur (52 fois), Vue d'ensemble admin 7 s.
+
+- **Diagnostic** : les requêtes ne sont pas en cause. `home_state` complet = 22 ms à chaud (349 ms à froid), chaque lecture < 40 ms, `menu_state` = 7,6 ms ; mais les mêmes appels prennent 3 à 20 s (jusqu'à plusieurs minutes le 13/11 vers 14 h 43) quand la base gratuite se fige : même `BEGIN` (24 ms) et une ligne dans `cron.job_run_details` (2 s en moyenne, table de 192 Ko) sont lents. Base au repos (11 connexions inactives, 38 Mo). Conseils de performance Supabase : rien d'important (index inutilisés, clés étrangères sans index sur petites tables).
+- **Menu en différé** : `app/dashboard/layout.tsx` n'attend plus `menu_state` (cloche, contrats, demandes des pros, parcours). Le cadre et la page partent dès le profil, les espaces et le logement actif (tous en cache 5 min) ; `MenuLiveLoader` (Suspense) lit le menu ensuite et le relaie par `components/layout/MenuLive.tsx` (`useMenuLive`, lu par `Sidebar` et `Header`, props en repli). Une erreur du menu laisse les compteurs à zéro, jamais la page. Lors de la mesure du 14/11 à 22 h 53, ce menu représentait 6,4 s sur 8,6 s.
+- **Vue d'ensemble admin** : le nombre de visiteurs en direct (`site_visits`, 3,7 s lors d'un ralenti) est gardé 30 s (`getCachedLiveVisitors`) ; l'écran le rafraîchit ensuite via `/api/admin/live-traffic`.
+- **Ce qui reste** : l'Accueil hôte attend `home_state` (toutes ses données en une lecture). Le mettre en cache par utilisateur demanderait d'invalider à chaque séjour, contrat, revenu, ménage… : risque de données périmées, non fait. Seule la sortie de l'offre gratuite supprime les gels de la base.

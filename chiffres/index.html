@@ -20,7 +20,7 @@
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="preconnect" href="https://app.jasonmarinho.com" crossorigin>
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
@@ -32,7 +32,7 @@
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#6B7D68;--bd:rgba(0,76,63,.10);--direct:#2F7D52}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);padding-top:64px}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
 .s-in{max-width:1180px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
@@ -41,7 +41,7 @@ a{color:inherit}
 @media(min-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr) minmax(0,.95fr)}}
 .brd{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px}.brd a{color:rgba(255,255,255,.65);text-decoration:none}
 .eye{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:14px}
-h1{font-family:'Fraunces',serif;font-size:clamp(30px,4.3vw,50px);font-weight:400;line-height:1.08;letter-spacing:-.6px}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(30px,4.3vw,50px);font-weight:400;line-height:1.08;letter-spacing:-.6px}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:16.5px;color:rgba(255,255,255,.75);line-height:1.7;margin-top:18px;max-width:560px}
 .src{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px;font-size:13.5px;color:rgba(255,255,255,.75)}
@@ -49,9 +49,10 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .kpis{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:22px;display:grid;gap:12px}
 .kpi{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,.05);border-radius:14px}
 .kpi i.ic{width:40px;height:40px;border-radius:12px;background:rgba(255,213,107,.14);color:var(--y);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.kpi b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:30px;line-height:1.05}
+.kpi b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;line-height:1.05}
 .kpi span{display:block;font-size:13px;color:rgba(255,255,255,.7);margin-top:2px}
 .kpi small{margin-left:auto;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(99,214,131,.16);color:#9BEDB2;white-space:nowrap}
+.kpi-dm{text-decoration:none;color:#fff;border:1px solid rgba(255,213,107,.35);background:rgba(255,213,107,.08);transition:background .2s,border-color .2s}.kpi-dm:hover{background:rgba(255,213,107,.14);border-color:rgba(255,213,107,.6)}.kpi-dm .kpi-last{display:block;font-style:normal;font-size:12.5px;color:var(--y);margin-top:4px}.kpi-dm .kpi-go{margin-left:auto;color:var(--y);font-size:18px}
 .kpi small.dn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65)}
 @media(max-width:560px){.kpi{flex-wrap:wrap}.kpi small{margin-left:54px}}
 .upd{font-size:12px;color:rgba(255,255,255,.55);text-align:right}
@@ -63,13 +64,13 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .fact{padding:22px 16px;text-align:center;border-right:1px solid var(--bd)}
 .fact:last-child{border-right:none}
 @media(max-width:859px){.fact:nth-child(2n){border-right:none}.fact:nth-child(-n+2){border-bottom:1px solid var(--bd)}}
-.fact b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1.1}
+.fact b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1.1}
 .fact span{display:block;font-size:13px;color:var(--tm);margin-top:4px;line-height:1.4}
 .sec{padding:clamp(52px,7vw,88px) 0}
 .sec.cr{background:var(--cr)}
 .sec-head{max-width:760px;margin:0 auto 34px;text-align:center}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
-h2{font-family:'Fraunces',serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1.15;letter-spacing:-.4px}
+h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1.15;letter-spacing:-.4px}
 h2 em{color:var(--g);font-style:italic;font-weight:300}
 .sec-head p{font-size:16px;color:var(--tm);line-height:1.7;margin-top:12px}
 .card{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:clamp(18px,3vw,28px)}
@@ -78,70 +79,107 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .chart-legend span{display:inline-flex;align-items:center;gap:7px}
 .dot{width:11px;height:11px;border-radius:3px;background:var(--g);display:inline-block}
 .dot.p{background:repeating-linear-gradient(45deg,var(--g) 0 3px,rgba(0,76,63,.35) 3px 6px)}
-.tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
-.tab{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;border:1px solid var(--bd);background:#fff;color:var(--tm);font:600 14.5px 'Outfit',sans-serif;cursor:pointer}
-.tab[aria-selected="true"]{border-color:var(--g);background:rgba(0,76,63,.06);color:var(--g)}
-.tab em{font-style:normal;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--cr);color:var(--tl)}
-.tab[aria-selected="true"] em{background:var(--g);color:#fff}
-.ranks{margin-bottom:16px}
-.rk-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px}
-.rk-h b{font-family:'Fraunces',serif;font-weight:500;font-size:19px;color:var(--td)}
-.rk-h span{font-size:13px;color:var(--tl)}
-.rk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,210px),1fr));gap:8px}
-@media(max-width:640px){.rk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rk{padding:8px 9px;gap:8px}.rk-p{width:38px;height:38px;font-size:14px}}
-.rk{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid var(--bd);text-decoration:none;color:var(--td);min-width:0}
-.rk:hover{border-color:var(--g)}
-.rk-p{flex-shrink:0;width:42px;height:42px;border-radius:10px;background:rgba(0,76,63,.07);color:var(--g);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:15px;line-height:1}
-.rk-p small{font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;opacity:.7;margin-top:2px}
-.rk-p.top{background:#004C3F;color:#FFD56B}
-.rk-t{min-width:0}
-.rk-t b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rk-t small{display:block;font-size:12px;color:var(--tl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rk-more{margin-top:8px;background:none;border:none;color:var(--g);font:600 13.5px 'Outfit',sans-serif;cursor:pointer;padding:4px 0}
+.tabs{display:flex;width:max-content;max-width:100%;margin:0 auto 28px;padding:5px;gap:2px;border-radius:999px;background:#fff;border:1px solid var(--bd);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;border:none;background:none;color:var(--tm);font:600 14px 'Outfit','Outfit Fallback',sans-serif;cursor:pointer;transition:background .2s,color .2s}
+.tab:hover{color:var(--g)}
+.tab[aria-selected="true"]{background:var(--g);color:#fff}
+.tab em{font-style:normal;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--cr);color:var(--tl)}
+.tab[aria-selected="true"] em{background:rgba(255,213,107,.18);color:var(--y)}
+@media(max-width:640px){.tabs{display:grid;grid-template-columns:1fr 1fr;width:100%;border-radius:18px;gap:4px}.tab{justify-content:center;border-radius:14px;padding:10px 8px}.tab-l{display:none}}
 
 .cp-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.cp-f{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--bd);background:#fff;font:600 13.5px 'Outfit',sans-serif;color:var(--tm);cursor:pointer}
+.cp-f{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--bd);background:#fff;font:600 13.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--tm);cursor:pointer}
 .cp-f em{font-style:normal;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--cr);color:var(--tl)}
 .cp-f.on{border-color:var(--g);background:rgba(0,76,63,.06);color:var(--g)}
 .cp-f.on em{background:var(--g);color:#fff}
 .cp{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:22px}
-.cp button{min-width:40px;height:40px;padding:0 6px;border-radius:12px;border:1px solid var(--bd);background:#fff;font:600 14px 'Outfit',sans-serif;color:var(--tm);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.cp button{min-width:40px;height:40px;padding:0 6px;border-radius:12px;border:1px solid var(--bd);background:#fff;font:600 14px 'Outfit','Outfit Fallback',sans-serif;color:var(--tm);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .cp button:hover:not([disabled]){border-color:var(--g);color:var(--g)}
 .cp button.on{background:var(--g);border-color:var(--g);color:#fff}
 .cp button[disabled]{opacity:.35;cursor:default}
 .cp-gap{min-width:20px;text-align:center;color:var(--tl)}
 .cp-info{width:100%;text-align:center;font-size:12.5px;color:var(--tl);margin-top:4px}
-.rk-note{font-size:12.5px;color:var(--tl);line-height:1.55;margin:12px 0 0}
-button.rk{font:inherit;text-align:left;cursor:pointer;width:100%}
-.rk.on{border-color:var(--g);box-shadow:0 0 0 1px var(--g)}
-.rk-d{grid-column:1/-1;background:#fff;border:1px solid var(--g);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
-.rk-d-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.rk-d-h b{font-family:'Fraunces',serif;font-weight:400;font-size:20px;color:var(--td);display:block}
-.rk-d-h p{font-size:13.5px;color:var(--tm);line-height:1.6;margin-top:4px}
-.rk-x{flex-shrink:0;width:34px;height:34px;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--tm);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-.rk-d .vp{border:none;padding:0}
-.rk-d .vp-h{display:none}
-.rk-d-a{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13.5px;font-weight:600}
-.rk-d-a a{color:var(--g);text-decoration:none}
-.rk-d-a a:hover{text-decoration:underline}
-.cpy{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 8px;border-radius:8px;border:1px solid var(--bd);background:#fff;font:600 11.5px 'Outfit',sans-serif;color:var(--tm);cursor:pointer;vertical-align:middle}
+.anc{display:block;height:0;scroll-margin-top:64px}
+.ap{display:grid;grid-template-columns:270px minmax(0,1fr);gap:clamp(18px,3vw,28px);align-items:start;margin-top:26px}
+.ap>div{min-width:0}
+@media(max-width:860px){.ap{grid-template-columns:1fr}}
+.ap-lh{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin:0 0 10px}
+.ap-list{display:flex;flex-direction:column;gap:6px;max-height:640px;overflow-y:auto;padding:2px 4px 2px 2px;scrollbar-width:thin}
+@media(max-width:860px){.ap-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;max-height:none;padding-bottom:8px;scrollbar-width:none}.ap-list::-webkit-scrollbar{display:none}}
+.ap-list button{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;font:600 14.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.ap-list button:hover{border-color:var(--g)}
+.ap-list button b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:17px;color:var(--g);font-variant-numeric:tabular-nums}
+.ap-list button.on{background:var(--g);border-color:var(--g);color:#fff}
+.ap-list button.on b{color:var(--y)}
+.ap-list .empty{font-size:13.5px}
+.serp{background:#fff;border:1px solid var(--bd);border-radius:22px;padding:clamp(14px,2.4vw,22px);box-shadow:0 20px 50px -30px rgba(0,51,41,.35)}
+.serp-bar{display:flex;align-items:center;gap:10px;border:1px solid #DADCE0;border-radius:999px;padding:11px 18px;font-size:15.5px;color:#202124;min-width:0}
+.serp-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.serp-bar i{color:#9AA0A6}
+.serp-pg{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin:10px 2px 0}
+.serp-pg b{color:var(--g)}
+.serp-res{position:relative}
+.sr{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid #F1F3F4;align-items:center}
+.sr:last-of-type{border-bottom:none}
+.sr span{font-size:12px;color:#B0B5B0;text-align:center;font-variant-numeric:tabular-nums}
+.sr div i{display:block;height:8px;border-radius:5px;background:#EEF0EE;margin:5px 0}
+.sr div i:first-child{width:38%;height:10px}.sr div i:last-child{width:82%}
+.me{position:absolute;left:-8px;right:-8px;top:0;background:#fff;border:2px solid var(--g);border-radius:14px;padding:10px 120px 10px 46px;cursor:pointer;box-shadow:0 14px 30px -14px rgba(0,76,63,.5);transition:top .55s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.me.far{border-style:dashed}
+.me:hover{box-shadow:0 18px 36px -14px rgba(0,76,63,.6)}
+.me .me-more{display:inline-flex;align-items:center;gap:4px;margin-left:8px;font-weight:600;color:var(--g);font-style:normal}
+.me .me-more i{transition:transform .2s}
+.me.open .me-more i{transform:rotate(180deg)}
+.me-cp{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);background:#fff;border-radius:10px;padding:8px 11px;font:600 13px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);cursor:pointer}
+.me-cp:hover{border-color:var(--g)}
+.me-cp.ok{background:var(--g);border-color:var(--g);color:#fff}
+@media(max-width:640px){.me{padding-right:56px}.me-cp .l{display:none}.me-cp{padding:8px 10px}}
+.ap-det{margin-top:14px;background:#fff;border:1px solid var(--g);border-radius:18px;padding:16px 18px;box-shadow:0 14px 34px -22px rgba(0,51,41,.45)}
+.ap-det[hidden]{display:none}
+.ap-det .vp{border:none;padding:0;background:none}
+.ap-det .vp-h{display:none}
+.me[hidden]{display:block;opacity:0;pointer-events:none}
+.me .pos{position:absolute;left:10px;top:50%;transform:translateY(-50%);min-width:26px;height:26px;padding:0 4px;border-radius:13px;background:var(--y);color:var(--gd);font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center}
+.me small{display:block;font-size:12.5px;color:var(--tl);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me strong{display:block;color:var(--g);font-size:16px;font-weight:600;margin:1px 0}
+.me em{font-style:normal;font-size:13px;color:var(--tm)}
+.serp-msg[hidden]{display:none}
+.serp-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}
+.serp-msg div{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:18px 20px;max-width:420px;box-shadow:0 14px 30px -18px rgba(0,51,41,.4);font-size:15px;line-height:1.6;color:var(--tm)}
+.serp-msg b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:20px;color:var(--td);margin-bottom:4px}
+.serp-msg button{margin-top:10px;border:none;background:var(--g);color:#fff;font:600 14px 'Outfit','Outfit Fallback',sans-serif;border-radius:10px;padding:9px 14px;cursor:pointer}
+.ap-k[hidden]{display:none}
+.ap-k{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.ap-k div{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:12px 14px;min-width:0}
+.ap-k b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(24px,3vw,28px);color:var(--g);line-height:1.1}
+.ap-k span{font-size:12.5px;color:var(--tl)}
+.ap-a{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.ap-a a,.ap-a button{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 14px;font:600 14px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);text-decoration:none;cursor:pointer}
+.ap-a a:hover,.ap-a button:hover{border-color:var(--g)}
+.ap-a button.ok{background:var(--g);border-color:var(--g);color:#fff}
+.vr-wait{margin-top:26px;padding-top:22px;border-top:1px solid var(--bd);text-align:center;font-size:14.5px;color:var(--tl)}
+.vr-h h3 em{color:var(--g)}
+.tsx{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px}
+@media(max-width:700px){.tsx{grid-template-columns:1fr 1fr}}
+.tsx div{border-radius:16px;padding:14px 16px;background:#fff;border:1px solid var(--bd)}
+.tsx div.dk{background:var(--gd);color:#fff;border-color:var(--gd)}
+.tsx b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1.15}
+.tsx .dk b{color:var(--y)}
+.tsx span{font-size:13px;opacity:.8}
+.vr-more button{border:1px solid var(--g);background:#fff;color:var(--g);font:600 14.5px 'Outfit','Outfit Fallback',sans-serif;border-radius:999px;padding:11px 20px;display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.vr-more button i{transition:transform .2s}
+.vr-more button[aria-expanded=true] i{transform:rotate(180deg)}
+.vr-all{margin-top:18px}
+.help-w{text-align:center;margin-top:26px}
+.help-b{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;border-radius:999px;padding:8px 16px;font:600 14px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);cursor:pointer}
+.help-b i{font-size:16px}
+.help{margin:14px auto 0;max-width:720px;background:#fff;border:1px solid var(--bd);border-left:4px solid var(--y);border-radius:14px;padding:18px 20px;font-size:15.5px;line-height:1.65;color:var(--td)}
+.help[hidden]{display:none}
+.help ul{margin:8px 0 0 18px}.help li{margin:5px 0}
+.cpy{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 8px;border-radius:8px;border:1px solid var(--bd);background:#fff;font:600 11.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--tm);cursor:pointer;vertical-align:middle}
 .cpy:hover{border-color:var(--g);color:var(--g)}
 .cpy.ok{background:var(--g);border-color:var(--g);color:#fff}
-.qtable .q-l{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.cpy-hint{font-size:12.5px;color:var(--tl);line-height:1.55;margin:0 0 12px;display:flex;gap:7px;align-items:flex-start}
-.cpy-hint i{color:var(--g);margin-top:2px}
-.qtable{width:100%;border-collapse:collapse;font-size:14.5px}
-.qtable th{text-align:left;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);padding:0 10px 10px;border-bottom:1px solid var(--bd)}
-.qtable td{padding:12px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
-.qtable tr:last-child td{border-bottom:none}
-.qtable .q{font-weight:600;color:var(--td)}
-.qtable .pg{font-size:12.5px;color:var(--tl);display:block;margin-top:2px;text-decoration:none}
-.qtable .pg:hover{color:var(--g);text-decoration:underline}
-.qtable .n{text-align:right;white-space:nowrap;color:var(--tm)}
-.qpager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);font-size:13.5px;color:var(--tm)}
-.qpager button{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:600;font-size:13.5px;color:var(--g);background:#fff;border:1px solid var(--bd);border-radius:999px;padding:7px 14px;cursor:pointer}
-.qpager button:hover:not([disabled]){border-color:var(--g)}
-.qpager button[disabled]{opacity:.4;cursor:default}
 .place{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:4px 10px;border-radius:999px;font-weight:700;font-size:13px;background:rgba(0,76,63,.08);color:var(--g)}
 .place.top{background:var(--g);color:#fff}
 .empty{text-align:center;color:var(--tm);font-size:15px;line-height:1.6;padding:24px 10px}
@@ -150,7 +188,7 @@ button.rk{font:inherit;text-align:left;cursor:pointer;width:100%}
 .city:hover{border-color:rgba(0,76,63,.35)}
 .city-h{display:flex;align-items:center;gap:10px}
 .city-h i{width:34px;height:34px;border-radius:10px;background:rgba(0,76,63,.07);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.city-h b{font-family:'Fraunces',serif;font-weight:400;font-size:18px;color:var(--td);line-height:1.2}
+.city-h b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:18px;color:var(--td);line-height:1.2}
 .city-h small{display:block;font-size:12px;color:var(--tl)}
 .city-t{display:flex;gap:14px;font-size:13px;color:var(--tm);flex-wrap:wrap}
 .city-t strong{color:var(--td)}
@@ -170,37 +208,36 @@ button.rk{font:inherit;text-align:left;cursor:pointer;width:100%}
 .btn-y{background:var(--y);color:var(--gd)}.btn-y:hover{background:#ffe08f}
 .btn-o{border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85)}.btn-o:hover{border-color:rgba(255,255,255,.5);color:#fff}
 .err{display:none;margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.08);font-size:14px;color:rgba(255,255,255,.8)}
-@media(max-width:640px){.qtable .hide-s{display:none}.qtable td,.qtable th{padding-left:6px;padding-right:6px}}
 #ta-ville{scroll-margin-top:64px}
 .vs{max-width:720px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap}
 .vs-in{flex:1 1 280px;display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid rgba(0,76,63,.22);border-radius:14px;padding:0 16px}
 .vs-in:focus-within{border-color:var(--g);box-shadow:0 0 0 4px rgba(0,76,63,.08)}
 .vs-in i{color:var(--g);font-size:19px}
-.vs-in input{flex:1;border:none;outline:none;background:transparent;font:500 16px 'Outfit',sans-serif;color:var(--td);padding:15px 0;min-width:0}
-.vs button,.vf button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 22px;min-height:52px;border:none;border-radius:14px;background:var(--g);color:#fff;font:600 15px 'Outfit',sans-serif;cursor:pointer;flex:0 0 auto}
+.vs-in input{flex:1;border:none;outline:none;background:transparent;font:500 16px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);padding:15px 0;min-width:0}
+.vs button,.vf button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 22px;min-height:52px;border:none;border-radius:14px;background:var(--g);color:#fff;font:600 15px 'Outfit','Outfit Fallback',sans-serif;cursor:pointer;flex:0 0 auto}
 .vs button:hover,.vf button:hover{background:var(--gd)}
 @media(max-width:520px){.vs button{flex:1 1 100%}}
 .vs-hint{max-width:720px;margin:12px auto 0;text-align:center;font-size:13.5px;color:var(--tm);line-height:1.6}
 .vs-picks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
-.vs-picks button{border:1px solid var(--bd);background:#fff;color:var(--tm);font:500 13px 'Outfit',sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
+.vs-picks button{border:1px solid var(--bd);background:#fff;color:var(--tm);font:500 13px 'Outfit','Outfit Fallback',sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
 .vs-picks button:hover{border-color:var(--g);color:var(--g)}
 .vs-intl{border:0;background:none;padding:0;font:inherit;color:var(--g);font-weight:600;text-decoration:underline;cursor:pointer}
 .vr{margin-top:30px}
 .vr-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
-.vr-h h3{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,3vw,34px);line-height:1.1}
+.vr-h h3{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(26px,3vw,34px);line-height:1.1}
 .vr-h p{font-size:13.5px;color:var(--tm);margin-top:6px;line-height:1.55}
-.vr-share{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;color:var(--g);font:600 13.5px 'Outfit',sans-serif;padding:9px 14px;border-radius:11px;cursor:pointer}
+.vr-share{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;color:var(--g);font:600 13.5px 'Outfit','Outfit Fallback',sans-serif;padding:9px 14px;border-radius:11px;cursor:pointer}
 .vr-grid{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
 @media(min-width:760px){.vr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .vp{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
 .vp-h{display:flex;align-items:center;gap:10px}
 .vp-h > i{width:38px;height:38px;border-radius:11px;background:rgba(0,76,63,.07);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.vp-h b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:19px;line-height:1.2}
+.vp-h b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:19px;line-height:1.2}
 .vp-h a{font-size:12.5px;color:var(--g);font-weight:600;text-decoration:none}
 .vp-h a:hover{text-decoration:underline}
 .vp-n{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .vp-n div{background:var(--cr);border-radius:12px;padding:10px 12px}
-.vp-n b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:24px;color:var(--g);line-height:1.1}
+.vp-n b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:24px;color:var(--g);line-height:1.1}
 .vp-n span{display:block;font-size:12px;color:var(--tm);margin-top:2px;line-height:1.35}
 .vp-n small{display:block;font-size:11.5px;color:var(--tl);margin-top:3px}
 .vp-pros{font-size:13.5px;color:var(--tm);display:flex;gap:8px;align-items:center}
@@ -218,14 +255,14 @@ button.rk{font:inherit;text-align:left;cursor:pointer;width:100%}
 .vr-note{display:flex;gap:10px;margin-top:16px;padding:14px 16px;border-radius:14px;background:rgba(255,213,107,.18);font-size:13.5px;color:var(--tm);line-height:1.6}
 .vr-note i{color:var(--g);font-size:18px;flex-shrink:0;margin-top:1px}
 .vf{max-width:720px;margin:0 auto;background:#fff;border:1px solid var(--bd);border-radius:20px;padding:clamp(20px,3.5vw,32px)}
-.vf h3{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(22px,2.6vw,28px);line-height:1.2}
+.vf h3{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(22px,2.6vw,28px);line-height:1.2}
 .vf > p{font-size:14.5px;color:var(--tm);line-height:1.65;margin-top:8px}
 .vf-sug{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;font-size:13.5px;color:var(--tm)}
-.vf-sug button{border:1px solid var(--g);background:rgba(0,76,63,.05);color:var(--g);font:600 13px 'Outfit',sans-serif;padding:5px 12px;border-radius:999px;cursor:pointer}
+.vf-sug button{border:1px solid var(--g);background:rgba(0,76,63,.05);color:var(--g);font:600 13px 'Outfit','Outfit Fallback',sans-serif;padding:5px 12px;border-radius:999px;cursor:pointer}
 .vf form{display:grid;gap:14px;margin-top:18px}
 .vf label{display:block;font-size:13px;font-weight:600;color:var(--td);margin-bottom:6px}
 .vf label small{font-weight:400;color:var(--tl)}
-.vf input[type=text],.vf input[type=email]{width:100%;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;padding:12px 14px;font:500 15px 'Outfit',sans-serif;color:var(--td);background:#fff;outline:none}
+.vf input[type=text],.vf input[type=email]{width:100%;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;padding:12px 14px;font:500 15px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);background:#fff;outline:none}
 .vf input[type=text]:focus,.vf input[type=email]:focus{border-color:var(--g)}
 .vf-roles{display:flex;flex-wrap:wrap;gap:8px}
 .vf-roles label{display:inline-flex;align-items:center;gap:8px;margin:0;padding:10px 14px;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;font-weight:500;font-size:14px;color:var(--tm);cursor:pointer}
@@ -248,12 +285,12 @@ button.rk{font:inherit;text-align:left;cursor:pointer;width:100%}
 .dm-priv span{display:inline-flex;align-items:center;gap:7px}.dm-priv i{color:var(--y)}
 .dm-total{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:24px}
 .dm-total > span{display:block;font-size:14px;color:rgba(255,255,255,.75)}
-.dm-total > b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:clamp(72px,9vw,104px);line-height:1;color:var(--y);margin:6px 0 16px}
+.dm-total > b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(72px,9vw,104px);line-height:1;color:var(--y);margin:6px 0 16px}
 .dm-split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 @media(max-width:480px){.dm-split{grid-template-columns:minmax(0,1fr)}}
 .dm-split div{background:rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px}
 .dm-split i{font-size:18px;color:var(--y)}
-.dm-split b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:26px;line-height:1}
+.dm-split b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:26px;line-height:1}
 .dm-split small{display:block;font-size:12.5px;color:rgba(255,255,255,.72);margin-top:2px}
 .dm-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:18px}
 @media(min-width:860px){.dm-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -276,13 +313,13 @@ button.rk{font:inherit;text-align:left;cursor:pointer;width:100%}
 .dm-mlab{display:flex;gap:8px;font-size:11.5px;color:var(--tl)}.dm-mlab span{flex:1;text-align:center}
 .dm-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:18px}
 @media(min-width:960px){.dm-cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
-.dm-cols h3.t{font-family:'Fraunces',serif;font-weight:400;font-size:22px;margin-bottom:12px}
+.dm-cols h3.t{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:22px;margin-bottom:12px}
 .dm-cities{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr))}
 .dm-city{background:#fff;border:1px solid rgba(0,76,63,.35);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;text-decoration:none;color:inherit}
 a.dm-city:hover{border-color:var(--g)}
 .dm-city-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.dm-city-h b{font-family:'Fraunces',serif;font-weight:400;font-size:20px}
-.dm-city-h strong{font-family:'Fraunces',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1}
+.dm-city-h b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:20px}
+.dm-city-h strong{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1}
 .dm-tags{display:flex;flex-wrap:wrap;gap:6px}
 .dm-tag{font-size:12.5px;border-radius:999px;padding:3px 10px;background:rgba(0,76,63,.08);color:var(--g)}
 .dm-tag.m{background:rgba(244,114,182,.14);color:#8a1f55}
@@ -294,7 +331,7 @@ a.dm-city:hover{border-color:var(--g)}
 .dm-fil .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:rgba(0,76,63,.08);color:var(--g)}
 .dm-fil .ic.m{background:rgba(244,114,182,.14);color:#8a1f55}
 .dm-fil .tx{flex:1;min-width:0}
-.dm-fil .tx b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:17px;line-height:1.25}
+.dm-fil .tx b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:17px;line-height:1.25}
 .dm-fil .tx small{display:block;font-size:12.5px;color:var(--tl);margin-top:2px}
 .dm-st{font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px;white-space:nowrap}
 .dm-st.ouverte{background:rgba(0,76,63,.10);color:var(--g)}
@@ -304,7 +341,7 @@ a.dm-city:hover{border-color:var(--g)}
 .dm-wait{border:1.5px dashed rgba(0,76,63,.2);border-radius:16px;padding:16px 18px;font-size:14px;color:var(--tm);line-height:1.6}
 .dm-note{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;margin-top:18px;background:rgba(255,213,107,.22);border-radius:18px;padding:18px 22px}
 .dm-note p{flex:1 1 360px;font-size:15px;line-height:1.65;color:#4a3a0a}
-.dm-note p b{font-family:'Fraunces',serif;font-weight:400;font-style:italic}
+.dm-note p b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-style:italic}
 .dm-note .btn{background:var(--g);color:#fff}.dm-note .btn:hover{background:var(--gd)}
 @media(max-width:560px){.dm-fil{padding-left:16px}.dm-fil li{flex-wrap:wrap}.dm-fil li::before{left:-23px}}
 /* Demandes de la ville (recherche) */
@@ -312,7 +349,7 @@ a.dm-city:hover{border-color:var(--g)}
 @media(min-width:860px){.vd{grid-template-columns:minmax(0,1fr) minmax(0,.9fr)}}
 .vd .eye{margin-bottom:8px}
 .vd-n{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.vd-n b{font-family:'Fraunces',serif;font-weight:400;font-size:64px;line-height:1;color:var(--y)}
+.vd-n b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:64px;line-height:1;color:var(--y)}
 .vd-n span{font-size:16px;color:rgba(255,255,255,.85)}
 .vd p{font-size:14.5px;color:rgba(255,255,255,.75);line-height:1.6;margin-top:8px}
 .vd-rows{display:flex;flex-direction:column;gap:8px}
@@ -321,184 +358,182 @@ a.dm-city:hover{border-color:var(--g)}
 .vd-cta a{flex:1 1 160px;text-align:center;text-decoration:none;font-weight:600;font-size:14px;padding:11px 12px;border-radius:11px}
 .vd-cta .a1{background:var(--y);color:var(--gd)}
 .vd-cta .a2{border:1px solid rgba(255,255,255,.35);color:#fff}
+
+/* ── Refonte du 14/11/2026 (Jason : « on se répète entre les blocs », « full moderne, effet wow, épurée ») ── */
+.hx{padding:clamp(34px,5vw,60px) 0 clamp(36px,5vw,56px);position:relative;overflow:hidden}
+.hx .brd{margin-bottom:22px}
+.live{width:8px;height:8px;border-radius:50%;background:#63D683;box-shadow:0 0 0 0 rgba(99,214,131,.6);animation:livep 2s infinite}
+@keyframes livep{70%{box-shadow:0 0 0 8px rgba(99,214,131,0)}100%{box-shadow:0 0 0 0 rgba(99,214,131,0)}}
+.hx-top{display:grid;gap:22px;align-items:end}
+@media(min-width:900px){.hx-top{grid-template-columns:minmax(0,1fr) auto}}
+.hx .lead{margin-top:14px;max-width:600px;font-size:16px}
+.grow{text-align:right}
+.grow b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:300;font-size:clamp(56px,8vw,104px);line-height:.9;letter-spacing:-.04em;color:var(--y)}
+.grow span{display:block;font-size:13.5px;color:rgba(255,255,255,.7);margin-top:8px;max-width:260px;margin-left:auto}
+@media(max-width:899px){.grow{text-align:left}.grow span{margin-left:0}}
+.hx-chart{position:relative;height:clamp(190px,24vw,260px);margin-top:clamp(22px,3vw,36px)}
+.hx-load{height:100%;border-radius:20px;background:rgba(255,255,255,.04)}
+.hx-chart svg{position:absolute;inset:0 0 28px 0;width:100%;height:calc(100% - 28px);overflow:visible}
+.hx-pt{position:absolute;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--gd);border:2px solid var(--y)}
+.hx-pt.last{width:14px;height:14px;background:var(--y);box-shadow:0 0 0 6px rgba(255,213,107,.18)}
+.hx-pt.part{border-style:dashed;background:transparent}
+.hx-v{position:absolute;transform:translate(-50%,-100%);margin-top:-12px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.8);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hx-v.last{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(18px,2vw,24px);color:#fff}
+.hx-m{position:absolute;bottom:0;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.55)}
+.hx-v small{font-family:Outfit,sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,.55)}
+@media(max-width:640px){.hx-v:not(.last):not(.part){display:none}}
+.k4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:clamp(22px,3vw,34px);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:visible}
+.k{position:relative;display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:#022f25;color:#fff;text-decoration:none;min-width:0}
+.k:first-child{border-radius:19px 0 0 19px}.k:last-child{border-radius:0 19px 19px 0}
+.k-l{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(255,255,255,.65)}
+.k b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(28px,3vw,36px);line-height:1;font-variant-numeric:tabular-nums}
+.k small{align-self:flex-start;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(99,214,131,.16);color:#9BEDB2}
+.k small.dn{background:rgba(255,255,255,.08);color:rgba(255,255,255,.65)}
+.k-s{font-style:normal;font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.4}
+.k-dm{background:linear-gradient(160deg,#0b4a3b,#0f5a47);transition:background .2s}
+.k-dm:hover{background:linear-gradient(160deg,#0f5a47,#136b55)}
+.k-dm b{color:var(--y)}.k-dm .k-s{color:var(--y)}
+.k-go{position:absolute;top:18px;right:18px;color:var(--y);font-size:16px}
+.k-dm .k-l{padding-right:22px}
+@media(max-width:640px){.k{padding:16px 14px}.k-l{font-size:12px}.k-go{top:16px;right:12px}}
+@media(max-width:860px){.k4{grid-template-columns:1fr 1fr}.k:first-child{border-radius:19px 0 0 0}.k:nth-child(2){border-radius:0 19px 0 0}.k:nth-child(3){border-radius:0 0 0 19px}.k:last-child{border-radius:0 0 19px 0}}
+.hx-foot{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:rgba(255,255,255,.55)}.hx-foot [data-chart-cur]{color:rgba(255,255,255,.7)}
+.tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);cursor:help;flex-shrink:0;vertical-align:middle}
+.sec .tip{background:rgba(0,76,63,.1);color:var(--g)}
+.tip-b{position:absolute;z-index:20;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);width:260px;padding:12px 14px;border-radius:12px;background:#0F1A0D;color:#fff;font-size:12.5px;font-weight:400;line-height:1.5;text-align:left;box-shadow:0 14px 34px rgba(0,0,0,.3);opacity:0;visibility:hidden;transition:opacity .15s;pointer-events:none;letter-spacing:0;text-transform:none}
+.tip:hover .tip-b,.tip:focus .tip-b{opacity:1;visibility:visible}
+@media(max-width:640px){.tip-b{left:auto;right:-40px;transform:none;width:220px}}
+.hl{font-weight:600;color:var(--g)}
+.d1{background:#fff;border:1px solid var(--bd);border-radius:24px;padding:clamp(18px,3vw,32px);box-shadow:0 24px 60px rgba(0,40,30,.06)}
+.d1-m{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.d1-m>button{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--cr);border:1px solid transparent;font-family:inherit;text-align:left;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.d1-m>button:hover{border-color:rgba(0,76,63,.25);transform:translateY(-1px)}
+.d1-m>button[aria-pressed=true]{background:var(--g);border-color:var(--g)}
+.d1-m>button[aria-pressed=true] b,.d1-m>button[aria-pressed=true] span{color:#fff}
+.d1-m>button[aria-pressed=true] i{background:rgba(255,213,107,.18);color:var(--y)}
+.vfm{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}.vfm button{font:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--bd);background:#fff;color:var(--tm);cursor:pointer;transition:background .2s,color .2s,border-color .2s}.vfm button:hover{border-color:rgba(0,76,63,.3);color:var(--g)}.vfm button[aria-pressed=true]{background:var(--g);border-color:var(--g);color:#fff}
+.vr-grid.one{grid-template-columns:1fr}[data-vk][hidden]{display:none!important}
+.dm-fh{font-size:13px;color:var(--tl);margin:12px 0 0;min-height:1.4em}.dm-fh button{background:none;border:0;padding:0;font:inherit;font-weight:600;color:var(--g);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.d1-m i{width:38px;height:38px;border-radius:11px;background:rgba(0,76,63,.08);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.d1-m b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1}
+.d1-m span{font-size:13px;color:var(--tm);line-height:1.3}
+@media(max-width:700px){.d1-m{grid-template-columns:1fr}}
+.d1-cols{display:grid;gap:24px;margin-top:26px}
+@media(min-width:900px){.d1-cols{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}}
+.d1-f{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-top:22px;padding-top:18px;border-top:1px solid var(--bd);font-size:13px;color:var(--tm)}
+.d1-f b{color:var(--td);margin-left:4px}
+.d1-f .d{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.d1-f .sep{width:1px;height:16px;background:var(--bd)}
+@media(max-width:700px){.d1-f .sep{display:none}}
+.d1 .dm-note{margin-top:18px}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"La visibilité du site en chiffres","description":"Affichages Google, clics, visiteurs et recherches où jasonmarinho.com sort en première page, mis à jour chaque jour.","url":"https://jasonmarinho.com/chiffres","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Les chiffres","item":"https://jasonmarinho.com/chiffres"}]}</script>
 <script defer src="/nav.js"></script>
+<script>if(location.hash==='#ta-ville'||/[?&]ville=/.test(location.search))document.documentElement.style.scrollBehavior='auto'</script>
 </head>
 <body>
 
-<header class="hero">
-  <div class="s-in hero-grid">
-    <div>
-      <div class="brd"><a href="/">Accueil</a> › Les chiffres</div>
-      <div class="eye"><i class="ph-bold ph-chart-line-up"></i>Transparence</div>
-      <h1>La visibilité du site, <em>en chiffres réels</em></h1>
-      <p class="lead">Tu hésites à prendre une fiche ? Voici ce que jasonmarinho.com reçoit vraiment de Google et ce que voient les hôtes, mis à jour chaque jour. Pas de chiffre arrondi pour faire joli : ce sont les données de Google Search Console et notre propre mesure des visites.</p>
-      <div class="src">
-        <span><i class="ph-bold ph-google-logo"></i>Google Search Console</span>
-        <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour chaque jour</span>
-        <span><i class="ph-bold ph-shield-check"></i>Aucune donnée personnelle</span>
+<header class="hero hx">
+  <div class="s-in">
+    <div class="brd"><a href="/">Accueil</a> › Les chiffres</div>
+    <div class="hx-top">
+      <div>
+        <div class="eye"><span class="live" aria-hidden="true"></span>Transparence · chiffres en direct</div>
+        <h1>La visibilité du site, <em>en chiffres réels</em></h1>
+        <p class="lead">Ce que jasonmarinho.com reçoit vraiment de Google et des hôtes, mis à jour chaque jour. Données de Google Search Console et notre propre mesure des visites : rien d’arrondi, rien de caché.</p>
       </div>
+      <div class="grow" data-grow hidden><b data-grow-n></b><span data-grow-l></span></div>
     </div>
-    <div>
-      <div class="kpis" aria-live="polite">
-        <div class="kpi"><i class="ph-bold ph-eye ic"></i><div><b data-k="imp"><span class="sk"></span></b><span>affichages dans Google sur 28 jours</span></div><small data-d="imp" hidden></small></div>
-        <div class="kpi"><i class="ph-bold ph-cursor-click ic"></i><div><b data-k="clk"><span class="sk"></span></b><span>clics depuis Google sur 28 jours</span></div><small data-d="clk" hidden></small></div>
-        <div class="kpi"><i class="ph-bold ph-users-three ic"></i><div><b data-k="vis"><span class="sk"></span></b><span>visiteurs du site sur 30 jours</span></div><small data-d="vis" hidden></small></div>
-        <div class="upd" data-upd>Chargement des chiffres…</div>
-      </div>
-      <div class="err" data-err>Les chiffres ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</div>
+    <div class="hx-chart" data-chart aria-live="polite"><div class="hx-load"><span class="sk"></span></div></div>
+    <div class="k4">
+      <div class="k"><span class="k-l">Affichages Google&nbsp;·&nbsp;28&nbsp;j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une page du site est apparue dans les résultats de Google pour une recherche. Ce n’est pas une visite : c’est la vitrine qui passe devant les yeux.</span></span></span><b data-k="imp"><span class="sk"></span></b><small data-d="imp" hidden></small></div>
+      <div class="k"><span class="k-l">Clics depuis Google&nbsp;·&nbsp;28&nbsp;j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Quelqu’un a cliqué sur une page du site depuis Google. Les visites venues de Facebook, des e-mails ou d’un lien direct n’y sont pas : elles sont dans les visiteurs.</span></span></span><b data-k="clk"><span class="sk"></span></b><small data-d="clk" hidden></small><em class="k-s" data-f="ctr"></em></div>
+      <div class="k"><span class="k-l">Visiteurs du site&nbsp;·&nbsp;30&nbsp;j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une visite du site, comptée par notre propre mesure, sans cookie publicitaire ni adresse IP gardée.</span></span></span><b data-k="vis"><span class="sk"></span></b><small data-d="vis" hidden></small></div>
+      <a class="k k-dm" href="#demandes"><span class="k-l" data-k-dm-l>Demandes d’hôtes</span><b data-k="dm"><span class="sk"></span></b><em class="k-s" data-dm-last hidden></em><i class="ph-bold ph-arrow-down k-go" aria-hidden="true"></i></a>
     </div>
+    <div class="hx-foot"><span data-chart-cur hidden></span><div class="upd" data-upd>Chargement des chiffres…</div></div>
+    <div class="err" data-err>Les chiffres ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</div>
   </div>
 </header>
 
-<section class="facts">
-  <div class="s-in facts-grid">
-    <div class="fact"><b data-f="first"><span class="sk dk"></span></b><span>recherches différentes où le site sort en première page</span></div>
-    <div class="fact"><b data-f="pages"><span class="sk dk"></span></b><span>pages du site vues dans Google sur 28 jours</span></div>
-    <div class="fact"><b data-f="cities">122</b><span>pages de ville pour les photographes, les équipes de ménage et le dépannage</span></div>
-    <div class="fact"><b data-f="ctr"><span class="sk dk"></span></b><span>des affichages se transforment en clic (taux de clic)</span></div>
+<section class="sec" id="demandes">
+  <div class="s-in">
+    <div class="sec-head">
+      <div class="lbl">Demandes d’hôtes</div>
+      <h2>Chaque demande compte, <em>même la première</em></h2>
+      <p>Le service est jeune : je préfère montrer les vrais chiffres, petits ou grands. Mis à jour toutes les 10 minutes, avec le métier, la ville et le mois seulement.</p>
+    </div>
+    <div class="d1">
+      <div class="d1-m">
+        <button type="button" data-dmf="photographe" aria-pressed="false"><i class="ph-bold ph-camera"></i><b data-dm-photo>·</b><span>photographe ou vidéaste</span></button>
+        <button type="button" data-dmf="menage" aria-pressed="false"><i class="ph-bold ph-broom"></i><b data-dm-menage>·</b><span>équipe de ménage</span></button>
+        <button type="button" data-dmf="depannage" aria-pressed="false"><i class="ph-bold ph-wrench"></i><b data-dm-depannage>·</b><span>dépannage</span></button>
+      </div>
+      <p class="dm-fh" data-dm-fh>Touche un métier pour ne voir que ses demandes et ses villes.</p>
+      <div class="d1-cols">
+        <div>
+          <h3 class="t">Le fil des demandes</h3>
+          <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
+        </div>
+        <div>
+          <h3 class="t">Par ville</h3>
+          <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
+        </div>
+      </div>
+      <div class="d1-f">
+        <span>Formulaire « Trouver un pro » <b data-dm-src="formulaire">·</b></span>
+        <span>Bouton « Contacter » d’une fiche <b data-dm-src="fiche">·</b></span>
+        <span>Appel ou message à Jason <b data-dm-src="direct">·</b></span>
+        <span class="sep"></span>
+        <span><i class="d" style="background:#004C3F"></i>Ouvertes par un pro <b data-dm-et="ouverte">·</b></span>
+        <span><i class="d" style="background:#C9A227"></i>Transmises <b data-dm-et="transmise">·</b></span>
+        <span><i class="d" style="background:#B9C4BC"></i>En attente d’un pro <b data-dm-et="sans_pro">·</b></span>
+      </div>
+      <div class="dm-note">
+        <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
+        <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
+      </div>
+    </div>
   </div>
 </section>
+
+
 
 <section class="sec cr" id="ta-ville">
+  <span id="recherches" class="anc"></span><span id="villes" class="anc"></span>
   <div class="s-in">
     <div class="sec-head">
-      <div class="lbl">Ta ville</div>
-      <h2>Les chiffres <em>de ta ville</em></h2>
-      <p>Tape le nom de ta ville : tu vois tout ce que Google montre pour ses pages (photographes, ménage, guide des hôtes), même quand les chiffres sont petits. Rien n’est caché ni arrondi.</p>
-    </div>
-    <form class="vs" data-vs role="search" autocomplete="off">
-      <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" data-suggest="ville" data-suggest-anchor=".vs-in" data-suggest-submit maxlength="60" placeholder="Ex. Lyon, Gironde, Bretagne…" aria-label="Ta ville, ton département ou ta région" required></div>
-      <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir les chiffres</button>
-    </form>
-    <datalist id="villes-list"></datalist>
-    <p class="vs-hint"><span data-vcount>62</span> villes ont déjà leurs pages<span data-vintl></span>. La tienne n’y est pas ? Tu pourras me demander de la créer. Tu peux aussi chercher ton département ou ta région.</p>
-    <div class="vs-picks" data-picks></div>
-    <div class="vr" data-vres aria-live="polite"></div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Sur Google, mois par mois</div>
-      <h2>Les affichages <em>dans Google</em></h2>
-      <p>Nombre de fois où une page du site est apparue dans les résultats de Google, chaque mois. Le dernier mois n’est pas terminé.</p>
-    </div>
-    <div class="card">
-      <div data-chart><svg class="chart" viewBox="0 0 720 260" role="img" aria-label="Chargement du graphique"></svg></div>
-      <div class="chart-legend"><span><i class="dot"></i>Affichages dans Google</span><span><i class="dot p"></i>Mois en cours (pas terminé)</span><span data-chart-clicks></span></div>
-    </div>
-  </div>
-</section>
-
-<section class="sec cr" id="recherches">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Les recherches</div>
-      <h2>Où le site sort <em>en première page</em></h2>
-      <p>Les pages de ville et les recherches tapées dans Google pour lesquelles le site apparaît dans les 10 premiers résultats, en moyenne sur 28 jours. La place est celle mesurée par Google, pas une recherche faite par nous : ce que tu vois sur ton téléphone peut être un peu différent.</p>
+      <div class="lbl">Sur Google</div>
+      <h2>Ta ville <em>sur Google</em></h2>
+      <p><b class="hl" data-f="first">·</b> recherches et <b class="hl" data-f="rk">·</b> pages de ville en première page de Google. Choisis ton métier et ta ville : tu vois où elle sort, en vrai.</p>
     </div>
     <div class="tabs" role="tablist" aria-label="Public">
-      <button class="tab" role="tab" aria-selected="true" data-tab="photographe"><i class="ph-bold ph-camera"></i>Photographes &amp; vidéastes <em data-c="photographe">·</em></button>
+      <button class="tab" role="tab" aria-selected="true" data-tab="photographe"><i class="ph-bold ph-camera"></i><span>Photo<span class="tab-l">graphes &amp; vidéastes</span></span> <em data-c="photographe">·</em></button>
       <button class="tab" role="tab" aria-selected="false" data-tab="menage"><i class="ph-bold ph-broom"></i>Ménage <em data-c="menage">·</em></button>
       <button class="tab" role="tab" aria-selected="false" data-tab="depannage"><i class="ph-bold ph-wrench"></i>Dépannage <em data-c="depannage">·</em></button>
       <button class="tab" role="tab" aria-selected="false" data-tab="hote"><i class="ph-bold ph-house-line"></i>Hôtes <em data-c="hote">·</em></button>
     </div>
-    <div class="ranks" data-ranks hidden></div>
-    <div class="card" data-queries><p class="empty">Chargement des recherches…</p></div>
-    <p class="rk-note" data-rk-note hidden>Pourquoi une page de ville peut être en première page sans recherche listée ? Google ne donne pas le texte des recherches trop rares (pour protéger la vie privée de ceux qui les tapent). La place d’une page compte toutes ses recherches, nommées ou non.</p>
-  </div>
-</section>
-
-<section class="sec" id="villes">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Les pages de ville</div>
-      <h2>Ta ville <em>dans Google</em></h2>
-      <p>Pages « Photographe à … », « Ménage à … », « Dépannage à … » et guides hôtes de ville qui sortent en première page. Les affichages, clics et visiteurs d’une page ne sont indiqués qu’au-delà de <span data-thr>100</span> affichages sur 28 jours : en dessous, ce serait trop peu pour en tirer quoi que ce soit.</p>
-    </div>
-    <div data-cities><p class="empty">Chargement des villes…</p></div>
-  </div>
-</section>
-
-<section class="sec cr" id="demandes">
-  <div class="s-in">
-    <div class="dm">
-      <div>
-        <div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes · en toute transparence</div>
-        <h2>Chaque demande compte, <em>même la première</em></h2>
-        <p class="dm-lead">Combien d’hôtes ont vraiment demandé un photographe, un vidéaste, une équipe de ménage ou un pro du dépannage ? Le service est jeune : je préfère te montrer les vrais chiffres, petits ou grands. Ils se mettent à jour tout seuls à chaque demande.</p>
-        <div class="dm-priv">
-          <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour toutes les 10 minutes</span>
-          <span><i class="ph-bold ph-shield-check"></i>Métier, ville et mois seulement</span>
-        </div>
-      </div>
-      <div class="dm-total" aria-live="polite">
-        <span data-dm-since>Demandes reçues</span>
-        <b data-dm-total><span class="sk"></span></b>
-        <div class="dm-split">
-          <div><i class="ph-bold ph-camera"></i><div><b data-dm-photo>·</b><small>photographe ou vidéaste</small></div></div>
-          <div><i class="ph-bold ph-broom"></i><div><b data-dm-menage>·</b><small>équipe de ménage</small></div></div>
-          <div><i class="ph-bold ph-wrench"></i><div><b data-dm-depannage>·</b><small>dépannage</small></div></div>
-        </div>
+    <form class="vs" data-vs role="search" autocomplete="off">
+      <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" data-suggest="ville" data-suggest-anchor=".vs-in" data-suggest-submit maxlength="60" placeholder="Ex. Lyon, Gironde, Bretagne…" aria-label="Ta ville, ton département ou ta région" required></div>
+      <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir</button>
+    </form>
+    <datalist id="villes-list"></datalist>
+    <p class="vs-hint"><span data-vcount>62</span> villes ont déjà leurs pages<span data-vintl></span>. La tienne n’y est pas ? Tape-la quand même : tu pourras me demander de la créer. Ton département ou ta région marchent aussi.</p>
+    <div class="ap" data-ap>
+      <div class="ap-l"><div class="ap-lh"><span>En première page</span><span data-ap-n></span></div><div class="ap-list" data-ap-list><p class="empty">Chargement…</p></div></div>
+      <div class="ap-r">
+        <div class="serp"><div class="serp-bar"><i class="ph-bold ph-magnifying-glass"></i><span data-ap-q>…</span></div><div class="serp-pg"><span>Résultats</span><b data-ap-pg></b></div><div class="serp-res" data-ap-res></div></div>
+        <div class="ap-det" data-ap-det hidden></div>
+        <div class="ap-k" data-ap-k></div>
+        <div class="ap-a" data-ap-a></div>
       </div>
     </div>
-
-    <div class="dm-cards">
-      <div class="dm-c">
-        <h3>D’où elles viennent</h3>
-        <div class="dm-row"><span>Formulaire « Trouver un pro »</span><b data-dm-src="formulaire">·</b></div>
-        <div class="dm-bar"><i data-dm-bar="formulaire" style="width:0"></i></div>
-        <div class="dm-row"><span>Bouton « Contacter » d’une fiche</span><b data-dm-src="fiche">·</b></div>
-        <div class="dm-bar"><i class="y" data-dm-bar="fiche" style="width:0"></i></div>
-        <div class="dm-row"><span>Appel ou message à Jason</span><b data-dm-src="direct">·</b></div>
-        <div class="dm-bar"><i class="b" data-dm-bar="direct" style="width:0"></i></div>
-      </div>
-      <div class="dm-c">
-        <h3>Ce qu’elles sont devenues</h3>
-        <div class="dm-et"><span class="d" style="background:#004C3F"></span>Ouvertes par un pro<b data-dm-et="ouverte">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#C9A227"></span>Transmises, pas encore ouvertes<b data-dm-et="transmise">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#B9C4BC"></span>En attente d’un pro dans la zone<b data-dm-et="sans_pro">·</b></div>
-      </div>
-      <div class="dm-c">
-        <h3>Mois par mois</h3>
-        <div class="dm-months" data-dm-months></div>
-        <div class="dm-mlab" data-dm-mlab></div>
-      </div>
-    </div>
-
-    <div class="dm-cols">
-      <div>
-        <h3 class="t">Par ville</h3>
-        <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
-      </div>
-      <div>
-        <h3 class="t">Le fil des demandes</h3>
-        <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
-      </div>
-    </div>
-
-    <div class="dm-note">
-      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
-      <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
-    </div>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="s-in">
-    <div class="sec-head">
-      <div class="lbl">Bien lire ces chiffres</div>
-      <h2>Ce que chaque chiffre <em>veut dire</em></h2>
-    </div>
-    <div class="read">
-      <div><h3><i class="ph-bold ph-eye"></i>Un affichage</h3><p>Une page du site est apparue dans les résultats de Google pour une recherche. Ce n’est pas une visite ni un client : c’est la vitrine qui passe devant les yeux.</p></div>
-      <div><h3><i class="ph-bold ph-cursor-click"></i>Un clic</h3><p>Quelqu’un a cliqué sur une page du site depuis Google. Les visites qui arrivent par Facebook, les e-mails ou un lien direct n’y sont pas : elles sont dans les visiteurs.</p></div>
-      <div><h3><i class="ph-bold ph-ranking"></i>La place moyenne</h3><p>Moyenne sur 28 jours, pondérée par les affichages. Elle varie selon la ville, l’appareil et l’historique de chacun : c’est pour ça qu’on ne montre pas de capture de nos propres recherches.</p></div>
-      <div><h3><i class="ph-bold ph-users-three"></i>Un visiteur</h3><p>Une visite du site sur 30 jours, comptée par notre propre mesure, sans cookie publicitaire ni adresse IP gardée. Google masque aussi les recherches trop rares : les vrais totaux sont donc un peu plus hauts que la somme des recherches affichées.</p></div>
+    <div class="vr" data-vres aria-live="polite"><p class="vr-wait">Clique sur une ville ou tape la tienne : tu verras aussi ses demandes d’hôtes, ses pros et ses visiteurs.</p></div>
+    <p class="help-w"><button type="button" class="help-b" data-help aria-expanded="false"><i class="ph-bold ph-info"></i>Comment lire ces chiffres</button></p>
+    <div class="help" data-help-p hidden>
+      <p><b>La place</b> est la position moyenne de la page dans Google sur les 28 derniers jours : 1, c’est tout en haut ; 10, le bas de la première page ; au-delà, la page 2 et plus.</p>
+      <ul><li><b>Affichages</b> : combien de fois Google a montré la page.</li><li><b>Clics</b> : combien de personnes sont venues depuis Google.</li><li><b>Vérifie toi-même</b> : copie la recherche et colle-la dans Google. Ta place peut varier un peu, car Google adapte ses résultats à la personne, au lieu et à l’appareil.</li><li><b>Pas de recherche affichée ?</b> Google ne donne pas le texte des recherches trop rares, pour protéger la vie privée de ceux qui les tapent. La place compte quand même toutes les recherches.</li></ul>
     </div>
   </div>
 </section>
@@ -507,7 +542,7 @@ a.dm-city:hover{border-color:var(--g)}
   <div class="s-in">
     <div class="end">
       <h2>Rejoins l’annuaire <em>là où les hôtes cherchent</em></h2>
-      <p>Ta fiche apparaît sur la page de ta ville et dans l’annuaire, avec tes propres statistiques chaque mois : visiteurs, clics, demandes et recherches Google.</p>
+      <p>Ta fiche apparaît sur la page de ta ville (<b data-f="cities">186</b> pages de ville pour les photographes, le ménage et le dépannage) et dans l’annuaire, avec tes propres statistiques chaque mois : visiteurs, clics, demandes et recherches Google.</p>
       <div class="ctas">
         <a class="btn btn-y" href="/annuaires/photographes/inscription"><i class="ph-bold ph-camera"></i>Créer ma fiche photographe ou vidéaste</a>
         <a class="btn btn-y" href="/annuaires/menage/inscription"><i class="ph-bold ph-broom"></i>Créer la fiche de mon équipe</a>
@@ -553,8 +588,7 @@ a.dm-city:hover{border-color:var(--g)}
     return lead + w.map(function(x, i){ return i > 0 && small[x] ? x : x.charAt(0).toUpperCase() + x.slice(1); }).join('-').replace(/-d-/g, "-d'").replace("D-", "d'");
   }
   // Copier une recherche pour la taper soi-même dans Google (01/11/2026, Jason : « vérifier avec mes yeux »)
-  function copyBtn(q){ return '<button type="button" class="cpy" data-copy="' + esc(q) + '" aria-label="Copier la recherche ' + esc(q) + '"><i class="ph-bold ph-copy"></i>Copier</button>'; }
-  var CPY_HINT = '<p class="cpy-hint"><i class="ph-bold ph-magnifying-glass"></i><span>Copie une recherche et colle-la dans Google pour vérifier toi-même. Ta place peut différer un peu : Google adapte ses résultats à la personne, au lieu et à l’appareil, et la place affichée ici est une moyenne sur 28 jours.</span></p>';
+  function copyBtn(q, icon){ return '<button type="button" class="cpy" data-copy="' + esc(q) + '" aria-label="Copier la recherche ' + esc(q) + '"' + (icon ? ' title="Copier pour vérifier dans Google"' : '') + '><i class="ph-bold ph-copy"></i>' + (icon ? '' : 'Copier') + '</button>'; }
   document.addEventListener('click', function(e){
     var b = e.target.closest('[data-copy]'); if (!b) return;
     e.preventDefault();
@@ -565,134 +599,192 @@ a.dm-city:hover{border-color:var(--g)}
   });
   function placeHtml(p){ return '<span class="place' + (p <= 3 ? ' top' : '') + '">' + pf.format(p) + '</span>'; }
 
-  function chart(months){
-    var box = $('[data-chart]'); if (!box || !months || !months.length) return;
-    var W = 720, H = 260, padL = 52, padB = 34, padT = 16, padR = 8;
+  // Courbe de l'en-tête (14/11/2026) : affichages Google mois par mois, aire dégradée,
+  // points et valeurs en HTML (lisibles à toutes les tailles), mois en cours en pointillés
+  var MOIS_L = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  function chart(all){
+    var box = $('[data-chart]'); if (!box || !all || !all.length) return;
+    // Mois en cours hors de la courbe (il n'est pas fini : il ferait croire à une baisse), dit à côté
+    var months = all.filter(function(m){ return !m.partial; }), cur = all.filter(function(m){ return m.partial; })[0];
+    if (!months.length) months = all;
+    var cn = $('[data-chart-cur]');
+    if (cn && cur) { cn.textContent = MOIS_L[+cur.month.split('-')[1]-1].charAt(0).toUpperCase() + MOIS_L[+cur.month.split('-')[1]-1].slice(1) + ' en cours : ' + n(cur.impressions) + ' affichages pour l’instant'; cn.hidden = false; }
     var max = Math.max.apply(null, months.map(function(m){ return m.impressions; })) || 1;
-    var step = Math.pow(10, Math.floor(Math.log10(max))); var top = Math.ceil(max / step) * step;
-    var bw = (W - padL - padR) / months.length;
-    var y = function(v){ return padT + (H - padT - padB) * (1 - v / top); };
-    var s = '<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="rgba(0,76,63,.35)"/><rect width="3" height="6" fill="#004C3F"/></pattern></defs>';
-    for (var i = 0; i <= 4; i++) {
-      var v = top * i / 4, yy = y(v);
-      s += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + yy + '" y2="' + yy + '" stroke="rgba(0,76,63,.10)"/>';
-      s += '<text x="' + (padL - 8) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="11" fill="#6B7D68">' + n(v) + '</text>';
-    }
+    var N = months.length, W = 1000, H = 1000;
+    var X = function(i){ return N > 1 ? 4 + i * (92 / (N - 1)) : 50; };          // en % de la largeur
+    var Y = function(v){ return 8 + (1 - v / max) * 84; };                          // en % de la hauteur
+    var pts = months.map(function(m, i){ return [X(i) * W / 100, Y(m.impressions) * H / 100]; });
+    var full = months.filter(function(m){ return !m.partial; }).length;
+    var line = function(a){ return a.map(function(p, i){ return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' '); };
+    var solid = pts.slice(0, full), dash = full < N ? pts.slice(full - 1) : [];
+    var area = line(solid) + ' L' + solid[solid.length - 1][0].toFixed(1) + ' ' + H + ' L' + solid[0][0].toFixed(1) + ' ' + H + ' Z';
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD56B" stop-opacity=".32"/><stop offset="1" stop-color="#FFD56B" stop-opacity="0"/></linearGradient></defs>' +
+      '<path d="' + area + '" fill="url(#hxg)"/><path d="' + line(solid) + '" fill="none" stroke="#FFD56B" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>' +
+      (dash.length ? '<path d="' + line(dash) + '" fill="none" stroke="#FFD56B" stroke-width="2" stroke-dasharray="6 6" vector-effect="non-scaling-stroke" opacity=".7"/>' : '') + '</svg>';
+    var html = svg, H2 = 'calc(100% - 28px)';
     months.forEach(function(m, i){
-      var x = padL + i * bw + bw * 0.18, w = bw * 0.64, yy = y(m.impressions);
-      var p = m.month.split('-');
-      s += '<rect x="' + x + '" y="' + yy + '" width="' + w + '" height="' + Math.max(1, H - padB - yy) + '" rx="4" fill="' + (m.partial ? 'url(#hatch)' : '#004C3F') + '"><title>' + MOIS[+p[1]-1] + ' ' + p[0] + ' : ' + n(m.impressions) + ' affichages, ' + n(m.clicks) + ' clics' + (m.partial ? ' (mois en cours)' : '') + '</title></rect>';
-      s += '<text x="' + (x + w / 2) + '" y="' + (yy - 6) + '" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0F1A0D">' + n(m.impressions) + '</text>';
-      s += '<text x="' + (x + w / 2) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="12" fill="#3D5038">' + MOIS[+p[1]-1] + '</text>';
+      var p = m.month.split('-'), last = i === full - 1, part = !!m.partial;
+      var top = 'calc(' + H2 + ' * ' + (Y(m.impressions) / 100) + ')';
+      html += '<span class="hx-pt' + (last ? ' last' : '') + (part ? ' part' : '') + '" style="left:' + X(i) + '%;top:' + top + '" title="' + MOIS[+p[1]-1] + ' ' + p[0] + ' : ' + n(m.impressions) + ' affichages, ' + n(m.clicks) + ' clics' + (part ? ' (mois en cours)' : '') + '"></span>';
+      html += '<span class="hx-v' + (last ? ' last' : '') + (part ? ' part' : '') + '" style="left:' + X(i) + '%;top:' + top + '">' + n(m.impressions) + (part ? ' <small>en cours</small>' : '') + '</span>';
+      html += '<span class="hx-m" style="left:' + X(i) + '%">' + MOIS[+p[1]-1] + '</span>';
     });
-    box.innerHTML = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Affichages dans Google par mois">' + s + '</svg>';
-    var clk = months.reduce(function(a, m){ return a + m.clicks; }, 0);
-    var lg = $('[data-chart-clicks]'); if (lg) lg.textContent = n(clk) + ' clics depuis Google sur la période';
+    box.innerHTML = html;
+    box.setAttribute('aria-label', 'Affichages dans Google par mois : ' + months.map(function(m){ return MOIS[+m.month.split('-')[1]-1] + ' ' + n(m.impressions); }).join(', '));
+    // Croissance : dernier mois complet face au premier mois mesuré
+    var f = months[0], l = months[full - 1], g = $('[data-grow]');
+    if (g && f && l && f !== l && f.impressions > 0 && l.impressions / f.impressions >= 1.5) {
+      var r = l.impressions / f.impressions;
+      $('[data-grow-n]').textContent = '×' + pf.format(r);
+      $('[data-grow-l]').textContent = 'd’affichages dans Google en ' + MOIS_L[+l.month.split('-')[1]-1] + ' qu’en ' + MOIS_L[+f.month.split('-')[1]-1] + ' ' + f.month.split('-')[0] + ', le premier mois mesuré';
+      g.hidden = false;
+    }
   }
 
-  var Q = null, current = 'photographe';
-  var EMPTY = {
-    photographe: 'Pas encore de recherche de photographe en première page sur les 28 derniers jours.',
-    menage: 'Pas encore de recherche de ménage en première page sur les 28 derniers jours.',
-    depannage: 'Pas encore de recherche de dépannage en première page sur les 28 derniers jours : les pages ont ouvert le 31 octobre 2026.',
-    hote: 'Pas encore de recherche d’hôte en première page sur les 28 derniers jours.'
-  };
-  // 8 recherches par page (17/10/2026, Jason : la liste des hôtes était trop longue)
-  var PER_PAGE = 8, qpage = 0;
-  function renderQueries(){
-    var box = $('[data-queries]'); if (!box || !Q) return;
-    var list = Q[current] || [];
-    box.hidden = false;
-    if (!list.length) {
-      // Pages de ville déjà montrées au-dessus : pas de carte vide en plus
-      if (R && R[current] && R[current].length) { box.hidden = true; return; }
-      box.innerHTML = '<p class="empty">' + EMPTY[current] + '</p>'; return;
-    }
-    var pages = Math.ceil(list.length / PER_PAGE);
-    if (qpage >= pages) qpage = pages - 1;
-    var from = qpage * PER_PAGE, part = list.slice(from, from + PER_PAGE);
-    var nav = pages > 1 ? '<div class="qpager"><button type="button" data-qp="-1"' + (qpage === 0 ? ' disabled' : '') + ' aria-label="Recherches précédentes"><i class="ph-bold ph-caret-left"></i>Précédentes</button><span>' + (from + 1) + ' à ' + (from + part.length) + ' sur ' + list.length + '</span><button type="button" data-qp="1"' + (qpage >= pages - 1 ? ' disabled' : '') + ' aria-label="Recherches suivantes">Suivantes<i class="ph-bold ph-caret-right"></i></button></div>' : '';
-    box.innerHTML = CPY_HINT + '<table class="qtable"><thead><tr><th>Recherche dans Google</th><th>Place moyenne</th><th class="n">Affichages</th><th class="n hide-s">Clics</th></tr></thead><tbody>' +
-      part.map(function(q){
-        return '<tr><td><span class="q-l"><span class="q">« ' + esc(q.q) + ' »</span>' + copyBtn(q.q) + '</span><a class="pg" href="' + esc(q.page) + '">' + esc(pageLabel(q.page)) + '</a></td><td>' + placeHtml(q.place) + '</td><td class="n">' + n(q.impressions) + '</td><td class="n hide-s">' + n(q.clicks) + '</td></tr>';
-      }).join('') + '</tbody></table>' + nav;
-    box.querySelectorAll('[data-qp]').forEach(function(btn){
-      btn.addEventListener('click', function(){ qpage += Number(btn.getAttribute('data-qp')); renderQueries(); });
-    });
-  }
-  // Pages de ville en première page (18/10/2026) : place de la page elle-même,
-  // recherches masquées par Google comprises
-  var R = null, rkAll = false;
+  // ── Ta ville sur Google (14/11/2026, maquette D validée par Jason) : l'aperçu
+  // des résultats montre où la page sort, la ville choisie remplit « Tout sur … »
+  var current = 'photographe', R = null;
+  var AP = { slug: null, city: null, det: false };
   function rankCity(path){ return cityName(path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, '')); }
-  function renderRanks(){
-    var box = $('[data-ranks]'), note = $('[data-rk-note]'); if (!box) return;
-    var list = (R && R[current]) || [];
-    if (!list.length) { box.hidden = true; if (note) note.hidden = true; return; }
-    var shown = rkAll ? list : list.slice(0, 12);
-    var what = current === 'menage' ? '« ménage Airbnb » + ville' : current === 'depannage' ? '« dépannage, plombier ou électricien Airbnb » + ville' : current === 'hote' ? 'guides « Louer sur Airbnb à … » (règles, taxe de séjour)' : '« photographe ou vidéaste Airbnb » + ville';
-    var kindLbl = current === 'hote' ? ' guide' + (list.length > 1 ? 's' : '') + ' de ville' : ' page' + (list.length > 1 ? 's' : '') + ' de ville';
-    box.innerHTML = '<div class="rk-h"><b>' + list.length + kindLbl + ' en première page</b><span>' + what + ' · place moyenne de la page sur 28 jours · clique sur une ville pour voir comment</span></div><div class="rk-grid">' +
-      shown.map(function(r){
-        return '<button type="button" class="rk" data-rk="' + esc(r.path) + '" aria-expanded="false"><span class="rk-p' + (r.place <= 3 ? ' top' : '') + '">' + pf.format(r.place) + '<small>place</small></span><span class="rk-t"><b>' + esc(rankCity(r.path)) + '</b><small>' + n(r.impressions) + ' affichages' + (r.clicks ? ' · ' + n(r.clicks) + ' clic' + (r.clicks > 1 ? 's' : '') : '') + '</small></span></button>';
-      }).join('') + '</div>' + (list.length > 12 && !rkAll ? '<button type="button" class="rk-more" data-rk-more>Voir les ' + list.length + ' villes</button>' : '');
-    box.hidden = false; if (note) note.hidden = false;
-    var more = box.querySelector('[data-rk-more]'); if (more) more.addEventListener('click', function(){ rkAll = true; renderRanks(); });
-    box.querySelectorAll('[data-rk]').forEach(function(t){ t.addEventListener('click', function(){ openRank(t, list); }); });
+  function rankSlug(path){ return path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, ''); }
+  var KQ = { photographe: 'photographe airbnb ', menage: 'ménage airbnb ', depannage: 'dépannage airbnb ', hote: 'louer sur airbnb ' };
+  var KN = { photographe: 'photographe ou vidéaste', menage: 'ménage', depannage: 'dépannage', hote: 'guide pour les hôtes' };
+  var apRes = $('[data-ap-res]');
+  if (apRes) {
+    var rows = ''; for (var i = 1; i <= 10; i++) rows += '<div class="sr"><span>' + i + '</span><div><i></i><i></i></div></div>';
+    apRes.innerHTML = rows + '<div class="me" data-me hidden><span class="pos" data-me-pos></span><small data-me-u></small><strong data-me-t></strong><em><span data-me-s></span><span class="me-more">Détail<i class="ph-bold ph-caret-down"></i></span></em><button type="button" class="me-cp" data-me-cp><i class="ph-bold ph-copy"></i><span class="l">Copier</span></button></div><div class="serp-msg" data-ap-msg hidden></div>';
   }
-  // Clic sur une ville : on explique d'abord comment la page sort en première
-  // page (affichages, clics, recherches), la page elle-même ensuite
-  // (01/11/2026, Jason : « savoir comment c'est possible, pas être redirigé »)
-  var rkCache = {};
-  function openRank(tile, list){
-    var grid = tile.parentNode, path = tile.getAttribute('data-rk');
-    var old = grid.querySelector('.rk-d'); if (old) old.remove();
-    var wasOn = tile.classList.contains('on');
-    grid.querySelectorAll('.rk').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-expanded', 'false'); });
-    if (wasOn) return;
-    tile.classList.add('on'); tile.setAttribute('aria-expanded', 'true');
-    var r = list.filter(function(x){ return x.path === path; })[0];
-    var slug = path.replace(/^\/((photographe|menage|depannage)-lcd|devenir-hote-airbnb)-/, '');
-    var kind = /^\/photographe-/.test(path) ? 'photographe' : /^\/menage-/.test(path) ? 'menage' : /^\/depannage-/.test(path) ? 'depannage' : 'hote';
-    var city = rankCity(path);
-    // Fin de la rangée de la tuile : le détail s'ouvre juste en dessous
-    var tiles = Array.prototype.filter.call(grid.children, function(x){ return x.classList.contains('rk'); });
-    var after = tile;
-    tiles.forEach(function(x){ if (x.offsetTop === tile.offsetTop) after = x; });
-    var d = document.createElement('div'); d.className = 'rk-d';
-    var intro = 'Sur les 28 derniers jours, Google a montré la page ' + esc(pageLabel(path)) + ' ' + n(r.impressions) + ' fois, en moyenne à la place ' + pf.format(r.place) + (r.place <= 10 ? ', donc en première page' : '') + ', et ' + (r.clicks ? n(r.clicks) + ' personne' + (r.clicks > 1 ? 's ont' : ' a') + ' cliqué.' : 'personne n’a encore cliqué.') + (r.query ? ' La recherche la plus vue : « ' + esc(r.query) + ' ».' : '') + (r.impressions < 20 ? ' Avec si peu d’affichages, la place moyenne repose sur quelques recherches seulement : elle peut bouger vite d’un mois à l’autre.' : '');
-    d.innerHTML = '<div class="rk-d-h"><div><b>Comment ' + esc(city) + ' sort en première page</b><p>' + intro + '</p></div><button type="button" class="rk-x" aria-label="Fermer"><i class="ph-bold ph-x"></i></button></div><div data-rk-body><p class="empty">Chargement du détail…</p></div><div class="rk-d-a"><a href="' + esc(path) + '">Voir la page ' + esc(pageLabel(path)) + ' <i class="ph-bold ph-arrow-right"></i></a><a href="?ville=' + encodeURIComponent(slug) + '#ta-ville">Tous les chiffres de ' + esc(city) + '</a></div>';
-    after.insertAdjacentElement('afterend', d);
-    d.querySelector('.rk-x').addEventListener('click', function(){ d.remove(); tile.classList.remove('on'); tile.setAttribute('aria-expanded', 'false'); tile.focus(); });
-    var body = d.querySelector('[data-rk-body]');
-    var show = function(data){
-      var pg = data && data.city && data.city.pages && data.city.pages[kind];
-      body.innerHTML = pg ? pageCard(kind, data.city.label || city, pg, data.city.pros) : '<p class="empty">Détail indisponible pour le moment.</p>';
-    };
-    if (rkCache[slug]) show(rkCache[slug]);
-    else fetch(API + '?ville=' + encodeURIComponent(slug), { cache: 'no-store' }).then(function(res){ return res.ok ? res.json() : null; }).then(function(data){ if (data && data.city) rkCache[slug] = data; show(data); }).catch(function(){ show(null); });
+  function apInput(){ return vform && vform.querySelector('input[name=ville]'); }
+  function apList(){
+    var box = $('[data-ap-list]'); if (!box) return;
+    var all = (R && R[current]) || [], inp = apInput(), q = inp ? normT(inp.value) : '';
+    var list = q && !(AP.city && normT(AP.city.label) === q) && q !== normT(AP.slug || '') ? all.filter(function(r){ return normT(rankCity(r.path)).indexOf(q) >= 0; }) : all;
+    var cn = $('[data-ap-n]'); if (cn) cn.textContent = list.length + ' ville' + (list.length > 1 ? 's' : '');
+    if (!all.length) { box.innerHTML = '<p class="empty">Pas encore de page ' + KN[current] + ' en première page' + (current === 'depannage' ? ' : les pages ont ouvert le 31 octobre 2026.' : '.') + '</p>'; return; }
+    if (!list.length) { box.innerHTML = '<p class="empty">Pas dans la première page pour l’instant. Clique sur « Voir » pour ses chiffres.</p>'; return; }
+    box.innerHTML = list.map(function(r){ var sl = rankSlug(r.path); return '<button type="button" data-ap-pick="' + esc(sl) + '"' + (sl === AP.slug ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '><span>' + esc(rankCity(r.path)) + '</span><b>' + pf.format(r.place) + '</b></button>'; }).join('');
   }
+  // d : { label, path, place, impressions, clicks, query } ou { label, none: 'page' | 'ville' }
+  function apShow(d){
+    if (!apRes) return;
+    var me = $('[data-me]'), msg = $('[data-ap-msg]'), rws = apRes.querySelectorAll('.sr');
+    var qtxt = d.query || (KQ[current] + String(d.label || '').toLowerCase()).trim();
+    setNum('[data-ap-q]', qtxt);
+    var pg = d.place ? Math.ceil(d.place / 10) : 1;
+    rws.forEach(function(r, i){ r.querySelector('span').textContent = (pg - 1) * 10 + i + 1; });
+    setNum('[data-ap-pg]', 'Page ' + pg);
+    var k = $('[data-ap-k]'), a = $('[data-ap-a]');
+    if (d.none || !d.place) {
+      me.hidden = true; msg.hidden = false;
+      msg.innerHTML = '<div>' + (d.none === 'ville'
+        ? '<b>Pas encore de page pour « ' + esc(d.label) + ' »</b>Regarde juste en dessous : tu peux me demander de la créer.'
+        : d.none === 'page'
+          ? '<b>Pas encore de page ' + KN[current] + ' à ' + esc(d.label) + '</b>Les autres métiers de la ville sont juste en dessous.<br><button type="button" data-ap-ask="' + esc(d.label) + '">Demander cette page</button>'
+          : d.none === 'vide'
+            ? '<b>Pas encore de ville en première page</b>Tape ta ville au-dessus pour voir où en est sa page ' + KN[current] + '.'
+            : '<b>Pas encore vue dans Google</b>La page ' + esc(pageLabel(d.path)) + ' n’est pas apparue dans Google sur ces 28 jours. Une page récente met souvent plusieurs mois à se faire une place.') + '</div>';
+      if (k) k.innerHTML = '';
+      apDet(false);
+      if (a) a.innerHTML = d.path ? '<a href="' + esc(d.path) + '">Voir la page ' + esc(pageLabel(d.path)) + '<i class="ph-bold ph-arrow-right"></i></a>' : '';
+      return;
+    }
+    msg.hidden = true; me.hidden = false;
+    var pos = Math.min(10, Math.max(1, Math.round(d.place) - (pg - 1) * 10));
+    me.classList.toggle('far', pg > 1);
+    setNum('[data-me-pos]', Math.round(d.place));
+    setNum('[data-me-u]', 'jasonmarinho.com › ' + d.path.slice(1));
+    setNum('[data-me-t]', pageLabel(d.path));
+    setNum('[data-me-s]', pg === 1 ? 'Ta page sort ici : ' + pf.format(d.place) + 'e place en moyenne' : 'Page ' + pg + ' de Google : ' + pf.format(d.place) + 'e place en moyenne, pas encore en première page');
+    var cp = me.querySelector('[data-me-cp]'); cp.setAttribute('data-copy', qtxt); cp.setAttribute('aria-label', 'Copier la recherche ' + qtxt + ' pour vérifier dans Google'); cp.setAttribute('title', 'Copier la recherche pour vérifier dans Google');
+    // Bloc posé sur sa ligne, sans déborder en haut (place 1) ni en bas
+    requestAnimationFrame(function(){ var t = rws[pos - 1].offsetTop + rws[pos - 1].offsetHeight / 2 - me.offsetHeight / 2; me.style.top = Math.max(0, Math.min(t, apRes.offsetHeight - me.offsetHeight)) + 'px'; });
+    apDet(AP.det);
+    if (k) k.innerHTML = '<div><b>' + pf.format(d.place) + '</b><span>place moyenne</span></div><div><b>' + n(d.impressions) + '</b><span>affichage' + (d.impressions > 1 ? 's' : '') + '</span></div><div><b>' + n(d.clicks) + '</b><span>clic' + (d.clicks > 1 ? 's' : '') + '</span></div>';
+    if (a) a.innerHTML = '<a href="' + esc(d.path) + '">Voir la page ' + esc(pageLabel(d.path)) + '<i class="ph-bold ph-arrow-right"></i></a><button type="button" data-ap-down>Tous les chiffres de ' + esc(d.label) + '<i class="ph-bold ph-arrow-down"></i></button>';
+  }
+  // Clic sur le bloc : le détail de la page (affichages, clics, place, visiteurs, recherches)
+  function apDet(open){
+    var box = $('[data-ap-det]'), me = $('[data-me]'), k = $('[data-ap-k]'); if (!box || !me) return;
+    var c = AP.city, p = c && c.pages && c.pages[current];
+    var show = !!open && !me.hidden;
+    me.classList.toggle('open', show);
+    me.setAttribute('aria-expanded', String(show));
+    if (!show) { box.hidden = true; if (k) k.hidden = false; return; }
+    box.hidden = false; if (k) k.hidden = true;
+    box.innerHTML = p ? pageCard(current, c.label, p, c.pros) : '<p class="empty">Chargement du détail…</p>';
+  }
+  function apFromRank(slug){
+    var r = ((R && R[current]) || []).filter(function(x){ return rankSlug(x.path) === slug; })[0];
+    if (r) apShow({ label: rankCity(r.path), path: r.path, place: r.place, impressions: r.impressions, clicks: r.clicks, query: r.query });
+    return !!r;
+  }
+  function apFromCity(){
+    var c = AP.city; if (!c) return;
+    var p = c.pages && c.pages[current];
+    if (!p) { apShow({ label: c.label, none: 'page' }); return; }
+    var top = (p.queries || []).slice().sort(function(x, y){ return y.impressions - x.impressions; })[0];
+    apShow({ label: c.label, path: p.path, place: p.place, impressions: p.impressions, clicks: p.clicks, query: top ? top.q : null });
+  }
+  function apDefault(){
+    if (AP.city) { apFromCity(); return; }
+    var all = (R && R[current]) || [];
+    if (all.length) { AP.slug = rankSlug(all[0].path); apFromRank(AP.slug); }
+    else apShow({ label: '', none: 'vide', path: null });
+    apList();
+  }
+  var apL = $('[data-ap-list]');
+  if (apL) apL.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ap-pick]'); if (!b) return;
+    AP.slug = b.getAttribute('data-ap-pick'); AP.city = null;
+    apFromRank(AP.slug); apList();
+    searchCity(AP.slug.replace(/-/g, ' '), false);
+  });
+  var apMe = $('[data-me]');
+  if (apMe) {
+    apMe.setAttribute('role', 'button'); apMe.setAttribute('tabindex', '0');
+    var tog = function(e){ if (e.target.closest('[data-copy]')) return; AP.det = !AP.det; if (AP.det && !AP.city && AP.slug) searchCity(AP.slug.replace(/-/g, ' '), false); apDet(AP.det); };
+    apMe.addEventListener('click', tog);
+    apMe.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(e); } });
+  }
+  var apA = $('[data-ap]');
+  if (apA) apA.addEventListener('click', function(e){
+    if (e.target.closest('[data-ap-down]')) { var v = $('[data-vres]'); if (v) v.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    var b = e.target.closest('[data-ap-ask]'); if (b) { renderRequest(b.getAttribute('data-ap-ask'), true); var v = $('[data-vres]'); if (v) v.scrollIntoView({ block: 'start' }); }
+  });
   document.querySelectorAll('[data-tab]').forEach(function(b){
     b.addEventListener('click', function(){
-      current = b.getAttribute('data-tab'); qpage = 0;
-      rkAll = false; renderRanks();
+      current = b.getAttribute('data-tab');
       document.querySelectorAll('[data-tab]').forEach(function(x){ x.setAttribute('aria-selected', String(x === b)); });
-      renderQueries();
+      if (!AP.city) AP.slug = null;
+      apDefault(); apList();
+      VF = current; applyVf();
     });
   });
+  var hb = $('[data-help]'), hp = $('[data-help-p]');
+  if (hb && hp) hb.addEventListener('click', function(){ hp.hidden = !hp.hidden; hb.setAttribute('aria-expanded', String(!hp.hidden)); });
 
   // ── Demandes d'hôtes (17/10/2026) : tout est montré, zéro compris ──
   var monthFr = function(m){ var p = m.split('-'); return MOIS[+p[1]-1] + ' ' + p[0]; };
   var ETAT = { ouverte: 'Ouverte par un pro', transmise: 'Transmise', sans_pro: 'En attente d’un pro' };
+  // Filtre par métier (14/11/2026, Jason : « un photographe se concentre juste sur ses demandes et voit les villes »)
+  var DMF = null, DM_LAST = null;
   function renderDemandes(D){
+    DM_LAST = D;
     var tot = $('[data-dm-total]');
     if (!D) {
       if (tot) tot.textContent = '–';
+      setNum('[data-k="dm"]', '–');
       ['[data-dm-photo]','[data-dm-menage]','[data-dm-depannage]'].forEach(function(x){ setNum(x, '–'); });
       var c0 = $('[data-dm-cities]'); if (c0) c0.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
       var f0 = $('[data-dm-fil]'); if (f0) f0.innerHTML = '';
       return;
     }
     if (tot) tot.textContent = n(D.total);
+    // Chiffre de l'en-tête (14/11/2026, Jason : « plus mis en avant ») : total et dernière demande
+    setNum('[data-k="dm"]', n(D.total));
+    var kl = $('[data-k-dm-l]'); if (kl) kl.textContent = (D.total > 1 ? 'Demandes d’hôtes' : 'Demande d’hôte') + (D.total ? ' · depuis\u00a0' + MOIS[+D.since.split('-')[1]-1] : '');
+    var last = (D.fil || [])[0], kd = $('[data-dm-last]');
+    if (kd && last) { kd.textContent = 'Dernière : ' + ({ photographe: 'un photographe', menage: 'une équipe de ménage', depannage: 'un pro du dépannage' }[last.metier] || 'un pro') + (last.slug ? ' à ' + last.label : '') + ', ' + monthFr(last.month); kd.hidden = false; }
     var since = $('[data-dm-since]');
     if (since) since.textContent = D.total ? (D.total > 1 ? 'Demandes reçues' : 'Demande reçue') + ' depuis ' + monthFr(D.since) : 'Demande reçue pour le moment';
     var ex = $('[data-dm-excl]'), X = D.excluded || { test: 0, exemple: 0 };
@@ -714,42 +806,56 @@ a.dm-city:hover{border-color:var(--g)}
     }
     var cb = $('[data-dm-cities]');
     if (cb) {
-      if (!D.cities.length) cb.innerHTML = '<div class="dm-wait">Pas encore de demande. Chaque ville apparaîtra ici dès sa première demande, avec le nombre de pros déjà présents.</div>';
-      else cb.innerHTML = D.cities.map(function(c){
-        var tags = (c.photographe ? '<span class="dm-tag">' + n(c.photographe) + ' photo &amp; vidéo</span>' : '') + (c.menage ? '<span class="dm-tag m">' + n(c.menage) + ' ménage</span>' : '') + (c.depannage ? '<span class="dm-tag m">' + n(c.depannage) + ' dépannage</span>' : '');
+      var CL = DMF ? D.cities.filter(function(c){ return c[DMF]; }) : D.cities;
+      if (DMF && !CL.length) cb.innerHTML = '<div class="dm-wait">Pas encore de demande pour ce métier. Chaque ville apparaîtra ici dès sa première demande.</div>';
+      else if (!CL.length) cb.innerHTML = '<div class="dm-wait">Pas encore de demande. Chaque ville apparaîtra ici dès sa première demande, avec le nombre de pros déjà présents.</div>';
+      else cb.innerHTML = CL.map(function(c){
+        var tags = DMF ? '' : (c.photographe ? '<span class="dm-tag">' + n(c.photographe) + ' photo &amp; vidéo</span>' : '') + (c.menage ? '<span class="dm-tag m">' + n(c.menage) + ' ménage</span>' : '') + (c.depannage ? '<span class="dm-tag m">' + n(c.depannage) + ' dépannage</span>' : '');
         var free = '';
         if (c.pros) {
           // Métiers demandés sans aucun pro inscrit dans la ville
           var SEUL = { photographe: 'Aucun photographe ou vidéaste inscrit', menage: 'Aucune équipe de ménage inscrite', depannage: 'Aucun pro du dépannage inscrit' };
           var NOM = { photographe: 'photographe', menage: 'équipe de ménage', depannage: 'dépannage' };
-          var vides = ['photographe', 'menage', 'depannage'].filter(function(k){ return c[k] && !c.pros[k]; });
+          var vides = (DMF ? [DMF] : ['photographe', 'menage', 'depannage']).filter(function(k){ return c[k] && !c.pros[k]; });
           var manque = vides.length === 1 ? SEUL[vides[0]] : vides.length ? 'Personne d’inscrit en ' + vides.map(function(k){ return NOM[k]; }).join(', ') : '';
           free = manque ? '<div class="dm-free">' + manque + ' : la place est libre</div>'
-            : '<div class="dm-pros">' + [c.pros.photographe ? n(c.pros.photographe) + ' photographe' + (c.pros.photographe > 1 ? 's' : '') : '', c.pros.menage ? n(c.pros.menage) + ' équipe' + (c.pros.menage > 1 ? 's' : '') + ' de ménage' : '', c.pros.depannage ? n(c.pros.depannage) + ' pro' + (c.pros.depannage > 1 ? 's' : '') + ' du dépannage' : ''].filter(Boolean).join(' · ') + ' sur place</div>';
+            : '<div class="dm-pros">' + [(!DMF || DMF === 'photographe') && c.pros.photographe ? n(c.pros.photographe) + ' photographe' + (c.pros.photographe > 1 ? 's' : '') : '', (!DMF || DMF === 'menage') && c.pros.menage ? n(c.pros.menage) + ' équipe' + (c.pros.menage > 1 ? 's' : '') + ' de ménage' : '', (!DMF || DMF === 'depannage') && c.pros.depannage ? n(c.pros.depannage) + ' pro' + (c.pros.depannage > 1 ? 's' : '') + ' du dépannage' : ''].filter(Boolean).join(' · ') + ' sur place</div>';
         }
-        var inner = '<div class="dm-city-h"><b>' + esc(c.label) + '</b><strong>' + n(c.total) + '</strong></div><div class="dm-tags">' + tags + '</div>' + free;
+        var inner = '<div class="dm-city-h"><b>' + esc(c.label) + '</b><strong>' + n(DMF ? c[DMF] : c.total) + '</strong></div><div class="dm-tags">' + tags + '</div>' + free;
         return c.slug ? '<a class="dm-city" href="/chiffres?ville=' + esc(c.slug) + '#ta-ville">' + inner + '</a>' : '<div class="dm-city">' + inner + '</div>';
       }).join('');
     }
     var fb = $('[data-dm-fil]');
     if (fb) {
-      var items = D.fil.map(function(f){
+      var FL = DMF ? D.fil.filter(function(f){ return f.metier === DMF; }) : D.fil;
+      var items = FL.map(function(f){
         var photo = f.metier === 'photographe', dep = f.metier === 'depannage';
         var title = (photo ? 'Photographe ou vidéaste' : dep ? 'Pro du dépannage' : 'Équipe de ménage') + (f.slug ? ' à ' + f.label : ' · ' + f.label);
         var src = f.source === 'formulaire' ? 'Formulaire « Trouver un pro »' : f.source === 'direct' ? 'Appel ou message à Jason' : 'Bouton « Contacter » d’une fiche';
         return '<li><span class="ic' + (photo ? '' : ' m') + '"><i class="ph-bold ' + (photo ? 'ph-camera' : dep ? 'ph-wrench' : 'ph-broom') + '"></i></span><span class="tx"><b>' + esc(title) + '</b><small>' + esc(monthFr(f.month)) + ' · ' + src + '</small></span><span class="dm-st ' + f.etat + '">' + ETAT[f.etat] + '</span></li>';
       }).join('');
-      fb.innerHTML = items + '<li class="dm-next"><span class="tx"><small>' + (D.total ? 'La prochaine demande s’affichera ici.' : 'La première demande s’affichera ici, dès qu’un hôte décrit son besoin ou contacte un pro.') + '</small></span></li>';
+      fb.innerHTML = (DMF && !FL.length ? '<li class="dm-next"><span class="tx"><small>Pas encore de demande pour ce métier.</small></span></li>' : items) + '<li class="dm-next"><span class="tx"><small>' + (D.total ? 'La prochaine demande s’affichera ici.' : 'La première demande s’affichera ici, dès qu’un hôte décrit son besoin ou contacte un pro.') + '</small></span></li>';
     }
   }
+  var DMN = { photographe: 'photographe ou vidéaste', menage: 'équipe de ménage', depannage: 'dépannage' };
+  document.querySelectorAll('[data-dmf]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var k = b.getAttribute('data-dmf'); DMF = DMF === k ? null : k; VF = DMF; applyVf();
+      document.querySelectorAll('[data-dmf]').forEach(function(x){ x.setAttribute('aria-pressed', String(x.getAttribute('data-dmf') === DMF)); });
+      var fh = $('[data-dm-fh]');
+      if (fh) fh.innerHTML = DMF ? 'Seulement les demandes ' + (DMF === 'depannage' ? 'de dépannage' : 'd’' + (DMF === 'menage' ? 'équipe de ménage' : 'un photographe ou vidéaste')) + '. <button type="button" data-dmf-x>Tout voir</button>' : 'Touche un métier pour ne voir que ses demandes et ses villes.';
+      var x = fh && fh.querySelector('[data-dmf-x]'); if (x) x.addEventListener('click', function(){ b.click(); });
+      if (DM_LAST) renderDemandes(DM_LAST);
+    });
+  });
   function cityDemandes(label, slug, dm, pros, photoOnly){
     if (!dm) return '';
-    var row = function(lbl, k){ var p = pros ? pros[k] || 0 : null; return '<div><span>' + lbl + '</span><strong>' + n(dm[k]) + ' demande' + (dm[k] > 1 ? 's' : '') + (p === null ? '' : ' · ' + n(p) + ' pro' + (p > 1 ? 's' : '')) + '</strong></div>'; };
+    var row = function(lbl, k){ var p = pros ? pros[k] || 0 : null; return '<div data-vk="' + k + '"><span>' + lbl + '</span><strong>' + n(dm[k]) + ' demande' + (dm[k] > 1 ? 's' : '') + (p === null ? '' : ' · ' + n(p) + ' pro' + (p > 1 ? 's' : '')) + '</strong></div>'; };
     var txt = dm.total
       ? (dm.total > 1 ? 'Envoyées' : 'Envoyée') + ' aux pros les plus proches. Je publie le métier, la ville et le mois, jamais rien sur l’hôte.'
       : 'Pas encore de demande ici. Elle apparaîtra dès qu’un hôte de ' + esc(label) + ' décrira son besoin ou contactera un pro.';
     return '<div class="vd"><div><div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes à ' + esc(label) + '</div>' +
-      '<div class="vd-n"><b>' + n(dm.total) + '</b><span>demande' + (dm.total > 1 ? 's' : '') + ' reçue' + (dm.total > 1 ? 's' : '') + '</span></div><p>' + txt + '</p></div>' +
+      '<div class="vd-n" data-vd-t="' + (dm.total || 0) + '" data-vd-p="' + (dm.photographe || 0) + '" data-vd-m="' + (dm.menage || 0) + '" data-vd-d="' + (dm.depannage || 0) + '"><b>' + n(dm.total) + '</b><span>demande' + (dm.total > 1 ? 's' : '') + ' reçue' + (dm.total > 1 ? 's' : '') + '</span></div><p>' + txt + '</p></div>' +
       '<div class="vd-rows">' + row('Photographe &amp; vidéaste', 'photographe') + (photoOnly ? '' : row('Équipe de ménage', 'menage') + row('Dépannage', 'depannage')) +
       '<p class="vd-cta"><a class="a1" href="' + (photoOnly ? '/annuaires/photographes/inscription' : '/pour-qui/photographes') + '">Je suis pro à ' + esc(label) + '</a><a class="a2" href="/trouver-un-pro?' + (photoOnly ? 'metier=photographe&amp;' : '') + 'ville=' + encodeURIComponent(label) + '">Je cherche un pro</a></p></div></div>';
   }
@@ -834,7 +940,7 @@ a.dm-city:hover{border-color:var(--g)}
       depannage: { icon: 'ph-wrench', title: 'Dépannage à ', pro: ['pro du dépannage présenté', 'pros du dépannage présentés'] },
       hote: { icon: 'ph-house-line', title: 'Guide hôte · ', pro: null }
     }[kind];
-    var h = '<div class="vp"><div class="vp-h"><i class="ph-bold ' + META.icon + '"></i><div><b>' + esc(META.title + city) + '</b><a href="' + esc(p.path) + '">Voir la page <i class="ph-bold ph-arrow-right"></i></a></div></div>';
+    var h = '<div class="vp" data-vk="' + kind + '"><div class="vp-h"><i class="ph-bold ' + META.icon + '"></i><div><b>' + esc(META.title + city) + '</b><a href="' + esc(p.path) + '">Voir la page <i class="ph-bold ph-arrow-right"></i></a></div></div>';
     if (META.pro && pros) {
       var k = pros[kind] || 0;
       h += '<div class="vp-pros"><i class="ph-bold ph-users-three"></i>' + (k ? n(k) + ' ' + META.pro[k > 1 ? 1 : 0] + ' sur la page' : 'Aucun pro présenté pour le moment : la place est libre') + '</div>';
@@ -869,18 +975,56 @@ a.dm-city:hover{border-color:var(--g)}
   function renderCity(d){
     var c = d.city, label = c.label;
     var period = d.period ? 'Google du ' + dateFr(d.period.start) + ' au ' + dateFr(d.period.end) + ' · visiteurs sur 30 jours' : 'Chiffres de Google indisponibles pour le moment';
-    var html = '<div class="vr-h"><div><h3>' + esc(label) + '</h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div>' +
-      cityDemandes(label, c.slug, d.demandes, c.pros, !!c.pays) + '<div class="vr-grid">' +
+    var KS = ['photographe', 'menage', 'depannage', 'hote'];
+    var nPages = KS.filter(function(k){ return c.pages[k]; }).length;
+    var nVis = KS.reduce(function(t, k){ return t + ((c.pages[k] && c.pages[k].visitors) || 0); }, 0);
+    var nPros = c.pros ? ['photographe', 'menage', 'depannage'].reduce(function(t, k){ return t + (c.pros[k] || 0); }, 0) : null;
+    var nDm = d.demandes ? d.demandes.total || 0 : 0;
+    var cell = function(v, l, dk){ return '<div' + (dk ? ' class="dk"' : '') + '><b>' + v + '</b><span>' + l + '</span></div>'; };
+    var html = '<div class="vr-h"><div><h3>Tout sur <em>' + esc(label) + '</em></h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div>' +
+      '<div class="tsx">' + cell(n(nDm), 'demande' + (nDm > 1 ? 's' : '') + ' d’hôte' + (nDm > 1 ? 's' : '') + ' reçue' + (nDm > 1 ? 's' : ''), true) +
+        cell(nPros === null ? '–' : n(nPros), 'pro' + (nPros > 1 ? 's' : '') + ' présenté' + (nPros > 1 ? 's' : '')) +
+        cell(n(nPages), 'page' + (nPages > 1 ? 's' : '') + ' de ville') +
+        cell(n(nVis), 'visiteur' + (nVis > 1 ? 's' : '') + ' sur 30 jours') + '</div>' +
+      '<div class="vr-all">' +
+      vfBar(c) + cityDemandes(label, c.slug, d.demandes, c.pros, !!c.pays) + '<div class="vr-grid">' +
       pageCard('photographe', label, c.pages.photographe, c.pros) +
       (c.pages.menage ? pageCard('menage', label, c.pages.menage, c.pros) : '') +
       (c.pages.depannage ? pageCard('depannage', label, c.pages.depannage, c.pros) : '') +
       (c.pages.hote ? pageCard('hote', label, c.pages.hote, null) : '') +
       (c.pays ? '<div class="vp"><div class="vp-h"><i class="ph-bold ph-globe-hemisphere-west"></i><div><b>' + esc(label + ' (' + c.pays + ')') + '</b></div></div><p class="vp-empty">Première ville hors de France : seule la page des photographes et vidéastes est ouverte, avec les règles du ' + (c.pays === 'Canada' ? 'Québec' : 'pays') + ', pas celles de la France. Les pages ménage et hôtes ouvriront si elles sont demandées.</p><button type="button" class="vr-share" data-intl-ask="' + esc(label) + '"><i class="ph-bold ph-paper-plane-tilt"></i>Demander une autre page</button></div>' : '') +
-      '</div><div class="vr-note"><i class="ph-bold ph-info"></i><span>Ce sont les chiffres bruts de Google Search Console, sans tri : la place est une moyenne sur 28 jours (elle varie selon la personne et l’appareil), un affichage n’est pas un client. Les petites villes et les pages récentes partent de peu, et ça se voit ici.</span></div>';
+      '</div><div class="vr-note"><i class="ph-bold ph-info"></i><span>Ce sont les chiffres bruts de Google Search Console, sans tri : la place est une moyenne sur 28 jours (elle varie selon la personne et l’appareil), un affichage n’est pas un client. Les petites villes et les pages récentes partent de peu, et ça se voit ici.</span></div></div>';
     vres.innerHTML = html;
+    applyVf();
+    AP.slug = c.slug; AP.city = c; apFromCity(); apList();
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = label;
     setUrl(c.slug);
   }
+  // Filtre par métier dans la recherche par ville (14/11/2026, Jason) : même choix que
+  // le filtre des demandes, gardé d'une ville à l'autre
+  var VF = null;
+  function vfBar(c){
+    var K = [['', 'Tout'], ['photographe', 'Photographe ou vidéaste'], ['menage', 'Ménage'], ['depannage', 'Dépannage'], ['hote', 'Guide hôte']]
+      .filter(function(x){ return !x[0] || x[0] === 'photographe' || c.pages[x[0]]; });
+    if (K.length < 3) return '';
+    return '<div class="vfm" role="group" aria-label="Filtrer par métier">' + K.map(function(x){ return '<button type="button" data-vf="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>';
+  }
+  function applyVf(){
+    if (!vres) return;
+    vres.querySelectorAll('[data-vf]').forEach(function(b){ b.setAttribute('aria-pressed', String((b.getAttribute('data-vf') || null) === VF)); });
+    vres.querySelectorAll('[data-vk]').forEach(function(el){ el.hidden = !!VF && el.getAttribute('data-vk') !== VF; });
+    var g = vres.querySelector('.vr-grid'); if (g) g.classList.toggle('one', !!VF);
+    var vn = vres.querySelector('.vd-n[data-vd-t]');
+    if (vn) {
+      var key = { photographe: 'p', menage: 'm', depannage: 'd' }[VF] || 't', x = +vn.getAttribute('data-vd-' + key) || 0, pl = x > 1 ? 's' : '';
+      vn.querySelector('b').textContent = n(x);
+      vn.querySelector('span').textContent = 'demande' + pl + ' reçue' + pl + (key === 't' ? '' : ' pour ce métier');
+    }
+  }
+  if (vres) vres.addEventListener('click', function(e){
+    var b = e.target.closest('[data-vf]'); if (!b) return;
+    VF = b.getAttribute('data-vf') || null; applyVf();
+  });
   function suggestions(q){
     var t = normT(q); if (t.length < 2) return [];
     var head = t.slice(0, 3);
@@ -928,15 +1072,15 @@ a.dm-city:hover{border-color:var(--g)}
     q = String(q || '').trim().slice(0, 60);
     if (!q || !vres) return;
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = q;
-    vres.innerHTML = '<p class="empty">Recherche des chiffres de ' + esc(q) + '…</p>';
-    if (scroll) { var sec = $('#ta-ville'); if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    vres.innerHTML = '<p class="vr-wait">Recherche des chiffres de ' + esc(q) + '…</p>';
+    if (scroll) pinTa();
     fetch(API + '?ville=' + encodeURIComponent(q)).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
       if (d.found && d.city) renderCity(d);
       else if (d.found) vres.innerHTML = '<p class="empty">Les chiffres de cette ville ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</p>';
-      else if (d.zone) renderZone(q, d.zone);
-      else renderRequest(q);
+      else { AP.slug = null; AP.city = null; apShow({ label: q, none: 'ville' }); apList(); if (d.zone) renderZone(q, d.zone); else renderRequest(q); }
     }).catch(function(){ vres.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment. Réessaie dans quelques minutes.</p>'; });
   }
+  var apIn = apInput(); if (apIn) apIn.addEventListener('input', apList);
   if (vform) vform.addEventListener('submit', function(e){ e.preventDefault(); var i = vform.querySelector('input[name=ville]'); searchCity(i && i.value, false); });
   if (vres) {
     vres.addEventListener('click', function(e){
@@ -968,7 +1112,15 @@ a.dm-city:hover{border-color:var(--g)}
         .catch(function(){ btn.disabled = false; msg.className = 'vf-msg ko'; msg.textContent = 'La demande n’est pas partie. Vérifie ta connexion et réessaie.'; });
     });
   }
-  try { var startQ = new URL(location.href).searchParams.get('ville'); if (startQ) searchCity(startQ.replace(/-/g, ' '), true); } catch (e) {}
+  // Arrivée sur ?ville=… ou #ta-ville : les blocs au-dessus se remplissent après coup et repoussent la section.
+  // On la garde en haut de l'écran tant que la page grandit, jusqu'au premier geste du visiteur (6 s au plus).
+  var PIN = location.hash === '#ta-ville';
+  function pinTa(){ PIN = true; document.documentElement.style.scrollBehavior = 'auto'; var sec = $('#ta-ville'); if (sec) sec.scrollIntoView({ block: 'start', behavior: 'instant' }); }
+  function unpin(){ if (!PIN && document.documentElement.style.scrollBehavior !== 'auto') return; PIN = false; document.documentElement.style.scrollBehavior = ''; }
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function(ev){ addEventListener(ev, unpin, { passive: true, once: true }); });
+  setTimeout(unpin, 6000);
+  if (window.ResizeObserver) new ResizeObserver(function(){ if (PIN) pinTa(); }).observe(document.body);
+  try { var startQ = new URL(location.href).searchParams.get('ville'); if (startQ) searchCity(startQ.replace(/-/g, ' '), true); else if (PIN) pinTa(); } catch (e) {}
 
   fetch(API).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
     fillVilles(d.villes);
@@ -978,7 +1130,7 @@ a.dm-city:hover{border-color:var(--g)}
       setNum('[data-k="clk"]', n(g.clicks)); delta('[data-d="clk"]', g.clicks, g.prevClicks);
       setNum('[data-f="first"]', n(g.firstPageCount));
       setNum('[data-f="pages"]', n(g.pagesSeen));
-      setNum('[data-f="ctr"]', g.impressions ? pf.format(g.clicks / g.impressions * 100) + ' %' : '–');
+      var ctr = $('[data-f="ctr"]'); if (ctr && g.impressions) ctr.textContent = 'soit ' + pf.format(g.clicks / g.impressions * 100) + ' % des affichages';
       chart(g.months);
       var u = $('[data-upd]'); if (u) u.textContent = 'Google : du ' + dateFr(g.start) + ' au ' + dateFr(g.end) + ' (2 jours de retard chez Google)';
     } else {
@@ -989,19 +1141,17 @@ a.dm-city:hover{border-color:var(--g)}
     else setNum('[data-k="vis"]', '–');
     if (d.cityPages) setNum('[data-f="cities"]', n(d.cityPages));
     if (d.threshold) { var th = $('[data-thr]'); if (th) th.textContent = n(d.threshold); }
-    Q = d.queries || { photographe: [], menage: [], hote: [] };
-    ['photographe','menage','depannage','hote'].forEach(function(k){ var c = $('[data-c="' + k + '"]'); if (c) c.textContent = (Q[k] || []).length + (d.cityRanks && d.cityRanks[k] ? d.cityRanks[k].length : 0); });
+    ['photographe','menage','depannage','hote'].forEach(function(k){ var c = $('[data-c="' + k + '"]'); if (c) c.textContent = d.cityRanks && d.cityRanks[k] ? d.cityRanks[k].length : 0; });
     R = d.cityRanks || null;
-    renderRanks();
-    renderQueries();
-    renderCities(d.cities, d.cityRanks);
+    apDefault();
+    var rk = 0; if (d.cityRanks) ['photographe','menage','depannage','hote'].forEach(function(k){ rk += (d.cityRanks[k] || []).length; }); setNum('[data-f="rk"]', n(rk));
     renderDemandes(d.demandes || null);
   }).catch(function(){
     renderDemandes(null);
     var e = $('[data-err]'); if (e) e.style.display = 'block';
     var u = $('[data-upd]'); if (u) u.textContent = '';
     ['[data-k="imp"]','[data-k="clk"]','[data-k="vis"]','[data-f="first"]','[data-f="pages"]','[data-f="ctr"]'].forEach(function(s){ setNum(s, '–'); });
-    var b1 = $('[data-queries]'); if (b1) b1.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
+    var b1 = $('[data-ap-list]'); if (b1) b1.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
     var b2 = $('[data-cities]'); if (b2) b2.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
   });
 })();
@@ -1009,5 +1159,6 @@ a.dm-city:hover{border-color:var(--g)}
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 <script src="/suggestions.js" defer></script>
+<!-- FILLTOP:START --><script>(function(){var el=document.body;for(var d=0;d<5&&el;d++){var nx=null,k=el.children;for(var i=0;i<k.length;i++){var c=k[i];if(c.id==='nav'||c.id==='mob'||/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(c.tagName))continue;var s=getComputedStyle(c);if(s.position==='fixed'||s.position==='absolute'||s.display==='none'||c.getBoundingClientRect().height<1)continue;nx=c;break}if(!nx)return;var cs=getComputedStyle(nx),r=nx.getBoundingClientRect(),m=/rgba?\(([^)]+)\)/.exec(cs.backgroundColor),a=m?m[1].split(',').map(parseFloat):[],bg=(a.length>3?a[3]:a.length?1:0)>=.5||(cs.backgroundImage&&cs.backgroundImage!=='none');if(bg&&r.width>=innerWidth*.97){var g=Math.round(r.top+(scrollY||0));if(g>=1&&g<=140){nx.style.marginTop=(parseFloat(cs.marginTop)-g)+'px';nx.style.paddingTop=(parseFloat(cs.paddingTop)+g)+'px'}return}el=nx}})()</script><!-- FILLTOP:END -->
 </body>
 </html>

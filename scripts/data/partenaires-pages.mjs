@@ -67,6 +67,8 @@ const SPORT_DECOUVERTE = 'https://sport-decouverte.com/?utm_source=affilae&utm_m
 export const PAGES = [
   {
     slug: 'lodgify',
+    // Mise en page v2 (14/11/2026) : coupon, cartes, Black Friday
+    v2: true,
     nom: 'Lodgify',
     mono: 'L',
     couleur: '#2E5BFF',
@@ -78,6 +80,10 @@ export const PAGES = [
     offre: {
       titre: '-15 % avec JASON15',
       sous: 'sur Professional et Ultimate, en paiement annuel ou tous les 2 ans',
+      code: 'JASON15',
+      pct: '-15 %',
+      pctSous: 'sur ton abonnement',
+      codeTexte: '-15 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, jusqu\'au 1er octobre 2027. <a href="/code-promo-lodgify">Conditions du code</a> · <a href="/lodgify-avis">Mon avis sur Lodgify</a>',
       points: [
         'Code valable jusqu\'au 1er octobre 2027',
         'Essai gratuit de 7 jours pour tester avant de payer',
@@ -87,6 +93,14 @@ export const PAGES = [
       cta2: { label: 'Réserver une démo gratuite', href: LODGIFY_DEMO },
       note: 'Lien affilié : Lodgify me verse une commission si tu t\'abonnes, sans aucun surcoût pour toi. <a href="/code-promo-lodgify" style="color:inherit;text-decoration:underline">Conditions du code</a>.',
     },
+    faits: [
+      { icon: 'globe', k: 'Le cœur du produit', v: 'Ton site, sans coder' },
+      { icon: 'plugs-connected', k: 'Channel manager', v: 'Airbnb, Booking, Vrbo, Expedia' },
+      { icon: 'calendar-check', k: 'Pour tester', v: 'Essai 7 jours et démo gratuite' },
+      { icon: 'tag', k: 'Code promo', v: '-15 % avec JASON15', href: '/code-promo-lodgify' },
+    ],
+    // Black Friday Lodgify (e-mail de Lodgify du 30/10/2026), affiché entre ces deux dates
+    bf: { du: '2026-11-12T00:00:00+01:00', au: '2026-12-13T00:00:00+01:00', texte: '<strong>Black Friday :</strong> -65 % avec le code JASON65 jusqu\'au 12 décembre, sur Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. <a href="/code-promo-lodgify">Voir l\'offre</a>' },
     pourquoi: {
       titre: 'Pourquoi je recommande <em>Lodgify</em>',
       items: [
@@ -125,6 +139,11 @@ export const PAGES = [
     },
     cout: {
       titre: 'Ce que ça coûte <em>avec le code</em>',
+      chiffres: [
+        { k: 'Starter', s: 'Code non valable sur cette formule', v: '~13 €', vs: 'par logement et par mois' },
+        { k: 'Professional', s: '~33 € sans le code', v: '~28 €', vs: 'avec JASON15', hot: true },
+        { k: 'Ultimate', s: '~49 € sans le code', v: '~42 €', vs: 'avec JASON15' },
+      ],
       paras: [
         'Lodgify facture par logement. D\'après les prix relevés en août 2026 en facturation annuelle : environ 13 € par logement et par mois pour Starter, 33 € pour Professional et 49 € pour Ultimate. Avec JASON15, Professional revient à environ 28 € et Ultimate à environ 42 € par logement et par mois.',
         'Exemple : 2 logements en Professional, payés à l\'année, coûtent environ 792 € par an. Avec le code, tu économises environ 119 € et paies environ 673 €. Le calcul pour ton cas est sur <a href="/code-promo-lodgify">la page du code promo</a>.',
@@ -175,6 +194,10 @@ export const PAGES = [
     offre: {
       titre: '1er mois offert',
       sous: 'sur les offres payantes, sans engagement',
+      code: 'PREMIERMOIS',
+      pct: '1 mois',
+      pctSous: 'offert',
+      codeTexte: 'Appliqué automatiquement par le lien : 1er mois offert sur les offres payantes, sans engagement.',
       points: [
         'Inscription gratuite, sans carte bancaire',
         'Facture électronique incluse dans l\'offre gratuite',
@@ -262,6 +285,9 @@ export const PAGES = [
     offre: {
       titre: 'Réduction avec JASON15',
       sous: 'sur ta création en ligne : micro-entreprise, SASU, EURL, SAS ou SARL',
+      code: 'JASON15',
+      pctSous: 'montant affiché au paiement',
+      codeTexte: 'À saisir au moment du paiement, sur ta création en ligne (micro-entreprise, SASU, EURL, SAS ou SARL). Le montant de la réduction s\'affiche au paiement.',
       points: [
         'Code JASON15 à saisir au moment du paiement',
         'Statuts générés à partir d\'un questionnaire',

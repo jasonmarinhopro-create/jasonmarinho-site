@@ -129,7 +129,7 @@ const DEMO_CSS = `
 .demo-banner a{color:#003329;text-decoration:underline;font-weight:700}
 .cta-bottom{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:48px clamp(20px,4vw,40px);text-align:center;color:#fff;max-width:920px;margin:30px auto 70px}
 .cta-bottom .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
-.cta-bottom h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.8vw,2rem);margin:0 0 12px;font-weight:400;line-height:1.2;color:#fff}
+.cta-bottom h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(1.5rem,2.8vw,2rem);margin:0 0 12px;font-weight:400;line-height:1.2;color:#fff}
 .cta-bottom h2 em{color:var(--y);font-style:italic;font-weight:300}
 .cta-bottom p{font-size:15px;color:rgba(255,255,255,.7);margin:0 auto 24px;line-height:1.65;max-width:560px}
 .cta-bottom .btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}

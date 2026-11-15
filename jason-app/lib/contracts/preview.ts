@@ -7,9 +7,9 @@ import { DEFAULT_ANNULATION, DEFAULT_REGLEMENT } from '@/lib/contract-default-cl
 import { buildEtatDescriptif, contratOptions, type ContractDetails, type LogementForContract } from './details'
 
 export const PAYMENT_LABELS: Record<string, string> = {
-  virement: 'Virement bancaire', stripe: 'Paiement en ligne (Stripe)', especes: 'Espèces', cheque: 'Chèque',
-  paypal: 'PayPal', airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire',
-  les_deux: 'Virement bancaire ou paiement en ligne (Stripe)',
+  virement: 'Virement bancaire', stripe: 'Carte bancaire en ligne (Stripe)', especes: 'Espèces', cheque: 'Chèque',
+  paypal: 'PayPal', airbnb: 'Airbnb / Booking (plateforme)', carte: 'Carte bancaire sur place (TPE)',
+  les_deux: 'Virement bancaire ou carte bancaire en ligne (Stripe)',
 }
 
 export function paymentLabels(methodes: string | null | undefined): string {

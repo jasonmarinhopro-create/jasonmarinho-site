@@ -198,7 +198,7 @@ const CSS = `
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#6B7D68;--bd:rgba(0,76,63,.10)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);padding-top:64px}
+body{font-family:'Outfit','Outfit Fallback',sans-serif;background:var(--w);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit}
@@ -209,7 +209,7 @@ a{color:inherit}
 @media(min-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)}}
 .brd{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px}.brd a{color:rgba(255,255,255,.65);text-decoration:none}
 .eye{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:14px}
-h1{font-family:'Fraunces',serif;font-size:clamp(30px,4.3vw,50px);font-weight:400;line-height:1.08;letter-spacing:-.6px}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(30px,4.3vw,50px);font-weight:400;line-height:1.08;letter-spacing:-.6px}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:16.5px;color:rgba(255,255,255,.75);line-height:1.7;margin-top:18px;max-width:560px}
 .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
@@ -231,20 +231,20 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 @media(min-width:860px){.facts-grid{grid-template-columns:repeat(4,1fr)}}
 .fact{padding:22px 16px;text-align:center;border-right:1px solid var(--bd)}
 .fact:last-child{border-right:none}
-.fact b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1.1}
+.fact b{display:block;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1.1}
 .fact span{display:block;font-size:13px;color:var(--tm);margin-top:4px;line-height:1.4}
 .sec{padding:clamp(56px,8vw,96px) 0}
 .sec.cr{background:var(--cr)}
 .sec-head{max-width:720px;margin:0 auto 40px;text-align:center}
 .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
-h2{font-family:'Fraunces',serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1.15;letter-spacing:-.4px}
+h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1.15;letter-spacing:-.4px}
 h2 em{color:var(--g);font-style:italic;font-weight:300}
 .sec-head p{font-size:16px;color:var(--tm);line-height:1.7;margin-top:12px}
 .row{display:grid;gap:32px;align-items:center;margin-bottom:clamp(56px,7vw,88px)}
 .row:last-child{margin-bottom:0}
 @media(min-width:940px){.row{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:56px}.row.rev .row-txt{order:2}}
 .row-txt p{font-size:15.5px;color:var(--tm);line-height:1.75;margin-top:12px}
-.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,76,63,.25);color:var(--g);font-family:'Fraunces',serif;font-size:15px;margin-bottom:14px}
+.num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,76,63,.25);color:var(--g);font-family:'Fraunces','Fraunces Fallback',serif;font-size:15px;margin-bottom:14px}
 .ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:20px}
 .ul li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;color:var(--tm);line-height:1.55}
 .ul li i{flex-shrink:0;width:30px;height:30px;border-radius:9px;background:rgba(0,76,63,.07);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:1px}
@@ -261,11 +261,11 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 @media(min-width:820px){.how{grid-template-columns:repeat(3,1fr)}}
 .how-c{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:22px}
 .how-c .num{margin-bottom:12px}
-.how-c h3{font-family:'Fraunces',serif;font-size:19px;font-weight:400;margin-bottom:6px}
+.how-c h3{font-family:'Fraunces','Fraunces Fallback',serif;font-size:19px;font-weight:400;margin-bottom:6px}
 .how-c p{font-size:14px;color:var(--tm);line-height:1.6}
 .mock{background:#fff;border:1px solid var(--bd);border-radius:16px;box-shadow:0 22px 60px rgba(0,30,20,.12);overflow:hidden;font-size:13.5px}
 .mock-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;background:linear-gradient(160deg,#001a11,#00463a);color:#fff}
-.mock-h b{font-family:'Fraunces',serif;font-weight:400;font-size:17px}
+.mock-h b{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:17px}
 .mock-h small{font-size:11px;color:rgba(255,255,255,.6);display:block}
 .pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:rgba(255,213,107,.18);color:var(--y);white-space:nowrap}
 .pill.ok{background:rgba(99,214,131,.16);color:#7AE89A}
@@ -287,14 +287,14 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 @media(min-width:900px){.price-wrap{grid-template-columns:380px minmax(0,1fr)}}
 .price{background:linear-gradient(160deg,#001a11,var(--gd) 55%,#00463a);color:#fff;border-radius:20px;padding:28px}
 .price-eye{font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.55)}
-.price-n{font-family:'Fraunces',serif;font-size:50px;font-weight:300;line-height:1;margin:12px 0 6px}
-.price-n small{font-family:'Outfit',sans-serif;font-size:15px;color:rgba(255,255,255,.6);margin-left:4px}
+.price-n{font-family:'Fraunces','Fraunces Fallback',serif;font-size:50px;font-weight:300;line-height:1;margin:12px 0 6px}
+.price-n small{font-family:'Outfit','Outfit Fallback',sans-serif;font-size:15px;color:rgba(255,255,255,.6);margin-left:4px}
 .price-sub{font-size:14px;color:rgba(255,255,255,.72);line-height:1.6}
 .places{display:none;align-items:center;gap:7px;margin-top:14px;padding:7px 12px;border-radius:999px;background:rgba(255,213,107,.14);color:var(--y);font-size:12.5px;font-weight:600}
 .price .btn{margin-top:22px;width:100%;justify-content:center}
 .price-foot{margin-top:14px;font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
 .incl{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:28px}
-.incl h3{font-family:'Fraunces',serif;font-weight:400;font-size:21px;margin-bottom:6px}
+.incl h3{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:21px;margin-bottom:6px}
 .incl-grid{display:grid;gap:10px 22px;margin-top:14px}
 @media(min-width:620px){.incl-grid{grid-template-columns:1fr 1fr}}
 .incl-grid div{display:flex;gap:9px;font-size:14.5px;color:var(--tm);line-height:1.5}
@@ -394,7 +394,7 @@ function page(cfg) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>${CSS}</style>

@@ -14,7 +14,7 @@ export default async function ProfilPage() {
 
   // getAuthUser() : getUser() validé côté serveur, mis en cache pour le rendu
   // (déjà appelé par getProfile), donc sans aller-retour supplémentaire.
-  const [authUser, { data: pd }, cgvRes] = await Promise.all([
+  const [authUser, { data: pd }, cgvRes, ppRes] = await Promise.all([
     getAuthUser(),
     supabase.from('profiles')
       .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city, stripe_subscription_id, stripe_customer_id, entreprise_numero, mention_tva')
@@ -22,8 +22,11 @@ export default async function ProfilPage() {
       .maybeSingle(),
     // CGV (migration 181) : requête à part, la page s'affiche même sans la colonne
     supabase.from('profiles').select('cgv').eq('id', profile.userId).maybeSingle(),
+    // Lien PayPal.me (migration 187), à part pour la même raison
+    supabase.from('profiles').select('paypal_me').eq('id', profile.userId).maybeSingle(),
   ])
   const cgv = cgvRes.error ? '' : ((cgvRes.data as { cgv?: string | null } | null)?.cgv ?? '')
+  const paypalMe = ppRes.error ? null : ((ppRes.data as { paypal_me?: string | null } | null)?.paypal_me ?? '')
 
   // Abonnement Stripe (date de renouvellement, prix, statut) ; null si erreur
   const [subscription, google] = await Promise.all([
@@ -48,6 +51,7 @@ export default async function ProfilPage() {
       pd={pd}
       google={google}
       cgv={cgv}
+      paypalMe={paypalMe}
     />
   )
 }

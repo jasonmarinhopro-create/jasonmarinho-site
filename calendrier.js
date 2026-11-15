@@ -11,25 +11,25 @@
   window.__jmCal = true;
 
   var CSS =
-    '.jmc-t{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:12px 15px;border:1.5px solid rgba(0,76,63,.11);border-radius:13px;background:#fff;font:400 16px Outfit,system-ui,sans-serif;color:#0F1A0D;text-align:left;cursor:pointer;transition:border-color .15s}' +
+    '.jmc-t{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:12px 15px;border:1.5px solid rgba(0,76,63,.11);border-radius:13px;background:#fff;font:400 16px Outfit,Outfit Fallback,system-ui,sans-serif;color:#0F1A0D;text-align:left;cursor:pointer;transition:border-color .15s}' +
     '.jmc-t:hover{border-color:rgba(0,76,63,.35)}' +
     '.jmc-t.on,.jmc-t:focus-visible{outline:none;border-color:#004C3F;box-shadow:0 0 0 4px rgba(255,213,107,.35)}' +
     '.jmc-t .jmc-i{color:#004C3F;flex-shrink:0;display:flex}' +
     '.jmc-t .jmc-v{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '.jmc-t .jmc-v.mute{color:#8A9488}' +
     '.jmc-t .jmc-c{color:#8A9488;display:flex;transition:transform .15s}.jmc-t.on .jmc-c{transform:rotate(180deg)}' +
-    '.jmc-p{position:fixed;z-index:99990;background:#fff;border:1px solid #E7E2D6;border-radius:16px;padding:14px 14px 10px;box-shadow:0 18px 44px rgba(0,40,30,.18);font-family:Outfit,system-ui,sans-serif;color:#0F1A0D;animation:jmc-in .14s ease}' +
+    '.jmc-p{position:fixed;z-index:99990;background:#fff;border:1px solid #E7E2D6;border-radius:16px;padding:14px 14px 10px;box-shadow:0 18px 44px rgba(0,40,30,.18);font-family:Outfit,Outfit Fallback,system-ui,sans-serif;color:#0F1A0D;animation:jmc-in .14s ease}' +
     '@keyframes jmc-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}' +
     '.jmc-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}' +
     '.jmc-n{width:32px;height:32px;border-radius:50%;border:1px solid #E7E2D6;background:#FAF8F3;color:#3D5038;display:grid;place-items:center;cursor:pointer;flex-shrink:0}' +
     '.jmc-n:hover{border-color:#004C3F;color:#004C3F}' +
-    '.jmc-ti{border:none;background:none;font:600 14px Outfit,system-ui,sans-serif;color:#0F1A0D;cursor:pointer;padding:6px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:6px}' +
+    '.jmc-ti{border:none;background:none;font:600 14px Outfit,Outfit Fallback,system-ui,sans-serif;color:#0F1A0D;cursor:pointer;padding:6px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:6px}' +
     '.jmc-ti:hover{background:#F4F1E9}' +
     '.jmc-w{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:2px}' +
     '.jmc-w span{text-align:center;font-size:10.5px;font-weight:600;color:#6B7568;padding:3px 0;letter-spacing:.5px}' +
     '.jmc-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}' +
     '.jmc-g.mo{grid-template-columns:repeat(3,1fr);gap:6px}' +
-    '.jmc-d{height:36px;border:none;border-radius:9px;background:transparent;font:400 14px Outfit,system-ui,sans-serif;color:#22311F;cursor:pointer}' +
+    '.jmc-d{height:36px;border:none;border-radius:9px;background:transparent;font:400 14px Outfit,Outfit Fallback,system-ui,sans-serif;color:#22311F;cursor:pointer}' +
     '.jmc-g.mo .jmc-d{height:44px;background:#FAF8F3;font-weight:500}' +
     '.jmc-d:hover{background:#F4F1E9}' +
     '.jmc-d.td{background:#F2EFE8;color:#1e7a45;font-weight:700}' +
@@ -37,7 +37,7 @@
     '.jmc-d:disabled{opacity:.3;cursor:default;background:transparent}' +
     '.jmc-d:focus-visible,.jmc-n:focus-visible,.jmc-ti:focus-visible,.jmc-l:focus-visible{outline:3px solid rgba(255,213,107,.9);outline-offset:1px}' +
     '.jmc-f{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid #EFEBE2}' +
-    '.jmc-l{border:none;background:none;font:600 13px Outfit,system-ui,sans-serif;color:#004C3F;cursor:pointer;padding:5px 6px;border-radius:6px}' +
+    '.jmc-l{border:none;background:none;font:600 13px Outfit,Outfit Fallback,system-ui,sans-serif;color:#004C3F;cursor:pointer;padding:5px 6px;border-radius:6px}' +
     '.jmc-l.mu{color:#8A9488}' +
     '@media (prefers-reduced-motion:reduce){.jmc-p{animation:none}}';
 

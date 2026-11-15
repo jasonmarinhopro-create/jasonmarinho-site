@@ -88,14 +88,14 @@
       /* Logo */
       '.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}',
       '.n-logo-mk{display:block;width:32px;height:32px;flex-shrink:0;background:#fff;opacity:.92;-webkit-mask:url(/logo-nav.webp) center/contain no-repeat;mask:url(/logo-nav.webp) center/contain no-repeat;transition:background .3s}',
-      '.n-brand{font-family:\'Fraunces\',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}',
+      '.n-brand{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}',
       '.n-brand em{color:var(--y);font-style:italic;font-weight:300}',
 
       /* Desktop links */
       '.n-links{display:flex;flex-direction:row;align-items:center;gap:4px;list-style:none;margin:0;padding:0}',
-      '.n-link{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;font-family:\'Outfit\',sans-serif;font-weight:500;padding:6px 12px;border-radius:7px;transition:color .2s,background .2s;white-space:nowrap}',
+      '.n-link{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;font-weight:500;padding:6px 12px;border-radius:7px;transition:color .2s,background .2s;white-space:nowrap}',
       '.n-link:hover,.n-link.active{color:#fff}',
-      '.n-btn{background:none;border:none;color:rgba(255,255,255,.55);font:500 14px/1 \'Outfit\',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;transition:color .2s;white-space:nowrap}',
+      '.n-btn{background:none;border:none;color:rgba(255,255,255,.55);font:500 14px/1 \'Outfit\',\'Outfit Fallback\',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;transition:color .2s;white-space:nowrap}',
       '.n-btn:hover,.n-drop:hover .n-btn{color:#fff}',
       '.n-caret{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;flex-shrink:0}',
       '.n-drop:hover .n-caret,.n-drop.open .n-caret{transform:rotate(180deg)}',
@@ -112,7 +112,7 @@
       '.n-drop.open>.n-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}',
       '.n-col{display:flex;flex-direction:column;gap:1px;min-width:180px}',
       '.n-col-title{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.75);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap}',
-      '.n-mega a{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.65);font-size:13.5px;font-family:\'Outfit\',sans-serif;text-decoration:none;padding:8px 9px;border-radius:7px;transition:color .15s,background .15s;white-space:nowrap}',
+      '.n-mega a{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.65);font-size:13.5px;font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;text-decoration:none;padding:8px 9px;border-radius:7px;transition:color .15s,background .15s;white-space:nowrap}',
       '.n-mega a:hover{color:#fff;background:rgba(255,255,255,.05)}',
       '.n-mega a.active{color:var(--y)}',
       '.n-mega a i{font-size:15px;color:rgba(255,213,107,.55);flex-shrink:0;width:16px;text-align:center}',
@@ -122,7 +122,7 @@
       /* Mega services : 3 colonnes par intention + carte vedette */
       '.n-mega-svc{min-width:980px;padding:28px 28px 24px;gap:32px}',
       '.n-mega-svc .n-col-svc{flex:1;min-width:200px;display:flex;flex-direction:column;gap:2px}',
-      '.n-mega-svc .n-col-svc-h{font-family:\'Fraunces\',serif;font-size:15px;font-weight:500;color:#fff;letter-spacing:-.01em;margin:0 0 4px}',
+      '.n-mega-svc .n-col-svc-h{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:15px;font-weight:500;color:#fff;letter-spacing:-.01em;margin:0 0 4px}',
       '.n-mega-svc .n-col-svc-cap{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5;margin:0 0 14px}',
       '.n-mega-svc .n-col-svc a{justify-content:space-between;padding:7px 0;color:rgba(255,255,255,.78);font-size:14px;border-radius:0;border-bottom:1px solid transparent;transition:color .15s}',
       '.n-mega-svc .n-col-svc a:hover{background:transparent;color:var(--y)}',
@@ -137,7 +137,7 @@
       '.n-mega-svc .n-feat:hover .n-feat-cta{background:var(--y);color:var(--gd)}',
       '.n-mega-svc .n-feat-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);padding:3px 10px;border-radius:999px;background:rgba(255,213,107,.10);align-self:flex-start;display:inline-flex;align-items:center;gap:5px}',
       '.n-mega-svc .n-feat-dot{width:5px;height:5px;border-radius:50%;background:var(--y);box-shadow:0 0 7px rgba(255,213,107,.7)}',
-      '.n-mega-svc .n-feat-h{font-family:\'Fraunces\',serif;font-size:19px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0;color:#fff;white-space:normal}',
+      '.n-mega-svc .n-feat-h{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:19px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0;color:#fff;white-space:normal}',
       '.n-mega-svc .n-feat-h em{color:var(--y);font-style:italic;font-weight:300}',
       '.n-mega-svc .n-feat-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.55;margin:0;white-space:normal}',
       '.n-mega-svc .n-feat-cta{margin-top:auto;display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:rgba(255,213,107,.15);color:var(--y);font-weight:600;font-size:12.5px;border-radius:8px;text-decoration:none;align-self:flex-start;transition:background .2s,color .2s}',
@@ -162,7 +162,7 @@
       '.n-ann-chk>span{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:500;padding:6px 8px;border-radius:7px;background:rgba(255,255,255,.09)}',
       '.n-mega a.n-ann-vc .n-ann-chk i{font-size:13px;width:auto;color:inherit;opacity:.85}',
       '.n-ann-chk b{margin-left:auto;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:rgba(255,213,107,.8);color:#3d3a10}',
-      '.n-ann-vt{font-family:\'Fraunces\',serif;font-size:18px;font-weight:500;line-height:1.2;display:block}',
+      '.n-ann-vt{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:18px;font-weight:500;line-height:1.2;display:block}',
       '.n-ann-vs{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.68)}',
       '.n-mega a.n-ann-vc .n-ann-vs i{font-size:11px;width:auto;color:inherit;transition:transform .18s}',
       '.n-mega a.n-ann-vc:hover .n-ann-vs{color:var(--y)}',
@@ -186,7 +186,7 @@
       '.n-res-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}',
       '.n-mega .n-res-hd a{padding:0;color:var(--gd);background:transparent;white-space:nowrap}',
       '.n-mega .n-res-hd a:hover,.n-mega .n-res-hd a.active{background:transparent;color:var(--gd)}',
-      '.n-mega .n-res-hd a.n-res-h{font-family:\'Fraunces\',serif;font-size:19px;font-weight:500;gap:8px}',
+      '.n-mega .n-res-hd a.n-res-h{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:19px;font-weight:500;gap:8px}',
       '.n-mega .n-res-hd a.n-res-all{font-size:12.5px;font-weight:600;gap:5px}',
       '.n-mega .n-res-hd a i{color:var(--gd);width:auto;font-size:16px}',
       '.n-mega .n-res-hd a.n-res-all i{font-size:11px}',
@@ -220,7 +220,7 @@
       '.n-mega-res .n-res-part .n-res-ico{background:rgba(255,213,107,.10);color:var(--y)}',
       '.n-mega-res .n-res-card i.n-res-deco{position:absolute;right:-14px;top:40px;font-size:120px;opacity:.10;width:auto}',
       '.n-mega-res .n-res-part i.n-res-deco{color:var(--y)}',
-      '.n-mega-res .n-res-t{font-family:\'Fraunces\',serif;font-size:19px;font-weight:500;letter-spacing:-.01em;position:relative}',
+      '.n-mega-res .n-res-t{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:19px;font-weight:500;letter-spacing:-.01em;position:relative}',
       '.n-mega-res .n-res-part .n-res-t{color:#fff}',
       '.n-mega-res .n-res-d{font-size:12.5px;line-height:1.45;position:relative}',
       '.n-mega-res .n-res-part .n-res-d{color:rgba(255,255,255,.6)}',
@@ -240,7 +240,7 @@
       '.n-mega-svc3{display:flex;flex-direction:column;gap:0;width:min(820px,94vw);padding:22px 24px 0}',
       '.n-svc3-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}',
       '.n-svc3-col{display:flex;flex-direction:column;gap:1px;min-width:0}',
-      '.n-svc3-h{display:flex;align-items:center;gap:9px;font-family:\'Fraunces\',serif;font-size:16px;font-weight:500;color:#fff;margin:0 0 3px}',
+      '.n-svc3-h{display:flex;align-items:center;gap:9px;font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:16px;font-weight:500;color:#fff;margin:0 0 3px}',
       '.n-svc3-h i{color:var(--y);font-size:17px}',
       '.n-svc3-cap{font-size:12px;color:rgba(255,255,255,.6);margin:0 0 8px}',
       '.n-mega .n-svc3-col a{padding:7px 8px;margin:0 -8px;white-space:normal;line-height:1.3}',
@@ -276,7 +276,7 @@
       '.n-mega a.n-tar-card .n-tar-grid i{background:linear-gradient(135deg,#4d7a5a,#2d6466)}',
       '.n-mega a.n-tar-card .n-tar-grid i:nth-child(2n){background:linear-gradient(135deg,#2d6466,#55785a)}',
       '.n-tar-foot{display:block}',
-      '.n-tar-t{font-family:\'Fraunces\',serif;font-size:18px;font-weight:500;line-height:1.2;display:block}',
+      '.n-tar-t{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:18px;font-weight:500;line-height:1.2;display:block}',
       '.n-tar-s{font-size:12px;line-height:1.4;opacity:.72;display:block;margin-top:3px}',
       '.n-tar-side{display:flex;flex-direction:column;gap:1px;min-width:220px;padding-left:6px}',
       '.n-tar-side .n-col-title{margin-bottom:4px;padding-bottom:6px}',
@@ -314,9 +314,9 @@
 
       /* Right CTAs */
       '.n-right{display:flex;align-items:center;gap:8px;flex-shrink:0}',
-      '.nb-o{font-family:\'Outfit\',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18);background:transparent;padding:10px 15px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;min-height:40px}',
+      '.nb-o{font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18);background:transparent;padding:10px 15px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;min-height:40px}',
       '.nb-o:hover{border-color:rgba(255,255,255,.4);color:#fff}',
-      '.nb-c{font-family:\'Outfit\',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:10px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;min-height:40px}',
+      '.nb-c{font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:10px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;min-height:40px}',
       '.nb-c:hover{background:#ffe08f}',
 
       /* Le site en chiffres (07/11/2026, idée reprise de Hospia) : bouton graphique + panneau
@@ -329,17 +329,17 @@
       'nav#nav.nv-light .nb-st:hover{border-color:#9DB8AC}',
       'nav#nav.nv-light .nb-st[aria-expanded="true"]{background:var(--g);border-color:var(--g);color:#fff}',
       'nav#nav.nv-light .nb-st-dot{box-shadow:0 0 0 2px #fff}',
-      '.nst{position:absolute;top:calc(100% + 10px);right:0;width:min(420px,calc(100vw - 16px));background:#fff;border:1px solid #E3EAE6;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.32);padding:20px;display:none;flex-direction:column;gap:14px;z-index:310;color:#0F1A0D;font-family:\'Outfit\',sans-serif;text-align:left;cursor:default}',
+      '.nst{position:absolute;top:calc(100% + 10px);right:0;width:min(420px,calc(100vw - 16px));background:#fff;border:1px solid #E3EAE6;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.32);padding:20px;display:none;flex-direction:column;gap:14px;z-index:310;color:#0F1A0D;font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;text-align:left;cursor:default}',
       '.nst.open{display:flex}',
       '.nst-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}',
-      '.nst-t{font:500 20px/1.2 \'Fraunces\',serif;color:#0F1A0D}',
+      '.nst-t{font:500 20px/1.2 \'Fraunces\',\'Fraunces Fallback\',serif;color:#0F1A0D}',
       '.nst-s{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:12.5px;color:#4A5C47}',
       '.nst-s:before{content:"";width:7px;height:7px;border-radius:99px;background:#2BB673}',
       '.nst-b{flex-shrink:0;font-size:11.5px;font-weight:600;color:var(--g);background:#E8F0EC;border-radius:99px;padding:4px 10px;white-space:nowrap}',
       '.nst-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}',
       '.nst-c{border-radius:14px;background:#F5F8F6;padding:12px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}',
       '.nst-c span{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:#4A5C47}',
-      '.nst-c b{font:500 26px/1.1 \'Fraunces\',serif;color:#0F1A0D;font-variant-numeric:tabular-nums}',
+      '.nst-c b{font:500 26px/1.1 \'Fraunces\',\'Fraunces Fallback\',serif;color:#0F1A0D;font-variant-numeric:tabular-nums}',
       '.nst-c em{font-style:normal;font-size:12px;font-weight:600;color:#0B6B4F}',
       '.nst-c em.nst-n{color:#4A5C47;font-weight:500}',
       '.nst-ch{border:1px solid #E5ECE8;border-radius:14px;padding:12px 14px 10px}',
@@ -376,7 +376,7 @@
       '.mob-menu a:hover,.mob-menu a:active{color:#fff}',
       '.mob-menu a i{font-size:17px;color:rgba(255,213,107,.6);flex-shrink:0;width:20px;text-align:center}',
       '.mob-acc{border-bottom:1px solid rgba(255,255,255,.06)}',
-      '.mob-acc-btn{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:13px;padding:13px 0;color:#fff;font-family:\'Outfit\',sans-serif;text-align:left;-webkit-tap-highlight-color:transparent}',
+      '.mob-acc-btn{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:13px;padding:13px 0;color:#fff;font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;text-align:left;-webkit-tap-highlight-color:transparent}',
       '.mob-acc-ico{width:38px;height:38px;border-radius:10px;background:rgba(255,213,107,.09);color:var(--y);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .2s,color .2s}',
       '.mob-acc-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}',
       '.mob-acc-txt b{font-size:16px;font-weight:500;line-height:1.2;transition:color .2s}',
@@ -436,7 +436,7 @@
       '.mob-menu a.mob-vc .mob-vc-ico i{font-size:19px;width:auto;color:inherit}',
       '.mob-vc-blog .mob-vc-ico{background:rgba(0,51,41,.1);color:var(--gd)}',
       '.mob-vc-part .mob-vc-ico{background:rgba(255,213,107,.1);color:var(--y)}',
-      '.mob-vt{font-family:\'Fraunces\',serif;font-size:16.5px;font-weight:500;line-height:1.2}',
+      '.mob-vt{font-family:\'Fraunces\',\'Fraunces Fallback\',serif;font-size:16.5px;font-weight:500;line-height:1.2}',
       '.mob-vs{display:flex;align-items:center;gap:5px;font-size:12px;opacity:.72}',
       '.mob-menu a.mob-vc .mob-vs i{font-size:11px;width:auto;color:inherit}',
 
@@ -1476,7 +1476,7 @@
       var box = document.createElement('aside');
       box.id = 'bf-lodgify';
       box.setAttribute('aria-label', 'Offre Black Friday Lodgify');
-      box.style.cssText = 'margin:0 0 18px;padding:16px 18px;border-radius:16px;background:#FFF4D2;border:1px solid #F2E2A8;color:#4A4022;font-family:Outfit,system-ui,sans-serif;font-size:14.5px;line-height:1.55;text-align:left;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px';
+      box.style.cssText = 'margin:0 0 18px;padding:16px 18px;border-radius:16px;background:#FFF4D2;border:1px solid #F2E2A8;color:#4A4022;font-family:Outfit,Outfit Fallback,system-ui,sans-serif;font-size:14.5px;line-height:1.55;text-align:left;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px';
       var txt = actif
         ? '<strong style="color:#0F1A0D">Black Friday Lodgify : -65 % avec le code JASON65</strong>, jusqu’au 12 décembre. Sur les abonnements Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. Ajoute le code au paiement.'
         : '<strong style="color:#0F1A0D">Black Friday Lodgify : -65 % avec le code JASON65</strong>, du 12 novembre au 12 décembre. Sur les abonnements Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. D’ici là, le code JASON15 reste valable.';

@@ -6,6 +6,7 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
+import { parsePaypalMe } from '@/lib/contracts/paypal'
 
 const log = logger('profil/actions')
 
@@ -54,6 +55,27 @@ export async function saveIban(iban: string, bic: string): Promise<{ error?: str
   revalidatePath('/dashboard', 'layout')
 
   return {}
+}
+
+/** Lien PayPal.me (migration 187) : on garde le seul nom, vide pour retirer */
+export async function savePaypal(input: string): Promise<{ error?: string; name?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+
+  const raw = input.trim()
+  const name = raw ? parsePaypalMe(raw) : null
+  if (raw && !name) return { error: 'Lien PayPal.me non reconnu. Exemple : paypal.me/TonNom' }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ paypal_me: name, updated_at: new Date().toISOString() })
+    .eq('id', user.id)
+  if (error) return { error: /paypal_me/.test(error.message) ? 'Encore quelques minutes : la mise à jour de la base est en cours.' : `Erreur: ${error.message}` }
+
+  invalidateProfileCache(user.id)
+  revalidatePath('/dashboard/profil')
+  return { name: name ?? '' }
 }
 
 export async function saveFacturation(entrepriseNumero: string, mentionTva: string): Promise<{ error?: string }> {
