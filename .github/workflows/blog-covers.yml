@@ -1,0 +1,69 @@
+# Photos de couverture des articles (15/11/2026), voir scripts/blog-covers.mjs.
+# - Push de .github/covers-trigger sur claude/** (1re ligne « <mode> <argument> »)
+#   ou lancement à la main : propositions, planches, variantes ou photos
+#   retenues, enregistrées sur la branche (rien ne part en ligne avant fusion).
+# - Chaque jour : couverture des articles publiés depuis 30 jours qui n'en ont
+#   pas (routine Rédaction), enregistrée directement sur main.
+# Clé : secret PEXELS_API_KEY (compte Pexels de Jason, gratuit).
+name: Couvertures blog
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'chercher | variantes | prendre | auto | driing'
+        required: true
+        default: 'auto'
+      arg:
+        description: 'tout, liste de slugs, slug=id…'
+        required: false
+        default: ''
+  push:
+    branches: ['claude/**']
+    paths: ['.github/covers-trigger']
+  schedule:
+    - cron: '23 11 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-covers-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  covers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: ImageMagick
+        run: command -v montage || (sudo apt-get update -q && sudo apt-get install -y -q imagemagick)
+      - name: Mode
+        id: m
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "mode=$(head -1 .github/covers-trigger | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+            echo "arg=$(head -1 .github/covers-trigger | cut -s -d' ' -f2-)" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "mode=auto" >> "$GITHUB_OUTPUT"; echo "arg=" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"; echo "arg=${{ inputs.arg }}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Photos
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: node scripts/blog-covers.mjs "${{ steps.m.outputs.mode }}" "${{ steps.m.outputs.arg }}"
+      - name: Enregistrer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/blog-covers img/blog data/blog-covers.json 2>/dev/null || true
+          git commit -m "blog: couvertures (${{ steps.m.outputs.mode }})" || exit 0
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 10
+          done
+          exit 1
