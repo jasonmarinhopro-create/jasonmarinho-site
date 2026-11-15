@@ -21,10 +21,10 @@ on:
   push:
     branches: ['claude/**']
     paths: ['.github/covers-trigger']
-  # Passage quotidien (mode auto) : à activer une fois les 225 articles
-  # existants traités et vérifiés (sinon il prendrait les photos sans contrôle)
-  # schedule:
-  #   - cron: '23 11 * * *'
+  # Passage quotidien (mode auto) : articles récents sans couverture
+  # (activé le 15/11/2026 après contrôle des 225 couvertures existantes)
+  schedule:
+    - cron: '23 11 * * *'
 
 permissions:
   contents: write
