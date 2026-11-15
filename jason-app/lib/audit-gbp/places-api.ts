@@ -143,6 +143,45 @@ export async function searchPlaceByText(query: string, apiKey: string, includedT
   return data.places?.[0]?.id ?? null
 }
 
+export interface PlaceCandidate { id: string; nom: string; adresse: string; categorie: string; hebergement: boolean }
+
+// ─── Fiches candidates pour un nom (audit express public, 15/11/2026) ───
+// Un nom seul désigne souvent plusieurs établissements : on rend jusqu'à 8
+// fiches avec nom, adresse et catégorie, hébergements en premier, et l'hôte
+// choisit la sienne. Un seul appel Google, quel que soit le nombre de fiches.
+export async function searchPlaceCandidates(query: string, apiKey: string): Promise<PlaceCandidate[]> {
+  await takePlacesCall('text_search_names')
+  const res = await fetch(`${PLACES_API_BASE}/places:searchText`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': apiKey,
+      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.primaryType,places.primaryTypeDisplayName,places.types',
+    },
+    body: JSON.stringify({ textQuery: query, maxResultCount: 12, languageCode: 'fr' }),
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Places searchText ${res.status}: ${text}`)
+  }
+  const data = await res.json() as { places?: Array<Pick<PlaceDetails, 'id' | 'displayName' | 'formattedAddress' | 'primaryType' | 'primaryTypeDisplayName' | 'types'>> }
+  return rankCandidates(data.places ?? [])
+}
+
+const LODGING = /lodging|hotel|motel|hostel|guest_house|bed_and_breakfast|cottage|vacation|holiday|aparthotel|country_house|resort|camp|inn\b|villa|chalet/i
+
+/** Hébergements d'abord (ordre de Google conservé dans chaque groupe), 8 au plus. Pur, testé. */
+export function rankCandidates(places: Array<Pick<PlaceDetails, 'id' | 'displayName' | 'formattedAddress' | 'primaryType' | 'primaryTypeDisplayName' | 'types'>>): PlaceCandidate[] {
+  const all = places.filter(p => p && typeof p.id === 'string' && p.id).map(p => ({
+    id: p.id,
+    nom: p.displayName?.text ?? '',
+    adresse: p.formattedAddress ?? '',
+    categorie: p.primaryTypeDisplayName?.text ?? '',
+    hebergement: LODGING.test(`${p.primaryType ?? ''} ${(p.types ?? []).join(' ')}`),
+  }))
+  return [...all.filter(c => c.hebergement), ...all.filter(c => !c.hebergement)].slice(0, 8)
+}
+
 // ─── Récupère les détails d'un lieu par son ID ───
 export async function getPlaceDetails(placeId: string, apiKey: string): Promise<PlaceDetails> {
   await takePlacesCall('place_details_atmosphere')

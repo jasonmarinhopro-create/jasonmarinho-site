@@ -2,9 +2,10 @@ import { describe, it, expect, vi } from 'vitest'
 
 vi.mock('server-only', () => ({}))
 vi.mock('@/lib/supabase/service', () => ({ getServiceClient: () => ({}) }))
+vi.mock('@/lib/google/places-budget', () => ({ takePlacesCall: async () => {}, PlacesBudgetError: class extends Error {} }))
 
 import { auditExpress, isGoogleMapsUrl, expressVerdict, nameFromGoogleUrl } from './express'
-import type { PlaceDetails } from './places-api'
+import { rankCandidates, type PlaceDetails } from './places-api'
 
 const complete: PlaceDetails = {
   id: 'ChIJexemple0000000000000000',
@@ -97,5 +98,21 @@ describe('nom de l’établissement dans une adresse Google', () => {
     for (const u of ['https://www.google.com/share.google?q=ex3VsvVXPZmND7e9i', 'https://www.google.com/maps/@43.6,-1.4,17z', 'https://www.google.com/search?q=place_id:ChIJxxx', 'https://evil.test/search?q=Casa', 'pas une adresse', 'https://www.google.com/search?q=a']) {
       expect(nameFromGoogleUrl(u)).toBeNull()
     }
+  })
+})
+
+describe('fiches candidates', () => {
+  it('met les hébergements en premier et garde l’ordre de Google', () => {
+    const r = rankCandidates([
+      { id: 'a', displayName: { text: 'Casa do Pedreiro' }, formattedAddress: 'Cabo Frio, Brésil', primaryType: 'hardware_store', primaryTypeDisplayName: { text: 'Magasin de matériaux' }, types: ['hardware_store', 'store'] },
+      { id: 'b', displayName: { text: 'Casa do Pedreiro' }, formattedAddress: 'Valadares, Portugal', primaryType: 'lodging', primaryTypeDisplayName: { text: 'Hébergement' }, types: ['lodging'] },
+      { id: 'c', displayName: { text: 'Casa do Pedreiro' }, formattedAddress: 'Braga, Portugal', types: ['guest_house', 'lodging'] },
+      { id: '', displayName: { text: 'sans identifiant' } },
+    ])
+    expect(r.map(c => c.id)).toEqual(['b', 'c', 'a'])
+    expect(r[0]).toEqual({ id: 'b', nom: 'Casa do Pedreiro', adresse: 'Valadares, Portugal', categorie: 'Hébergement', hebergement: true })
+  })
+  it('huit fiches au plus', () => {
+    expect(rankCandidates(Array.from({ length: 12 }, (_, i) => ({ id: 'p' + i }))).length).toBe(8)
   })
 })

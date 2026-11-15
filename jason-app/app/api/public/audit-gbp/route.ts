@@ -9,7 +9,7 @@
 // appel au-delà du plafond gratuit. On garde la fiche auditée et sa note pour
 // le suivi de l'admin (annonce_analyses, outil « gbp »), rien sur le visiteur.
 import { NextResponse } from 'next/server'
-import { resolveMapsUrl, extractPlaceIdFromUrl, searchPlaceByText, getPlaceDetails } from '@/lib/audit-gbp/places-api'
+import { resolveMapsUrl, extractPlaceIdFromUrl, searchPlaceCandidates, getPlaceDetails } from '@/lib/audit-gbp/places-api'
 import { auditExpress, isGoogleMapsUrl, nameFromGoogleUrl } from '@/lib/audit-gbp/express'
 import { PlacesBudgetError } from '@/lib/google/places-budget'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
@@ -63,9 +63,16 @@ export async function POST(req: Request) {
   if (!ua || ROBOT.test(ua)) return json(req, { error: 'Accès refusé.' }, 403)
 
   let q = ''
-  try { q = String(((await req.json()) as { q?: unknown })?.q ?? '').trim() } catch { /* corps illisible */ }
-  if (q.length < 3 || q.length > 400) return json(req, { error: 'Colle le lien Google Maps de ta fiche, ou écris le nom de ton logement et sa ville.' }, 400)
-  const estLien = /^https?:\/\//i.test(q)
+  // id : fiche choisie par l'hôte dans la liste proposée (deuxième appel de la page)
+  let choisi: string | null = null
+  try {
+    const corps = (await req.json()) as { q?: unknown; id?: unknown }
+    q = String(corps?.q ?? '').trim()
+    const brut = typeof corps?.id === 'string' ? corps.id.trim() : ''
+    if (/^ChIJ[A-Za-z0-9_-]{8,200}$/.test(brut)) choisi = brut
+  } catch { /* corps illisible */ }
+  if (!choisi && (q.length < 3 || q.length > 400)) return json(req, { error: 'Colle le lien Google Maps de ta fiche, ou écris le nom de ton logement et sa ville.' }, 400)
+  const estLien = !choisi && /^https?:\/\//i.test(q)
   if (estLien && !isGoogleMapsUrl(q)) return json(req, { error: 'Ce lien n’est pas un lien Google Maps. Ouvre ta fiche sur Google Maps et copie l’adresse de la page, ou écris simplement le nom de ton logement et sa ville.' }, 400)
 
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
@@ -81,7 +88,7 @@ export async function POST(req: Request) {
     // prend l'identifiant de la fiche s'il est dans l'adresse, sinon le nom de
     // l'établissement. Jamais l'adresse elle-même comme texte de recherche :
     // chaque essai raté consommerait la part gratuite de Google.
-    let id: string | null = null
+    let id: string | null = choisi
     let texte = q
     if (estLien) {
       const adresse = await resolveMapsUrl(q)
@@ -102,10 +109,15 @@ export async function POST(req: Request) {
         texte = nom
       }
     }
-    // D'abord parmi les hébergements (évite les homonymes), puis sans filtre
-    if (!id) id = await searchPlaceByText(texte, apiKey, 'lodging')
-    if (!id) id = await searchPlaceByText(texte, apiKey)
-    if (!id) return json(req, { error: 'Aucune fiche Google trouvée avec ce nom. Ajoute la ville, ou colle le lien Google Maps de ta fiche.' }, 404)
+    // Un nom désigne souvent plusieurs établissements (le premier essai en
+    // ligne a audité un magasin homonyme au Brésil) : une seule fiche trouvée,
+    // on l'audite ; plusieurs, l'hôte choisit la sienne.
+    if (!id) {
+      const candidats = await searchPlaceCandidates(texte, apiKey)
+      if (!candidats.length) return json(req, { error: 'Aucune fiche Google trouvée avec ce nom. Ajoute la ville de ton logement.' }, 404)
+      if (candidats.length > 1) return json(req, { choix: candidats.map(c => ({ id: c.id, nom: c.nom, adresse: c.adresse, categorie: c.categorie })), cherche: texte })
+      id = candidats[0].id
+    }
     const place = await getPlaceDetails(id, apiKey)
     const r = auditExpress(place)
 
