@@ -26,15 +26,20 @@ describe('compteur des analyses d’annonce', () => {
 describe('dernières analyses d’annonce', () => {
   it('refait le lien à partir du numéro et garde les sous-notes', () => {
     expect(parseAnnonceAnalyses([{ created_at: '2026-11-15T14:38:45Z', score: 83, complet: true, annonce_id: '1495606164171440082', sections: [{ id: 'titre', score: 20, max: 20 }, { id: 'photos', score: 17, max: 25 }, { cassé: true }] }]))
-      .toEqual([{ date: '2026-11-15T14:38:45Z', score: 83, complet: true, lien: 'https://www.airbnb.fr/rooms/1495606164171440082', sections: [{ id: 'titre', score: 20, max: 20 }, { id: 'photos', score: 17, max: 25 }] }])
+      .toEqual([{ date: '2026-11-15T14:38:45Z', score: 83, complet: true, lien: 'https://www.airbnb.fr/rooms/1495606164171440082', libelle: null, sections: [{ id: 'titre', score: 20, max: 20 }, { id: 'photos', score: 17, max: 25 }] }])
   })
   it('ligne d’avant la migration : pas de lien, pas de sous-notes', () => {
     expect(parseAnnonceAnalyses([{ created_at: '2026-11-15T14:38:45Z', score: 83, complet: true, annonce_id: null, sections: null }]))
-      .toEqual([{ date: '2026-11-15T14:38:45Z', score: 83, complet: true, lien: null, sections: [] }])
+      .toEqual([{ date: '2026-11-15T14:38:45Z', score: 83, complet: true, lien: null, libelle: null, sections: [] }])
   })
   it('refuse un numéro qui n’en est pas un et ignore les lignes illisibles', () => {
     expect(parseAnnonceAnalyses([{ created_at: '2026-11-15T14:00:00Z', score: 50, annonce_id: 'https://evil.test/x' }, null, { score: 2 }, 'x']))
-      .toEqual([{ date: '2026-11-15T14:00:00Z', score: 50, complet: true, lien: null, sections: [] }])
+      .toEqual([{ date: '2026-11-15T14:00:00Z', score: 50, complet: true, lien: null, libelle: null, sections: [] }])
     expect(parseAnnonceAnalyses(null)).toEqual([])
+  })
+  it('fiche Google : lien Google Maps et nom de l’établissement', () => {
+    expect(parseAnnonceAnalyses([{ created_at: '2026-11-15T16:00:00Z', score: 72, complet: true, annonce_id: 'ChIJexemple0000000000000000', libelle: 'Gîte des Pins', sections: [{ id: 'avis', score: 30, max: 40 }] }], 'gbp'))
+      .toEqual([{ date: '2026-11-15T16:00:00Z', score: 72, complet: true, lien: 'https://www.google.com/maps/place/?q=place_id:ChIJexemple0000000000000000', libelle: 'Gîte des Pins', sections: [{ id: 'avis', score: 30, max: 40 }] }])
+    expect(parseAnnonceAnalyses([{ created_at: '2026-11-15T16:00:00Z', score: 72, annonce_id: 'a b' }], 'gbp')[0].lien).toBeNull()
   })
 })
