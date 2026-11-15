@@ -1,7 +1,8 @@
 // POST /api/analyse-annonce { lien } : lit la page publique d'une annonce
 // Airbnb et rend les faits utiles à l'analyse (15/11/2026, demande de Jason).
 // La note est calculée dans le navigateur par /analyse-annonce-regles.js.
-// Aucune IA, aucun service tiers, rien n'est enregistré. Lecture et extraction
+// Aucune IA, aucun service tiers. Seul un compteur anonyme est tenu (note sur
+// 100 et lecture complète ou non, table annonce_analyses) : ni lien ni visiteur. Lecture et extraction
 // dans scripts/api-analyse/lire-annonce.cjs (code partagé hors de api/ :
 // 6 fonctions sur les 12 permises).
 //
@@ -13,6 +14,7 @@
 // - Airbnb sert une page allégée (sans photos ni équipements) à certains
 //   logiciels : l'analyse est alors partielle (complet = false), jamais fausse.
 const { idAnnonce, extraireAnnonce } = require('../scripts/api-analyse/lire-annonce.cjs')
+const { analyser } = require('../analyse-annonce-regles.js')
 
 const DELAI_MS = 12000
 const TAILLE_MAX = 4 * 1024 * 1024
@@ -20,6 +22,22 @@ const GARDE_MS = 15 * 60 * 1000
 // Identité d'un client HTTP en ligne de commande : c'est avec elle qu'Airbnb
 // sert la page complète (mesuré le 15/11/2026). Pas d'imitation de navigateur.
 const USER_AGENT = 'curl/8.5.0'
+
+// Compteur de l'admin (migration 189) : la note et « lecture complète »,
+// rien sur l'annonce ni sur le visiteur. Un échec n'empêche jamais de répondre.
+async function compter(annonce) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) return
+  try {
+    await fetch(`${url}/rest/v1/annonce_analyses`, {
+      method: 'POST',
+      headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ score: analyser(annonce).score, complet: !!annonce.complet }),
+      signal: AbortSignal.timeout(2500),
+    })
+  } catch (err) { console.warn('[analyse-annonce] compteur', { err: err && err.name }) }
+}
 
 const cache = new Map()
 const limites = new Map()
@@ -49,7 +67,7 @@ module.exports = async function handler(req, res) {
   if (!id) return res.status(400).json({ error: 'Ce lien n\'est pas celui d\'une annonce Airbnb. Il doit ressembler à https://www.airbnb.fr/rooms/123456.' })
 
   const garde = cache.get(id)
-  if (garde && Date.now() - garde.t < GARDE_MS) return res.status(200).json(garde.data)
+  if (garde && Date.now() - garde.t < GARDE_MS) { await compter(garde.data.annonce); return res.status(200).json(garde.data) }
 
   try {
     const r = await fetch('https://www.airbnb.fr/rooms/' + id, {
@@ -72,6 +90,7 @@ module.exports = async function handler(req, res) {
     const data = { lien: 'https://www.airbnb.fr/rooms/' + id, annonce: a }
     if (cache.size > 200) cache.clear()
     cache.set(id, { t: Date.now(), data })
+    await compter(a)
     return res.status(200).json(data)
   } catch (err) {
     console.warn('[analyse-annonce] échec', { err: err && err.name })
