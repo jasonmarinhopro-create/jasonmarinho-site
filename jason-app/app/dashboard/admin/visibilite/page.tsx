@@ -63,7 +63,7 @@ export default async function VisibilitePage({ searchParams }: { searchParams: {
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
       <VisibiliteView data={data} tab={tab} />
-      {(tab === 'ensemble' || tab === 'partenaires') && <div style={{ marginTop: 16 }}><AnalysesCard /></div>}
+      {(tab === 'ensemble' || tab === 'partenaires') && <div style={{ marginTop: 16 }}><AnalysesCard outil="airbnb" /><AnalysesCard outil="gbp" /></div>}
     </div>
   )
 }
