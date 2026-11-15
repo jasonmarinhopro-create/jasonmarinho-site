@@ -74,14 +74,48 @@ jobs:
             echo "Branche $BRANCH mergée dans main ✅"
             git push origin --delete "$BRANCH" || true
           else
-            # Conflit probable (article publié entre-temps) : on ouvre une PR
-            # pour que ce soit VISIBLE au lieu d'échouer en silence.
-            gh pr create --repo "${{ github.repository }}" \
-              --base main --head "$BRANCH" \
-              --title "Article en conflit : $BRANCH" \
-              --body "🤖 Merge automatique impossible (conflit avec un article publié entre-temps). Demande à Claude : « répare les conflits de cette PR »." \
-              || true
-            exit 1
+            # Conflit (15/11/2026) : la page du blog, les catégories, rss.xml
+            # et sitemap.xml sont régénérés à chaque publication et changent
+            # aussi sur main (compteur d'articles, polices). On fusionne main
+            # dans la branche ; si seuls ces fichiers générés sont en conflit,
+            # on repart de ceux de main et on les régénère depuis
+            # blog/articles-data.mjs fusionné (testé en local sur le conflit
+            # du 14/11). Tout autre conflit reste à réparer à la main.
+            # (L'ancienne PR de secours échouait : GitHub Actions n'a pas le
+            # droit de créer de pull request sur ce dépôt.)
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git fetch origin main --quiet
+            if ! git merge origin/main --no-edit -m "Publication auto : main fusionnée dans $BRANCH"; then
+              CONFLICTS=$(git diff --name-only --diff-filter=U)
+              echo "Fichiers en conflit :"; echo "$CONFLICTS"
+              OK=true
+              while IFS= read -r f; do
+                case "$f" in
+                  blog/index.html|blog/categorie/*|rss.xml|sitemap.xml) ;;
+                  *) OK=false ;;
+                esac
+              done <<< "$CONFLICTS"
+              if [ "$OK" != true ]; then
+                git merge --abort
+                echo "::error::Conflit hors fichiers générés : demande à Claude de réparer la branche $BRANCH"
+                exit 1
+              fi
+              while IFS= read -r f; do git checkout --theirs -- "$f"; done <<< "$CONFLICTS"
+              node scripts/rebuild-blog.mjs
+              node scripts/inject-font-loading.mjs
+              git add -A blog rss.xml sitemap.xml
+              git commit --no-edit
+            fi
+            # On ne publie que des fichiers d'article, comme plus haut
+            BAD=$(git diff --name-only origin/main HEAD | grep -Ev '^(blog/|scripts/articles/|rss\.xml$|sitemap\.xml$|data/actualites-queue/|data/social-queue/|data/social/rapports/|data/social/APPRENTISSAGES\.md$)' || true)
+            if [ -n "$BAD" ]; then
+              echo "::error::Hors périmètre après fusion : $BAD"
+              exit 1
+            fi
+            git push origin "HEAD:main"
+            echo "Conflit réparé, article publié sur main ✅"
+            git push origin --delete "$BRANCH" || true
           fi
 
   # ── Cas PR : une pull request existe → merge de la PR ───────────────────
