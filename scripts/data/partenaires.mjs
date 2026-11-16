@@ -151,7 +151,7 @@ export const OUTILS = [
     badge: 'affilie', offre: 'Expert au téléphone',
     desc: 'Création de société ou de micro-entreprise en ligne, dossier vérifié par des juristes, domiciliation.',
     liens: [
-      { label: 'Créer mon entreprise', href: LEGALSTART_CREATION, sponsored: true },
+      { label: 'Créer ma société', href: LEGALSTART_CREATION, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/legalstart' },
     ],
   },
