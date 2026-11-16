@@ -29,3 +29,15 @@ export function slowestCalls(calls: Array<[string, number]>, n = 5): Array<[stri
   for (const [label, ms] of calls) worst.set(label, Math.max(worst.get(label) ?? 0, ms))
   return [...worst.entries()].sort((a, b) => b[1] - a[1]).slice(0, n)
 }
+
+// Délais des appels à la base (16/11/2026), appliqués par timedFetch (query-log.ts)
+export const DELAI_LECTURE_MS = 15_000
+export const DELAI_ECRITURE_MS = 25_000
+
+/** Délai à appliquer à un appel Supabase ; null pour les fichiers. Pur, testé. */
+export function delaiPour(url: string, method: string | undefined): number | null {
+  if (url.includes('/storage/v1/')) return null
+  const m = (method ?? 'GET').toUpperCase()
+  return m === 'GET' || m === 'HEAD' ? DELAI_LECTURE_MS : DELAI_ECRITURE_MS
+}
+

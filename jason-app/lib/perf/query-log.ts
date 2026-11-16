@@ -3,7 +3,7 @@
 // des clients Supabase serveur ; lu par perfTimer (lib/perf/server-timing.ts)
 // qui ajoute les appels les plus lents au message. Tables et durées seulement.
 import { cache } from 'react'
-import { supabaseCallLabel } from './format'
+import { supabaseCallLabel, delaiPour } from './format'
 
 const store = cache((): Array<[string, number]> => [])
 
@@ -17,12 +17,22 @@ export function queryLog(): Array<[string, number]> | null {
 // aux passages suivants. La publication des réseaux sociaux relisait ainsi
 // l'état de 17 h 40 à chaque passage (ancien conteneur Instagram repris, post
 // Facebook « republié »). Les caches voulus passent par unstable_cache.
+//
+// Délai par appel (16/11/2026) : sans lui, quand la base Supabase ne répondait
+// plus, chaque page attendait jusqu'à la coupure de Vercel (60 s) avant
+// d'afficher une erreur. Désormais une lecture abandonne à 15 s et une
+// écriture ou une fonction SQL à 25 s : la page d'erreur arrive vite et dit ce
+// qui se passe. Les envois de fichiers (/storage/) ne sont pas limités.
 export const timedFetch: typeof fetch = async (input, init) => {
   const t0 = Date.now()
+  const adresse = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+  const delai = delaiPour(adresse, init?.method ?? (typeof input === 'object' && 'method' in input ? input.method : undefined))
+  const limite = delai === null ? null : AbortSignal.timeout(delai)
+  const signal = limite && init?.signal ? AbortSignal.any([init.signal, limite]) : (limite ?? init?.signal ?? undefined)
   try {
-    return await fetch(input, { ...init, cache: init?.cache ?? 'no-store' })
+    return await fetch(input, { ...init, cache: init?.cache ?? 'no-store', signal })
   } finally {
-    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+    const url = adresse
     try { queryLog()?.push([supabaseCallLabel(url), Date.now() - t0]) } catch { /* ignore */ }
   }
 }
