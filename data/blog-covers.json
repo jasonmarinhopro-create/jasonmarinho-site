@@ -1804,5 +1804,13 @@
     "photographer_url": "https://www.pexels.com/@olly",
     "page": "https://www.pexels.com/photo/sign-with-rooms-numbers-hanging-on-white-wall-in-modern-hotel-3926335/",
     "alt": "Sign with room numbers and arrow in golden frame hanging on white wall in modern hotel"
+  },
+  "augmenter-tarifs-lcd-2027-6-regles-revaloriser-sans-perdre-voyageurs": {
+    "source": "pexels",
+    "id": 5877591,
+    "photographer": "https://kaboompics.com/",
+    "photographer_url": "https://www.pexels.com/@karola-g",
+    "page": "https://www.pexels.com/photo/close-up-photo-of-person-writing-on-paper-beside-calculator-5877591/",
+    "alt": "Close-up of hands using a calculator and writing equations on a notebook, perfect for math concepts."
   }
 }
