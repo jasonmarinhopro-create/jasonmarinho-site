@@ -112,3 +112,11 @@ Jason : le site est un projet d'appoint au service de Driing, « on peut pousser
 - **App** : liens de `lib/constants/partners.ts`, `PartenairesView.tsx` et `DriingRequestForm.tsx` avec `utm_medium=app` et une campagne par emplacement. Les clics de l'app ne sont pas comptés chez nous (à lire dans le CRM Driing).
 - **Lecture** : admin, Visibilité, onglet Partenaires, ligne « Driing » (`PARTNERS.driing`, sans commission). Les inscriptions se lisent dans le CRM Driing, source `jasonmarinho.com`.
 - Non fait : liens Driing en texte dans les formations et dans les posts à coller des groupes Facebook (`DRIING_URL`).
+
+## Vue d'ensemble admin en cockpit (16/11/2026, Jason : « un vrai cockpit, page d'atterrissage qui redistribue ailleurs », maquette A)
+
+- Ordre : en-tête (À traiter) · 4 chiffres de revenu · « En ce moment » (le panneau de Provenance, `LivePanel`, rafraîchi toutes les 5 min) · raccourcis vers chaque page admin, rangés comme le menu, avec leur chiffre clé (`Shortcuts`) · Audience (`AudienceCard`) · Membres par espace (`MembersCard`) · activité des hôtes · clics affiliés · Affilae. Composants dans `app/dashboard/admin/Cockpit.tsx`.
+- Audience : `buildAudience` (`lib/acquisition/audience.ts`, testé) sur la même lecture que Provenance (`loadCockpitTraffic`) : aujourd'hui / 7 / 30 jours, visiteurs, inscriptions, devenus clients, clics Google, chacun comparé à la période d'avant ; courbe jour par jour (14 ou 30 jours) avec la période d'avant en pointillés et les jours d'inscription en points jaunes ; sources et pages les plus lues.
+- Membres : `buildMemberSpaces` (`lib/admin/members-cockpit.ts`, testé) : Tous, Hôtes, Investisseurs, Photographes, Ménage, Dépannage ; nombre, nouveaux du mois, courbe sur 12 mois, formules (hôtes) ou fiches payées (pros), 6 derniers inscrits, lien vers la page de l'espace.
+- Retirés : bloc « Erreurs de l'app » (Jason : inutile), « Trafic du site en direct », ancienne carte Provenance, inscriptions sur 12 mois, « Comptes par formule », « Gérer le contenu », « Derniers inscrits » (repris dans Membres).
+- Base injoignable : la Vue d'ensemble n'enregistre plus de zéros (le 16/11 elle affichait « 0 compte » pendant un ralenti) : dernière lecture réussie avec un bandeau, ou message clair.

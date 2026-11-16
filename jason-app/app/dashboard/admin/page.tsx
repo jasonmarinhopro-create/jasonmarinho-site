@@ -3,14 +3,16 @@ import { perfTimer } from '@/lib/perf/server-timing'
 import { redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { getProfile } from '@/lib/queries/profile'
-import { Suspense } from 'react'
-import AcquisitionCard from './AcquisitionCard'
-import { loadAcquisitionSnapshot } from '@/lib/acquisition/load'
+import { Suspense, cache } from 'react'
+import { loadCockpitTraffic } from '@/lib/acquisition/load'
 import AdminUI, { AffiliationCard } from './AdminUI'
+import { LivePanel, AudienceCard } from './Cockpit'
+import { buildMemberSpaces, type CockpitProfile } from '@/lib/admin/members-cockpit'
+import { allRows } from '@/lib/supabase/all-rows'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import { computeRevenue, proSpacesByUser, type ProRow } from '@/lib/admin/revenue'
-import { getCachedLiveVisitors, getCachedChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
+import { getCachedLiveVisitors, getAffiliateClicks } from '@/lib/queries/site-traffic'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 
 // Service client : la RLS limite chaque utilisateur à SES données (profile,
@@ -28,7 +30,7 @@ export const metadata = { title: 'Administration, Jason Marinho' }
 // admin vident le cache (tag admin-overview). Un nouveau membre apparaît donc
 // au plus tard au passage suivant. Le trafic « en direct » reste calculé à
 // chaque fois (rafraîchi toutes les 25 s par LiveTraffic).
-const getAdminOverview = unstable_cache(computeAdminOverview, ['admin-overview-v3'], { revalidate: 180, tags: ['admin-overview'] })
+const getAdminOverview = unstable_cache(computeAdminOverview, ['admin-overview-v4'], { revalidate: 180, tags: ['admin-overview'] })
 // Dernière Vue d'ensemble réussie (par instance du serveur) : servie si la
 // base ne répond pas, avec un bandeau, plutôt que des zéros
 let lastOverview: Awaited<ReturnType<typeof computeAdminOverview>> | null = null
@@ -61,14 +63,15 @@ async function computeAdminOverview() {
   // Compteurs en une seule requête (fonction admin_overview, migration
   // 20261024_150) ; repli sur les 18 lectures si elle manque. Les pages vues,
   // clics affiliés et erreurs gardent leurs lectures (paginées).
-  const [base, topPages, affiliateClicks, appErrors, depRes] = await Promise.all([
+  const [base, affiliateClicks, depRes, profilesRes] = await Promise.all([
     loadOverviewBase(admin, startOfMonth, twelveMonthsAgo),
-    getTopPages(admin),
     getAffiliateClicks(admin),
-    getAppErrors(admin),
     // Dépannage (31/10/2026) : hors de la fonction admin_overview, lu à part
     admin.from('depannage_pros').select('user_id, tier, status, stripe_subscription_status').limit(1000),
+    // Membres par espace (cockpit, 16/11/2026) : comptes hors admins
+    allRows<CockpitProfile>((from, to) => admin.from('profiles').select('id, full_name, email, created_at, plan, is_investor').neq('role', 'admin').order('created_at', { ascending: false }).range(from, to)),
   ])
+  if (profilesRes.error) throw new Error(`membres : ${profilesRes.error.message}`)
   const {
     totalUsers, driingMembers, standardMembers, standardRows, newThisMonth, templatesCount, formationsCount, groupsCount,
     totalVoyageurs, totalSejours, completedFormations, pendingDriingCount, pendingReportsCount, suggestionsCount,
@@ -118,14 +121,14 @@ async function computeAdminOverview() {
   const depRows = splitDemo((depRes.data ?? []) as ProRow[], admins).real
   const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, standardPriceIds: standardRows ? (standardRows as Array<{ stripe_price_id: string | null }>).map(r => r.stripe_price_id) : undefined, photographers: phRows, cleaners: clRows, depannage: depRows })
   const spaces = proSpacesByUser(phRows, clRows, depRows)
+  const memberSpaces = buildMemberSpaces(profilesRes.rows, [...spaces.entries()].flatMap(([user_id, list]) => list.map(x => ({ user_id, kind: x.kind, paid: x.paid, tier: x.tier }))), new Date())
 
   return {
     recentSignups: ((recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>)
       .map(u => ({ ...u, pros: spaces.get(u.id) ?? [] })),
     monthlySignupsChart,
-    topPages,
+    memberSpaces,
     affiliateClicks,
-    appErrors,
     stats: {
       totalUsers: totalUsers ?? 0,
       driingMembers: driingMembers ?? 0,
@@ -159,10 +162,9 @@ export default async function AdminPage() {
   // renverrait ici depuis /dashboard, en boucle)
   if (profile.role !== 'admin') redirect('/api/me/admin-mode')
 
-  const [{ o: overview, stale }, liveVisitors, channelBreakdown] = await Promise.all([
+  const [{ o: overview, stale }, liveVisitors] = await Promise.all([
     overviewOrLast(),
     getCachedLiveVisitors().catch(() => 0),
-    getCachedChannelBreakdown(),
   ])
   timer.mark('vue d\'ensemble et trafic')
   timer.done()
@@ -187,15 +189,12 @@ export default async function AdminPage() {
       )}
       <AdminUI
         todayLabel={new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Paris' })}
-        recentSignups={overview.recentSignups}
-        monthlySignupsChart={overview.monthlySignupsChart}
+        memberSpaces={overview.memberSpaces}
         liveVisitors={liveVisitors}
-        channelBreakdown={channelBreakdown.map(c => ({ ...c, label: CHANNEL_LABELS[c.channel] }))}
-        topPages={overview.topPages}
         affiliateClicks={overview.affiliateClicks}
-        appErrors={overview.appErrors}
         affilaeSlot={<Suspense fallback={<AffilaeSkeleton />}><AffilaeSection /></Suspense>}
-        acquisitionSlot={<Suspense fallback={<AffilaeSkeleton height={232} />}><AcquisitionSection /></Suspense>}
+        liveSlot={<Suspense fallback={<AffilaeSkeleton height={190} />}><LiveSection /></Suspense>}
+        audienceSlot={<Suspense fallback={<AffilaeSkeleton height={620} />}><AudienceSection /></Suspense>}
         stats={overview.stats}
       />
     </div>
@@ -210,27 +209,19 @@ async function AffilaeSection() {
   return <AffiliationCard af={af} ps={ps} />
 }
 
-// Provenance des visiteurs (visites, inscriptions, liens suivis, Google
-// Search Console gardé 6 h) : diffusée à part comme Affilae
-//
-// 09/11/2026 (Jason : « des sauts d'images à la connexion, la page prend
-// beaucoup de temps ») : cette carte relisait 14 jours de visites à chaque
-// ouverture de la Vue d'ensemble, puis arrivait après coup en poussant le
-// reste de la page. Résumé gardé 5 minutes et servi tout de suite ; au-delà
-// d'un quart d'heure (première visite de la journée), on recalcule plutôt
-// que d'afficher les chiffres « aujourd'hui » de la veille.
-const getCachedAcquisitionSnapshot = unstable_cache(
-  async () => ({ snap: await loadAcquisitionSnapshot(), at: Date.now() }),
-  ['admin-acquisition-snapshot-v1'],
-  { revalidate: 300 },
-)
-const SNAPSHOT_MAX_AGE_MS = 15 * 60_000
+// Cockpit (16/11/2026) : « En ce moment » et Audience, diffusés à part.
+// Visites de la base gardées 2 minutes (acquisition_base), Google 6 h : le
+// calcul est refait à chaque ouverture, les chiffres d'aujourd'hui restent justes.
+const cockpitTraffic = cache(() => loadCockpitTraffic())
 
-async function AcquisitionSection() {
+async function LiveSection() {
+  try { return <LivePanel today={(await cockpitTraffic()).today} /> } catch { return null }
+}
+
+async function AudienceSection() {
   try {
-    const cached = await getCachedAcquisitionSnapshot()
-    const snap = Date.now() - cached.at > SNAPSHOT_MAX_AGE_MS ? await loadAcquisitionSnapshot() : cached.snap
-    return <AcquisitionCard snap={snap} />
+    const t = await cockpitTraffic()
+    return <AudienceCard audience={t.audience} gscError={t.gscError} />
   } catch {
     return null
   }

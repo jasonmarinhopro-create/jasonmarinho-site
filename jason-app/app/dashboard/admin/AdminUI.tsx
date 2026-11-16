@@ -1,42 +1,25 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Users, Warning, FileText, GraduationCap,
   UsersThree, ArrowRight, UsersFour, CalendarBlank, Trophy,
-  BookOpen, Newspaper, ShieldStar, ShieldCheck, TrendUp, Lightning,
+  BookOpen, Newspaper, ShieldStar, ShieldCheck, Lightning,
   Sparkle, CurrencyEur, ChartLineUp, Percent, CheckCircle,
-  UserPlus, Globe, Broadcast, Handshake, Bug, ShareNetwork, MagnifyingGlass,
-  Crown, Lifebuoy, Camera, Broom, Wrench,
+  UserPlus, Handshake, ShareNetwork, MagnifyingGlass,
+  Crown, Camera, Broom, Wrench, Heartbeat, Briefcase, LinkSimple, Binoculars, PaperPlaneTilt,
 } from '@phosphor-icons/react/dist/ssr'
-import { resolveAppErrorGroup } from './actions'
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
 import type { PartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
+import { MembersCard, Shortcuts, COCKPIT_CSS, type Shortcut } from './Cockpit'
+import InlineStyle from '@/components/ui/InlineStyle'
+import type { MemberSpace, SpaceSummary } from '@/lib/admin/members-cockpit'
 
-interface RecentSignup {
-  id: string; email: string; full_name: string | null; plan: string; created_at: string
-  /** Fiches pros du compte (photographe, ménage, dépannage) */
-  pros?: Array<{ kind: 'photographe' | 'menage' | 'depannage'; tier: string | null; paid: boolean; status: string | null }>
-}
-interface MonthlySignup {
-  month: string; total: number; paid: number
-}
-interface ChannelStat {
-  channel: string; label: string; count: number; pct: number
-}
-interface TopPage {
-  path: string; views: number
-}
 interface AffiliateClicks {
   total: number
   byPartner: Array<{ partner: string; count: number }>
   byPage: Array<{ path: string; count: number }>
-}
-interface AppErrors {
-  total: number
-  groups: Array<{ key: string; message: string; source: 'client' | 'server'; count: number; users: number; lastAt: string; path: string | null }>
 }
 interface Stats {
   totalUsers: number; driingMembers: number; standardMembers: number; newThisMonth: number
@@ -65,47 +48,26 @@ const tint = (c: string, pct = 12) => `color-mix(in srgb, ${c} ${pct}%, transpar
 function formatEuro(amount: number, decimals = 2) {
   return amount.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: decimals, maximumFractionDigits: decimals })
 }
-function formatMonthShort(yearMonth: string) {
-  const [y, m] = yearMonth.split('-').map(Number)
-  return new Date(y, m - 1).toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '')
-}
-function relativeDate(iso: string) {
-  const ms = Date.now() - new Date(iso).getTime()
-  const days = Math.floor(ms / 86_400_000)
-  if (days <= 0) return "aujourd'hui"
-  if (days === 1) return 'hier'
-  if (days < 7) return `il y a ${days} j`
-  if (days < 30) return `il y a ${Math.floor(days / 7)} sem.`
-  if (days < 365) return `il y a ${Math.floor(days / 30)} mois`
-  return `il y a ${Math.floor(days / 365)} an${days >= 730 ? 's' : ''}`
-}
-// Dépend de l'heure courante : le navigateur garde sa valeur (cf. RelativeTime)
-function Ago({ iso }: { iso: string }) {
-  return <time dateTime={iso} suppressHydrationWarning>{relativeDate(iso)}</time>
-}
 const plural = (n: number, word: string, many?: string) => `${n} ${n > 1 ? (many ?? `${word}s`) : word}`
 
 export default function AdminUI({
   todayLabel,
   stats,
-  recentSignups, monthlySignupsChart,
-  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors, affilaeSlot, acquisitionSlot,
+  memberSpaces,
+  liveVisitors, affiliateClicks, affilaeSlot, liveSlot, audienceSlot,
 }: {
   todayLabel: string
   stats: Stats
-  recentSignups: RecentSignup[]
-  monthlySignupsChart: MonthlySignup[]
+  /** Membres par espace (cockpit, lib/admin/members-cockpit.ts) */
+  memberSpaces: Record<MemberSpace, SpaceSummary>
   liveVisitors: number
-  channelBreakdown: ChannelStat[]
-  topPages: TopPage[]
   affiliateClicks: AffiliateClicks
-  appErrors: AppErrors
   /** Carte Affilae, chargée à part (appel externe) pour ne pas retarder la page */
   affilaeSlot?: React.ReactNode
-  /** Provenance des visiteurs, aujourd'hui / 7 jours (diffusée à part : Google Search Console) */
-  acquisitionSlot?: React.ReactNode
+  /** « En ce moment » et Audience (diffusés à part : visites et Google Search Console) */
+  liveSlot?: React.ReactNode
+  audienceSlot?: React.ReactNode
 }) {
-  const decouverte = Math.max(0, stats.totalUsers - stats.standardMembers - stats.driingMembers)
   // Payants : Standard des hôtes + fiches photographes et ménage payées
   // (Driing = offert aux clients Driing)
   const rv = stats.revenue
@@ -120,13 +82,11 @@ export default function AdminUI({
     rv.paidCleaners > 0 ? plural(rv.paidCleaners, 'équipe ménage', 'équipes ménage') : '',
     rv.paidDepannage > 0 ? plural(rv.paidDepannage, 'pro du dépannage', 'pros du dépannage') : '',
   ].filter(Boolean).join(' + ')
-  const pct = (n: number) => stats.totalUsers > 0 ? Math.round((n / stats.totalUsers) * 100) : 0
 
   const todo = [
     { n: stats.pendingDriing, label: 'demande Driing à valider', labelN: 'demandes Driing à valider', href: '/dashboard/admin/qg', icon: Crown },
     { n: stats.pendingReports, label: 'signalement à valider', labelN: 'signalements à valider', href: '/dashboard/admin/qg', icon: ShieldCheck },
     { n: stats.suggestions, label: 'suggestion reçue', labelN: 'suggestions reçues', href: '/dashboard/admin/qg', icon: Sparkle },
-    { n: appErrors.groups.length, label: "erreur de l'app à regarder", labelN: "erreurs de l'app à regarder", href: '#erreurs', icon: Bug },
   ]
   const todoCount = todo.reduce((n, t) => n + t.n, 0)
 
@@ -137,30 +97,43 @@ export default function AdminUI({
     { label: 'Par abonné', value: formatEuro(arpu), sub: 'par mois', icon: UserPlus, color: BROWN },
   ]
 
-  const plans = [
-    { name: 'Découverte', note: 'gratuit', count: decouverte, color: 'var(--text-muted)' },
-    { name: 'Standard', note: '19,98 €/an', count: stats.standardMembers, color: 'var(--accent-text)' },
-    { name: 'Driing', note: 'offert', count: stats.driingMembers, color: AMBER },
-    { name: 'Photographes', note: `${rv.paidPhotographers} payée${rv.paidPhotographers > 1 ? 's' : ''}`, count: stats.photographersCount, color: PINK },
-    { name: 'Équipes ménage', note: `${rv.paidCleaners} payée${rv.paidCleaners > 1 ? 's' : ''}`, count: stats.cleanersCount, color: BROWN },
-    { name: 'Dépannage', note: `${rv.paidDepannage} payée${rv.paidDepannage > 1 ? 's' : ''}`, count: stats.depannageCount, color: RUST },
-  ]
 
-  const content = [
-    { href: '/dashboard/admin/membres', icon: UsersThree, color: 'var(--accent-text)', title: 'Membres', desc: `${stats.totalUsers} inscrits, ${stats.driingMembers} Driing` },
-    { href: '/dashboard/admin/qg', icon: ShieldCheck, color: 'var(--danger-text)', title: 'QG demandes', desc: todoCount - appErrors.groups.length > 0 ? `${todoCount - appErrors.groups.length} en attente` : 'Rien en attente' },
-    { href: '/dashboard/admin/formations', icon: GraduationCap, color: 'var(--accent-text)', title: 'Formations', desc: plural(stats.formationsCount, 'publiée') },
-    { href: '/dashboard/admin/gabarits', icon: FileText, color: AMBER, title: 'Modèles de messages', desc: plural(stats.templatesCount, 'modèle') },
-    { href: '/dashboard/admin/actualites', icon: Newspaper, color: PINK, title: 'Actualités', desc: 'Fil de la veille LCD' },
-    { href: '/dashboard/admin/social', icon: ShareNetwork, color: PINK, title: 'Réseaux sociaux', desc: 'Posts Facebook et Instagram' },
-    { href: '/dashboard/admin/communaute', icon: UsersFour, color: BROWN, title: 'Groupes Facebook', desc: plural(stats.groupsCount, 'groupe') },
-    { href: '/dashboard/admin/guides', icon: BookOpen, color: AMBER, title: 'Guide LCD', desc: 'Profils et fiches' },
-    { href: '/dashboard/admin/indexation', icon: MagnifyingGlass, color: BROWN, title: 'Indexation Google', desc: 'Pages à soumettre' },
-    { href: '/dashboard/admin/sos-feedback', icon: Lifebuoy, color: 'var(--danger-text)', title: 'Retours SOS', desc: 'Signalements et témoignages' },
+  // Raccourcis (cockpit, 16/11/2026) : chaque page admin avec son chiffre clé,
+  // rangées comme le menu (Pilotage, Utilisateurs, Acquisition, Contenu)
+  const qgCount = stats.pendingDriing + stats.pendingReports + stats.suggestions
+  const shortcuts: Array<{ label: string; items: Shortcut[] }> = [
+    { label: 'Pilotage', items: [
+      { href: '/dashboard/admin/qg', Icon: ShieldCheck, color: 'var(--danger-text)', title: 'QG demandes', info: qgCount > 0 ? `${qgCount} en attente` : 'Rien en attente', alert: qgCount > 0 },
+      { href: '/dashboard/admin/ventes', Icon: ChartLineUp, color: 'var(--accent-text)', title: 'Ventes', info: `${formatEuro(stats.mrr)} par mois` },
+      { href: '/dashboard/admin/sante', Icon: Heartbeat, color: RUST, title: 'État de santé', info: 'Paiements, e-mails, tâches' },
+      { href: '/dashboard/admin/signalements', Icon: Warning, color: AMBER, title: 'Signalements', info: stats.pendingReports > 0 ? `${stats.pendingReports} à valider` : 'Rien à valider', alert: stats.pendingReports > 0 },
+    ] },
+    { label: 'Utilisateurs', items: [
+      { href: '/dashboard/admin/membres', Icon: UsersThree, color: 'var(--accent-text)', title: 'Membres', info: `${stats.totalUsers} comptes, +${stats.newThisMonth} ce mois-ci` },
+      { href: '/dashboard/admin/photographes', Icon: Camera, color: PINK, title: 'Photo & vidéo', info: plural(stats.photographersCount, 'fiche') },
+      { href: '/dashboard/admin/menage', Icon: Broom, color: BROWN, title: 'Équipes de ménage', info: plural(stats.cleanersCount, 'fiche') },
+      { href: '/dashboard/admin/depannage', Icon: Wrench, color: RUST, title: 'Dépannage', info: plural(stats.depannageCount, 'fiche') },
+      { href: '/dashboard/admin/investisseurs', Icon: Briefcase, color: AMBER, title: 'Investisseurs', info: `${memberSpaces.investisseur.count} comptes` },
+    ] },
+    { label: 'Acquisition', items: [
+      { href: '/dashboard/admin/provenance', Icon: LinkSimple, color: 'var(--accent-text)', title: 'Provenance', info: 'Canaux, liens suivis, inscriptions' },
+      { href: '/dashboard/admin/visibilite', Icon: Binoculars, color: BROWN, title: 'Visibilité', info: 'Google, fiches pros, villes' },
+      { href: '/dashboard/admin/prospection', Icon: PaperPlaneTilt, color: AMBER, title: 'Prospection', info: 'Séquences et envois' },
+      { href: '/dashboard/admin/social', Icon: ShareNetwork, color: PINK, title: 'Réseaux sociaux', info: 'Posts Facebook et Instagram' },
+      { href: '/dashboard/admin/indexation', Icon: MagnifyingGlass, color: BROWN, title: 'Référencement', info: 'Pages à soumettre' },
+    ] },
+    { label: 'Contenu', items: [
+      { href: '/dashboard/admin/actualites', Icon: Newspaper, color: PINK, title: 'Actualités', info: 'Fil de la veille LCD' },
+      { href: '/dashboard/admin/formations', Icon: GraduationCap, color: 'var(--accent-text)', title: 'Formations', info: plural(stats.formationsCount, 'publiée') },
+      { href: '/dashboard/admin/guides', Icon: BookOpen, color: AMBER, title: 'Guide LCD', info: 'Profils et fiches' },
+      { href: '/dashboard/admin/gabarits', Icon: FileText, color: AMBER, title: 'Modèles de messages', info: plural(stats.templatesCount, 'modèle') },
+      { href: '/dashboard/admin/communaute', Icon: UsersFour, color: BROWN, title: 'Groupes Facebook', info: plural(stats.groupsCount, 'groupe') },
+    ] },
   ]
 
   return (
     <div style={s.wrap}>
+      <InlineStyle css={COCKPIT_CSS} />
       <HubHero
         eyebrowIcon={<ShieldStar size={14} weight="fill" />}
         eyebrow={`Administration · ${todayLabel}`}
@@ -207,230 +180,53 @@ export default function AdminUI({
         ))}
       </div>
 
-      <div style={s.cols}>
-        <div style={s.colMain}>
-          <LiveTraffic initialLive={liveVisitors} initialChannels={channelBreakdown} topPages={topPages} />
+      {liveSlot}
 
-          {acquisitionSlot}
+      <Shortcuts groups={shortcuts} />
 
-          <SignupsSparkline data={monthlySignupsChart} />
+      {audienceSlot}
 
-          <section className="fade-up">
-            <div style={s.sectionLabel}><TrendUp size={14} /> Comptes par formule et par espace</div>
-            <div style={s.plansGrid}>
-              {plans.map(p => (
-                <div key={p.name} style={s.planCard}>
-                  <div style={s.planTop}>
-                    <span style={{ ...s.planDot, background: p.color }} />
-                    <span style={s.planName}>{p.name} <span style={{ fontSize: '11px', color: 'var(--text-3)' }}>{p.note}</span></span>
-                    <span style={s.planCount}>{p.count}</span>
-                  </div>
-                  <div style={s.planBar}>
-                    <div style={{ ...s.planFill, width: `${pct(p.count)}%`, background: p.color }} />
-                  </div>
-                  <div style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>{pct(p.count)} % des comptes</div>
-                </div>
-              ))}
-            </div>
-          </section>
+      <MembersCard spaces={memberSpaces} />
 
-          <section className="fade-up">
-            <div style={s.sectionLabel}><Lightning size={14} /> Activité des hôtes</div>
-            <div style={s.activityRow}>
-              {[
-                { v: stats.totalVoyageurs, l: 'voyageurs enregistrés', icon: Users, color: BROWN },
-                { v: stats.totalSejours, l: 'séjours saisis', icon: CalendarBlank, color: 'var(--accent-text)' },
-                { v: stats.completedFormations, l: 'formations terminées', icon: GraduationCap, color: AMBER },
-              ].map(a => (
-                <div key={a.l} style={s.actCard}>
-                  <div style={{ ...s.actIcon, color: a.color, background: tint(a.color) }}><a.icon size={20} weight="duotone" /></div>
-                  <div>
-                    <div style={s.actVal}>{a.v}</div>
-                    <div style={s.actLbl}>{a.l}</div>
-                  </div>
-                </div>
-              ))}
-              {stats.topFormation && (
-                <div style={{ ...s.actCard, flex: '2 1 260px' }}>
-                  <div style={{ ...s.actIcon, color: 'var(--accent-text)', background: 'var(--accent-bg)' }}><Trophy size={20} weight="duotone" /></div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={s.miniLabel}>Formation la plus commencée</div>
-                    <div style={s.perfTitle} title={stats.topFormation.title}>{stats.topFormation.title}</div>
-                    <div style={s.actLbl}>{plural(stats.topFormation.count, 'inscription')}</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-
-          <AffiliateClicksCard data={affiliateClicks} />
-          {affilaeSlot}
-        </div>
-
-        <div style={s.colSide}>
-          <AppErrorsCard data={appErrors} />
-
-          <section className="fade-up">
-            <div style={s.sectionLabel}><FileText size={14} /> Gérer le contenu</div>
-            <div style={s.contentList}>
-              {content.map(({ href, icon: Icon, color, title, desc }) => (
-                <Link key={href} href={href} style={s.contentRow}>
-                  <div style={{ ...s.contentIcon, color, background: tint(color) }}><Icon size={18} weight="duotone" /></div>
-                  <div style={s.contentBody}>
-                    <div style={s.contentTitle}>{title}</div>
-                    <div style={s.contentDesc}>{desc}</div>
-                  </div>
-                  <ArrowRight size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          {recentSignups.length > 0 && (
-            <section className="fade-up">
-              <div style={s.sectionLabel}>
-                <UserPlus size={14} /> Derniers inscrits
-                <Link href="/dashboard/admin/membres" style={s.sectionLink}>Tous les membres <ArrowRight size={11} weight="bold" /></Link>
+      <section className="fade-up">
+        <div style={s.sectionLabel}><Lightning size={14} /> Activité des hôtes</div>
+        <div style={s.activityRow}>
+          {[
+            { v: stats.totalVoyageurs, l: 'voyageurs enregistrés', icon: Users, color: BROWN },
+            { v: stats.totalSejours, l: 'séjours saisis', icon: CalendarBlank, color: 'var(--accent-text)' },
+            { v: stats.completedFormations, l: 'formations terminées', icon: GraduationCap, color: AMBER },
+          ].map(a => (
+            <div key={a.l} style={s.actCard}>
+              <div style={{ ...s.actIcon, color: a.color, background: tint(a.color) }}><a.icon size={20} weight="duotone" /></div>
+              <div>
+                <div style={s.actVal}>{a.v}</div>
+                <div style={s.actLbl}>{a.l}</div>
               </div>
-              <div style={s.recentList}>
-                {recentSignups.map(u => {
-                  // Un compte pro garde la formule hôte « Découverte » : on
-                  // affiche alors sa fiche pro, pas « Découverte »
-                  const pros = u.pros ?? []
-                  const planCfg = u.plan === 'driing'
-                    ? { label: 'Driing', color: AMBER }
-                    : u.plan === 'standard'
-                    ? { label: 'Standard', color: 'var(--accent-text)' }
-                    : pros.length > 0 ? null
-                    : { label: 'Découverte', color: 'var(--text-3)' }
-                  const initial = (u.full_name || u.email).slice(0, 1).toUpperCase()
-                  return (
-                    <Link key={u.id} href={`/dashboard/admin/membres/${u.id}`} style={s.recentItem}>
-                      <div style={s.recentAvatar}>{initial}</div>
-                      <div style={s.recentBody}>
-                        <div style={s.recentName}>{u.full_name || u.email.split('@')[0]}</div>
-                        <div style={s.recentEmail}>{u.email}</div>
-                      </div>
-                      <div style={s.recentRight}>
-                        <span style={{ display: 'inline-flex', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                          {pros.map(p => {
-                            const c = p.kind === 'photographe' ? PINK : p.kind === 'depannage' ? RUST : BROWN
-                            const Icon = p.kind === 'photographe' ? Camera : p.kind === 'depannage' ? Wrench : Broom
-                            return (
-                              <span key={p.kind} style={{ ...s.recentPlan, color: c, background: tint(c), display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                                <Icon size={11} weight="bold" />{p.kind === 'photographe' ? 'Photographe' : p.kind === 'depannage' ? 'Dépannage' : 'Ménage'}{p.paid ? (p.tier === 'fondateur' ? ' · fondateur' : ' · payé') : ' · à payer'}
-                              </span>
-                            )
-                          })}
-                          {planCfg && <span style={{ ...s.recentPlan, color: planCfg.color, background: tint(planCfg.color) }}>{planCfg.label}</span>}
-                        </span>
-                        <span style={s.recentDate}><Ago iso={u.created_at} /></span>
-                      </div>
-                    </Link>
-                  )
-                })}
+            </div>
+          ))}
+          {stats.topFormation && (
+            <div style={{ ...s.actCard, flex: '2 1 260px' }}>
+              <div style={{ ...s.actIcon, color: 'var(--accent-text)', background: 'var(--accent-bg)' }}><Trophy size={20} weight="duotone" /></div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={s.miniLabel}>Formation la plus commencée</div>
+                <div style={s.perfTitle} title={stats.topFormation.title}>{stats.topFormation.title}</div>
+                <div style={s.actLbl}>{plural(stats.topFormation.count, 'inscription')}</div>
               </div>
-            </section>
+            </div>
           )}
         </div>
-      </div>
+      </section>
+
+      <AffiliateClicksCard data={affiliateClicks} />
+      {affilaeSlot}
     </div>
   )
 }
 
 // ── Sous-composants ────────────────────────────────────────────────────────
-const CHANNEL_COLORS: Record<string, string> = {
-  direct: 'var(--text-muted)',
-  recherche: 'var(--accent-text)',
-  social: PINK,
-  referral: AMBER,
-}
 
 function pageLabel(path: string) {
   return path === '/' ? 'Accueil' : path
-}
-
-function LiveTraffic({ initialLive, initialChannels, topPages }: { initialLive: number; initialChannels: ChannelStat[]; topPages: TopPage[] }) {
-  const [live, setLive] = useState(initialLive)
-  const [channels, setChannels] = useState(initialChannels)
-
-  useEffect(() => {
-    const poll = async () => {
-      try {
-        const res = await fetch('/api/admin/live-traffic', { cache: 'no-store' })
-        if (!res.ok) return
-        const json = await res.json()
-        if (typeof json.live === 'number') setLive(json.live)
-        if (Array.isArray(json.channels)) setChannels(json.channels)
-      } catch {
-        // silencieux : on garde l'affichage précédent
-      }
-    }
-    // Toutes les 60 s, seulement onglet visible : chaque relecture coûte de la
-    // lecture disque à la base (budget Disk IO de l'offre gratuite, 05/10/2026)
-    const tick = () => { if (document.visibilityState === 'visible') poll() }
-    const interval = setInterval(tick, 60_000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const totalSessions = channels.reduce((sum, c) => sum + c.count, 0)
-
-  return (
-    <section className="fade-up">
-      <div style={s.sectionLabel}><Globe size={14} /> Trafic du site en direct</div>
-      <div style={s.trafficGrid}>
-        <div style={s.card}>
-          <div style={s.liveTop}>
-            <span style={{ ...s.liveDot, animation: live > 0 ? 'pulse 2s ease-in-out infinite' : undefined }} />
-            <span style={s.liveLabel}>En ce moment</span>
-          </div>
-          <div style={s.liveValue}>{live}</div>
-          <div style={s.liveSub}>visiteur{live !== 1 ? 's' : ''} actif{live !== 1 ? 's' : ''} (5 min)</div>
-        </div>
-
-        <div style={s.card}>
-          <div style={s.liveTop}>
-            <Broadcast size={14} weight="duotone" style={{ color: 'var(--text-2)' }} />
-            <span style={s.liveLabel}>D&apos;où ils viennent · 24 h</span>
-          </div>
-          {channels.length === 0 || totalSessions === 0 ? (
-            <div style={s.empty}>Pas encore de visite enregistrée aujourd&apos;hui.</div>
-          ) : (
-            <div style={s.channelList}>
-              {channels.map(c => (
-                <div key={c.channel} style={s.channelRow}>
-                  <span style={{ ...s.planDot, background: CHANNEL_COLORS[c.channel] || 'var(--text-muted)' }} />
-                  <span style={s.channelName}>{c.label}</span>
-                  <span style={s.channelPct}>{c.pct} %</span>
-                  <span style={s.channelCount}>{c.count}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div style={s.card}>
-          <div style={s.liveTop}>
-            <Trophy size={14} weight="duotone" style={{ color: 'var(--text-2)' }} />
-            <span style={s.liveLabel}>Pages les plus vues · 7 jours</span>
-          </div>
-          {topPages.length === 0 ? (
-            <div style={s.empty}>Pas encore de données sur cette période.</div>
-          ) : (
-            <div style={s.channelList}>
-              {topPages.map((p, i) => (
-                <div key={p.path} style={s.channelRow}>
-                  <span style={s.topPageRank}>{i + 1}</span>
-                  <span style={s.topPagePath} title={p.path}>{pageLabel(p.path)}</span>
-                  <span style={s.channelCount}>{p.views}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  )
 }
 
 function AffiliateClicksCard({ data }: { data: AffiliateClicks }) {
@@ -605,118 +401,6 @@ const extLink: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: 'va
 // Erreurs de l'app en production (table app_errors, 7 jours) : remplace un
 // outil type Sentry. Une erreur qui revient souvent ou touche plusieurs
 // membres est à traiter en priorité.
-function AppErrorsCard({ data }: { data: AppErrors }) {
-  // « Réglée » : masque le groupe tout de suite, le supprime en base, le
-  // réaffiche si la suppression échoue
-  const [hidden, setHidden] = useState<Set<string>>(new Set())
-  const [busyKey, setBusyKey] = useState<string | null>(null)
-  const [failMsg, setFailMsg] = useState<string | null>(null)
-  const groups = data.groups.filter(g => !hidden.has(g.key))
-  const total = data.total - data.groups.filter(g => hidden.has(g.key)).reduce((n, g) => n + g.count, 0)
-  async function resolve(key: string) {
-    setBusyKey(key)
-    setFailMsg(null)
-    setHidden(prev => new Set(prev).add(key))
-    const res = await resolveAppErrorGroup(key).catch(() => ({ error: 'Réseau indisponible' }))
-    if (res.error) {
-      setHidden(prev => { const n = new Set(prev); n.delete(key); return n })
-      setFailMsg(`Suppression impossible : ${res.error}`)
-    }
-    setBusyKey(null)
-  }
-  return (
-    <section className="fade-up" id="erreurs" style={{ scrollMarginTop: '80px' }}>
-      <div style={s.sectionLabel}><Bug size={14} /> Erreurs de l&apos;app · 7 jours</div>
-      <div style={s.card}>
-        <div style={s.liveTop}>
-          {total <= 0
-            ? <CheckCircle size={16} weight="fill" color="var(--accent-text)" />
-            : <Warning size={16} weight="fill" color="var(--danger-text)" />}
-          <span style={s.liveLabel}>{total <= 0 ? 'Aucune erreur enregistrée' : `${plural(total, 'erreur')} enregistrée${total > 1 ? 's' : ''}`}</span>
-        </div>
-        {failMsg && <div style={{ fontSize: '12px', color: 'var(--danger-text)', marginTop: '6px' }}>{failMsg}</div>}
-        {groups.length === 0 ? (
-          <div style={s.empty}>
-            Rien à signaler. Les plantages (écran d&apos;erreur, bug JavaScript, erreur serveur) apparaîtront ici.
-          </div>
-        ) : (
-          <div style={{ ...s.channelList, gap: '12px' }}>
-            {groups.map(g => (
-              <div key={g.key} style={{ ...s.channelRow, alignItems: 'flex-start', gap: '10px' }}>
-                <span style={{ minWidth: 0, flex: 1 }}>
-                  <span style={{ display: 'block', fontSize: '13px', color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={g.message}>{g.message}</span>
-                  <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>
-                    {g.count}× · {g.source === 'server' ? 'Serveur' : 'Navigateur'}{g.path ? ` · ${g.path}` : ''} · {g.users > 0 ? `${plural(g.users, 'membre')} · ` : ''}dernière <Ago iso={g.lastAt} />
-                  </span>
-                </span>
-                <button type="button" onClick={() => resolve(g.key)} disabled={busyKey === g.key}
-                  title="Erreur traitée : la retirer de la liste (elle réapparaîtra si elle se reproduit)"
-                  style={s.pillBtn}>
-                  Réglée
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  )
-}
-
-function SignupsSparkline({ data }: { data: MonthlySignup[] }) {
-  if (!data || data.length === 0) return null
-  const maxVal = Math.max(1, ...data.map(d => d.total))
-  const totalSignups = data.reduce((sum, d) => sum + d.total, 0)
-  const totalPaid = data.reduce((sum, d) => sum + d.paid, 0)
-  const lastMonth = data[data.length - 1]
-  const prevMonth = data[data.length - 2]
-  const trendPct = prevMonth && prevMonth.total > 0
-    ? Math.round(((lastMonth.total - prevMonth.total) / prevMonth.total) * 100)
-    : null
-
-  return (
-    <section className="fade-up" style={s.card}>
-      <div style={s.sparkHeader}>
-        <div>
-          <div style={s.miniLabel}>Inscriptions sur 12 mois</div>
-          <div style={s.sparkTitle}>
-            {totalSignups} <span style={s.sparkTitleSub}>nouveaux membres</span>
-          </div>
-          <div style={s.sparkSub}>
-            dont <strong style={{ color: 'var(--text)' }}>{totalPaid}</strong> en Standard
-            {trendPct !== null && (
-              <span style={{ color: trendPct >= 0 ? 'var(--accent-text)' : 'var(--danger-text)', marginLeft: '8px', fontWeight: 600 }}>
-                {trendPct >= 0 ? '+' : '−'}{Math.abs(trendPct)} % par rapport au mois dernier
-              </span>
-            )}
-          </div>
-        </div>
-        <div style={s.sparkLegend}>
-          <span style={s.legendItem}><span style={{ ...s.legendDot, background: 'var(--accent-bg)', border: '1px solid var(--accent-text)' }} />Inscrits</span>
-          <span style={s.legendItem}><span style={{ ...s.legendDot, background: 'var(--accent-text)' }} />Standard</span>
-        </div>
-      </div>
-
-      <div style={s.sparkBars}>
-        {data.map(d => {
-          const totalH = (d.total / maxVal) * 100
-          const paidH = d.total > 0 ? (d.paid / d.total) * 100 : 0
-          return (
-            <div key={d.month} style={s.sparkBarCol} title={`${formatMonthShort(d.month)} : ${d.total} inscrits${d.paid > 0 ? ` (dont ${d.paid} en Standard)` : ''}`}>
-              <div style={s.sparkCount}>{d.total > 0 ? d.total : ''}</div>
-              <div style={s.sparkBarStack}>
-                <div style={{ ...s.sparkBarTotal, height: `${totalH}%` }}>
-                  <div style={{ ...s.sparkBarPaid, height: `${paidH}%` }} />
-                </div>
-              </div>
-              <div style={s.sparkLabel2}>{formatMonthShort(d.month)}</div>
-            </div>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
 
 const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '24px', width: '100%' },

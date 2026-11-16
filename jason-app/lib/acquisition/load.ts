@@ -11,6 +11,7 @@ import { gscQuery, safeGsc } from '@/lib/google/search-analytics'
 import { addDays, parisDay } from '@/lib/visibility/rules'
 import { BUILTIN_LINKS, cleanAcquisition } from './rules'
 import { buildProvenance, type LinkClickRow, type LinkRow, type MemberRow, type ProvenanceReport, type SpaceKey } from './report'
+import { buildAudience } from './audience'
 import { buildChannelCards, buildToday, buildSnapshot, type ChannelCard, type GscDay, type TodayData, type TrafficVisit } from './traffic'
 
 import { allRows } from '@/lib/supabase/all-rows'
@@ -218,4 +219,13 @@ export type AcquisitionSnapshot = ReturnType<typeof buildSnapshot> & { gscError:
 export async function loadAcquisitionSnapshot(): Promise<AcquisitionSnapshot> {
   const base = await loadBase({ visitDays: 14, gscDays: 20 })
   return { ...buildSnapshot({ visits: base.visits, members: base.members, links: base.links, clicks: base.clicks, gsc: base.gsc, now: new Date() }), gscError: base.gscError }
+}
+
+export type CockpitTraffic = { today: TodayData; audience: ReturnType<typeof buildAudience>; gscError: string | null }
+
+/** Cockpit de la Vue d'ensemble (16/11/2026) : « En ce moment » et Audience (aujourd'hui, 7 et 30 jours) */
+export async function loadCockpitTraffic(): Promise<CockpitTraffic> {
+  const base = await loadBase({ visitDays: 62, gscDays: 70 })
+  const input = { visits: base.visits, members: base.members, links: base.links, clicks: base.clicks, gsc: base.gsc, now: new Date() }
+  return { today: buildToday(input), audience: buildAudience(input), gscError: base.gscError }
 }
