@@ -408,10 +408,11 @@
       '.mob-sublink i{color:rgba(255,213,107,.6)!important;font-size:12px!important;width:auto!important}',
 
       /* Ligne mise en avant (Driing, Décrire mon besoin) */
-      '.mob-driing{background:rgba(255,213,107,.07)!important;border:1px solid rgba(255,213,107,.2)!important;border-radius:11px!important;padding:12px 14px!important;margin-top:8px;border-bottom:1px solid rgba(255,213,107,.2)!important}',
-      '.mob-driing i{color:var(--y)!important}',
+      /* Encadrés du menu téléphone en vert, comme la barre du bas des menus ordinateur (16/11/2026, Jason : plus de jaune) */
+      '.mob-driing{background:rgba(255,255,255,.04)!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:11px!important;padding:12px 14px!important;margin-top:8px}',
+      '.mob-driing i{color:#8FD3B4!important}',
       '.mob-driing-body{display:flex;flex-direction:column;gap:1px;flex:1}',
-      '.mob-driing-name{font-size:15px;font-weight:600;color:var(--y);line-height:1.3}',
+      '.mob-driing-name{font-size:15px;font-weight:600;color:rgba(255,255,255,.92);line-height:1.3}',
       '.mob-driing-sub{font-size:12px;color:rgba(255,255,255,.55)}',
 
       /* Cartes visuelles compactes (Annuaire, Ressources) */
@@ -524,10 +525,10 @@
       ':where(nav#nav.nv-light)~.mob-menu .mob-acc.open .mob-acc-arrow{stroke:var(--g)}',
       ':where(nav#nav.nv-light)~.mob-menu .mob-sublink{color:var(--g)!important}',
       ':where(nav#nav.nv-light)~.mob-menu .mob-sublink i{color:var(--g)!important}',
-      ':where(nav#nav.nv-light)~.mob-menu .mob-driing{background:#FFF8E1!important;border-color:#F1DE9C!important}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-driing{background:#F7FAF8!important;border:1px solid #E3ECE7!important}',
       ':where(nav#nav.nv-light)~.mob-menu .mob-driing i{color:var(--g)!important}',
       ':where(nav#nav.nv-light)~.mob-menu .mob-driing-name{color:var(--gd)}',
-      ':where(nav#nav.nv-light)~.mob-menu .mob-driing-sub{color:#5C5338}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-driing-sub{color:#4A5C47}',
       ':where(nav#nav.nv-light)~.mob-menu .mob-ctas{background:#fff;border-top-color:#EDF2EF}',
       ':where(nav#nav.nv-light)~.mob-menu .mc-o{color:#0F1A0D!important;border:1px solid #DCE5E0!important}',
       ':where(nav#nav.nv-light)~.mob-menu .mc-c{background:var(--g);color:#fff!important}',
