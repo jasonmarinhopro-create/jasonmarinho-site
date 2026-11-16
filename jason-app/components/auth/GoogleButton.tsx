@@ -9,11 +9,15 @@ import { createClient } from '@/lib/supabase/client'
 import { COOKIE_INSCRIPTION } from '@/lib/auth/google'
 import { storedAcquisition } from '@/lib/acquisition/client'
 
-export default function GoogleButton({ profil, newsletter = false, label = 'Continuer avec Google' }: {
+export default function GoogleButton({ profil, newsletter = false, label = 'Continuer avec Google', mode }: {
   profil?: 'host' | 'investor'
   newsletter?: boolean
   label?: string
+  /** 'login' (page de connexion) : Google ne crée jamais de compte, voir
+   *  /auth/callback (16/11/2026). Par défaut : 'register' si un profil est choisi. */
+  mode?: 'login' | 'register'
 }) {
+  const m = mode ?? (profil ? 'register' : 'login')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
@@ -21,7 +25,7 @@ export default function GoogleButton({ profil, newsletter = false, label = 'Cont
     setBusy(true)
     setError('')
     try {
-      const v = encodeURIComponent(JSON.stringify({ p: profil, nl: newsletter, acq: storedAcquisition() }))
+      const v = encodeURIComponent(JSON.stringify({ m, p: profil, nl: newsletter, acq: storedAcquisition() }))
       document.cookie = `${COOKIE_INSCRIPTION}=${v}; Path=/; Max-Age=900; SameSite=Lax; Secure`
     } catch { /* cookie refusé : inscription sans ces choix */ }
     const { error: err } = await createClient().auth.signInWithOAuth({

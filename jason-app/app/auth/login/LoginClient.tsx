@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import InstallAppLink from '@/components/pwa/InstallAppLink'
 import {
-  ArrowRight, Eye, EyeSlash,
+  ArrowRight, Eye, EyeSlash, UserPlus,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
   Camera, Sparkle, ChartBar, CreditCard, PencilSimple, Image as ImageIcon, Broom, Tag,
 } from '@phosphor-icons/react/dist/ssr'
@@ -110,7 +110,7 @@ export default function LoginPage({ google = false }: { google?: boolean }) {
     // statique et useSearchParams se lit dans le navigateur). Il affiche
     // maintenant l'écran de connexion lui-même (espace hôte par défaut) ; le
     // JavaScript ajuste seulement le texte pour ?as=photographe|menage|depannage.
-    <Suspense fallback={<LoginInner google={google} asParam="" googleFail={false} />}>
+    <Suspense fallback={<LoginInner google={google} asParam="" googleFail={false} sansCompte={false} />}>
       <LoginWithParams google={google} />
     </Suspense>
   )
@@ -118,10 +118,10 @@ export default function LoginPage({ google = false }: { google?: boolean }) {
 
 function LoginWithParams({ google }: { google: boolean }) {
   const searchParams = useSearchParams()
-  return <LoginInner google={google} asParam={searchParams?.get('as') ?? ''} googleFail={searchParams?.get('google') === 'echec'} />
+  return <LoginInner google={google} asParam={searchParams?.get('as') ?? ''} googleFail={searchParams?.get('google') === 'echec'} sansCompte={searchParams?.get('google') === 'sans-compte'} />
 }
 
-function LoginInner({ google, asParam, googleFail }: { google: boolean; asParam: string; googleFail: boolean }) {
+function LoginInner({ google, asParam, googleFail, sansCompte }: { google: boolean; asParam: string; googleFail: boolean; sansCompte: boolean }) {
   // Client Supabase créé au premier usage (effets, clics), jamais pendant le
   // rendu : le formulaire est aussi rendu par le serveur (fallback), où
   // document.cookie n'existe pas.
@@ -369,9 +369,34 @@ function LoginInner({ google, asParam, googleFail }: { google: boolean; asParam:
           <h2 style={s.formTitle}>{ctx.formTitle}</h2>
           <p style={s.formSub}>{ctx.formSub}</p>
 
+          {/* Connexion avec Google sans compte (16/11/2026) : le compte n'est
+              pas créé (voir /auth/callback), on explique où s'inscrire */}
+          {sansCompte && (
+            <div role="alert" style={s.noAccount}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <span style={s.noAccountIcon}><UserPlus size={18} weight="bold" /></span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <strong style={{ fontSize: 15, color: '#0B1D0F', lineHeight: 1.35 }}>Aucun compte n’existe avec cette adresse Google</strong>
+                  <span style={{ fontSize: 13.5, color: 'rgba(11,29,15,0.72)', lineHeight: 1.55 }}>
+                    Crée d’abord ton compte : tu choisis ton espace, puis tu pourras te connecter avec Google en un clic.
+                  </span>
+                </div>
+              </div>
+              <Link href="/auth/register" style={s.noAccountBtn}>
+                Créer mon compte hôte ou investisseur <ArrowRight size={15} weight="bold" />
+              </Link>
+              <div style={{ fontSize: 12.5, color: 'rgba(11,29,15,0.6)', lineHeight: 1.6 }}>
+                Tu es pro ? Crée ta fiche :{' '}
+                <a href="https://jasonmarinho.com/annuaires/photographes/inscription" style={s.noAccountLink}>photographe</a>,{' '}
+                <a href="https://jasonmarinho.com/annuaires/menage/inscription" style={s.noAccountLink}>équipe de ménage</a>{' '}ou{' '}
+                <a href="https://jasonmarinho.com/annuaires/depannage/inscription" style={s.noAccountLink}>dépannage</a>.
+              </div>
+            </div>
+          )}
+
           {google && profileKey === 'host' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 18 }}>
-              <GoogleButton />
+              <GoogleButton mode="login" />
               <div aria-hidden="true" style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 12.5, color: 'rgba(11,29,15,0.5)' }}>
                 <span style={{ flex: 1, height: 1, background: 'rgba(0,76,63,0.12)' }} />ou avec ton e-mail<span style={{ flex: 1, height: 1, background: 'rgba(0,76,63,0.12)' }} />
               </div>
@@ -609,6 +634,19 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '6px',
     transition: 'color 0.2s, background 0.2s',
   },
+  noAccount: {
+    display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 22, padding: '18px 18px 16px',
+    borderRadius: 14, background: '#FFF8E6', border: '1px solid rgba(214,166,40,0.45)',
+  },
+  noAccountIcon: {
+    flexShrink: 0, width: 36, height: 36, borderRadius: 10, background: '#FFD56B', color: '#003329',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  noAccountBtn: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, height: 46, borderRadius: 12,
+    background: '#004C3F', color: '#fff', fontSize: 14.5, fontWeight: 600, textDecoration: 'none',
+  },
+  noAccountLink: { color: '#004C3F', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 3 },
   errorBox: {
     fontSize: '13px', color: '#DC2626',
     background: 'rgba(220,38,38,0.06)',

@@ -35,10 +35,28 @@ export async function GET(req: NextRequest) {
     return echec
   }
 
-  let choix: { p?: string; nl?: boolean; acq?: unknown } = {}
+  let choix: { m?: string; p?: string; nl?: boolean; acq?: unknown } = {}
   try { choix = JSON.parse(req.cookies.get(COOKIE_INSCRIPTION)?.value || '{}') } catch { choix = {} }
 
   const nouveau = Date.now() - new Date(user.created_at).getTime() < NOUVEAU_MS
+
+  // Connexion avec Google sans compte (16/11/2026, Jason : « quelqu'un sans
+  // compte ne doit pas pouvoir se connecter ici, il doit créer un compte pour
+  // choisir le bon service ; là ça me crée un compte hôte »). Supabase crée le
+  // compte au retour de Google : s'il vient d'être créé, uniquement par Google
+  // (aucune identité e-mail, sinon c'est un vrai compte récent auquel Google
+  // vient de se rattacher) et depuis la page de connexion, on le retire
+  // aussitôt et on renvoie vers la connexion avec un message.
+  const googleSeul = (user.identities ?? []).length > 0 && (user.identities ?? []).every(i => i.provider === 'google')
+  if (choix.m === 'login' && nouveau && googleSeul && !next) {
+    await supabase.auth.signOut().catch(() => {})
+    const { error: delErr } = await getServiceClient().auth.admin.deleteUser(user.id)
+    if (delErr) log.warn('compte Google sans inscription non supprimé', { msg: delErr.message })
+    else log.info('connexion Google sans compte refusée')
+    const res = NextResponse.redirect(`${origin}/auth/login?google=sans-compte`)
+    res.cookies.set(COOKIE_INSCRIPTION, '', { path: '/', maxAge: 0 })
+    return res
+  }
   if (nouveau && user.email) {
     const isInvestor = choix.p === 'investor'
     const acquisition = cleanAcquisition(choix.acq)
