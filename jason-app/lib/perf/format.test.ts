@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cleanPath, slowMessage, supabaseCallLabel, slowestCalls } from './format'
+import { cleanPath, slowMessage, supabaseCallLabel, slowestCalls, delaiPour, DELAI_LECTURE_MS, DELAI_ECRITURE_MS } from './format'
 
 describe('mesures de lenteur', () => {
   it('retire les identifiants des chemins', () => {
@@ -21,5 +21,16 @@ describe('appels Supabase', () => {
   })
   it('garde le pire temps par table, du plus lent au plus rapide', () => {
     expect(slowestCalls([['a', 100], ['b', 900], ['a', 300], ['c', 50]], 2)).toEqual([['b', 900], ['a', 300]])
+  })
+})
+
+describe('délai des appels à la base', () => {
+  it('lecture 15 s, écriture et fonction SQL 25 s, fichiers sans limite', () => {
+    expect(delaiPour('https://x.supabase.co/rest/v1/profiles?select=id', 'GET')).toBe(DELAI_LECTURE_MS)
+    expect(delaiPour('https://x.supabase.co/rest/v1/profiles', undefined)).toBe(DELAI_LECTURE_MS)
+    expect(delaiPour('https://x.supabase.co/rest/v1/profiles', 'head')).toBe(DELAI_LECTURE_MS)
+    expect(delaiPour('https://x.supabase.co/rest/v1/rpc/user_shell', 'POST')).toBe(DELAI_ECRITURE_MS)
+    expect(delaiPour('https://x.supabase.co/rest/v1/profiles', 'PATCH')).toBe(DELAI_ECRITURE_MS)
+    expect(delaiPour('https://x.supabase.co/storage/v1/object/menage-photos/a.jpg', 'POST')).toBeNull()
   })
 })
