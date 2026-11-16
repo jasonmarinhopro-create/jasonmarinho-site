@@ -66,7 +66,9 @@ export function OnboardingTracks({
   const isOnProOrInvestorSpace =
     pathname?.startsWith('/dashboard/ma-fiche-photographe') ||
     pathname?.startsWith('/dashboard/ma-fiche-menage') ||
-    pathname?.startsWith('/dashboard/investir')
+    pathname?.startsWith('/dashboard/investir') ||
+    // Mode admin (16/11/2026) : pas de parcours hôte par-dessus le cockpit
+    pathname?.startsWith('/dashboard/admin')
 
   // Format mobile : la carte étendue devient une bottom sheet pleine largeur
   // (au lieu d'une carte 420px collée bas-droite) avec liste scrollable.

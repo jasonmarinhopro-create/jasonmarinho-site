@@ -97,7 +97,9 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // NB : on ne skippe PAS pour onboarding_dismissed seul — le bouton
   // « Parcours » de l'en-tête permet de le rouvrir, et le widget doit rester
   // monté (rendu null) pour écouter cet événement de restauration.
-  const onboardingOff = isOnProSpace || !!profile.onboarding_completed_at
+  // Pas de parcours en mode admin, ni quand le profil n'a pas pu être lu
+  // (sinon le panneau s'ouvrait comme si l'utilisateur ne l'avait jamais fermé)
+  const onboardingOff = isOnProSpace || !!profile.onboarding_completed_at || pathname.startsWith('/dashboard/admin') || profile.profileUnavailable
 
   const [cachedActualites, spacesResult, activeProperty, cachedFormations] = await Promise.all([
     actualitesPromise,
@@ -147,7 +149,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           currentPlan={planLabel}
           isAdmin={isAdmin}
           userId={profile.userId}
-          lastSeenNouveautesAt={profile.last_seen_nouveautes_at}
+          lastSeenNouveautesAt={profile.profileUnavailable ? new Date().toISOString() : profile.last_seen_nouveautes_at}
           hideFormationNews={profile.masquer_annonces_formations}
           newFormationAt={newFormationAt}
           lastSeenActualitesAt={profile.last_seen_actualites_at}

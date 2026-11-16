@@ -24,21 +24,36 @@ export function invalidateProfileCache(userId: string) {
 // hors contexte de requête (unstable_cache n'a pas accès aux cookies).
 async function fetchProfileData(userId: string) {
   const supabase = getServiceClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('profiles')
     .select('full_name, role, plan, driing_status, stripe_subscription_id, stripe_subscription_status, stripe_customer_id, stripe_onboarding_complete, is_contributor, last_seen_actualites_at, last_seen_nouveautes_at, onboarding_step, onboarding_completed_at, onboarding_dismissed, onboarding_pinned_track, onboarding_completed_steps, chez_nous_onboarded_at, autres_revenus_pro, masquer_annonces_formations')
     .eq('id', userId)
     .maybeSingle()
+  // 16/11/2026 : une erreur (base lente) renvoyait null, gardé 5 minutes en
+  // cache : profil « vide », donc panneau « Démarrer » rouvert à chaque
+  // actualisation et 3 nouveautés à nouveau non lues. Une erreur n'est
+  // plus gardée (exception), on sert la dernière lecture réussie.
+  if (error) throw new Error(error.message)
   return data
 }
 
+type ProfileData = Awaited<ReturnType<typeof fetchProfileData>>
+const lastGood = new Map<string, NonNullable<ProfileData>>()
+
 // Wrapper unstable_cache : cache cross-requêtes, invalidation par tag
-function getCachedProfileData(userId: string) {
-  return unstable_cache(
-    () => fetchProfileData(userId),
-    ['user-profile', userId],
-    { tags: [profileCacheTag(userId)], revalidate: PROFILE_CACHE_TTL_SECONDS },
-  )()
+async function getCachedProfileData(userId: string): Promise<{ data: ProfileData; failed: boolean }> {
+  try {
+    const data = await unstable_cache(
+      () => fetchProfileData(userId),
+      ['user-profile-v2', userId],
+      { tags: [profileCacheTag(userId)], revalidate: PROFILE_CACHE_TTL_SECONDS },
+    )()
+    if (data) lastGood.set(userId, data)
+    return { data, failed: false }
+  } catch {
+    const prev = lastGood.get(userId) ?? null
+    return { data: prev, failed: !prev }
+  }
 }
 
 /**
@@ -53,7 +68,7 @@ export const getProfile = cache(async () => {
   if (!user) return null
 
   const isAdmin = user.email === ADMIN_EMAIL
-  const profile = await getCachedProfileData(user.id)
+  const { data: profile, failed: profileUnavailable } = await getCachedProfileData(user.id)
 
   const isDriingMember = profile?.plan === 'driing' || profile?.driing_status === 'confirmed'
   const resolvedPlan = isAdmin ? 'driing' : (isDriingMember ? 'driing' : (profile?.plan ?? 'decouverte'))
@@ -84,5 +99,7 @@ export const getProfile = cache(async () => {
     chez_nous_onboarded_at: profile?.chez_nous_onboarded_at ?? null,
     autres_revenus_pro: (profile?.autres_revenus_pro as number | null) ?? null,
     masquer_annonces_formations: !!profile?.masquer_annonces_formations,
+    /** Profil illisible (base injoignable, aucune lecture réussie) : valeurs par défaut */
+    profileUnavailable,
   }
 })

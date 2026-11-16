@@ -412,3 +412,58 @@ const c: Record<string, React.CSSProperties> = {
   shortRow: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 6px', borderRadius: 10, textDecoration: 'none', minWidth: 0 },
   shortIcon: { width: 32, height: 32, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
 }
+
+// ── Base injoignable ──────────────────────────────────────────────────────
+
+/** Vue d'ensemble sans aucune lecture réussie : nouvel essai tout seul toutes les 15 s */
+export function OverviewUnavailable() {
+  const router = useRouter()
+  const [left, setLeft] = useState(15)
+  const [tries, setTries] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLeft(l => {
+        if (l <= 1) { router.refresh(); setTries(t => t + 1); return 15 }
+        return l - 1
+      })
+    }, 1000)
+    return () => clearInterval(id)
+  }, [router])
+  const retry = () => { router.refresh(); setTries(t => t + 1); setLeft(15) }
+  const R = 22, C = 2 * Math.PI * R
+
+  return (
+    <section role="status" aria-live="polite" style={c.down}>
+      <div style={c.downIcon}>
+        <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true" style={{ position: 'absolute', inset: 0 }}>
+          <circle cx="28" cy="28" r={R} fill="none" stroke="rgba(255,213,107,0.25)" strokeWidth="3" />
+          <circle cx="28" cy="28" r={R} fill="none" stroke="#FFD56B" strokeWidth="3" strokeLinecap="round"
+            strokeDasharray={C} strokeDashoffset={C * (left / 15)} transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 1s linear' }} />
+        </svg>
+        <span style={{ position: 'relative', fontFamily: 'var(--font-fraunces), serif', fontSize: 20, color: '#fff' }}>{left}</span>
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <span style={c.downTag}>Base de données ralentie</span>
+        <h2 style={c.downTitle}>Tes chiffres arrivent dans un instant</h2>
+        <p style={c.downText}>
+          La base gratuite de Supabase met parfois quelques secondes à répondre. La page réessaie toute seule
+          {tries > 0 ? ` (essai ${tries + 1})` : ''} : rien n&apos;est perdu, tes données sont intactes.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 14 }}>
+          <button type="button" onClick={retry} style={c.downBtn}>Réessayer maintenant</button>
+          <Link href="/dashboard/admin/qg" style={c.downLink}>Ouvrir le QG demandes <ArrowRight size={13} weight="bold" /></Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+Object.assign(c, {
+  down: { display: 'flex', gap: 20, alignItems: 'flex-start', flexWrap: 'wrap', padding: '26px 28px', borderRadius: 20, background: 'linear-gradient(135deg, #003329, #004C3F)', color: '#fff', maxWidth: 760, boxShadow: '0 18px 40px -24px rgba(0,51,41,0.6)' },
+  downIcon: { position: 'relative', width: 56, height: 56, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 99, background: 'rgba(255,255,255,0.08)' },
+  downTag: { display: 'inline-block', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase', color: '#FFD56B' },
+  downTitle: { fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 24, lineHeight: 1.2, margin: '6px 0 8px', color: '#fff' },
+  downText: { fontSize: 14, lineHeight: 1.6, color: 'rgba(255,255,255,0.78)', margin: 0 },
+  downBtn: { height: 42, padding: '0 18px', borderRadius: 11, border: 'none', background: '#FFD56B', color: '#003329', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
+  downLink: { display: 'inline-flex', alignItems: 'center', gap: 6, height: 42, padding: '0 16px', borderRadius: 11, border: '1px solid rgba(255,255,255,0.25)', color: '#fff', fontSize: 14, fontWeight: 600, textDecoration: 'none' },
+} satisfies Record<string, React.CSSProperties>)

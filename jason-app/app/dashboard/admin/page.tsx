@@ -6,7 +6,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { Suspense, cache } from 'react'
 import { loadCockpitTraffic } from '@/lib/acquisition/load'
 import AdminUI, { AffiliationCard } from './AdminUI'
-import { LivePanel, AudienceCard } from './Cockpit'
+import { LivePanel, AudienceCard, OverviewUnavailable } from './Cockpit'
 import { buildMemberSpaces, type CockpitProfile } from '@/lib/admin/members-cockpit'
 import { allRows } from '@/lib/supabase/all-rows'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
@@ -172,10 +172,7 @@ export default async function AdminPage() {
   if (!overview) {
     return (
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
-        <div role="alert" style={{ padding: '22px 24px', borderRadius: 16, background: 'var(--surface)', border: '1px solid var(--border)', maxWidth: 640 }}>
-          <strong style={{ display: 'block', fontSize: 16, marginBottom: 6, color: 'var(--text)' }}>La base de données ne répond pas pour le moment</strong>
-          <span style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6 }}>Les chiffres de la Vue d’ensemble reviennent dès qu’elle répond (en général moins d’une minute). Recharge la page dans un instant.</span>
-        </div>
+        <OverviewUnavailable />
       </div>
     )
   }
@@ -183,8 +180,9 @@ export default async function AdminPage() {
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
       {stale && (
-        <div role="status" style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 12, background: 'var(--surface)', border: '1px solid var(--border)', fontSize: 13.5, color: 'var(--text-2)' }}>
-          La base de données répond lentement : chiffres de la dernière lecture réussie. Recharge la page dans une minute.
+        <div role="status" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, padding: '11px 16px', borderRadius: 12, background: 'color-mix(in srgb, #FFD56B 18%, var(--surface))', border: '1px solid color-mix(in srgb, #D6A628 40%, transparent)', fontSize: 13.5, color: 'var(--text)' }}>
+          <span style={{ width: 8, height: 8, borderRadius: 99, background: '#D6A628', flexShrink: 0 }} />
+          La base répond lentement : tu vois les chiffres de la dernière lecture réussie. Ils se mettront à jour tout seuls.
         </div>
       )}
       <AdminUI
