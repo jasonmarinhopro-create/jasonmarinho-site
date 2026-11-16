@@ -680,7 +680,7 @@ document.addEventListener('click', function(e){
       <ul class="pts">
 ${o.points.map(t => `        <li><i class="ph-bold ph-check-circle"></i><span>${t}</span></li>`).join('\n')}
       </ul>
-      <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-video-camera"></i>${o.cta2.label}`) : ''}</div>
+      <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
       <p class="note2">${o.note}</p>
     </aside>
   </div>
@@ -746,7 +746,7 @@ ${p.limites.map(t => `    <div class="er"><b><i class="ph-bold ph-warning-circle
   <div class="go">
     <h3>${o.titre}</h3>
     <p>${o.sous}.</p>
-    <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-video-camera"></i>${o.cta2.label}`) : ''}</div>
+    <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
     ${o.code ? `<div class="code"><strong>${o.code}</strong><span>${o.codeTexte}</span></div>` : ''}
     ${bfLine}
     <p class="aff-n">${o.note}</p>

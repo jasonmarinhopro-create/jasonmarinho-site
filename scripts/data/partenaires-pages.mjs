@@ -64,6 +64,16 @@ const KEOBIZ = 'https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campai
 // chiffre de taille ni de note repris (site et Trustpilot se contredisent).
 const SPORT_DECOUVERTE = 'https://sport-decouverte.com/?utm_source=affilae&utm_medium=affiliate&utm_campaign=Jason%20Marinho&ae=410'
 
+// ── Legalstart (Affilae, numéro d'affilié 933, 16/11/2026) ──
+// EPC 8,01 €, conversion 12 %, premier clic, validation 100 % (présentation
+// Affilae). Aucun prix de formule affiché : les sources relevées le 16/11/2026
+// se contredisent (Standard à 59, 99 ou 169 € HT selon la page et la date).
+// Chiffres de taille (850 000 entrepreneurs depuis 2014, 1 sur 10) : ceux de
+// Legalstart, toujours présentés comme tels. legalstart.fr n'est pas lisible
+// depuis l'environnement de Claude.
+const LEGALSTART = 'https://www.legalstart.fr/?ae=933'
+const LEGALSTART_CREATION = 'https://www.legalstart.fr/creation-entreprise/?ae=933'
+
 export const PAGES = [
   {
     slug: 'lodgify',
@@ -369,6 +379,109 @@ export const PAGES = [
       ['Cotisations et seuils de la micro-entreprise', 'https://www.economie.gouv.fr/entreprises/gerer-sa-micro-entreprise/micro-entreprises-quel-est-le-montant-de-vos-cotisations-sociales'],
       ['Coût de création d\'une SASU en 2026 (LegalPlace)', 'https://www.legalplace.fr/guides/cout-creation-sasu/'],
       ['Conciergerie et carte professionnelle', 'https://efisio.fr/conciergerie-airbnb-sans-carte-professionnelle-t-g-etes-vous-dans-lillegalite/'],
+    ],
+  },
+  {
+    // Legalstart (Affilae, numéro d'affilié 933, 16/11/2026). Place : la même
+    // famille que LegalPlace (création et formalités en ligne). Ce qui le
+    // distingue d'après Legalstart : un questionnaire, un expert joignable par
+    // téléphone et des juristes qui vérifient le dossier. Pas de code promo.
+    slug: 'legalstart',
+    releve: 'novembre 2026',
+    nom: 'Legalstart',
+    mono: 'L',
+    couleur: '#0F5C4A',
+    title: 'Legalstart : créer ta société ou ta conciergerie en ligne',
+    description: "Legalstart avec Jason Marinho : créer ta micro-entreprise, ta SASU ou ta conciergerie en ligne, avec un expert au téléphone si besoin. Pour qui, coûts, limites.",
+    eyebrow: 'Partenaire · Création & juridique',
+    h1: 'Legalstart : crée ton entreprise <em>en ligne, accompagné</em>',
+    lead: "Legalstart s'occupe des documents juridiques et des formalités des entrepreneurs : création de société ou de micro-entreprise, modifications, domiciliation. Je le conseille aux hôtes, conciergeries et prestataires qui veulent un questionnaire simple et pouvoir parler à quelqu'un au téléphone.",
+    offre: {
+      titre: 'Création en ligne accompagnée',
+      sous: 'Micro-entreprise, SASU, EURL, SAS, SARL ou SCI, avec un expert au téléphone si besoin',
+      points: [
+        'Un questionnaire en ligne pour préparer tes statuts',
+        'Un expert joignable par téléphone, en option',
+        'Ton dossier vérifié par des juristes avant le dépôt',
+        'Domiciliation et modifications au même endroit',
+      ],
+      cta: { label: 'Créer mon entreprise', href: LEGALSTART_CREATION },
+      cta2: { label: 'Voir Legalstart', href: LEGALSTART, icon: 'globe' },
+      note: "Lien affilié : Legalstart me verse une commission si tu passes par ce lien, sans aucun surcoût pour toi.",
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>Legalstart</em>',
+      items: [
+        { icon: 'list-checks', t: 'Un questionnaire simple', d: "Tu réponds à des questions sur ton activité : Legalstart prépare les statuts et le dossier, tu n'as pas à remplir le guichet unique seul." },
+        { icon: 'phone', t: "Quelqu'un à qui parler", d: "Si tu hésites sur le statut, le capital ou l'objet social, un expert peut t'accompagner par téléphone." },
+        { icon: 'shield-check', t: 'Un dossier relu', d: "D'après Legalstart, des juristes vérifient le dossier avant le dépôt : moins de risque de rejet et d'aller-retour avec le greffe." },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que Legalstart fait <em>pour toi</em>',
+      items: [
+        { icon: 'user', t: 'Micro-entreprise', d: 'Pour tester une conciergerie, le ménage ou la photo LCD.' },
+        { icon: 'buildings', t: 'SASU ou EURL', d: "Quand l'activité se confirme et que tu veux séparer ton patrimoine." },
+        { icon: 'users-three', t: 'SAS, SARL ou SCI', d: "Pour t'associer ou détenir un bien à plusieurs." },
+        { icon: 'map-pin', t: 'Domiciliation', d: "Une adresse pour ton siège, pour ne pas afficher ton domicile." },
+        { icon: 'pencil-simple', t: 'Modifications', d: "Transfert de siège, changement d'activité ou de dirigeant." },
+        { icon: 'scales', t: 'Documents juridiques', d: 'Les formalités et documents de la vie de ton entreprise.' },
+      ],
+    },
+    etapes: [
+      { t: 'Choisis ta forme', d: "micro-entreprise pour démarrer, SASU ou EURL pour grandir (le tableau ci-dessous t'aide)." },
+      { t: 'Réponds au questionnaire', d: "activité, capital, siège, dirigeant : Legalstart prépare tes statuts. Appelle un expert si tu bloques." },
+      { t: 'Signe, dépose ton capital, reçois ton Kbis', d: "le dossier est vérifié puis déposé sur le guichet unique, ta structure peut facturer." },
+    ],
+    tableau: {
+      titre: 'Quelle structure <em>pour ton activité</em> ?',
+      entete: ['Ton activité', 'Ce que je te conseille'],
+      lignes: [
+        ['Tu démarres une conciergerie, une équipe de ménage ou la photo LCD', '<span class="yes">Micro-entreprise</span> : 21,2 % de cotisations sur ton chiffre d\'affaires en 2026, jusqu\'à 83 600 € par an, sans TVA sous 37 500 €'],
+        ['Plus de 8 à 10 mandats, des salariés ou des sous-traitants', '<span class="yes">SASU ou EURL</span> : charges déductibles et responsabilité limitée à tes apports'],
+        ['Tu veux t\'associer', 'SAS ou SARL, avec un pacte entre associés'],
+        ['Tu veux mettre un logement meublé en société', '<span class="partial">À valider avec un comptable avant tout</span> : une SCI à l\'IR qui loue en meublé de façon habituelle risque de passer à l\'impôt sur les sociétés'],
+      ],
+      note: 'Pour chiffrer micro-entreprise, EI ou SASU selon ce que tu veux te verser, utilise mon simulateur EI ou SASU.',
+    },
+    cout: {
+      titre: 'Ce que ça coûte <em>vraiment</em>',
+      paras: [
+        "Legalstart propose plusieurs formules, de la plus simple à la plus accompagnée. Les prix trouvés en ligne en novembre 2026 se contredisent selon la page et la date : je n'en affiche aucun, regarde la grille au moment de commander.",
+        "Quelle que soit la formule, des frais obligatoires s'ajoutent pour une SASU : l'annonce légale, l'immatriculation et la déclaration des bénéficiaires effectifs, environ 195 € en 2026 d'après les tarifs réglementés. Le dépôt du capital reste à toi.",
+        "La création d'une micro-entreprise est gratuite sur le guichet unique de l'INPI : un accompagnement payant se justifie seulement si tu veux être guidé ou domicilié.",
+      ],
+    },
+    limites: [
+      "Le statut ne dit pas tout : si ta conciergerie encaisse les loyers pour le compte des propriétaires, il te faut une carte G (loi Hoguet), avec une garantie financière. Fais valider ton modèle par un juriste.",
+      "Faire toi-même reste possible et moins cher : les statuts types et le guichet unique suffisent pour une SASU simple.",
+      "Pas de code promo pour l'instant. LegalPlace, l'autre partenaire de création, a une réduction avec le code JASON15 : compare les deux avant de choisir.",
+      "Legalstart crée ta structure, il ne remplace pas un expert-comptable pour la suite.",
+    ],
+    liens: [
+      { href: '/partenaires/legalplace', t: 'LegalPlace', d: 'Création en ligne aussi, avec une réduction JASON15.' },
+      { href: '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026', t: 'Créer la structure de ta conciergerie', d: 'Micro, SASU ou EURL, carte G, coûts : le guide complet.' },
+      { href: '/services/simulateurs/choisir-statut-ei-sasu', t: 'Simulateur EI ou SASU', d: 'Ce qui te reste selon le statut et ta rémunération.' },
+      { href: '/partenaires/keobiz', t: 'Keobiz', d: "L'expert-comptable une fois ta société créée." },
+    ],
+    faq: [
+      { q: 'Legalstart, c\'est quoi ?', a: "Un service en ligne de documents juridiques et de formalités pour les entrepreneurs : création de société ou de micro-entreprise, modifications, domiciliation. D'après Legalstart, plus de 850 000 entrepreneurs l'ont utilisé depuis 2014." },
+      { q: 'Legalstart ou LegalPlace ?', a: "Les deux créent ta société ou ta micro-entreprise en ligne à partir d'un questionnaire. Legalstart met en avant l'accompagnement par téléphone et la vérification du dossier par des juristes. LegalPlace a une réduction avec le code JASON15. Compare les deux grilles le jour où tu commandes : les formules changent souvent." },
+      { q: 'Existe-t-il un code promo Legalstart ?', a: "Pas pour l'instant. Si j'en obtiens un pour les lecteurs du site, il sera affiché sur cette page." },
+      { q: 'Quel statut choisir pour une conciergerie Airbnb ?', a: "Pour tester, la micro-entreprise : 21,2 % de cotisations sur ton chiffre d'affaires en 2026, jusqu'à 83 600 € par an, sans TVA tant que tu restes sous 37 500 €. Quand l'activité se confirme (plus de 8 à 10 mandats, des salariés), une SASU ou une EURL permet de déduire tes charges réelles et de limiter ta responsabilité." },
+      { q: 'Peut-on créer sa micro-entreprise gratuitement ?', a: "Oui, la déclaration est gratuite sur le guichet unique de l'INPI. Legalstart est utile si tu veux être guidé, ou domicilier ton entreprise pour ne pas afficher ton adresse personnelle." },
+      { q: 'Une conciergerie a-t-elle besoin d\'une carte professionnelle ?', a: "Ça dépend de ton organisation, pas du statut. Si tu encaisses les loyers pour les propriétaires, il te faut une carte G. Si les voyageurs paient directement le propriétaire et que tu factures tes prestations (ménage, accueil, calendrier), tu fais de la prestation de services, sans carte." },
+    ],
+    cta: {
+      titre: 'Ta structure créée, <em>tes premiers mandats</em> ensuite',
+      texte: "Contrats signés en ligne, planning ménage partagé avec ton équipe, déclarations voyageurs : l'app Jason Marinho gère le quotidien de tes logements.",
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Legalstart', 'https://www.legalstart.fr/'],
+      ['Cotisations et seuils de la micro-entreprise', 'https://www.economie.gouv.fr/entreprises/gerer-sa-micro-entreprise/micro-entreprises-quel-est-le-montant-de-vos-cotisations-sociales'],
+      ['Frais obligatoires d\'une SASU en 2026', 'https://www.legalplace.fr/guides/cout-creation-sasu/'],
+      ['Guichet unique des formalités (INPI)', 'https://formalites.entreprises.gouv.fr/'],
     ],
   },
   {

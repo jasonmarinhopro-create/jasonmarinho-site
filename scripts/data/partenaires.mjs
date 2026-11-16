@@ -44,6 +44,8 @@ const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_s
 // LegalPlace (partenariat Affilae du 30/09/2026, numéro d'affilié 1773) : les
 // paramètres du lien traqué généré par Jason, ajoutés à chaque page du kit
 export const LEGALPLACE_AE = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
+// Legalstart (Affilae, numéro d'affilié 933, 16/11/2026)
+const LEGALSTART_CREATION = 'https://www.legalstart.fr/creation-entreprise/?ae=933'
 const LEGALPLACE_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LEGALPLACE_AE}`
 // Tiime (partenariat Affilae accepté le 01/10/2026, numéro d'affilié 1127)
 // Brevo (partenariat PartnerStack du 06/10/2026) : lien « plateforme » fourni par Brevo
@@ -142,6 +144,15 @@ export const OUTILS = [
     liens: [
       { label: 'Créer ma société', href: LEGALPLACE_SOCIETE, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/legalplace' },
+    ],
+  },
+  {
+    nom: 'Legalstart', mono: 'L', couleur: '#0F5C4A', cats: ['juridique'],
+    badge: 'affilie', offre: 'Expert au téléphone',
+    desc: 'Création de société ou de micro-entreprise en ligne, dossier vérifié par des juristes, domiciliation.',
+    liens: [
+      { label: 'Créer mon entreprise', href: LEGALSTART_CREATION, sponsored: true },
+      { label: "Voir l'offre", href: '/partenaires/legalstart' },
     ],
   },
   {

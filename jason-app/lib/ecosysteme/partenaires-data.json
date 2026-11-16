@@ -289,6 +289,28 @@
       ]
     },
     {
+      "nom": "Legalstart",
+      "mono": "L",
+      "couleur": "#0F5C4A",
+      "cats": [
+        "juridique"
+      ],
+      "badge": "affilie",
+      "offre": "Expert au téléphone",
+      "desc": "Création de société ou de micro-entreprise en ligne, dossier vérifié par des juristes, domiciliation.",
+      "liens": [
+        {
+          "label": "Créer mon entreprise",
+          "href": "https://www.legalstart.fr/creation-entreprise/?ae=933",
+          "sponsored": true
+        },
+        {
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/legalstart"
+        }
+      ]
+    },
+    {
       "nom": "Tiime",
       "mono": "T",
       "couleur": "#0EA5E9",
