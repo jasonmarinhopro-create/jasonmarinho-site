@@ -11,7 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-17 · marche · Été 2026 : revenus en hausse sur le littoral, villes en recul · masquée (https://www.lejma.fr/2026/09/13/bilan-touristique-de-lete-2026-en-france-les-premiers-enseignements-dune-saison-bousculee-par-la-chaleur-mais-globalement-solide/)
 - 2026-09-18 · reglementation · Declaloc : le portail d'enregistrement des meublés se déploie sur tout le territoire · masquée (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
 - 2026-09-19 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre 2026 (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-20 · plateformes · Airbnb passe à 15,5 % de frais hôte dès le 13 octobre 2026 · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
