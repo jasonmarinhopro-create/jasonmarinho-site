@@ -249,6 +249,12 @@
       '.n-mega .n-svc3-col a.n-svc3-all i{font-size:11px;color:inherit;width:auto}',
       '.n-svc3-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px -24px 0;padding:14px 24px;border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);border-radius:0 0 14px 14px}',
       '.n-svc3-bar p{margin:0;font-size:12.5px;color:rgba(255,255,255,.55)}',
+      '.n-svc3-bar p b{color:rgba(255,255,255,.9);font-weight:600}',
+      /* Même barre en bas de Pour qui, Ressources et Tarifs (16/11/2026, Jason : cohérence avec Services) */
+      '.n-mega.n-mega-pq,.n-mega.n-mega-res,.n-mega.n-mega-tar{padding-bottom:0}',
+      '.n-mega-pq .n-svc3-bar{margin:18px -22px 0;padding:14px 22px}',
+      '.n-mega-res .n-svc3-bar{margin:18px -20px 0;padding:14px 20px}',
+      '.n-mega-tar .n-svc3-bar{margin:18px -22px 0;padding:14px 22px}',
       '.n-svc3-act{display:flex;align-items:center;gap:14px}',
       '.n-mega .n-svc3-act a.n-svc3-tar{color:rgba(255,255,255,.72);padding:6px 8px}',
       '.n-mega a.n-svc3-cta,.n-mega a.n-svc3-cta:hover{background:var(--y);color:var(--gd);font-weight:600;font-size:13px;padding:10px 15px;border-radius:9px}',
@@ -481,6 +487,7 @@
       ':where(nav#nav.nv-light) .n-mega .n-svc3-col a.n-svc3-all:hover{color:var(--gd)}',
       ':where(nav#nav.nv-light) .n-svc3-bar{border-top-color:#EDF2EF;background:#F7FAF8}',
       ':where(nav#nav.nv-light) .n-svc3-bar p{color:#4A5C47}',
+      ':where(nav#nav.nv-light) .n-svc3-bar p b{color:#0F1A0D}',
       ':where(nav#nav.nv-light) .n-mega .n-svc3-act a.n-svc3-tar{color:#2A3A27}',
       ':where(nav#nav.nv-light) .n-mega a.n-svc3-cta,:where(nav#nav.nv-light) .n-mega a.n-svc3-cta:hover{background:var(--g);color:#fff}',
       ':where(nav#nav.nv-light) .n-mega a.n-svc3-cta:hover{background:var(--gd)}',
@@ -663,7 +670,12 @@
               + '<a href="/pour-qui/depannage"><i class="ph ph-wrench"></i><span><b>Dépannage et maintenance</b><small>Les pannes des hôtes, même urgentes</small></span></a>'
             + '</div>'
           + '</div>'
-          + '<a href="/pour-qui/membres-driing" class="n-pq-driing"><i class="ph ph-lightning"></i><span><b>Membre Driing ?</b><small>Ton accès à l\'app est inclus</small></span><span class="n-pq-go">Voir mes avantages <i class="ph-bold ph-arrow-right"></i></span></a>'
+          + '<div class="n-svc3-bar">'
+            + '<p><b>Membre Driing ?</b> Ton accès à l\'app est inclus.</p>'
+            + '<span class="n-svc3-act">'
+              + '<a href="/tarifs" class="n-svc3-tar"><i class="ph ph-tag"></i>Voir les tarifs</a><a href="/pour-qui/membres-driing" class="n-svc3-cta">Voir mes avantages <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</span>'
+          + '</div>'
         + '</div>'
       + '</li>'
 
@@ -696,7 +708,12 @@
               + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
             + '</div>'
           + '</div>'
-          + '<a href="/#contact" class="n-res-checkin"><i class="ph ph-envelope-simple"></i><span><b>Le Check-in</b><small>Une lettre par mois : ce qui change, un outil, un bon plan</small></span><span class="n-res-go">M\'inscrire <i class="ph-bold ph-arrow-right"></i></span></a>'
+          + '<div class="n-svc3-bar">'
+            + '<p><b>Le Check-in</b> : une lettre par mois, ce qui change, un outil, un bon plan.</p>'
+            + '<span class="n-svc3-act">'
+              + '<a href="/blog" class="n-svc3-tar"><i class="ph ph-article"></i>Tout le blog</a><a href="/#contact" class="n-svc3-cta">M\'inscrire à la lettre <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</span>'
+          + '</div>'
         + '</div>'
       + '</li>'
 
@@ -746,7 +763,12 @@
             + '<a href="/tarifs#faq"><i class="ph ph-question"></i>Questions fréquentes</a>'
           + '</div>'
           + '</div>'
-          + '<a href="/tarifs" class="n-tar-band"><i class="ph ph-seal-check"></i><span><b>Places Fondateur : prix bloqué à vie</b><small data-tar-places>Pour les premiers inscrits de chaque offre</small></span><span class="n-tar-go">Voir les offres <i class="ph-bold ph-arrow-right"></i></span></a>'
+          + '<div class="n-svc3-bar">'
+            + '<p><b>Places Fondateur : prix bloqué à vie.</b> <span data-tar-places>Pour les premiers inscrits de chaque offre</span></p>'
+            + '<span class="n-svc3-act">'
+              + '<a href="/tarifs#compare" class="n-svc3-tar"><i class="ph ph-table"></i>Comparer les plans</a><a href="/tarifs" class="n-svc3-cta">Voir les offres <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</span>'
+          + '</div>'
         + '</div>'
       + '</li>'
 
