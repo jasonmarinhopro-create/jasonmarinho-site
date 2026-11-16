@@ -187,19 +187,6 @@ if (src.includes('<!-- MARKET:START -->')) {
 }
 fs.writeFileSync(FILE, src)
 
-// Page d'accueil, section Partenaires (16/11/2026, Jason : les catégories à la
-// place du bandeau qui défilait, pour montrer tout le panel d'outils). Chaque
-// pastille ouvre /partenaires filtré (#<catégorie>, #offres), nombres tenus à
-// jour ici. Marqueurs PA-CATS dans index.html.
-const HOME = path.join(ROOT, 'index.html')
-const homeCats = `<!-- PA-CATS:START --><nav class="pa-cats" aria-label="Catégories d'outils">`
-  + `<a class="pa-cat pa-cat-all" href="/partenaires#offres"><i class="ph-bold ph-star" aria-hidden="true"></i>Offres partenaires <em>${nbOffres}</em></a>`
-  + CATEGORIES.filter(c => count(c.id) > 0).map(c => `<a class="pa-cat" href="/partenaires#${c.id}"><i class="ph-bold ph-${c.icon}" aria-hidden="true"></i>${amp(c.label)} <em>${count(c.id)}</em></a>`).join('')
-  + `</nav><!-- PA-CATS:END -->`
-let home = fs.readFileSync(HOME, 'utf8')
-if (!home.includes('<!-- PA-CATS:START -->')) throw new Error('index.html : marqueurs PA-CATS introuvables')
-home = home.replace(/<!-- PA-CATS:START -->[\s\S]*?<!-- PA-CATS:END -->/, homeCats)
-fs.writeFileSync(HOME, home)
 
 // Même catalogue pour le dashboard (Entre Hôtes → Partenaires) : copie JSON
 // dans jason-app (projet Vercel séparé, qui ne voit pas scripts/). Liens
