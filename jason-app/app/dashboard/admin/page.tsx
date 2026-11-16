@@ -29,6 +29,18 @@ export const metadata = { title: 'Administration, Jason Marinho' }
 // au plus tard au passage suivant. Le trafic « en direct » reste calculé à
 // chaque fois (rafraîchi toutes les 25 s par LiveTraffic).
 const getAdminOverview = unstable_cache(computeAdminOverview, ['admin-overview-v3'], { revalidate: 180, tags: ['admin-overview'] })
+// Dernière Vue d'ensemble réussie (par instance du serveur) : servie si la
+// base ne répond pas, avec un bandeau, plutôt que des zéros
+let lastOverview: Awaited<ReturnType<typeof computeAdminOverview>> | null = null
+async function overviewOrLast() {
+  try {
+    const o = await getAdminOverview()
+    lastOverview = o
+    return { o, stale: false }
+  } catch {
+    return { o: lastOverview, stale: true }
+  }
+}
 
 async function computeAdminOverview() {
   // Début du mois courant
@@ -147,16 +159,32 @@ export default async function AdminPage() {
   // renverrait ici depuis /dashboard, en boucle)
   if (profile.role !== 'admin') redirect('/api/me/admin-mode')
 
-  const [overview, liveVisitors, channelBreakdown] = await Promise.all([
-    getAdminOverview(),
+  const [{ o: overview, stale }, liveVisitors, channelBreakdown] = await Promise.all([
+    overviewOrLast(),
     getCachedLiveVisitors().catch(() => 0),
     getCachedChannelBreakdown(),
   ])
   timer.mark('vue d\'ensemble et trafic')
   timer.done()
 
+  if (!overview) {
+    return (
+      <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
+        <div role="alert" style={{ padding: '22px 24px', borderRadius: 16, background: 'var(--surface)', border: '1px solid var(--border)', maxWidth: 640 }}>
+          <strong style={{ display: 'block', fontSize: 16, marginBottom: 6, color: 'var(--text)' }}>La base de données ne répond pas pour le moment</strong>
+          <span style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6 }}>Les chiffres de la Vue d’ensemble reviennent dès qu’elle répond (en général moins d’une minute). Recharge la page dans un instant.</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
+      {stale && (
+        <div role="status" style={{ marginBottom: 16, padding: '12px 16px', borderRadius: 12, background: 'var(--surface)', border: '1px solid var(--border)', fontSize: 13.5, color: 'var(--text-2)' }}>
+          La base de données répond lentement : chiffres de la dernière lecture réussie. Recharge la page dans une minute.
+        </div>
+      )}
       <AdminUI
         todayLabel={new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Paris' })}
         recentSignups={overview.recentSignups}
@@ -237,27 +265,7 @@ async function loadOverviewBase(admin: Db, startOfMonth: Date, twelveMonthsAgo: 
     }
   } catch { /* repli */ }
 
-  const [
-    { count: totalUsers },
-    { count: driingMembers },
-    { count: standardMembers, data: standardRows },
-    { count: newThisMonth },
-    { count: templatesCount },
-    { count: formationsCount },
-    { count: groupsCount },
-    { count: totalVoyageurs },
-    { count: totalSejours },
-    { count: completedFormations },
-    { count: pendingDriingCount },
-    { count: pendingReportsCount },
-    { count: suggestionsCount },
-    { data: formationEnrollments },
-    { data: recentSignups },
-    { data: monthlySignups },
-    { data: photographers },
-    { data: cleaners },
-    admins,
-  ] = await Promise.all([
+  const replis = await Promise.all([
     admin.from('profiles').select('*', { count: 'exact', head: true }),
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
     admin.from('profiles').select('stripe_price_id', { count: 'exact' }).eq('plan', 'standard').limit(1000),
@@ -278,6 +286,33 @@ async function loadOverviewBase(admin: Db, startOfMonth: Date, twelveMonthsAgo: 
     admin.from('cleaners').select('user_id, tier, status, stripe_subscription_status'),
     adminUserIds(admin),
   ])
+  // Base injoignable (ralenti de l'offre gratuite) : on échoue au lieu de
+  // renvoyer des zéros, que le cache aurait servis pendant des minutes
+  // (16/11/2026, Vue d'ensemble « 0 compte, 0 formation »)
+  const echec = (replis.slice(0, -1) as Array<{ error?: { message?: string } | null }>).find(r => r?.error)
+  if (echec) throw new Error(`vue d'ensemble indisponible : ${echec.error?.message ?? 'erreur'}`)
+  const [
+    { count: totalUsers },
+    { count: driingMembers },
+    { count: standardMembers, data: standardRows },
+    { count: newThisMonth },
+    { count: templatesCount },
+    { count: formationsCount },
+    { count: groupsCount },
+    { count: totalVoyageurs },
+    { count: totalSejours },
+    { count: completedFormations },
+    { count: pendingDriingCount },
+    { count: pendingReportsCount },
+    { count: suggestionsCount },
+    { data: formationEnrollments },
+    { data: recentSignups },
+    { data: monthlySignups },
+    { data: photographers },
+    { data: cleaners },
+    admins,
+  ] = replis
+
   return {
     totalUsers, driingMembers, standardMembers, standardRows: standardRows as Array<{ stripe_price_id: string | null }> | null,
     newThisMonth, templatesCount, formationsCount, groupsCount, totalVoyageurs, totalSejours, completedFormations,
