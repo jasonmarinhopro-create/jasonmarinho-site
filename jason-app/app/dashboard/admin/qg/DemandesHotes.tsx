@@ -116,7 +116,7 @@ export default function DemandesHotes({ initial, pros, initialId, suiviOk, error
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           <div style={st.seg}>
-            {([['tous', 'Tous'], ['photographe', 'Photo'], ['menage', 'Ménage']] as const).map(([k, label]) => (
+            {([['tous', 'Tous'], ['photographe', 'Photo'], ['menage', 'Ménage'], ['depannage', 'Dépannage']] as const).map(([k, label]) => (
               <button key={k} type="button" onClick={() => setMetier(k)} style={{ ...st.segBtn, ...(metier === k ? st.segOn : {}) }}>{label}</button>
             ))}
           </div>
