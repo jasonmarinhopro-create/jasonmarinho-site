@@ -13,7 +13,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
+import { injectProsIntoVillePages, villeGuide, zoneCarte } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml, instaHandle } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS, citySuggestHtml } from './lib/annuaire-hote.mjs'
@@ -21,7 +21,7 @@ import { readMetier, metierLabel, readOptions, OPTIONS_VISUELLES, faitVideo } fr
 import { CLIENTELES, readClienteles } from './lib/pro-clienteles.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml, clientelesHtml } from './lib/fiche-vitrine.mjs'
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
-import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
+import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref, v3Prix } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 import { writeRegionPages, sitemapAvec } from './lib/annuaire-region.mjs'
@@ -944,6 +944,14 @@ async function main() {
       url: `/annuaires/photographes/${p.slug}`,
       name: nomAffiche(p.full_name),
       sub: [p.specialite, fmtTarif(p)].filter(Boolean).join(' · ') || null,
+      // Cartes modernes des pages ville (17/11/2026)
+      photo: vitrinePhotos(p.portfolio_photos, SUPABASE_URL, 1)[0]?.thumb ?? null,
+      logo: p.logo_url || null,
+      initials: initiales(nomAffiche(p.full_name)),
+      zone: zoneCarte(p.ville, zoneFact(p.ville, p.zone_couverte)),
+      prix: (pr => pr.devis ? null : pr.v)(v3Prix(p.formules, p.tarif_min, p.tarif_max)),
+      unite: 'la séance',
+      tags: [metierLabel(readMetier(p.metier)), ...readOptions(p.options).map(k => OPTIONS_VISUELLES.find(o => o.key === k)?.label)].filter(Boolean),
     })),
   })
   console.log(`[build-photographers] ${villesEnrichies} page(s) ville enrichie(s)`)

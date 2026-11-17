@@ -11,6 +11,7 @@ node scripts/build-depannage.mjs
 node scripts/build-exemples-fiches.mjs
 node scripts/build-trouver-un-pro.mjs
 node scripts/build-derniers-articles.mjs
+node scripts/build-accueil-annuaire.mjs
 node scripts/inject-photos-villes.mjs
 node scripts/inject-blog-covers.mjs
 node scripts/inject-font-loading.mjs

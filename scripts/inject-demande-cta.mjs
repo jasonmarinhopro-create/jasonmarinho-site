@@ -27,11 +27,15 @@ function block(prefix, slug) {
   const m = METIERS[prefix]
   const ville = villeLabel(slug)
   const href = `/trouver-un-pro?metier=${m.metier}&amp;ville=${encodeURIComponent(ville)}`
+  // 17/11/2026 (Jason, maquette 2) : « Décrire mon besoin » devient le gros
+  // bouton, avec ce qui se passe ensuite juste en dessous
   const hero = `<!-- DEMANDE-HERO:START -->
+    <style>.hero-ctas .btn-xl{font-size:16px;font-weight:700;padding:16px 28px;border-radius:13px;box-shadow:0 10px 30px rgba(255,213,107,.22)}.hero-ctas .btn-xl i{font-size:17px}.hero-steps{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px;font-size:13.5px;color:rgba(255,255,255,.78)}.hero-steps span{display:inline-flex;align-items:center;gap:7px}.hero-steps i{color:#FFD56B;font-size:15px}</style>
     <div class="hero-ctas">
-      <a href="${href}" class="btn-p"><i class="ph-bold ph-paper-plane-tilt"></i> Décrire mon besoin</a>
+      <a href="${href}" class="btn-p btn-xl"><i class="ph-bold ph-paper-plane-tilt"></i> Décrire mon besoin</a>
       <a href="${m.annuaire}" class="btn-ol"><i class="ph-bold ph-magnifying-glass"></i> ${m.voir}</a>
     </div>
+    <div class="hero-steps"><span><i class="ph-bold ph-clock"></i>1 minute</span><span><i class="ph-bold ph-users-three"></i>Envoyée aux ${m.qui} les plus proches</span><span><i class="ph-bold ph-seal-check"></i>Gratuit, sans commission</span></div>
     <!-- DEMANDE-HERO:END -->`
   const band = `<!-- DEMANDE:START -->
 <section class="sec" style="padding-bottom:0">

@@ -12,14 +12,14 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
+import { injectProsIntoVillePages, villeGuide, zoneCarte } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml, instaHandle } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS, citySuggestHtml } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml, clientelesHtml } from './lib/fiche-vitrine.mjs'
 import { CLIENTELES, readClienteles } from './lib/pro-clienteles.mjs'
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
-import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
+import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref, v3Prix } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 import { writeRegionPages, sitemapAvec } from './lib/annuaire-region.mjs'
@@ -933,6 +933,14 @@ async function main() {
       url: `/annuaires/menage/${c.slug}`,
       name: nomAffiche(c.pseudo || c.full_name),
       sub: fmtForfait(c) ? `Forfait ${fmtForfait(c)}` : null,
+      // Cartes modernes des pages ville (17/11/2026)
+      photo: vitrinePhotos(c.portfolio_photos, SUPABASE_URL, 1)[0]?.thumb ?? null,
+      logo: c.logo_url || null,
+      initials: initiales(nomAffiche(c.pseudo || c.full_name)),
+      zone: zoneCarte(c.ville, zoneFact(c.ville, c.zone_couverte)),
+      prix: (pr => pr.devis ? null : pr.v)(v3Prix(c.formules, c.tarif_forfait_min, c.tarif_forfait_max)),
+      unite: 'le ménage',
+      tags: [c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null, ...(c.prestations || []).map(x => PRESTATIONS_LABELS[x] || x)].filter(Boolean),
     })),
   })
   console.log(`[build-cleaners] ${villesEnrichies} page(s) ville enrichie(s)`)
