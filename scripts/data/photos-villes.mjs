@@ -203,6 +203,11 @@ export const PHOTOS_COMMONS = {
     "auteur": "Rémih",
     "licence": "CC BY-SA 4.0"
   },
+  "amiens": {
+    "page": "https://commons.wikimedia.org/wiki/File:Amiens_quartier_de_saint_leu_(Et%C3%A92017)_(7).jpg",
+    "auteur": "PIERRE ANDRE LECLERCQ",
+    "licence": "CC BY-SA 4.0"
+  },
   "roanne": {
     "page": "https://commons.wikimedia.org/wiki/File:Le_Port_de_Roanne_(1).jpg",
     "auteur": "arneonreloi",
