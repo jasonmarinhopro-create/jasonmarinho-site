@@ -49,6 +49,15 @@ export default function FichePreview({ data, active }: { data: PreviewData; acti
 
   const ring = (k: string): React.CSSProperties => (k === focus ? { outline: '2px solid #FFD56B', outlineOffset: 3, borderRadius: 12, background: 'rgba(255,213,107,.10)', position: 'relative' } : {})
   const tag = (k: string) => (k === focus ? <span style={s.tag}>Tu modifies cette partie</span> : null)
+  // En-tête collé au haut de l'écran arrondi (17/11/2026, Jason : « c'est moche ») :
+  // cadre et étiquette à l'intérieur, sinon le bord arrondi de l'écran les coupe.
+  const ringIn = (k: string): React.CSSProperties => (k === focus ? { background: 'rgba(255,213,107,.10)', position: 'relative', paddingBottom: 10 } : { position: 'relative' })
+  const tagIn = (k: string) => (k === focus ? (
+    <>
+      <span aria-hidden style={{ position: 'absolute', inset: 0, border: '2px solid #FFD56B', borderRadius: '23px 23px 12px 12px', pointerEvents: 'none', zIndex: 2 }} />
+      <span style={{ ...s.tag, top: 10, right: 10, zIndex: 3, fontSize: 10, padding: '3px 9px', boxShadow: '0 2px 8px rgba(0,26,17,.25)' }}>Tu modifies cette partie</span>
+    </>
+  ) : null)
   const formules = data.formules.filter(f => f.nom.trim())
   const bio = apercuBio(data.bio, 180)
 
@@ -68,8 +77,8 @@ export default function FichePreview({ data, active }: { data: PreviewData; acti
       {mode === 'fiche' ? (
         <div style={s.phone}>
           <div ref={frame} style={s.screen}>
-            <div ref={el => { parts.current.hero = el }} style={{ ...ring('hero'), margin: 0 }}>
-              {tag('hero')}
+            <div ref={el => { parts.current.hero = el }} style={{ ...ringIn('hero'), margin: 0 }}>
+              {tagIn('hero')}
               <div style={{ ...s.cover, ...(data.cover ? { backgroundImage: `url('${data.cover}')` } : {}) }}>
                 {!data.cover && <span style={s.coverEmpty}><Images size={16} /> Ta photo principale ici</span>}
               </div>
