@@ -15,7 +15,7 @@ import {
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, LinkSimple, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
-  Broom, Wrench, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt, Binoculars, PresentationChart,
+  Broom, Wrench, Check, Plus, ChatText, ArrowLeft, Receipt, Binoculars, PresentationChart,
   Lightbulb,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
@@ -578,8 +578,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           ) : proRole && isAdmin && searchParams?.get('id') ? (
             /* Aperçu admin de la fiche d'un pro (?id=). Avant (04/10/2026) : le
                menu pro affichait « Demandes reçues » / « Mes clients » qui
-               menaient à la fiche de l'admin lui-même. Les demandes et le
-               carnet clients d'un pro restent privés : pas d'accès admin. */
+               menaient à la fiche de l'admin lui-même. Depuis le 17/11/2026,
+               l'aperçu montre un « Suivi d'activité » (statuts et nombres,
+               jamais le contenu des demandes ni l'identité des clients). */
             <div>
               {!collapsed && <div style={styles.sectionLabel}>Aperçu admin</div>}
               <div style={styles.navSection}>
@@ -594,12 +595,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   Icon={ArrowLeft}
                 />
               </div>
-              {!collapsed && (
-                <div style={{ ...styles.adminHelper, display: 'flex', gap: 8, alignItems: 'flex-start', padding: '10px 12px 0' }}>
-                  <LockSimple size={14} style={{ flexShrink: 0, marginTop: 2 }} />
-                  <span>Ses demandes reçues et son carnet clients restent privés : seul le pro y a accès.</span>
-                </div>
-              )}
             </div>
           ) : proRole ? (
             /* Menu des pros (17/10/2026, proposition validée par Jason) : blocs
