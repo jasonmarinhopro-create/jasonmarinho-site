@@ -78,6 +78,7 @@ interface Props {
   viewsTrend?: ViewsTrendData
   /** Carte « Tes statistiques » (chargée à part par la page) */
   statsSlot?: React.ReactNode
+  adminSlot?: React.ReactNode
   /** Retour de Stripe Checkout (?paid=1 / ?canceled=1) */
   paymentNotice?: 'paid' | 'canceled' | null
   /** Positions des communes (zone) : action serveur, remplaçable pour les essais */
@@ -153,7 +154,7 @@ function sectionOfError(msg: string): string | undefined {
   return undefined
 }
 
-export default function MaFicheDepannage({ pro, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null, locate = locateCommunes }: Props) {
+export default function MaFicheDepannage({ pro, kpis, isAdminPreview = false, viewsTrend, statsSlot, adminSlot, paymentNotice = null, locate = locateCommunes }: Props) {
   const serverDraft = readDraft<State>(pro.fiche_draft)
   const [baseline, setBaseline] = useState<State>(() => stateFrom(pro))
   const [st, setSt] = useState<State>(() => mergeDraftState(stateFrom(pro), serverDraft?.state ?? null))
@@ -560,7 +561,7 @@ export default function MaFicheDepannage({ pro, kpis, isAdminPreview = false, vi
           )}
         </>}
         banners={banners}
-        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={displayName} statsSlot={statsSlot} viewsTrend={viewsTrend} metier="dépannage" />}
+        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={displayName} statsSlot={statsSlot} adminSlot={isAdminPreview ? adminSlot : null} viewsTrend={viewsTrend} metier="dépannage" />}
         sections={sections}
         active={active}
         onActive={setActive}

@@ -94,16 +94,16 @@ export default async function Page({ searchParams }: PageProps) {
       isAdminPreview={isAdminPreview}
       paymentNotice={isAdminPreview ? null : sp?.paid ? 'paid' : sp?.canceled ? 'canceled' : null}
       viewsTrend={viewsTrend}
-      statsSlot={<>
+      statsSlot={
         <Suspense fallback={<StatsTeaserSkeleton />}>
           <ProStatsTeaser metier="photographe" fiche={photographer} db={admin} isAdminPreview={isAdminPreview} />
         </Suspense>
-        {isAdminPreview && (
-          <Suspense fallback={null}>
-            <SuiviActivitePanel kind="photographer" proId={photographer.id} />
-          </Suspense>
-        )}
-      </>}
+      }
+      adminSlot={isAdminPreview ? (
+        <Suspense fallback={null}>
+          <SuiviActivitePanel kind="photographer" proId={photographer.id} />
+        </Suspense>
+      ) : null}
     />
   )
 }

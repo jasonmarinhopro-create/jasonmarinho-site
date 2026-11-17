@@ -96,7 +96,7 @@ function Kpi({ Icon, label, value, hint, alert }: { Icon: typeof Tray; label: st
 }
 
 const s: Record<string, React.CSSProperties> = {
-  card: { gridColumn: '1 / -1', order: 10, display: 'flex', flexDirection: 'column', gap: 16, padding: '18px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, minWidth: 0 },
+  card: { display: 'flex', flexDirection: 'column', gap: 16, padding: '18px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, minWidth: 0 },
   head: { display: 'flex', alignItems: 'flex-start', gap: 11 },
   icon: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: 10, background: 'var(--accent-bg, rgba(0,76,63,.08))', color: 'var(--accent-text)', flexShrink: 0 },
   title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 16, color: 'var(--text)' },

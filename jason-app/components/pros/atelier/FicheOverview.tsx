@@ -8,15 +8,18 @@ import ViewsTrend from '@/components/pros/ViewsTrend'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { ShareNetwork } from '@phosphor-icons/react/dist/ssr'
 
-export default function FicheOverview({ publicUrl, isActive, displayName, statsSlot, viewsTrend, metier }: {
+export default function FicheOverview({ publicUrl, isActive, displayName, statsSlot, viewsTrend, metier, adminSlot }: {
   publicUrl: string | null
   isActive: boolean
   displayName: string
   statsSlot?: ReactNode
+  /** Aperçu admin seulement (Suivi d'activité) : sous la rangée, hors de la grille */
+  adminSlot?: ReactNode
   viewsTrend?: ViewsTrendData
   metier: string
 }) {
   return (
+    <>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: 14, alignItems: 'stretch', marginBottom: 18 }}>
       {isActive && publicUrl ? (
         <ShareFicheBlock url={publicUrl} displayName={displayName} compact />
@@ -31,5 +34,7 @@ export default function FicheOverview({ publicUrl, isActive, displayName, statsS
       {statsSlot}
       {viewsTrend && <ViewsTrend trend={viewsTrend} metier={metier} compact style={{ margin: 0 }} />}
     </div>
+    {adminSlot && <div style={{ marginBottom: 18 }}>{adminSlot}</div>}
+    </>
   )
 }

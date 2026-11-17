@@ -77,6 +77,7 @@ interface Props {
   viewsTrend?: ViewsTrendData
   /** Carte « Tes statistiques » (chargée à part par la page) */
   statsSlot?: React.ReactNode
+  adminSlot?: React.ReactNode
   /** Retour de Stripe Checkout (?paid=1 / ?canceled=1) */
   paymentNotice?: 'paid' | 'canceled' | null
   /** Positions des communes (zone) : action serveur, remplaçable pour les essais */
@@ -137,7 +138,7 @@ function sectionOfError(msg: string): string | undefined {
 
 const SPECIALITES = ['Intérieurs LCD', 'Intérieurs + drone extérieur', 'Intérieurs + vidéo / Reels', 'Vidéo de visite du logement', 'Visite virtuelle Matterport 3D', 'Hôtels et gîtes de charme', 'Architecture + mise en scène']
 
-export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null, locate = locateCommunes }: Props) {
+export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend, statsSlot, adminSlot, paymentNotice = null, locate = locateCommunes }: Props) {
   const serverDraft = readDraft<State>(photographer.fiche_draft)
   const [baseline, setBaseline] = useState<State>(() => stateFrom(photographer))
   const [st, setSt] = useState<State>(() => mergeDraftState(stateFrom(photographer), serverDraft?.state ?? null))
@@ -507,7 +508,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
           )}
         </>}
         banners={banners}
-        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={f.full_name || photographer.full_name} statsSlot={statsSlot} viewsTrend={viewsTrend} metier="photographe" />}
+        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={f.full_name || photographer.full_name} statsSlot={statsSlot} adminSlot={isAdminPreview ? adminSlot : null} viewsTrend={viewsTrend} metier="photographe" />}
         sections={sections}
         active={active}
         onActive={setActive}

@@ -76,6 +76,7 @@ interface Props {
   viewsTrend?: ViewsTrendData
   /** Carte « Tes statistiques » (chargée à part par la page) */
   statsSlot?: React.ReactNode
+  adminSlot?: React.ReactNode
   /** Retour de Stripe Checkout (?paid=1 / ?canceled=1) */
   paymentNotice?: 'paid' | 'canceled' | null
   /** Positions des communes (zone) : action serveur, remplaçable pour les essais */
@@ -152,7 +153,7 @@ function sectionOfError(msg: string): string | undefined {
   return undefined
 }
 
-export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null, locate = locateCommunes }: Props) {
+export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend, statsSlot, adminSlot, paymentNotice = null, locate = locateCommunes }: Props) {
   const serverDraft = readDraft<State>(cleaner.fiche_draft)
   const [baseline, setBaseline] = useState<State>(() => stateFrom(cleaner))
   const [st, setSt] = useState<State>(() => mergeDraftState(stateFrom(cleaner), serverDraft?.state ?? null))
@@ -576,7 +577,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
           )}
         </>}
         banners={banners}
-        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={displayName} statsSlot={statsSlot} viewsTrend={viewsTrend} metier="ménage" />}
+        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={displayName} statsSlot={statsSlot} adminSlot={isAdminPreview ? adminSlot : null} viewsTrend={viewsTrend} metier="ménage" />}
         sections={sections}
         active={active}
         onActive={setActive}
