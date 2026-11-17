@@ -74,6 +74,14 @@ const SPORT_DECOUVERTE = 'https://sport-decouverte.com/?utm_source=affilae&utm_m
 const LEGALSTART = 'https://www.legalstart.fr/?ae=933'
 const LEGALSTART_CREATION = 'https://www.legalstart.fr/creation-entreprise/?ae=933'
 
+// ── Orange Travel (Affilae, programme 638f1671f395b825518bc665, affilié 659, 17/11/2026) ──
+// eSIM et cartes SIM de voyage. EPC 0,01 €, conversion 1,2 %, attribution
+// partagée, tracking 30 jours et plus (présentation Affilae). Aucun prix
+// affiché : sources contradictoires le 17/11/2026 (Europe 20 Go à 29,99 $
+// ou 30 Go entre 34,79 et 49,90 $ selon la page et la date) ; travel.orange.com
+// n'est pas lisible depuis l'environnement de Claude.
+const ORANGE_TRAVEL = 'https://lb.affilae.com/r/?p=638f1671f395b825518bc665&af=659&lp=https%3A%2F%2Ftravel.orange.com%2F%3Futm_source%3Daffiliation%26utm_medium%3Daffilae%26utm_campaign%3Djason-marinho'
+
 export const PAGES = [
   {
     slug: 'lodgify',
@@ -1075,6 +1083,102 @@ export const PAGES = [
       ['Keobiz : LMNP et comptabilité en 2026', 'https://www.keobiz.fr/le-mag/lmnp-comptabilite/'],
       ['Meilleurtaux : fin de la réduction pour frais de comptabilité', 'https://placement.meilleurtaux.com/placement-financier/actualites/2026-mai/impots-2025-fin-de-la-reduction-comptabilite-oga.html'],
       ['Régimes d\'imposition', 'https://www.impots.gouv.fr/particulier/les-regimes-dimposition'],
+    ],
+  },
+  {
+    // Orange Travel (Affilae, 17/11/2026). Place : un service à conseiller aux
+    // voyageurs étrangers (internet dès l'arrivée, donc moins de questions sur
+    // l'accès au logement) et pour les voyages de l'hôte. Pas de réduction.
+    slug: 'orange-travel',
+    releve: 'novembre 2026',
+    nom: 'Orange Travel',
+    mono: 'O',
+    couleur: '#C2410C',
+    title: 'Orange Travel : l’eSIM à conseiller à tes voyageurs',
+    description: "Orange Travel avec Jason Marinho : une eSIM de voyage à conseiller aux voyageurs étrangers, pour qu'ils aient internet dès leur arrivée. Pour qui, comment, limites.",
+    eyebrow: 'Partenaire · Services aux voyageurs',
+    h1: 'Orange Travel : tes voyageurs <em>connectés dès l’arrivée</em>',
+    lead: "Orange Travel vend des eSIM et des cartes SIM de voyage de l'opérateur Orange : internet sur place sans frais d'itinérance, dans plus de 100 destinations d'après Orange. Je le conseille aux hôtes qui reçoivent des voyageurs venus de loin : un voyageur qui a du réseau trouve le logement, lit tes instructions et t'écrit sans bloquer devant la porte.",
+    offre: {
+      titre: 'Internet dès l’atterrissage',
+      sous: 'Pas de réduction avec mon lien : le prix est le même que sur le site',
+      points: [
+        "eSIM à installer avant le départ, active à l'arrivée",
+        "Plus de 100 destinations couvertes, d'après Orange Travel",
+        "Forfaits Europe avec appels et SMS selon l'offre choisie",
+        "Aucun avantage particulier pour toi avec mon lien, je préfère le dire",
+      ],
+      cta: { label: 'Voir les forfaits', href: ORANGE_TRAVEL },
+      note: "Lien affilié : Orange Travel me verse une commission sur les achats faits via ce lien, sans aucun surcoût pour l'acheteur.",
+    },
+    pourquoi: {
+      titre: 'Pourquoi je le <em>présente</em>',
+      items: [
+        { icon: 'map-pin', t: 'Moins de voyageurs perdus', d: "Avec du réseau, le voyageur suit ton lien de localisation et tes photos d'accès au lieu de t'appeler depuis la rue." },
+        { icon: 'key', t: 'Arrivée autonome sans stress', d: "Code de la boîte à clés, appli de la serrure connectée, message de bienvenue : tout passe par le téléphone." },
+        { icon: 'shield-check', t: 'Une marque connue', d: "Orange rassure un voyageur étranger plus qu'une eSIM d'une marque qu'il ne connaît pas." },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que tu peux en faire <em>comme hôte</em>',
+      items: [
+        { icon: 'paper-plane-tilt', t: 'Message avant l’arrivée', d: "Une ligne dans ton message de réservation pour les voyageurs étrangers : « pensez à votre eSIM »." },
+        { icon: 'book-open', t: "Livret d'accueil", d: "Une rubrique « internet et téléphone » avec le Wi-Fi du logement et la solution pour être connecté dehors." },
+        { icon: 'globe-hemisphere-west', t: 'Voyageurs hors Europe', d: "Américains, Canadiens, Australiens : ceux qui paient le plus cher l'itinérance chez leur opérateur." },
+        { icon: 'airplane-tilt', t: 'Tes propres voyages', d: "Pour toi aussi, quand tu pars et que tu dois répondre à tes voyageurs depuis l'étranger." },
+        { icon: 'users-three', t: 'Co-hôtes et conciergeries', d: "Un conseil de plus dans tes échanges avec les voyageurs, sans rien gérer toi-même." },
+        { icon: 'wifi-high', t: 'En plus du Wi-Fi', d: "Le Wi-Fi du logement reste indispensable : l'eSIM sert dehors, pour le trajet et les sorties." },
+      ],
+    },
+    etapes: [
+      { t: 'Choisis la destination', d: "sur le site d'Orange Travel : la France, l'Europe ou un autre pays, et la durée du séjour." },
+      { t: 'Installe l’eSIM avant de partir', d: "avec le QR code reçu par e-mail, sur un téléphone compatible eSIM." },
+      { t: 'Active-la à l’arrivée', d: "et profite d'internet sur place, sans frais d'itinérance de ton opérateur." },
+    ],
+    tableau: {
+      titre: 'Orange Travel, <em>pour qui</em> ?',
+      entete: ['Ton voyageur', 'Mon conseil'],
+      lignes: [
+        ['Il vient d’un pays de l’Union européenne', '<span class="partial">Souvent inutile</span> : son forfait fonctionne déjà en France grâce à l’itinérance européenne, selon son opérateur'],
+        ['Il vient des États-Unis, du Canada, d’Australie ou d’Asie', '<span class="yes">Utile</span> : l’itinérance de son opérateur coûte souvent cher, une eSIM de voyage évite la mauvaise surprise'],
+        ['Son téléphone n’accepte pas l’eSIM', '<span class="partial">À vérifier</span> : il faut un téléphone compatible eSIM et débloqué'],
+        ['Tu pars toi-même hors d’Europe', '<span class="yes">Utile</span> : pour continuer à répondre à tes voyageurs sans exploser ta facture'],
+      ],
+      note: "Le choix de l'offre et le prix dépendent de la destination et de la durée : vérifie sur le site avant d'acheter.",
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        "Le prix dépend de la destination, du volume de données et de la durée. Les tarifs trouvés en ligne en novembre 2026 se contredisent selon la page et la date : je n'en affiche aucun, regarde l'offre au moment de l'achat.",
+        "Pour toi, hôte, ça ne coûte rien : tu conseilles une solution, c'est le voyageur qui achète s'il en a besoin.",
+      ],
+    },
+    limites: [
+      "Il faut un téléphone compatible eSIM et débloqué, à vérifier avant d'acheter.",
+      "Un voyageur européen n'en a souvent pas besoin : son forfait fonctionne en France.",
+      "D'autres eSIM de voyage peuvent être moins chères au Go : Orange Travel joue sur la marque et le réseau, pas sur le prix le plus bas.",
+      "Ça ne remplace pas le Wi-Fi du logement, que les voyageurs regardent toujours dans les annonces.",
+    ],
+    liens: [
+      { href: '/blog/livret-accueil-digital-hotes-lcd', t: "Ton livret d'accueil digital", d: 'Ce qu’il doit contenir pour les voyageurs.' },
+      { href: '/partenaires/sport-decouverte', t: 'Sport Découverte', d: 'Des activités à conseiller autour du logement.' },
+      { href: '/partenaires', t: 'Tous les partenaires', d: 'Les outils que je recommande, par catégorie.' },
+    ],
+    faq: [
+      { q: 'Orange Travel, c’est quoi ?', a: "Le service d'eSIM et de cartes SIM de voyage d'Orange : un forfait internet, parfois avec appels et SMS, à utiliser à l'étranger sans frais d'itinérance. D'après Orange Travel, plus de 100 destinations sont couvertes." },
+      { q: 'Pourquoi conseiller une eSIM à mes voyageurs ?', a: "Un voyageur connecté trouve le logement avec le GPS, lit ton message d'arrivée, ouvre l'appli de la serrure ou trouve la boîte à clés sans t'appeler depuis la rue. C'est surtout utile pour les voyageurs venus de loin, dont l'itinérance coûte cher." },
+      { q: 'Existe-t-il une réduction Orange Travel avec ton lien ?', a: "Non. Le prix est le même que sur le site. Si j'obtiens un code pour les lecteurs, il sera affiché sur cette page." },
+      { q: 'Un voyageur européen en a-t-il besoin ?', a: "Souvent non : dans l'Union européenne, l'itinérance est en général incluse dans les forfaits, selon l'opérateur. L'eSIM sert surtout aux voyageurs venus d'autres continents." },
+      { q: 'Faut-il un téléphone particulier ?', a: "Oui, un téléphone compatible eSIM et débloqué. Le voyageur peut le vérifier dans les réglages de son téléphone avant d'acheter." },
+    ],
+    cta: {
+      titre: 'Tes voyageurs bien accueillis, <em>du message au départ</em>',
+      texte: "Messages, livret, déclarations voyageurs, contrats : l'app Jason Marinho t'aide à accueillir tes voyageurs, d'où qu'ils viennent.",
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Orange Travel', 'https://travel.orange.com/'],
+      ['Itinérance dans l’Union européenne (Commission européenne)', 'https://europa.eu/youreurope/citizens/consumers/internet-telecoms/mobile-roaming-costs/index_fr.htm'],
     ],
   },
   {

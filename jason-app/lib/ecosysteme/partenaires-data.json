@@ -64,6 +64,11 @@
       "id": "experiences",
       "label": "Activités & cadeaux",
       "icon": "gift"
+    },
+    {
+      "id": "voyageurs",
+      "label": "Services aux voyageurs",
+      "icon": "sim-card"
     }
   ],
   "outils": [
@@ -351,6 +356,28 @@
         {
           "label": "Voir l'offre",
           "href": "https://jasonmarinho.com/partenaires/brevo"
+        }
+      ]
+    },
+    {
+      "nom": "Orange Travel",
+      "mono": "O",
+      "couleur": "#C2410C",
+      "cats": [
+        "voyageurs"
+      ],
+      "badge": "affilie",
+      "offre": "eSIM de voyage",
+      "desc": "Internet dès l’arrivée, à conseiller aux voyageurs venus de loin dans ton livret ou ton message.",
+      "liens": [
+        {
+          "label": "Voir les forfaits",
+          "href": "https://lb.affilae.com/r/?p=638f1671f395b825518bc665&af=659&lp=https%3A%2F%2Ftravel.orange.com%2F%3Futm_source%3Daffiliation%26utm_medium%3Daffilae%26utm_campaign%3Djason-marinho",
+          "sponsored": true
+        },
+        {
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/orange-travel"
         }
       ]
     },

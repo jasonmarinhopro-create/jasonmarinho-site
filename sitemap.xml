@@ -919,6 +919,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jasonmarinho.com/partenaires/orange-travel</loc>
+    <lastmod>2026-11-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/services/audit-gbp</loc>
     <lastmod>2026-04-27</lastmod>
     <changefreq>monthly</changefreq>

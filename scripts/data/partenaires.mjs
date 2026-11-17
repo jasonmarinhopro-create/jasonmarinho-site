@@ -21,12 +21,13 @@ export const CATEGORIES = [
   { id: 'marche', label: 'Étude de marché', icon: 'chart-bar' },
   { id: 'marketing', label: 'Marketing & email', icon: 'megaphone' },
   { id: 'experiences', label: 'Activités & cadeaux', icon: 'gift' },
+  { id: 'voyageurs', label: 'Services aux voyageurs', icon: 'sim-card' },
 ]
 
 // Rangée d'icônes du haut : toutes les catégories depuis le 17/11/2026 (Jason :
 // « AirDNA n'a aucune catégorie » : Étude de marché, Tarification, Ménage et
 // Photo n'avaient pas d'icône, seulement une ligne dans la barre latérale)
-export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'prix', 'acces', 'compta', 'juridique', 'menage', 'photo', 'marche', 'marketing', 'experiences']
+export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'prix', 'acces', 'compta', 'juridique', 'menage', 'photo', 'marche', 'marketing', 'experiences', 'voyageurs']
 
 // Mots que les hôtes tapent dans la recherche, par catégorie (17/11/2026,
 // « un facilitateur pour aider les gens » à trouver le bon outil)
@@ -44,6 +45,7 @@ export const MOTS = {
   marche: ['étude de marché', 'rentabilité', 'taux d’occupation', 'investir', 'données', 'concurrence', 'estimation'],
   marketing: ['newsletter', 'emailing', 'e-mail', 'fidéliser', 'crm', 'clients'],
   experiences: ['activités', 'cadeau', 'bon cadeau', 'sorties', 'expériences'],
+  voyageurs: ['esim', 'carte sim', 'internet', 'roaming', 'itinérance', 'voyageurs étrangers', 'téléphone', 'data'],
 }
 
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
@@ -71,6 +73,8 @@ const LEGALPLACE_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2
 // Brevo (partenariat PartnerStack du 06/10/2026) : lien « plateforme » fourni par Brevo
 // Sport Découverte (Affilae, numéro d'affilié 410, 01/11/2026) : 8 % des
 // réservations, premier clic, plus de 30 jours. Aucun avantage pour l'hôte.
+// Orange Travel (Affilae, programme 638f1671f395b825518bc665, 17/11/2026)
+const ORANGE_TRAVEL = 'https://lb.affilae.com/r/?p=638f1671f395b825518bc665&af=659&lp=https%3A%2F%2Ftravel.orange.com%2F%3Futm_source%3Daffiliation%26utm_medium%3Daffilae%26utm_campaign%3Djason-marinho'
 const SPORT_DECOUVERTE = 'https://sport-decouverte.com/?utm_source=affilae&utm_medium=affiliate&utm_campaign=Jason%20Marinho&ae=410'
 const BREVO = 'https://get.brevo.com/3mftm80uaemx-m7y3c'
 const TIIME = 'https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&af=1127&lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime'
@@ -192,6 +196,15 @@ export const OUTILS = [
     liens: [
       { label: 'Créer un compte', href: BREVO, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/brevo' },
+    ],
+  },
+  {
+    nom: 'Orange Travel', mono: 'O', couleur: '#C2410C', cats: ['voyageurs'],
+    badge: 'affilie', offre: 'eSIM de voyage',
+    desc: 'Internet dès l’arrivée, à conseiller aux voyageurs venus de loin dans ton livret ou ton message.',
+    liens: [
+      { label: 'Voir les forfaits', href: ORANGE_TRAVEL, sponsored: true },
+      { label: "Voir l'offre", href: '/partenaires/orange-travel' },
     ],
   },
   {

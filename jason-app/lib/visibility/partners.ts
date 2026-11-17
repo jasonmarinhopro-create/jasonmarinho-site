@@ -38,6 +38,7 @@ export const PARTNERS: Record<string, PartnerInfo> = {
   jd2m: { name: 'JD2M', reward: 'Jusqu\'à 10 % des ventes, premier clic, cookie 30 jours, paiement dès 100 € (conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
   keobiz: { name: 'Keobiz', reward: '110 € par client signé (lettre de mission signée et payée), dernier clic, 30 jours (conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
   'sport-decouverte': { name: 'Sport Découverte', reward: '8 % des réservations, premier clic, suivi de plus de 30 jours (conditions relevées en novembre 2026)', salesWhere: 'Affilae', affilae: true },
+  'orange-travel': { name: 'Orange Travel', reward: 'Commission Affilae par achat, attribution partagée, suivi de plus de 30 jours (conditions relevées en novembre 2026)', salesWhere: 'Affilae', affilae: true },
   legalstart: { name: 'Legalstart', reward: 'Commission Affilae par vente, premier clic (gain moyen par clic de 8,01 € annoncé par le programme en novembre 2026)', salesWhere: 'Affilae', affilae: true },
   legalplace: { name: 'LegalPlace', reward: 'Jusqu\'à 150 € par vente', salesWhere: 'Affilae', affilae: true },
   tiime: { name: 'Tiime', reward: 'Commission Affilae', salesWhere: 'Affilae', affilae: true },
@@ -371,6 +372,12 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
     paths: ['/partenaires/legalplace', '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026'],
     match: /legalplace/,
     targets: ['legalplace', 'legalplace avis', 'creer societe conciergerie', 'creer sa conciergerie', 'statut conciergerie'],
+  },
+  {
+    key: 'orange-travel', name: 'Orange Travel',
+    paths: ['/partenaires/orange-travel'],
+    match: /orange-travel/,
+    targets: ['orange travel', 'orange travel esim', 'esim voyage', 'esim france touriste', 'livret accueil internet voyageurs'],
   },
   {
     key: 'legalstart', name: 'Legalstart',

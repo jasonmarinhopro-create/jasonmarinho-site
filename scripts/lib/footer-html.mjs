@@ -49,7 +49,7 @@ const COMPARATIFS = [
   ['/code-promo-lodgify', 'Code promo Lodgify'], ['/partenaires/brevo', 'Brevo : newsletter et CRM'],
   ['/partenaires/airdna', 'AirDNA : étude de marché'], ['/partenaires/shine', 'Shine : compte pro et factures'],
   ['/partenaires/qonto', 'Qonto : compte pro en ligne'], ['/partenaires/jd2m', 'JD2M : comptable LMNP'],
-  ['/partenaires/keobiz', 'Keobiz : expert-comptable'], ['/partenaires/legalstart', 'Legalstart : création en ligne'], ['/partenaires/sport-decouverte', 'Sport Découverte : activités'],
+  ['/partenaires/keobiz', 'Keobiz : expert-comptable'], ['/partenaires/legalstart', 'Legalstart : création en ligne'], ['/partenaires/orange-travel', 'Orange Travel : eSIM de voyage'], ['/partenaires/sport-decouverte', 'Sport Découverte : activités'],
   ['/comparatif-matterport-cubicasa', 'Matterport vs CubiCasa'], ['/comparatif-pricelabs-beyond-wheelhouse', 'PriceLabs vs Beyond vs Wheelhouse'],
   ['/comparatif-ring-eufy-reolink', 'Ring vs Eufy vs Reolink'], ['/comparatif-smoobu-hospitable', 'Smoobu vs Hospitable'],
   ['/hospitable-avis', 'Hospitable : avis 2026'], ['/comparatif-superhote-welkeys', 'Superhote vs Welkeys'],
