@@ -11,7 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-18 · reglementation · Declaloc : le portail d'enregistrement des meublés se déploie sur tout le territoire · masquée (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
 - 2026-09-19 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre 2026 (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-20 · plateformes · Airbnb passe à 15,5 % de frais hôte dès le 13 octobre 2026 · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
 - 2026-09-20 · marche · Été 2026 : le littoral cartonne, les grandes villes reculent · masquée (https://presseagence.fr/paris-tourisme-estival-2026-le-littoral-grand-gagnant-de-la-location-courte-duree/)
@@ -74,3 +73,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-14 · fiscalite · Taxe de séjour collectée : vérifie tes obligations de versement en fin d'année (https://www.impots.gouv.fr/taxe-de-sejour)
 - 2026-11-15 · plateformes · Airbnb T3 2026 : +16 % de réservations, mais les annulations progressent aussi (https://www.rentalscaleup.com/fr/airbnb-t3-2026-annulations-tarification-et-visibilite-payante-ce-qui-change-pour-les-hotes/)
 - 2026-11-15 · entreprise · SMIC : hausse de 1,6 % au 1er décembre, à 1 502 euros nets par mois · pour menage, depannage (https://www.journaldeleconomie.fr/?p=50293)
+- 2026-11-17 · fiscalite · Mise à jour PLF 2027 : le Sénat veut préserver tes amortissements LMNP (https://fiscalonline.com/outils-fiscaux/plf-2027-location-meublee-commission-finances-senat-propose-laisser)
+- 2026-11-17 · entreprise · Dès le 1er janvier 2027, ta plateforme prélèvera tes cotisations Urssaf · pour photographe, menage, depannage (https://www.portail-autoentrepreneur.fr/academie/statut-auto-entrepreneur/prelevement-source-cotisations-plateformes)
