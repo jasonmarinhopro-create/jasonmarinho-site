@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-17 19:04 UTC.
+Mis à jour le 2026-11-17 23:58 UTC.
 
 - 2026-11-18 · reel · annecy-hiver-lac-ski · FB pending · IG pending · stories FB pending IG pending · « Ton logement est à Annecy ? Entre le lac et les stations, l’hiver se prépare maintenant. »
 - 2026-11-17 · stories (4 écrans) · stories-degats-photos-avant · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Le voyageur est parti, un meuble est cassé / Photographie avant de nettoyer / 14 jours / Tu as déjà  »
