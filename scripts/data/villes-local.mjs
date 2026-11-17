@@ -1402,6 +1402,39 @@ export const VILLES_LOCAL = {
     ],
   },
 
+  amiens: {
+    ...ville({
+      ville: 'Amiens',
+      pics: [
+        "Marché de Noël : du 20 novembre au 30 décembre 2026, plus de 100 chalets dans le centre-ville",
+        "Fin novembre à fin décembre : Chroma, la cathédrale Notre-Dame mise en couleurs chaque soir, gratuit",
+        "Toute l'année : déplacements professionnels (CHU Amiens-Picardie, entreprises), une demande régulière en semaine",
+        "Septembre : rentrée universitaire, les familles et étudiants cherchent un logement temporaire",
+      ],
+      menage: [
+        "<strong>Décembre chargé :</strong> le marché de Noël et Chroma remplissent la ville pendant six semaines. Calez vos créneaux de ménage dès octobre.",
+        "<strong>Clientèle pro en semaine :</strong> séjours courts du lundi au vendredi, rotations tôt le matin ou le soir.",
+        "<strong>Maisons amiénoises :</strong> beaucoup de maisons de ville en brique sur plusieurs niveaux, prévoyez le temps des escaliers et du linge.",
+      ],
+      photo: [
+        "<strong>Ce qui fait cliquer :</strong> une vue sur la cathédrale ou sur les canaux de Saint-Leu, les briques et les poutres d'une maison amiénoise.",
+        "<strong>Lumière du Nord :</strong> ciel souvent couvert, shootez en milieu de journée et allumez toutes les lampes pour une ambiance chaleureuse.",
+        "<strong>Timing :</strong> faites les photos avant novembre pour que l'annonce soit prête pour le marché de Noël.",
+      ],
+      evSources: [
+        { label: 'Marché de Noël d’Amiens 2026 : dates et programme', url: 'https://onivapp.com/blog/marche-de-noel-amiens-2026' },
+        { label: 'Noël à Amiens : Chroma et animations', url: 'https://www.evous.fr/picardie/amiens/noel/' },
+      ],
+    }),
+    verifie: 'novembre 2026',
+    marche: {
+      releve: 'novembre 2026',
+      sources: [
+        { label: 'AirDNA : marché de la location courte durée à Amiens (annonces, occupation, prix moyen)', url: 'https://www.airdna.co/vacation-rental-data/app/fr/hauts-de-france/amiens/overview' },
+      ],
+    },
+  },
+
   roanne: {
     ...ville({
       ville: 'Roanne',

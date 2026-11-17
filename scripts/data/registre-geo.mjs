@@ -38,6 +38,7 @@ export const VILLES = [
   // ── France : villes du réseau (4 pages) ────────────────────────────
   { slug: 'aix-en-provence', nom: 'Aix-en-Provence', insee: '13001', pages: LES_4, revenus: 'aix-en-provence' },
   { slug: 'ajaccio', nom: 'Ajaccio', insee: '2A004', pages: LES_4 },
+  { slug: 'amiens', nom: 'Amiens', insee: '80021', pages: LES_4 },
   { slug: 'angers', nom: 'Angers', insee: '49007', pages: LES_4 },
   { slug: 'annecy', nom: 'Annecy', insee: '74010', pages: LES_4, revenus: 'annecy' },
   { slug: 'antibes', nom: 'Antibes', insee: '06004', pages: LES_4 },

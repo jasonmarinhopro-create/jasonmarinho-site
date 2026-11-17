@@ -40,6 +40,11 @@ const VILLE_ALIASES = {
   'chateau-d-olonne': 'les-sables-d-olonne',
   vendee: 'les-sables-d-olonne',
   riorges: 'roanne',
+  // Toulouse Métropole (17/11/2026 : une demande de Beauzelle tombait en « Autre ville » sur /chiffres)
+  beauzelle: 'toulouse',
+  blagnac: 'toulouse',
+  colomiers: 'toulouse',
+  tournefeuille: 'toulouse',
   mably: 'roanne',
   'le-coteau': 'roanne',
   roannais: 'roanne',
