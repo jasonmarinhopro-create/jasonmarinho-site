@@ -1,0 +1,22 @@
+{
+  "slug": "annecy-hiver-lac-ski",
+  "format": "reel",
+  "public": "villes",
+  "photo": "img/exemple-fiches/photo-maison-2.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Annecy", "titre": "Annecy en hiver : *remplir* entre lac et ski", "sous_titre": "Novembre est calme. Les vacances d’hiver, beaucoup moins." },
+    { "type": "point", "titre": "Mise sur *les vacances d’hiver*", "texte": "Le Semnoz et La Clusaz sont tout près : affiche la distance aux pistes dans ton annonce." },
+    { "type": "chiffre", "kicker": "Taxe de séjour 2026", "valeur": "1,70 €", "label": "par personne et par nuit en meublé *3 étoiles*, sans taxe additionnelle. Les mineurs ne la paient pas.", "source": "DGFiP, données DELTA" },
+    { "type": "point", "titre": "Ton *numéro d’enregistrement*", "texte": "Obligatoire à Annecy pour tout meublé de tourisme, et à afficher sur ton annonce." },
+    { "type": "astuce", "kicker": "Astuce", "titre": "Les familles *reviennent*", "texte": "Après un séjour réservé en direct, propose-leur de revenir réserver chez toi." }
+  ],
+  "legende": "Ton logement est à Annecy ? Entre le lac et les stations, l’hiver se prépare maintenant.\n\nLes vacances scolaires d’hiver tirent la demande, avec les pistes à quelques minutes. Affiche la distance au Semnoz et à La Clusaz, vérifie ton numéro d’enregistrement et le bon tarif de taxe de séjour.\n\nLe guide d’Annecy détaille les règles, la taxe 2026 et la saisonnalité.\n\nEt toi, ton logement, c’est plutôt lac ou montagne ?",
+  "hashtags": ["#annecy", "#hautesavoie", "#airbnb", "#locationcourteduree", "#ski"],
+  "lien": "https://jasonmarinho.com/devenir-hote-airbnb-annecy",
+  "story": {
+    "texte": "Annecy : *3 réglages* avant les vacances d’hiver",
+    "frames": [
+      { "type": "question", "titre": "Ton logement, plutôt *lac* ou *montagne* ?" }
+    ]
+  }
+}
