@@ -239,7 +239,6 @@ export const FICHE_V3_CSS = `
 .fx-offer{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--td);background:var(--cr);border:1px solid var(--bd);border-radius:999px;padding:7px 13px}
 .fx-offer i{color:var(--g);font-size:14px}
 .fx .sct{border-radius:18px;padding:22px 24px;margin:0}
-.fx .sct-map{max-width:460px;margin:0 auto}
 .fx-links{display:flex;flex-direction:column;gap:8px}
 .fx-link{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;text-decoration:none;color:var(--td);font-size:14.5px;font-weight:500;min-width:0}
 .fx-link span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

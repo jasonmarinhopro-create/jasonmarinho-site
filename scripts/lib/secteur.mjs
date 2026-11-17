@@ -506,7 +506,7 @@ export const SECTEUR_CSS = `
 .sct-inset{position:absolute;right:10px;top:10px;width:58px;height:58px;padding:4px;border-radius:8px;background:rgba(255,255,255,.88);pointer-events:none}
 .sct-inset path{fill:#E1E7E3;stroke:#C2CBC5;stroke-width:.4}
 .sct-inset rect{fill:rgba(0,76,63,.28);stroke:var(--g);stroke-width:1.2}
-.sct-tip{position:absolute;pointer-events:none;background:#13241F;color:#fff;font-size:12.5px;line-height:1.35;padding:6px 10px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-125%);z-index:2}
+.sct-tip{position:absolute;pointer-events:none;background:#13241F;color:#fff;font-size:12.5px;line-height:1.35;padding:6px 10px;border-radius:8px;white-space:nowrap;max-width:calc(100% - 16px);overflow:hidden;text-overflow:ellipsis;transform:translate(-50%,-125%);z-index:2}
 .sct-tip[hidden]{display:none}
 .sct-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .sct-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#F1F5F2;border:1px solid rgba(0,76,63,.14);color:var(--g);font:600 13px 'Outfit','Outfit Fallback',sans-serif;text-decoration:none;cursor:pointer}
@@ -548,12 +548,12 @@ export const SECTEUR_JS = `<script>
   function km(a,b){var r=Math.PI/180,h=Math.pow(Math.sin((b[1]-a[1])*r/2),2)+Math.cos(a[1]*r)*Math.cos(b[1]*r)*Math.pow(Math.sin((b[0]-a[0])*r/2),2);return 2*6371*Math.asin(Math.sqrt(h))}
   function e(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
   function xy(lon,lat){return[(lon*1000-P[0])*P[2],(P[1]-lat*1000)*P[3]]}
-  function place(x,y){var r=map.getBoundingClientRect(),vb=svg.viewBox.baseVal,k=r.width/vb.width;tip.style.left=Math.min(Math.max(x*k,90),r.width-90)+'px';tip.style.top=Math.max(y*k,44)+'px'}
+  function hw(){return Math.min(tip.offsetWidth/2+8,map.clientWidth/2)}function place(x,y){var r=map.getBoundingClientRect(),vb=svg.viewBox.baseVal,k=r.width/vb.width,h=hw();tip.style.left=Math.min(Math.max(x*k,h),r.width-h)+'px';tip.style.top=Math.max(y*k,44)+'px'}
   function show(p,ev){
     var d=p.getAttribute('data-d');
     tip.innerHTML='<b>'+e(p.getAttribute('data-n'))+'</b>'+(d!==null?' · '+d+' km '+e(de(D.v)):'');
     tip.hidden=false;
-    if(ev&&ev.clientX!=null){var r=map.getBoundingClientRect();tip.style.left=Math.min(Math.max(ev.clientX-r.left,90),r.width-90)+'px';tip.style.top=Math.max(ev.clientY-r.top,44)+'px'}
+    if(ev&&ev.clientX!=null){var r=map.getBoundingClientRect(),h=hw();tip.style.left=Math.min(Math.max(ev.clientX-r.left,h),r.width-h)+'px';tip.style.top=Math.max(ev.clientY-r.top,44)+'px'}
     else{var b=p.getBBox();place(b.x+b.width/2,b.y)}
   }
   function clear(){[].forEach.call(box.querySelectorAll('.hl,.sct-chip.on,.sct-pill.on'),function(x){x.classList.remove('hl');x.classList.remove('on')});var pin=svg.querySelector('.pin');if(pin)pin.remove()}
