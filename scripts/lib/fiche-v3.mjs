@@ -110,6 +110,21 @@ function contactSheetHtml(m) {
  * reseauxHtml, telHtml, besoins, placeholder, reco {href,label},
  * guide {href,label}, annuaire {href,label}, disclaimer.
  */
+// Portfolio, site, Instagram et autres réseaux dans la carte de droite (17/11/2026,
+// Jason : « trop caché » en bas de la fiche). Pastilles avec le nom pour les
+// liens principaux, ronds avec l'icône pour les autres réseaux. Sur téléphone
+// (carte en bas de page), la même ligne s'affiche sous les chiffres clés.
+const SHORT = { 'ph-image-square': 'Portfolio', 'ph-globe': 'Site', 'ph-instagram-logo': 'Instagram', 'ph-play-circle': 'Vidéo' }
+function onlineHtml(m, links, cls) {
+  const seen = new Set(links.map(l => l.icon === 'ph-instagram-logo' ? 'instagram' : l.href))
+  const res = (m.reseaux || []).filter(r => !seen.has(r.key === 'instagram' ? 'instagram' : r.url))
+  if (!links.length && !res.length) return ''
+  return `<div class="fx-online ${cls}"><span class="fx-online-t">${esc(m.linksTitle || 'En ligne')}</span><div class="fx-online-l">`
+    + links.map(l => `<a href="${esc(l.href)}" target="_blank" rel="${l.rel || 'noopener noreferrer'}" class="fx-ol" title="${esc(l.label)}"${l.track ? ` onclick="jmTrack('${l.track}')"` : ''}><i class="ph-bold ${l.icon}" aria-hidden="true"></i>${esc(SHORT[l.icon] || l.label)}</a>`).join('')
+    + res.map(r => `<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer me" class="fx-ol ic" title="${esc(r.label)}" aria-label="${esc(r.label)}"><i class="ph-bold ph-${r.icon}" aria-hidden="true"></i></a>`).join('')
+    + `</div></div>`
+}
+
 export function ficheV3Html(m) {
   const forms = v3Formules(m.formules)
   const prix = v3Prix(m.formules, m.tarifMin, m.tarifMax)
@@ -137,6 +152,7 @@ export function ficheV3Html(m) {
 <div class="fx-wrap fx-body">
   <div class="fx-main">
     ${facts.length ? `<div class="fx-facts n${facts.length}">${facts.map(f => `<div class="fx-fact"><b>${esc(f.v)}</b><span>${esc(f.l)}</span></div>`).join('')}</div>` : ''}
+    ${onlineHtml(m, links, 'm')}
     ${m.videoHtml ? `<section class="fx-sec"><h2>La vidéo</h2>${m.videoHtml}</section>` : ''}
     ${forms.length ? `<section class="fx-sec" id="formules"><h2>Formules</h2>
       <div class="fx-forms n${forms.length}">${forms.map(f => `<button type="button" class="fx-fm${f.vedette ? ' top' : ''}" data-fx-formule="${esc(f.prix ? `${f.nom} (${euros(f.prix)})` : f.nom)}">${f.vedette ? '<span class="fx-fm-tag">La plus demandée</span>' : ''}<span class="fx-fm-n">${esc(f.nom)}</span><b>${f.prix ? euros(f.prix) : 'Sur devis'}</b>${f.detail ? `<p>${esc(f.detail)}</p>` : ''}<span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button>`).join('')}</div>
@@ -145,7 +161,6 @@ export function ficheV3Html(m) {
     ${m.bio ? `<section class="fx-sec"><h2>Présentation</h2><div class="fx-bio" data-fx-bio><p>${esc(m.bio)}</p></div><button type="button" class="fx-more-bio" data-fx-bio-btn hidden>Lire la suite</button></section>` : ''}
     ${m.offers.length ? `<section class="fx-sec"><h2>${esc(m.offerTitle)}</h2><div class="fx-offers">${m.offers.map(o => `<span class="fx-offer"><i class="ph-bold ${o.icon}"></i>${esc(o.label)}</span>`).join('')}</div></section>` : ''}
     ${m.zoneHtml || ''}
-    ${links.length || m.reseauxHtml ? `<section class="fx-sec"><h2>${esc(m.linksTitle || 'En ligne')}</h2><div class="fx-links">${links.map(l => `<a href="${esc(l.href)}" target="_blank" rel="${l.rel || 'noopener noreferrer'}" class="fx-link"${l.track ? ` onclick="jmTrack('${l.track}')"` : ''}><i class="ph-bold ${l.icon}"></i><span>${esc(l.label)}</span><i class="ph-bold ph-arrow-up-right"></i></a>`).join('')}</div>${m.reseauxHtml || ''}</section>` : ''}
     <div class="fx-end">
       <a href="${esc(m.annuaire.href)}"><i class="ph-bold ph-arrow-left"></i>${esc(m.annuaire.label)}</a>
       ${m.guide ? `<a href="${esc(m.guide.href)}"><i class="ph-bold ph-map-pin"></i>${esc(m.guide.label)}</a>` : ''}
@@ -160,6 +175,7 @@ export function ficheV3Html(m) {
       ${forms.length > 1 ? `<div class="fx-mini">${forms.map(f => `<div><span>${esc(f.nom)}</span><b>${f.prix ? euros(f.prix) : 'Sur devis'}</b></div>`).join('')}</div>` : ''}
       <button type="button" class="fx-btn" data-fx-open><i class="ph-bold ph-paper-plane-tilt"></i>${ctaLabel}</button>
       ${m.telHtml || ''}
+      ${onlineHtml(m, links, 'd')}
       <p class="fx-fine">Contact direct, sans commission. ${esc(m.firstName)} te répond par e-mail.</p>
       ${m.reco ? `<p class="fx-reco">Tu as déjà travaillé avec ${esc(m.firstName)} ? <a href="${esc(m.reco.href)}">${esc(m.reco.label)}</a></p>` : ''}
     </div>
@@ -240,6 +256,15 @@ export const FICHE_V3_CSS = `
 .fx-offer i{color:var(--g);font-size:14px}
 .fx .sct{border-radius:18px;padding:22px 24px;margin:0}
 .fx-links{display:flex;flex-direction:column;gap:8px}
+.fx-online{display:flex;flex-direction:column;gap:8px}
+.fx-online.d{position:relative;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)}
+.fx-online.m{position:relative;display:none;background:#fff;border:1px solid var(--bd);border-radius:18px;padding:16px 18px}
+.fx-online-t{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--tl)}
+.fx-online-l{display:flex;flex-wrap:wrap;gap:8px}
+.fx-ol{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--bd);background:#fff;color:var(--gd);font-size:13.5px;font-weight:600;text-decoration:none;transition:border-color .15s,background .15s}
+.fx-ol i{font-size:16px;color:var(--g)}
+.fx-ol.ic{width:36px;padding:0;justify-content:center}
+.fx-ol:hover{background:rgba(0,76,63,.05);border:1px solid rgba(0,76,63,.35)}
 .fx-link{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;text-decoration:none;color:var(--td);font-size:14.5px;font-weight:500;min-width:0}
 .fx-link span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fx-link i:first-child{color:var(--g);font-size:17px}.fx-link i:last-child{color:var(--tl);font-size:14px}
@@ -300,6 +325,8 @@ export const FICHE_V3_CSS = `
 @media(max-width:959px){
   .fx-body{grid-template-columns:minmax(0,1fr);padding-top:16px}
   .fx-side{position:static}
+  .fx-online.m{display:flex}
+  .fx-online.d{display:none}
   .fx-card .fx-btn{display:none}
   /* Bouton flottant sans bandeau de fond (25/10/2026, Jason : « fond gris
      derrière », et la barre du navigateur qui se replie au défilement

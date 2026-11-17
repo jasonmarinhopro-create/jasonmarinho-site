@@ -295,6 +295,15 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .fx-offer i{color:var(--g);font-size:14px}
 .fx .sct{border-radius:18px;padding:22px 24px;margin:0}
 .fx-links{display:flex;flex-direction:column;gap:8px}
+.fx-online{display:flex;flex-direction:column;gap:8px}
+.fx-online.d{position:relative;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)}
+.fx-online.m{position:relative;display:none;background:#fff;border:1px solid var(--bd);border-radius:18px;padding:16px 18px}
+.fx-online-t{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--tl)}
+.fx-online-l{display:flex;flex-wrap:wrap;gap:8px}
+.fx-ol{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--bd);background:#fff;color:var(--gd);font-size:13.5px;font-weight:600;text-decoration:none;transition:border-color .15s,background .15s}
+.fx-ol i{font-size:16px;color:var(--g)}
+.fx-ol.ic{width:36px;padding:0;justify-content:center}
+.fx-ol:hover{background:rgba(0,76,63,.05);border:1px solid rgba(0,76,63,.35)}
 .fx-link{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;text-decoration:none;color:var(--td);font-size:14.5px;font-weight:500;min-width:0}
 .fx-link span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fx-link i:first-child{color:var(--g);font-size:17px}.fx-link i:last-child{color:var(--tl);font-size:14px}
@@ -355,6 +364,8 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 @media(max-width:959px){
   .fx-body{grid-template-columns:minmax(0,1fr);padding-top:16px}
   .fx-side{position:static}
+  .fx-online.m{display:flex}
+  .fx-online.d{display:none}
   .fx-card .fx-btn{display:none}
   /* Bouton flottant sans bandeau de fond (25/10/2026, Jason : « fond gris
      derrière », et la barre du navigateur qui se replie au défilement
@@ -448,6 +459,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 <div class="fx-wrap fx-body">
   <div class="fx-main">
     <div class="fx-facts n3"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="fx-fact"><b>70 €</b><span>dès, le ménage</span></div><div class="fx-fact"><b>Bordeaux</b><span>ville principale</span></div><div class="fx-fact"><b>3 à 5</b><span>personnes dans l’équipe</span></div></div>
+    <div class="fx-online m"><span class="fx-online-t">L’équipe en ligne</span><div class="fx-online-l"><a href="#photos" class="fx-ol" title="Le site" onclick="jmTrack('site')"><i class="ph-bold ph-globe" aria-hidden="true"></i>Site</a><a href="#photos" class="fx-ol" title="@eclat.menage.bordeaux" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo" aria-hidden="true"></i>Instagram</a><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" class="fx-ol ic" title="Fiche Google" aria-label="Fiche Google"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" class="fx-ol ic" title="Facebook" aria-label="Facebook"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a></div></div>
     
     <section class="fx-sec" id="formules"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
       <div class="fx-forms n3"><button type="button" class="fx-fm" data-fx-formule="Studio, T1 (70 €)"><span class="fx-fm-n">Studio, T1</span><b>70 €</b><p>Ménage complet, lit refait, salle de bain et cuisine, sous 3 h.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button><button type="button" class="fx-fm" data-fx-formule="T2, T3 (95 €)"><span class="fx-fm-n">T2, T3</span><b>95 €</b><p>Linge fourni et lavé, réassort des consommables, photo de fin de ménage.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button><button type="button" class="fx-fm" data-fx-formule="Maison (130 €)"><span class="fx-fm-n">Maison</span><b>130 €</b><p>Jusqu’à 4 chambres, terrasse balayée, poubelles sorties.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button></div>
@@ -469,10 +481,6 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   <p class="sct-cap">Distances à vol d’oiseau. Contours IGN (Licence Ouverte).</p>
   <script type="application/json" class="sct-data">{"v":"Bordeaux","c":[-0.574,44.858],"km":null,"fr":false,"p":"Éclat","d":[],"dn":[],"cv":["Mérignac","Pessac","Talence","Arcachon","Lacanau"],"s":["33","40","17","16"],"m":"menage"}</script>
 </section>
-    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><h2>L’équipe en ligne</h2><div class="fx-links"><a href="#photos" class="fx-link" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i><span>Le site</span><i class="ph-bold ph-arrow-up-right"></i></a><a href="#photos" class="fx-link" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i><span>@eclat.menage.bordeaux</span><i class="ph-bold ph-arrow-up-right"></i></a></div><div class="pro-reseaux" style="margin-top:14px">
-      <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#5A6B57;margin-bottom:8px">Retrouve-moi aussi sur</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px"><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" title="Fiche Google" aria-label="Fiche Google" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" title="Facebook" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a></div>
-    </div></section>
     <div class="fx-end">
       <a href="/annuaires/menage"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes de ménage</a>
       <a href="/menage-lcd-bordeaux"><i class="ph-bold ph-map-pin"></i>Le guide ménage de Bordeaux</a>
@@ -489,6 +497,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
       <div class="fx-mini"><div><span>Studio, T1</span><b>70 €</b></div><div><span>T2, T3</span><b>95 €</b></div><div><span>Maison</span><b>130 €</b></div></div>
       <button type="button" class="fx-btn" data-fx-open><i class="ph-bold ph-paper-plane-tilt"></i>Demander un devis</button>
       
+      <div class="fx-online d"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><span class="fx-online-t">L’équipe en ligne</span><div class="fx-online-l"><a href="#photos" class="fx-ol" title="Le site" onclick="jmTrack('site')"><i class="ph-bold ph-globe" aria-hidden="true"></i>Site</a><a href="#photos" class="fx-ol" title="@eclat.menage.bordeaux" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo" aria-hidden="true"></i>Instagram</a><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" class="fx-ol ic" title="Fiche Google" aria-label="Fiche Google"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" class="fx-ol ic" title="Facebook" aria-label="Facebook"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a></div></div>
       <p class="fx-fine">Contact direct, sans commission. Éclat te répond par e-mail.</p>
       
     </div>

@@ -295,6 +295,15 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .fx-offer i{color:var(--g);font-size:14px}
 .fx .sct{border-radius:18px;padding:22px 24px;margin:0}
 .fx-links{display:flex;flex-direction:column;gap:8px}
+.fx-online{display:flex;flex-direction:column;gap:8px}
+.fx-online.d{position:relative;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd)}
+.fx-online.m{position:relative;display:none;background:#fff;border:1px solid var(--bd);border-radius:18px;padding:16px 18px}
+.fx-online-t{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--tl)}
+.fx-online-l{display:flex;flex-wrap:wrap;gap:8px}
+.fx-ol{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--bd);background:#fff;color:var(--gd);font-size:13.5px;font-weight:600;text-decoration:none;transition:border-color .15s,background .15s}
+.fx-ol i{font-size:16px;color:var(--g)}
+.fx-ol.ic{width:36px;padding:0;justify-content:center}
+.fx-ol:hover{background:rgba(0,76,63,.05);border:1px solid rgba(0,76,63,.35)}
 .fx-link{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;text-decoration:none;color:var(--td);font-size:14.5px;font-weight:500;min-width:0}
 .fx-link span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fx-link i:first-child{color:var(--g);font-size:17px}.fx-link i:last-child{color:var(--tl);font-size:14px}
@@ -355,6 +364,8 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 @media(max-width:959px){
   .fx-body{grid-template-columns:minmax(0,1fr);padding-top:16px}
   .fx-side{position:static}
+  .fx-online.m{display:flex}
+  .fx-online.d{display:none}
   .fx-card .fx-btn{display:none}
   /* Bouton flottant sans bandeau de fond (25/10/2026, Jason : « fond gris
      derrière », et la barre du navigateur qui se replie au défilement
@@ -448,6 +459,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 <div class="fx-wrap fx-body">
   <div class="fx-main">
     <div class="fx-facts n3"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="fx-fact"><b>75 €</b><span>dès, l’intervention</span></div><div class="fx-fact"><b>25 km</b><span>autour de Nantes</span></div><div class="fx-fact"><b>Sous 24 h</b><span>délai d’intervention</span></div></div>
+    <div class="fx-online m"><span class="fx-online-t">En ligne</span><div class="fx-online-l"><a href="#photos" class="fx-ol" title="Le site" onclick="jmTrack('site')"><i class="ph-bold ph-globe" aria-hidden="true"></i>Site</a><a href="#photos" class="fx-ol" title="@atelier.martin.nantes" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo" aria-hidden="true"></i>Instagram</a><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" class="fx-ol ic" title="Fiche Google" aria-label="Fiche Google"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a></div></div>
     
     <section class="fx-sec" id="formules"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
       <div class="fx-forms n3"><button type="button" class="fx-fm" data-fx-formule="Intervention (75 €)"><span class="fx-fm-n">Intervention</span><b>75 €</b><p>Déplacement et première heure, photo après intervention.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button><button type="button" class="fx-fm" data-fx-formule="Mise en service (150 €)"><span class="fx-fm-n">Mise en service</span><b>150 €</b><p>Vérification complète avant la première location : eau, électricité, chauffage.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button><button type="button" class="fx-fm" data-fx-formule="Contrat d’entretien"><span class="fx-fm-n">Contrat d’entretien</span><b>Sur devis</b><p>Passages réguliers entre deux voyageurs, sur devis selon le nombre de logements.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button></div>
@@ -469,10 +481,6 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   <p class="sct-cap">Distances à vol d’oiseau. Contours IGN (Licence Ouverte).</p>
   <script type="application/json" class="sct-data">{"v":"Nantes","c":[-1.548,47.232],"km":25,"fr":false,"p":"Karim","d":[],"dn":[],"cv":["Rezé","Saint-Herblain","Vertou","Orvault"],"s":["44","85","49","35","56","79","53"],"m":"depannage"}</script>
 </section>
-    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><h2>En ligne</h2><div class="fx-links"><a href="#photos" class="fx-link" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i><span>Le site</span><i class="ph-bold ph-arrow-up-right"></i></a><a href="#photos" class="fx-link" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i><span>@atelier.martin.nantes</span><i class="ph-bold ph-arrow-up-right"></i></a></div><div class="pro-reseaux" style="margin-top:14px">
-      <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#5A6B57;margin-bottom:8px">Retrouve-moi aussi sur</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px"><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" title="Fiche Google" aria-label="Fiche Google" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a></div>
-    </div></section>
     <div class="fx-end">
       <a href="/annuaires/depannage"><i class="ph-bold ph-arrow-left"></i>Tous les pros du dépannage</a>
       <a href="/depannage-lcd-nantes"><i class="ph-bold ph-map-pin"></i>Le dépannage de Nantes</a>
@@ -489,6 +497,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
       <div class="fx-mini"><div><span>Intervention</span><b>75 €</b></div><div><span>Mise en service</span><b>150 €</b></div><div><span>Contrat d’entretien</span><b>Sur devis</b></div></div>
       <button type="button" class="fx-btn" data-fx-open><i class="ph-bold ph-paper-plane-tilt"></i>Demander un devis</button>
       
+      <div class="fx-online d"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><span class="fx-online-t">En ligne</span><div class="fx-online-l"><a href="#photos" class="fx-ol" title="Le site" onclick="jmTrack('site')"><i class="ph-bold ph-globe" aria-hidden="true"></i>Site</a><a href="#photos" class="fx-ol" title="@atelier.martin.nantes" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo" aria-hidden="true"></i>Instagram</a><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" class="fx-ol ic" title="Fiche Google" aria-label="Fiche Google"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a></div></div>
       <p class="fx-fine">Contact direct, sans commission. Karim te répond par e-mail.</p>
       
     </div>

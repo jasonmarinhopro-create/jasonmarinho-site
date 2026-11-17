@@ -336,6 +336,7 @@ ${ficheV3Html({
     instaHandle(c.instagram_handle) ? { href: `https://instagram.com/${instaHandle(c.instagram_handle)}`, label: `@${instaHandle(c.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
   ],
   reseauxHtml: proReseauxHtml(reseaux),
+  reseaux,
   telHtml: telHtml(c.telephone, firstName), telHref: telHref(c.telephone),
   besoins,
   placeholder: 'Nombre de logements, rythme des réservations, accès…',

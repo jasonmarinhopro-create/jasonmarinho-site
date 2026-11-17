@@ -311,6 +311,7 @@ ${ficheV3Html({
     instaHandle(p.instagram_handle) ? { href: `https://instagram.com/${instaHandle(p.instagram_handle)}`, label: `@${instaHandle(p.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
   ],
   reseauxHtml: proReseauxHtml(reseaux),
+  reseaux,
   telHtml: telHtml(p.telephone, firstName), telHref: telHref(p.telephone),
   besoins,
   placeholder: 'Ville, dates, style recherché, nombre de pièces…',

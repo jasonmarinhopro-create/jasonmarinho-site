@@ -161,6 +161,8 @@ function toDemo(html, m) {
   h = h.replace(/(<nav class="fx-brd"[^>]*>)[\s\S]*?<\/nav>/, `$1<a href="/">Accueil</a> · <a href="${m.devenir}">${m.devenirLabel}</a> · <span>Exemple de fiche</span></nav>`)
   // Étiquettes jaunes : ce que le pro remplit
   for (const [h2, label] of m.annots) h = replaceOnce(h, h2, annot(label) + h2)
+  // Liens dans la carte de droite (17/11/2026) : étiquette dans le bloc, pas en haut de la carte
+  h = replaceOnce(h, '<div class="fx-online d">', '<div class="fx-online d">' + annot('Tes liens'))
   h = h.replace(/<div class="fx-facts n(\d)">/, m0 => m0 + annot('Calculé depuis ta fiche'))
   // Pas de mesure ni d'envoi réel
   h = replaceOnce(h, 'function jmTrack(ev) {', 'function jmTrack(ev) { return;')
@@ -208,7 +210,6 @@ const pages = [
         ['<h2>Présentation</h2>', 'Bio que tu rédiges'],
         ['<h2>Formules</h2>', 'Tes formules'],
         ['<h2>Ce que Camille propose</h2>', 'Tes options'],
-        ['<h2>Son travail en ligne</h2>', 'Tes liens'],
         ['<h2>Où j’interviens</h2>', 'Tes villes'],
         ['<div class="fx-card-id">', 'Contact en 2 étapes'],
       ],
@@ -228,7 +229,6 @@ const pages = [
         ['<h2>Présentation</h2>', 'Bio que tu rédiges'],
         ['<h2>Formules</h2>', 'Tes formules'],
         ['<h2>Ce que l’équipe propose</h2>', 'Prestations et capacité'],
-        ['<h2>L’équipe en ligne</h2>', 'Tes liens'],
         ['<h2>Où j’interviens</h2>', 'Tes villes'],
         ['<div class="fx-card-id">', 'Contact en 2 étapes'],
       ],
@@ -248,7 +248,6 @@ const pages = [
         ['<h2>Présentation</h2>', 'Bio que tu rédiges'],
         ['<h2>Formules</h2>', 'Tes formules'],
         ['<h2>Ce que je répare</h2>', 'Spécialités et disponibilités'],
-        ['<h2>En ligne</h2>', 'Tes liens'],
         ['<h2>Où j’interviens</h2>', 'Tes villes'],
         ['<div class="fx-card-id">', 'Contact en 2 étapes'],
       ],
