@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-16 20:17 UTC.
+Mis à jour le 2026-11-17 01:06 UTC.
 
 - 2026-11-17 · stories (4 écrans) · stories-degats-photos-avant · FB - · IG - · stories FB pending IG pending · « Stories : Le voyageur est parti, un meuble est cassé / Photographie avant de nettoyer / 14 jours / Tu as déjà  »
 - 2026-11-16 · photo · livret-accueil-questions · FB published 0 j'aime 0 comm. · IG published 1 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Le code de la boîte à clés, le Wi-Fi, la télé qui ne s’allume pas : les mêmes questions reviennent à chaque sé »
