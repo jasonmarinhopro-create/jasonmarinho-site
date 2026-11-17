@@ -277,6 +277,7 @@ const appOutils = OUTILS.map(({ liensApp, ...o }) => ({
   liens: (liensApp ?? o.liens).map(l => ({ ...l, href: absolu(l.href).replace('utm_medium=blog', 'utm_medium=other') })),
 }))
 fs.mkdirSync(path.dirname(APP_JSON), { recursive: true })
-fs.writeFileSync(APP_JSON, JSON.stringify({ categories: CATEGORIES, outils: appOutils }, null, 2) + '\n')
+// Mots de recherche par catégorie, pour la recherche de l'app (17/11/2026)
+fs.writeFileSync(APP_JSON, JSON.stringify({ categories: CATEGORIES.map(c => ({ ...c, mots: MOTS[c.id] || [] })), outils: appOutils }, null, 2) + '\n')
 
 console.log(`[build-partenaires] ${OUTILS.length} outils, ${nbOffres} offres, ${CATEGORIES.length} catégories`)

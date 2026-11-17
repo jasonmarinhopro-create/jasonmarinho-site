@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { useState, useTransition, useEffect } from 'react'
-import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp } from '@phosphor-icons/react/dist/ssr'
+import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp, MagnifyingGlass, X } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
-import { PARTNER_CATEGORIES, PARTNER_OFFERS, PARTNER_CATALOG, BADGE_LABEL, partnerSlug, type PartnerEntry, type PartnerLink } from '@/lib/ecosysteme/partenaires'
+import { PARTNER_CATEGORIES, PARTNER_OFFERS, PARTNER_CATALOG, BADGE_LABEL, partnerSlug, searchPartners, type PartnerEntry, type PartnerLink } from '@/lib/ecosysteme/partenaires'
 import PartenaireSuggestForm from './PartenaireSuggestForm'
 import { toggleToolInterest } from './actions'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
@@ -34,6 +34,7 @@ export default function PartenairesView({
 }) {
   const isDecouverte = plan === 'decouverte'
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
 
   // Optimistic UI : copies locales mises à jour immédiatement au clic
   const [counts, setCounts] = useState<Record<string, number>>(interestCounts)
@@ -83,10 +84,13 @@ export default function PartenairesView({
   // LegalPlace) n'apparaissait jamais. Votes réservés aux outils référencés.
   const catalog = PARTNER_CATALOG.map(p => ({ ...p, slug: partnerSlug(p.nom) }))
   const byCategory = [...PARTNER_OFFERS, ...PARTNER_CATALOG].map(p => ({ ...p, slug: partnerSlug(p.nom) }))
-  const filteredCatalog = activeCategory ? byCategory.filter(t => t.cats.includes(activeCategory)) : byCategory
+  // Recherche (17/11/2026) : nom, description, catégorie et mots courants
+  // (« comptable », « serrure », « esim »…), prioritaire sur le filtre
+  const searching = query.trim().length >= 2
+  const filteredCatalog = searching ? searchPartners(byCategory, query) : activeCategory ? byCategory.filter(t => t.cats.includes(activeCategory)) : byCategory
   const grouped: Record<string, typeof catalog> = {}
   filteredCatalog.forEach(t => {
-    const key = activeCategory ?? t.cats[0]
+    const key = searching ? '__search' : activeCategory ?? t.cats[0]
     if (!grouped[key]) grouped[key] = []
     grouped[key].push(t)
   })
@@ -237,10 +241,33 @@ export default function PartenairesView({
           Si tu en utilises un, n&apos;hésite pas à nous le faire savoir pour qu&apos;on cherche à négocier.
         </p>
 
+        {/* Recherche */}
+        <label style={styles.searchBox}>
+          <MagnifyingGlass size={17} color="var(--accent-text)" />
+          <input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Que cherches-tu ? Un comptable, une serrure connectée, une eSIM…"
+            aria-label="Rechercher un outil ou un besoin"
+            style={styles.searchInput}
+          />
+          {query && (
+            <button type="button" onClick={() => setQuery('')} aria-label="Effacer la recherche" style={styles.searchClear}>
+              <X size={12} />
+            </button>
+          )}
+        </label>
+        <div style={styles.searchIdeas}>
+          <span>Idées :</span>
+          {['comptable LMNP', 'serrure connectée', 'prix dynamique', 'créer une société', 'esim'].map(q => (
+            <button key={q} type="button" onClick={() => setQuery(q)} style={styles.searchIdea}>{q}</button>
+          ))}
+        </div>
+
         {/* Filtre catégories */}
-        <div style={styles.catChips}>
+        <div style={{ ...styles.catChips, ...(searching ? { opacity: 0.45 } : {}) }}>
           <button
-            onClick={() => setActiveCategory(null)}
+            onClick={() => { setActiveCategory(null); setQuery('') }}
             style={{ ...styles.catChip, ...(activeCategory === null ? styles.catChipOn : {}) }}
           >
             Tout
@@ -251,7 +278,7 @@ export default function PartenairesView({
             return (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+                onClick={() => { setActiveCategory(activeCategory === cat.id ? null : cat.id); setQuery('') }}
                 style={{ ...styles.catChip, ...(activeCategory === cat.id ? styles.catChipOn : {}) }}
               >
                 {cat.label}
@@ -262,7 +289,10 @@ export default function PartenairesView({
         </div>
 
         {/* Listing groupé par catégorie */}
-        {PARTNER_CATEGORIES.filter(cat => grouped[cat.id]?.length > 0).map(cat => (
+        {(searching
+          ? (filteredCatalog.length ? [{ id: '__search', label: `${filteredCatalog.length} résultat${filteredCatalog.length > 1 ? 's' : ''} pour « ${query.trim()} »` }] : [])
+          : PARTNER_CATEGORIES.filter(cat => grouped[cat.id]?.length > 0)
+        ).map(cat => (
           <div key={cat.id} style={styles.catBlock}>
             <div style={styles.catHeader}>
               <div style={styles.catTitle}>{cat.label}</div>
@@ -328,7 +358,9 @@ export default function PartenairesView({
 
         {filteredCatalog.length === 0 && (
           <div style={styles.empty}>
-            Aucun outil dans cette catégorie pour l&apos;instant.
+            {searching
+              ? <>Aucun outil pour « {query.trim()} ». Essaie un autre mot (comptable, ménage, serrure…) ou propose-le plus bas.</>
+              : <>Aucun outil dans cette catégorie pour l&apos;instant.</>}
           </div>
         )}
       </div>
@@ -599,6 +631,11 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55,
     maxWidth: '700px', margin: '0 0 18px',
   },
+  searchBox: { display: 'flex', alignItems: 'center', gap: 10, height: 50, padding: '0 14px', margin: '4px 0 8px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, cursor: 'text' },
+  searchInput: { flex: 1, minWidth: 0, border: 0, outline: 'none', boxShadow: 'none', padding: 0, height: 'auto', borderRadius: 0, background: 'transparent', fontSize: 15, fontFamily: 'inherit', color: 'var(--text)' },
+  searchClear: { width: 26, height: 26, borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg-2)', color: 'var(--text-2)', display: 'grid', placeItems: 'center', cursor: 'pointer' },
+  searchIdeas: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--text-3)', marginBottom: 14 },
+  searchIdea: { border: '1px solid var(--border)', background: 'var(--surface)', borderRadius: 99, padding: '4px 10px', fontSize: 12.5, fontFamily: 'inherit', color: 'var(--text-2)', cursor: 'pointer' },
   catChips: {
     display: 'flex', gap: '6px', flexWrap: 'wrap' as const,
     marginBottom: '24px',

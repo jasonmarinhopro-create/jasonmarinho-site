@@ -3,72 +3,192 @@
     {
       "id": "gestion",
       "label": "Gestion & channel manager",
-      "icon": "squares-four"
+      "icon": "squares-four",
+      "mots": [
+        "channel manager",
+        "calendrier",
+        "synchronisation",
+        "pms",
+        "logiciel de gestion",
+        "airbnb et booking",
+        "double réservation"
+      ]
     },
     {
       "id": "messagerie",
       "label": "Messagerie & automatisation",
-      "icon": "chats-circle"
+      "icon": "chats-circle",
+      "mots": [
+        "message automatique",
+        "messages voyageurs",
+        "réponse automatique",
+        "automatisation",
+        "livret",
+        "check-in"
+      ]
     },
     {
       "id": "direct",
       "label": "Réservation directe",
-      "icon": "globe"
+      "icon": "globe",
+      "mots": [
+        "site de réservation",
+        "réservation directe",
+        "site internet",
+        "sans commission",
+        "moteur de réservation"
+      ]
     },
     {
       "id": "banque",
       "label": "Banque & paiement",
-      "icon": "credit-card"
+      "icon": "credit-card",
+      "mots": [
+        "compte pro",
+        "compte bancaire",
+        "paiement",
+        "carte bancaire",
+        "encaisser",
+        "caution"
+      ]
     },
     {
       "id": "prix",
       "label": "Tarification dynamique",
-      "icon": "chart-line-up"
+      "icon": "chart-line-up",
+      "mots": [
+        "prix dynamique",
+        "tarif",
+        "yield",
+        "revenue management",
+        "augmenter mes prix",
+        "tarification"
+      ]
     },
     {
       "id": "acces",
       "label": "Accès & sécurité",
-      "icon": "lock-key"
+      "icon": "lock-key",
+      "mots": [
+        "serrure",
+        "serrure connectée",
+        "boîte à clés",
+        "arrivée autonome",
+        "clés",
+        "caméra",
+        "sécurité",
+        "digicode"
+      ]
     },
     {
       "id": "compta",
       "label": "Comptabilité & fiscalité",
-      "icon": "calculator"
+      "icon": "calculator",
+      "mots": [
+        "comptable",
+        "expert-comptable",
+        "lmnp",
+        "impôts",
+        "déclaration",
+        "facture",
+        "facturation",
+        "fiscalité",
+        "micro-bic",
+        "réel"
+      ]
     },
     {
       "id": "juridique",
       "label": "Création & juridique",
-      "icon": "scales"
+      "icon": "scales",
+      "mots": [
+        "créer une société",
+        "sasu",
+        "micro-entreprise",
+        "statuts",
+        "conciergerie",
+        "domiciliation",
+        "juridique",
+        "kbis"
+      ]
     },
     {
       "id": "menage",
       "label": "Ménage & opérations",
-      "icon": "sparkle"
+      "icon": "sparkle",
+      "mots": [
+        "ménage",
+        "planning ménage",
+        "femme de ménage",
+        "turnover",
+        "checklist"
+      ]
     },
     {
       "id": "photo",
       "label": "Photo & visite virtuelle",
-      "icon": "camera"
+      "icon": "camera",
+      "mots": [
+        "photo",
+        "photos",
+        "visite virtuelle",
+        "plan",
+        "3d"
+      ]
     },
     {
       "id": "marche",
       "label": "Étude de marché",
-      "icon": "chart-bar"
+      "icon": "chart-bar",
+      "mots": [
+        "étude de marché",
+        "rentabilité",
+        "taux d’occupation",
+        "investir",
+        "données",
+        "concurrence",
+        "estimation"
+      ]
     },
     {
       "id": "marketing",
       "label": "Marketing & email",
-      "icon": "megaphone"
+      "icon": "megaphone",
+      "mots": [
+        "newsletter",
+        "emailing",
+        "e-mail",
+        "fidéliser",
+        "crm",
+        "clients"
+      ]
     },
     {
       "id": "experiences",
       "label": "Activités & cadeaux",
-      "icon": "gift"
+      "icon": "gift",
+      "mots": [
+        "activités",
+        "cadeau",
+        "bon cadeau",
+        "sorties",
+        "expériences"
+      ]
     },
     {
       "id": "voyageurs",
       "label": "Services aux voyageurs",
-      "icon": "sim-card"
+      "icon": "sim-card",
+      "mots": [
+        "esim",
+        "carte sim",
+        "internet",
+        "roaming",
+        "itinérance",
+        "voyageurs étrangers",
+        "téléphone",
+        "data"
+      ]
     }
   ],
   "outils": [

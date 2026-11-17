@@ -19,7 +19,7 @@ export interface PartnerEntry {
   offre?: string
 }
 
-export const PARTNER_CATEGORIES = data.categories as Array<{ id: string; label: string; icon: string }>
+export const PARTNER_CATEGORIES = data.categories as Array<{ id: string; label: string; icon: string; mots?: string[] }>
 export const PARTNERS = data.outils as PartnerEntry[]
 
 export const BADGE_LABEL: Record<PartnerBadge, string> = {
@@ -38,3 +38,19 @@ export function partnerSlug(nom: string): string {
 export const PARTNER_OFFERS = PARTNERS.filter(p => p.badge && p.badge !== 'fondateur')
 /** Outils référencés sans rémunération. */
 export const PARTNER_CATALOG = PARTNERS.filter(p => !p.badge)
+
+// ─── Recherche (17/11/2026, comme la page publique /partenaires) ──────────
+const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\u2019']/g, ' ')
+
+/** Texte cherché d'un outil : nom, accroche, description, catégories et leurs mots courants. */
+export function partnerSearchText(p: PartnerEntry, cats = PARTNER_CATEGORIES): string {
+  const cs = cats.filter(c => p.cats.includes(c.id))
+  return norm([p.nom, p.offre ?? '', p.desc, ...cs.map(c => c.label), ...cs.flatMap(c => c.mots ?? [])].join(' '))
+}
+
+/** Outils dont le texte contient tous les mots de la recherche (mots d'une lettre ignorés). */
+export function searchPartners<T extends PartnerEntry>(list: T[], query: string, cats = PARTNER_CATEGORIES): T[] {
+  const words = norm(query).split(/\s+/).filter(w => w.length > 1)
+  if (!words.length) return list
+  return list.filter(p => { const t = partnerSearchText(p, cats); return words.every(w => t.includes(w)) })
+}
