@@ -29,9 +29,12 @@ export function v3Formules(raw) {
 }
 
 /** Prix affiché dans la carte de contact : « dès 230 € », une fourchette, sinon « Sur devis » */
+// Prix « dès » : sous 10 €, c'est un prix à l'unité (« 1 € le m² », Maison
+// Clean Atlantique, 17/11/2026), pas un prix de départ : on l'ignore
+const PRIX_MIN_DES = 10
 export function v3Prix(formules, tarifMin, tarifMax) {
-  const prix = v3Formules(formules).map(f => f.prix).filter(Boolean)
-  if (typeof tarifMin === 'number' && tarifMin > 0) prix.push(tarifMin)
+  const prix = v3Formules(formules).map(f => f.prix).filter(x => x && x >= PRIX_MIN_DES)
+  if (typeof tarifMin === 'number' && tarifMin >= PRIX_MIN_DES) prix.push(tarifMin)
   if (prix.length) return { v: `dès ${euros(Math.min(...prix))}`, devis: false }
   if (typeof tarifMax === 'number' && tarifMax > 0) return { v: `jusqu’à ${euros(tarifMax)}`, devis: false }
   return { v: 'Sur devis', devis: true }

@@ -100,8 +100,9 @@ ${r ? `<circle cx="${x}" cy="${y}" r="${r.toFixed(1)}" class="vt-map-ring"/>` : 
 
 /** Prix de départ : formule la moins chère, sinon tarif minimum */
 export function prixDepuis(formules, tarifMin) {
-  const prix = (Array.isArray(formules) ? formules : []).map(f => f?.prix).filter(n => typeof n === 'number' && n > 0)
-  if (typeof tarifMin === 'number' && tarifMin > 0) prix.push(tarifMin)
+  // Sous 10 € : prix à l'unité (« 1 € le m² »), pas un prix de départ (17/11/2026, même règle que v3Prix)
+  const prix = (Array.isArray(formules) ? formules : []).map(f => f?.prix).filter(n => typeof n === 'number' && n >= 10)
+  if (typeof tarifMin === 'number' && tarifMin >= 10) prix.push(tarifMin)
   if (!prix.length) return null
   return `${String(Math.round(Math.min(...prix))).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €`
 }
