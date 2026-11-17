@@ -257,11 +257,31 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .mk-head{text-align:center;max-width:760px;margin:0 auto 44px}
     .mk-head .h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin-bottom:14px}
     .mk-head p{font-size:clamp(16px,1.6vw,19px);color:var(--tm);line-height:1.6;margin:0;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:300}
-    .mk-tiles{display:grid;grid-template-columns:repeat(9,1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
+    .mk-tiles{display:grid;grid-template-columns:repeat(7,1fr);gap:8px 12px;max-width:940px;margin:0 auto 60px}
     .mk-tile{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;cursor:pointer;padding:14px 8px;border-radius:14px;font-family:'Outfit','Outfit Fallback',sans-serif;font-size:14.5px;color:var(--td);line-height:1.4;transition:background .15s}
     .mk-tile i{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:var(--cr);font-size:24px;color:var(--g);transition:background .15s,color .15s}
     .mk-tile:hover{background:rgba(0,76,63,.03)}
     .mk-tile:hover i,.mk-tile.on i{background:var(--g);color:var(--y)}
+    .mk-search{position:relative;max-width:720px;margin:0 auto 44px}
+    .mk-search label{display:flex;align-items:center;gap:12px;height:60px;padding:0 20px;background:#fff;border:1px solid rgba(0,76,63,.18);border-radius:16px;box-shadow:0 8px 26px rgba(0,76,63,.07);cursor:text}
+    .mk-search label:focus-within{border:1px solid var(--g);box-shadow:0 8px 26px rgba(0,76,63,.12),0 0 0 3px rgba(0,76,63,.08)}
+    .mk-search i.ph-magnifying-glass{font-size:20px;color:var(--g)}
+    .mk-search input{flex:1;min-width:0;border:0;outline:0;background:none;font:400 16px 'Outfit','Outfit Fallback',sans-serif;color:var(--td)}
+    .mk-search input::placeholder{color:#8a9887}
+    .mk-clear{border:0;background:var(--cr);width:30px;height:30px;border-radius:50%;cursor:pointer;color:var(--tm);display:grid;place-items:center}
+    .mk-clear[hidden]{display:none}
+    .mk-help{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:13px;color:var(--tl)}
+    .mk-help button{border:1px solid rgba(0,76,63,.15);background:#fff;border-radius:99px;padding:6px 12px;font:500 13px 'Outfit','Outfit Fallback',sans-serif;color:var(--tm);cursor:pointer}
+    .mk-help button:hover{border:1px solid var(--g);color:var(--g)}
+    .mk-sug{position:absolute;left:0;right:0;top:66px;z-index:20;background:#fff;border:1px solid rgba(0,76,63,.14);border-radius:14px;box-shadow:0 18px 40px rgba(0,26,17,.14);padding:8px;max-height:360px;overflow:auto}
+    .mk-sug[hidden]{display:none}
+    .mk-sug-t{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--tl);padding:8px 10px 4px}
+    .mk-sug button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;border-radius:10px;padding:10px;font:500 14.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);cursor:pointer;text-align:left}
+    .mk-sug button i{font-size:17px;color:var(--g)}
+    .mk-sug button small{margin-left:auto;font-size:12px;color:var(--tl)}
+    .mk-sug button:hover,.mk-sug button.on{background:var(--cr)}
+    .mk-empty{display:none;text-align:center;padding:36px 20px;border:1px dashed rgba(0,76,63,.25);border-radius:16px;color:var(--tm);font-size:15px;line-height:1.6}
+    .mk-empty a{color:var(--g);font-weight:600}
     .mk-layout{display:grid;grid-template-columns:230px 1fr;gap:clamp(28px,4vw,56px);align-items:start}
     .mk-side{position:sticky;top:90px;display:flex;flex-direction:column;gap:2px}
     .mk-f{display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;cursor:pointer;text-align:left;padding:11px 0;font-family:'Outfit','Outfit Fallback',sans-serif;font-size:15px;color:var(--tm);position:relative}
@@ -321,14 +341,24 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <p>Les outils que je recommande, les offres négociées pour les membres et le catalogue des outils LCD, par catégorie.</p>
     </div>
 
+    <div class="mk-search">
+      <label for="mk-q"><i class="ph ph-magnifying-glass" aria-hidden="true"></i><input id="mk-q" type="text" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="Que cherches-tu ? Un comptable, une serrure connectée, des prix dynamiques…" aria-label="Rechercher un outil ou un besoin" aria-controls="mk-sug" aria-expanded="false"><button type="button" class="mk-clear" id="mk-clear" aria-label="Effacer la recherche" hidden><i class="ph ph-x"></i></button></label>
+      <div class="mk-sug" id="mk-sug" role="listbox" hidden></div>
+      <div class="mk-help"><span>Idées :</span><button type="button" data-q="comptable LMNP">comptable LMNP</button><button type="button" data-q="serrure connectée">serrure connectée</button><button type="button" data-q="prix dynamique">prix dynamique</button><button type="button" data-q="créer une société">créer une société</button><button type="button" data-q="étude de marché">étude de marché</button></div>
+    </div>
+
     <div class="mk-tiles" role="group" aria-label="Catégories principales">
       <button type="button" class="mk-tile" data-f="gestion"><i class="ph ph-squares-four"></i>Gestion & channel manager</button>
       <button type="button" class="mk-tile" data-f="messagerie"><i class="ph ph-chats-circle"></i>Messagerie & automatisation</button>
       <button type="button" class="mk-tile" data-f="direct"><i class="ph ph-globe"></i>Réservation directe</button>
       <button type="button" class="mk-tile" data-f="banque"><i class="ph ph-credit-card"></i>Banque & paiement</button>
+      <button type="button" class="mk-tile" data-f="prix"><i class="ph ph-chart-line-up"></i>Tarification dynamique</button>
       <button type="button" class="mk-tile" data-f="acces"><i class="ph ph-lock-key"></i>Accès & sécurité</button>
       <button type="button" class="mk-tile" data-f="compta"><i class="ph ph-calculator"></i>Comptabilité & fiscalité</button>
       <button type="button" class="mk-tile" data-f="juridique"><i class="ph ph-scales"></i>Création & juridique</button>
+      <button type="button" class="mk-tile" data-f="menage"><i class="ph ph-sparkle"></i>Ménage & opérations</button>
+      <button type="button" class="mk-tile" data-f="photo"><i class="ph ph-camera"></i>Photo & visite virtuelle</button>
+      <button type="button" class="mk-tile" data-f="marche"><i class="ph ph-chart-bar"></i>Étude de marché</button>
       <button type="button" class="mk-tile" data-f="marketing"><i class="ph ph-megaphone"></i>Marketing & email</button>
       <button type="button" class="mk-tile" data-f="experiences"><i class="ph ph-gift"></i>Activités & cadeaux</button>
     </div>
@@ -357,7 +387,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-note"><i class="ph ph-info"></i><span>Les outils marqués <strong>Lien affilié</strong> ou <strong>Parrainage</strong> me rapportent une commission si tu t'abonnes via mon lien, sans aucun surcoût pour toi. Tous les autres sont référencés sans aucune rémunération.</span></p>
         <p class="mk-count" aria-live="polite"><span id="mk-n">38</span> <span id="mk-w">outils</span></p>
         <div class="mk-grid">
-      <article class="mk-card is-offre" data-cats="direct messagerie" data-offre="1">
+      <article class="mk-card is-offre" data-cats="direct messagerie" data-q="driing 0 % de commission reservation directe, livret d accueil digital et annuaire de conciergeries. co-fondee par jason, non remunere. reservation directe messagerie & automatisation site de reservation reservation directe site internet sans commission moteur de reservation message automatique messages voyageurs reponse automatique automatisation livret check-in" data-nom="driing" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#004C3F" aria-hidden="true">D</div>
           <div class="mk-id"><h3 class="mk-nom">Driing</h3><span class="mk-badge b-fond">Co-fondé par Jason</span></div>
@@ -366,7 +396,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Réservation directe, livret d'accueil digital et annuaire de conciergeries. Co-fondée par Jason, non rémunéré.">Réservation directe, livret d'accueil digital et annuaire de conciergeries. Co-fondée par Jason, non rémunéré.</p>
         <div class="mk-liens"><a href="https://driing.co" target="_blank" rel="noopener" class="mk-l mk-l1">Découvrir Driing <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="gestion direct" data-offre="1">
+      <article class="mk-card is-offre" data-cats="gestion direct" data-q="lodgify -15 % avec jason15 ton propre site de reservation directe, relie a airbnb, booking.com et vrbo, sans coder. gestion & channel manager reservation directe channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation site de reservation reservation directe site internet sans commission moteur de reservation" data-nom="lodgify" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#2E5BFF" aria-hidden="true">L</div>
           <div class="mk-id"><h3 class="mk-nom">Lodgify</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -375,7 +405,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.">Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.</p>
         <div class="mk-liens"><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Démo gratuite <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/lodgify" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="messagerie gestion" data-offre="1">
+      <article class="mk-card is-offre" data-cats="messagerie gestion" data-q="hospitable -25 % pendant 3 mois messages automatiques et ia, codes de serrure et menage geres a chaque reservation. 14 jours d essai gratuit. messagerie & automatisation gestion & channel manager message automatique messages voyageurs reponse automatique automatisation livret check-in channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation" data-nom="hospitable" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#E0245E" aria-hidden="true">H</div>
           <div class="mk-id"><h3 class="mk-nom">Hospitable</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -384,7 +414,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Messages automatiques et IA, codes de serrure et ménage gérés à chaque réservation. 14 jours d’essai gratuit.">Messages automatiques et IA, codes de serrure et ménage gérés à chaque réservation. 14 jours d’essai gratuit.</p>
         <div class="mk-liens"><a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essai gratuit <i class="ph-bold ph-arrow-up-right"></i></a><a href="/hospitable-avis" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="banque compta" data-offre="1">
+      <article class="mk-card is-offre" data-cats="banque compta" data-q="shine compte pro des 0 € neobanque pro et shine facture (devis et factures gratuits) pour separer et facturer ton activite. banque & paiement comptabilite & fiscalite compte pro compte bancaire paiement carte bancaire encaisser caution comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="shine" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#1F2937" aria-hidden="true">S</div>
           <div class="mk-id"><h3 class="mk-nom">Shine</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -393,7 +423,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Néobanque pro et Shine Facture (devis et factures gratuits) pour séparer et facturer ton activité.">Néobanque pro et Shine Facture (devis et factures gratuits) pour séparer et facturer ton activité.</p>
         <div class="mk-liens"><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Ouvrir un compte <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/shine" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="banque compta" data-offre="1">
+      <article class="mk-card is-offre" data-cats="banque compta" data-q="qonto compte pro + facturation compte pro tres repandu chez les independants et les societes, facturation et lien avec le comptable. banque & paiement comptabilite & fiscalite compte pro compte bancaire paiement carte bancaire encaisser caution comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="qonto" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#111827" aria-hidden="true">Q</div>
           <div class="mk-id"><h3 class="mk-nom">Qonto</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -402,7 +432,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.">Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.</p>
         <div class="mk-liens"><a href="https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&amp;af=3386&amp;lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Ouvrir un compte <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/qonto" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="marche" data-offre="1">
+      <article class="mk-card is-offre" data-cats="marche" data-q="airdna donnees gratuites occupation, prix moyen et revenus de ta ville avant d acheter ou de fixer tes prix. etude de marche etude de marche rentabilite taux d occupation investir donnees concurrence estimation" data-nom="airdna" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#E11D48" aria-hidden="true">A</div>
           <div class="mk-id"><h3 class="mk-nom">AirDNA</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -411,7 +441,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Occupation, prix moyen et revenus de ta ville avant d’acheter ou de fixer tes prix.">Occupation, prix moyen et revenus de ta ville avant d’acheter ou de fixer tes prix.</p>
         <div class="mk-liens"><a href="https://eur-invite.airdna.co/Jason-Marinho" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essayer AirDNA <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/airdna" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="compta" data-offre="1">
+      <article class="mk-card is-offre" data-cats="compta" data-q="indy 1er mois offert compta lmnp, liasse fiscale 2031 et facture electronique (plateforme agreee) pour ta location meublee. comptabilite & fiscalite comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="indy" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#10B981" aria-hidden="true">I</div>
           <div class="mk-id"><h3 class="mk-nom">Indy</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -420,7 +450,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.">Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.</p>
         <div class="mk-liens"><a href="https://urlr.me/FEqNfy" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essayer Indy <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/indy" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="compta" data-offre="1">
+      <article class="mk-card is-offre" data-cats="compta" data-q="jd2m compta lmnp accompagnee liasse lmnp au reel avec des specialistes, ou entierement faite par un expert-comptable. comptabilite & fiscalite comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="jd2m" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#1F4E8C" aria-hidden="true">J</div>
           <div class="mk-id"><h3 class="mk-nom">JD2M</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -429,7 +459,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Liasse LMNP au réel avec des spécialistes, ou entièrement faite par un expert-comptable.">Liasse LMNP au réel avec des spécialistes, ou entièrement faite par un expert-comptable.</p>
         <div class="mk-liens"><a href="https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&amp;utm_campaign=partenariat&amp;utm_content=244&amp;ae=244" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Voir les offres <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/jd2m" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="compta" data-offre="1">
+      <article class="mk-card is-offre" data-cats="compta" data-q="keobiz 1 mois offert expert-comptable sur devis : lmnp au reel, conciergerie, societe ou sci. 1 mois offert avec ce lien. comptabilite & fiscalite comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="keobiz" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0B3B5C" aria-hidden="true">K</div>
           <div class="mk-id"><h3 class="mk-nom">Keobiz</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -438,7 +468,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Expert-comptable sur devis : LMNP au réel, conciergerie, société ou SCI. 1 mois offert avec ce lien.">Expert-comptable sur devis : LMNP au réel, conciergerie, société ou SCI. 1 mois offert avec ce lien.</p>
         <div class="mk-liens"><a href="https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&amp;utm_medium=lp&amp;utm_source=affilie&amp;ae=936" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Demander un devis <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/keobiz" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="juridique" data-offre="1">
+      <article class="mk-card is-offre" data-cats="juridique" data-q="legalplace reduction avec jason15 creation de sci, sasu ou micro-entreprise, modification de statuts et domiciliation, en ligne. creation & juridique creer une societe sasu micro-entreprise statuts conciergerie domiciliation juridique kbis" data-nom="legalplace" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#1D3557" aria-hidden="true">L</div>
           <div class="mk-id"><h3 class="mk-nom">LegalPlace</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -447,7 +477,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.">Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.</p>
         <div class="mk-liens"><a href="https://creation.legalplace.fr/creation-entreprise-2?utm_source=affilae&amp;utm_medium=partner&amp;utm_campaign=Jason%20Marinho&amp;ae=1773" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Créer ma société <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/legalplace" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="juridique" data-offre="1">
+      <article class="mk-card is-offre" data-cats="juridique" data-q="legalstart expert au telephone creation de societe ou de micro-entreprise en ligne, dossier verifie par des juristes, domiciliation. creation & juridique creer une societe sasu micro-entreprise statuts conciergerie domiciliation juridique kbis" data-nom="legalstart" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0F5C4A" aria-hidden="true">L</div>
           <div class="mk-id"><h3 class="mk-nom">Legalstart</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -456,7 +486,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Création de société ou de micro-entreprise en ligne, dossier vérifié par des juristes, domiciliation.">Création de société ou de micro-entreprise en ligne, dossier vérifié par des juristes, domiciliation.</p>
         <div class="mk-liens"><a href="https://www.legalstart.fr/creation-entreprise/?ae=933" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Créer ma société <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/legalstart" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="compta" data-offre="1">
+      <article class="mk-card is-offre" data-cats="compta" data-q="tiime facturation gratuite devis, factures illimitees et facture electronique (plateforme agreee) gratuits. compte pro en option. comptabilite & fiscalite comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="tiime" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0EA5E9" aria-hidden="true">T</div>
           <div class="mk-id"><h3 class="mk-nom">Tiime</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -465,7 +495,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.">Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.</p>
         <div class="mk-liens"><a href="https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&amp;af=1127&amp;lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essayer Tiime <i class="ph-bold ph-arrow-up-right"></i></a><a href="/comparatif-indy-tiime-henrri" class="mk-l">Comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="marketing" data-offre="1">
+      <article class="mk-card is-offre" data-cats="marketing" data-q="brevo 300 e-mails/jour gratuits newsletter a tes voyageurs directs et crm gratuit. solution francaise, donnees en europe. marketing & email newsletter emailing e-mail fideliser crm clients" data-nom="brevo" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0B996E" aria-hidden="true">B</div>
           <div class="mk-id"><h3 class="mk-nom">Brevo</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -474,7 +504,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.">Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.</p>
         <div class="mk-liens"><a href="https://get.brevo.com/3mftm80uaemx-m7y3c" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Créer un compte <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/brevo" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="experiences" data-offre="1">
+      <article class="mk-card is-offre" data-cats="experiences" data-q="sport decouverte activites et bons cadeaux activites de loisirs en france et en belgique, a conseiller a tes voyageurs ou a offrir a ton equipe. activites & cadeaux activites cadeau bon cadeau sorties experiences" data-nom="sport decouverte" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#E85D04" aria-hidden="true">S</div>
           <div class="mk-id"><h3 class="mk-nom">Sport Découverte</h3><span class="mk-badge b-aff">Lien affilié</span></div>
@@ -483,7 +513,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Activités de loisirs en France et en Belgique, à conseiller à tes voyageurs ou à offrir à ton équipe.">Activités de loisirs en France et en Belgique, à conseiller à tes voyageurs ou à offrir à ton équipe.</p>
         <div class="mk-liens"><a href="https://sport-decouverte.com/?utm_source=affilae&amp;utm_medium=affiliate&amp;utm_campaign=Jason%20Marinho&amp;ae=410" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Voir les activités <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/sport-decouverte" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card is-offre" data-cats="gestion" data-offre="1">
+      <article class="mk-card is-offre" data-cats="gestion" data-q="krossbooking tarif negocie membres channel manager italien avec pms et moteur de reservation. reduction reservee aux membres. gestion & channel manager channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation" data-nom="krossbooking" data-offre="1">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0E7490" aria-hidden="true">K</div>
           <div class="mk-id"><h3 class="mk-nom">Krossbooking</h3><span class="mk-badge b-mem">Réduction membre</span></div>
@@ -492,7 +522,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.">Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.</p>
         <div class="mk-liens"><a href="https://app.jasonmarinho.com/auth/register" class="mk-l mk-l1">Devenir membre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="gestion direct">
+      <article class="mk-card" data-cats="gestion direct" data-q="smoobu  channel manager simple et rapide a prendre en main, interface en francais, site de reservation inclus. gestion & channel manager reservation directe channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation site de reservation reservation directe site internet sans commission moteur de reservation" data-nom="smoobu">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0F766E" aria-hidden="true">S</div>
           <div class="mk-id"><h3 class="mk-nom">Smoobu</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -501,7 +531,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Channel manager simple et rapide à prendre en main, interface en français, site de réservation inclus.">Channel manager simple et rapide à prendre en main, interface en français, site de réservation inclus.</p>
         <div class="mk-liens"><a href="/comparatif-lodgify-smoobu" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="gestion messagerie">
+      <article class="mk-card" data-cats="gestion messagerie" data-q="superhote  logiciel francais de gestion et de messages automatiques, avec un support en francais. gestion & channel manager messagerie & automatisation channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation message automatique messages voyageurs reponse automatique automatisation livret check-in" data-nom="superhote">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#7C3AED" aria-hidden="true">S</div>
           <div class="mk-id"><h3 class="mk-nom">Superhote</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -510,7 +540,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Logiciel français de gestion et de messages automatiques, avec un support en français.">Logiciel français de gestion et de messages automatiques, avec un support en français.</p>
         <div class="mk-liens"><a href="/comparatif-superhote-welkeys" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="gestion">
+      <article class="mk-card" data-cats="gestion" data-q="beds24  channel manager tres complet et parametrable, pour les profils a l aise avec la technique. gestion & channel manager channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation" data-nom="beds24">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#334155" aria-hidden="true">B</div>
           <div class="mk-id"><h3 class="mk-nom">Beds24</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -519,7 +549,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Channel manager très complet et paramétrable, pour les profils à l’aise avec la technique.">Channel manager très complet et paramétrable, pour les profils à l’aise avec la technique.</p>
         <div class="mk-liens"><a href="https://beds24.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="gestion messagerie">
+      <article class="mk-card" data-cats="gestion messagerie" data-q="hostfully  pms pour conciergeries multi-biens, avec livret d accueil digital. gestion & channel manager messagerie & automatisation channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation message automatique messages voyageurs reponse automatique automatisation livret check-in" data-nom="hostfully">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#EA580C" aria-hidden="true">H</div>
           <div class="mk-id"><h3 class="mk-nom">Hostfully</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -528,7 +558,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="PMS pour conciergeries multi-biens, avec livret d’accueil digital.">PMS pour conciergeries multi-biens, avec livret d’accueil digital.</p>
         <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="gestion">
+      <article class="mk-card" data-cats="gestion" data-q="guesty  pms pense pour les grandes conciergeries qui gerent des dizaines de logements. gestion & channel manager channel manager calendrier synchronisation pms logiciel de gestion airbnb et booking double reservation" data-nom="guesty">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#1D4ED8" aria-hidden="true">G</div>
           <div class="mk-id"><h3 class="mk-nom">Guesty</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -537,7 +567,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="PMS pensé pour les grandes conciergeries qui gèrent des dizaines de logements.">PMS pensé pour les grandes conciergeries qui gèrent des dizaines de logements.</p>
         <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="banque direct">
+      <article class="mk-card" data-cats="banque direct" data-q="stripe  paiement en ligne par carte sur ton site de reservation directe. banque & paiement reservation directe compte pro compte bancaire paiement carte bancaire encaisser caution site de reservation reservation directe site internet sans commission moteur de reservation" data-nom="stripe">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#635BFF" aria-hidden="true">S</div>
           <div class="mk-id"><h3 class="mk-nom">Stripe</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -546,7 +576,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Paiement en ligne par carte sur ton site de réservation directe.">Paiement en ligne par carte sur ton site de réservation directe.</p>
         <div class="mk-liens"><a href="https://stripe.com/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="prix">
+      <article class="mk-card" data-cats="prix" data-q="pricelabs  tarification dynamique tres parametrable, basee sur la demande du marche local. tarification dynamique prix dynamique tarif yield revenue management augmenter mes prix tarification" data-nom="pricelabs">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#2563EB" aria-hidden="true">P</div>
           <div class="mk-id"><h3 class="mk-nom">PriceLabs</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -555,7 +585,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Tarification dynamique très paramétrable, basée sur la demande du marché local.">Tarification dynamique très paramétrable, basée sur la demande du marché local.</p>
         <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="prix">
+      <article class="mk-card" data-cats="prix" data-q="beyond  tarification dynamique automatisee, pensee pour etre simple a laisser tourner. tarification dynamique prix dynamique tarif yield revenue management augmenter mes prix tarification" data-nom="beyond">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0891B2" aria-hidden="true">B</div>
           <div class="mk-id"><h3 class="mk-nom">Beyond</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -564,7 +594,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Tarification dynamique automatisée, pensée pour être simple à laisser tourner.">Tarification dynamique automatisée, pensée pour être simple à laisser tourner.</p>
         <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="prix">
+      <article class="mk-card" data-cats="prix" data-q="wheelhouse  tarification dynamique avec des recommandations detaillees et transparentes. tarification dynamique prix dynamique tarif yield revenue management augmenter mes prix tarification" data-nom="wheelhouse">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#4F46E5" aria-hidden="true">W</div>
           <div class="mk-id"><h3 class="mk-nom">Wheelhouse</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -573,7 +603,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Tarification dynamique avec des recommandations détaillées et transparentes.">Tarification dynamique avec des recommandations détaillées et transparentes.</p>
         <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="acces">
+      <article class="mk-card" data-cats="acces" data-q="igloohome  serrures et boites a cles a codes temporaires, qui fonctionnent sans wifi. acces & securite serrure serrure connectee boite a cles arrivee autonome cles camera securite digicode" data-nom="igloohome">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0F172A" aria-hidden="true">I</div>
           <div class="mk-id"><h3 class="mk-nom">Igloohome</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -582,7 +612,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Serrures et boîtes à clés à codes temporaires, qui fonctionnent sans wifi.">Serrures et boîtes à clés à codes temporaires, qui fonctionnent sans wifi.</p>
         <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="acces">
+      <article class="mk-card" data-cats="acces" data-q="ttlock  ecosysteme de serrures a code et bluetooth, souvent a petit prix. acces & securite serrure serrure connectee boite a cles arrivee autonome cles camera securite digicode" data-nom="ttlock">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#16A34A" aria-hidden="true">T</div>
           <div class="mk-id"><h3 class="mk-nom">TTLock</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -591,7 +621,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Écosystème de serrures à code et Bluetooth, souvent à petit prix.">Écosystème de serrures à code et Bluetooth, souvent à petit prix.</p>
         <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="acces">
+      <article class="mk-card" data-cats="acces" data-q="nuki  serrure connectee qui se monte sur la serrure existante, cote interieur. acces & securite serrure serrure connectee boite a cles arrivee autonome cles camera securite digicode" data-nom="nuki">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#F59E0B" aria-hidden="true">N</div>
           <div class="mk-id"><h3 class="mk-nom">Nuki</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -600,7 +630,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Serrure connectée qui se monte sur la serrure existante, côté intérieur.">Serrure connectée qui se monte sur la serrure existante, côté intérieur.</p>
         <div class="mk-liens"><a href="https://nuki.io/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="acces">
+      <article class="mk-card" data-cats="acces" data-q="ring  sonnettes video et cameras exterieures, historique video sur abonnement. acces & securite serrure serrure connectee boite a cles arrivee autonome cles camera securite digicode" data-nom="ring">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0284C7" aria-hidden="true">R</div>
           <div class="mk-id"><h3 class="mk-nom">Ring</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -609,7 +639,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.">Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.</p>
         <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="acces">
+      <article class="mk-card" data-cats="acces" data-q="eufy  cameras et sonnettes avec stockage local, sans abonnement obligatoire. acces & securite serrure serrure connectee boite a cles arrivee autonome cles camera securite digicode" data-nom="eufy">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0369A1" aria-hidden="true">E</div>
           <div class="mk-id"><h3 class="mk-nom">Eufy</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -618,7 +648,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Caméras et sonnettes avec stockage local, sans abonnement obligatoire.">Caméras et sonnettes avec stockage local, sans abonnement obligatoire.</p>
         <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="acces">
+      <article class="mk-card" data-cats="acces" data-q="reolink  cameras de surveillance wifi ou filaires, avec stockage local. acces & securite serrure serrure connectee boite a cles arrivee autonome cles camera securite digicode" data-nom="reolink">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#1E40AF" aria-hidden="true">R</div>
           <div class="mk-id"><h3 class="mk-nom">Reolink</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -627,7 +657,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Caméras de surveillance wifi ou filaires, avec stockage local.">Caméras de surveillance wifi ou filaires, avec stockage local.</p>
         <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="compta">
+      <article class="mk-card" data-cats="compta" data-q="henrri  logiciel de facturation en ligne gratuit. comptabilite & fiscalite comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="henrri">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#DB2777" aria-hidden="true">H</div>
           <div class="mk-id"><h3 class="mk-nom">Henrri</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -636,7 +666,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Logiciel de facturation en ligne gratuit.">Logiciel de facturation en ligne gratuit.</p>
         <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="compta">
+      <article class="mk-card" data-cats="compta" data-q="jedeclaremonmeuble  comptabilite et declaration lmnp en ligne, avec accompagnement. comptabilite & fiscalite comptable expert-comptable lmnp impots declaration facture facturation fiscalite micro-bic reel" data-nom="jedeclaremonmeuble">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#B45309" aria-hidden="true">J</div>
           <div class="mk-id"><h3 class="mk-nom">Jedeclaremonmeuble</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -645,7 +675,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Comptabilité et déclaration LMNP en ligne, avec accompagnement.">Comptabilité et déclaration LMNP en ligne, avec accompagnement.</p>
         <div class="mk-liens"><a href="https://www.jedeclaremonmeuble.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="menage">
+      <article class="mk-card" data-cats="menage" data-q="turno  planification automatique des menages et place de marche de prestataires. menage & operations menage planning menage femme de menage turnover checklist" data-nom="turno">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#059669" aria-hidden="true">T</div>
           <div class="mk-id"><h3 class="mk-nom">Turno</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -654,7 +684,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Planification automatique des ménages et place de marché de prestataires.">Planification automatique des ménages et place de marché de prestataires.</p>
         <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="menage">
+      <article class="mk-card" data-cats="menage" data-q="properly  checklists de menage et controle qualite en photos. menage & operations menage planning menage femme de menage turnover checklist" data-nom="properly">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#7C2D12" aria-hidden="true">P</div>
           <div class="mk-id"><h3 class="mk-nom">Properly</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -663,7 +693,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Checklists de ménage et contrôle qualité en photos.">Checklists de ménage et contrôle qualité en photos.</p>
         <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="photo">
+      <article class="mk-card" data-cats="photo" data-q="matterport  visite virtuelle 3d du logement, integrable a ton annonce ou ton site. photo & visite virtuelle photo photos visite virtuelle plan 3d" data-nom="matterport">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#111827" aria-hidden="true">M</div>
           <div class="mk-id"><h3 class="mk-nom">Matterport</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -672,7 +702,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Visite virtuelle 3D du logement, intégrable à ton annonce ou ton site.">Visite virtuelle 3D du logement, intégrable à ton annonce ou ton site.</p>
         <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="photo">
+      <article class="mk-card" data-cats="photo" data-q="cubicasa  plan du logement genere en le scannant avec un smartphone. photo & visite virtuelle photo photos visite virtuelle plan 3d" data-nom="cubicasa">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#0D9488" aria-hidden="true">C</div>
           <div class="mk-id"><h3 class="mk-nom">CubiCasa</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -681,7 +711,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Plan du logement généré en le scannant avec un smartphone.">Plan du logement généré en le scannant avec un smartphone.</p>
         <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="marche">
+      <article class="mk-card" data-cats="marche" data-q="mashvisor  analyse de rentabilite immobiliere, surtout sur le marche americain. etude de marche etude de marche rentabilite taux d occupation investir donnees concurrence estimation" data-nom="mashvisor">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#6D28D9" aria-hidden="true">M</div>
           <div class="mk-id"><h3 class="mk-nom">Mashvisor</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -690,7 +720,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-desc" title="Analyse de rentabilité immobilière, surtout sur le marché américain.">Analyse de rentabilité immobilière, surtout sur le marché américain.</p>
         <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
-      <article class="mk-card" data-cats="marketing">
+      <article class="mk-card" data-cats="marketing" data-q="mailchimp  emailing et automatisations, tres repandu. marketing & email newsletter emailing e-mail fideliser crm clients" data-nom="mailchimp">
         <div class="mk-head-c">
           <div class="mk-logo" style="color:#CA8A04" aria-hidden="true">M</div>
           <div class="mk-id"><h3 class="mk-nom">Mailchimp</h3><span class="mk-badge b-ref">Référencé</span></div>
@@ -700,6 +730,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <div class="mk-liens"><a href="https://mailchimp.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
         </div>
+        <p class="mk-empty" id="mk-empty">Aucun outil pour « <span id="mk-qv"></span> ». Essaie un autre mot (comptable, ménage, serrure…) ou <a href="/contact">demande-moi conseil</a> : je te réponds.</p>
       </div>
     </div>
   </div>
@@ -722,6 +753,50 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     btns.forEach(function(b){b.addEventListener('click',function(){apply(b.getAttribute('data-f'),b.classList.contains('mk-tile'))})});
     var h=location.hash.slice(1);
     if(h&&sec.querySelector('[data-f="'+h+'"]'))apply(h,false);
+    // Recherche avec suggestions (17/11/2026)
+    var S=[{"id":"gestion","l":"Gestion & channel manager","i":"squares-four","n":8,"k":"gestion & channel manager|channel manager|calendrier|synchronisation|pms|logiciel de gestion|airbnb et booking|double reservation"},{"id":"messagerie","l":"Messagerie & automatisation","i":"chats-circle","n":4,"k":"messagerie & automatisation|message automatique|messages voyageurs|reponse automatique|automatisation|livret|check-in"},{"id":"direct","l":"Réservation directe","i":"globe","n":4,"k":"reservation directe|site de reservation|reservation directe|site internet|sans commission|moteur de reservation"},{"id":"banque","l":"Banque & paiement","i":"credit-card","n":3,"k":"banque & paiement|compte pro|compte bancaire|paiement|carte bancaire|encaisser|caution"},{"id":"prix","l":"Tarification dynamique","i":"chart-line-up","n":3,"k":"tarification dynamique|prix dynamique|tarif|yield|revenue management|augmenter mes prix|tarification"},{"id":"acces","l":"Accès & sécurité","i":"lock-key","n":6,"k":"acces & securite|serrure|serrure connectee|boite a cles|arrivee autonome|cles|camera|securite|digicode"},{"id":"compta","l":"Comptabilité & fiscalité","i":"calculator","n":8,"k":"comptabilite & fiscalite|comptable|expert-comptable|lmnp|impots|declaration|facture|facturation|fiscalite|micro-bic|reel"},{"id":"juridique","l":"Création & juridique","i":"scales","n":2,"k":"creation & juridique|creer une societe|sasu|micro-entreprise|statuts|conciergerie|domiciliation|juridique|kbis"},{"id":"menage","l":"Ménage & opérations","i":"sparkle","n":2,"k":"menage & operations|menage|planning menage|femme de menage|turnover|checklist"},{"id":"photo","l":"Photo & visite virtuelle","i":"camera","n":2,"k":"photo & visite virtuelle|photo|photos|visite virtuelle|plan|3d"},{"id":"marche","l":"Étude de marché","i":"chart-bar","n":2,"k":"etude de marche|etude de marche|rentabilite|taux d occupation|investir|donnees|concurrence|estimation"},{"id":"marketing","l":"Marketing & email","i":"megaphone","n":2,"k":"marketing & email|newsletter|emailing|e-mail|fideliser|crm|clients"},{"id":"experiences","l":"Activités & cadeaux","i":"gift","n":1,"k":"activites & cadeaux|activites|cadeau|bon cadeau|sorties|experiences"}],T=[{"n":"Driing","k":"driing","c":"Réservation directe"},{"n":"Lodgify","k":"lodgify","c":"Gestion & channel manager"},{"n":"Hospitable","k":"hospitable","c":"Messagerie & automatisation"},{"n":"Shine","k":"shine","c":"Banque & paiement"},{"n":"Qonto","k":"qonto","c":"Banque & paiement"},{"n":"AirDNA","k":"airdna","c":"Étude de marché"},{"n":"Indy","k":"indy","c":"Comptabilité & fiscalité"},{"n":"JD2M","k":"jd2m","c":"Comptabilité & fiscalité"},{"n":"Keobiz","k":"keobiz","c":"Comptabilité & fiscalité"},{"n":"LegalPlace","k":"legalplace","c":"Création & juridique"},{"n":"Legalstart","k":"legalstart","c":"Création & juridique"},{"n":"Tiime","k":"tiime","c":"Comptabilité & fiscalité"},{"n":"Brevo","k":"brevo","c":"Marketing & email"},{"n":"Sport Découverte","k":"sport decouverte","c":"Activités & cadeaux"},{"n":"Krossbooking","k":"krossbooking","c":"Gestion & channel manager"},{"n":"Smoobu","k":"smoobu","c":"Gestion & channel manager"},{"n":"Superhote","k":"superhote","c":"Gestion & channel manager"},{"n":"Beds24","k":"beds24","c":"Gestion & channel manager"},{"n":"Hostfully","k":"hostfully","c":"Gestion & channel manager"},{"n":"Guesty","k":"guesty","c":"Gestion & channel manager"},{"n":"Stripe","k":"stripe","c":"Banque & paiement"},{"n":"PriceLabs","k":"pricelabs","c":"Tarification dynamique"},{"n":"Beyond","k":"beyond","c":"Tarification dynamique"},{"n":"Wheelhouse","k":"wheelhouse","c":"Tarification dynamique"},{"n":"Igloohome","k":"igloohome","c":"Accès & sécurité"},{"n":"TTLock","k":"ttlock","c":"Accès & sécurité"},{"n":"Nuki","k":"nuki","c":"Accès & sécurité"},{"n":"Ring","k":"ring","c":"Accès & sécurité"},{"n":"Eufy","k":"eufy","c":"Accès & sécurité"},{"n":"Reolink","k":"reolink","c":"Accès & sécurité"},{"n":"Henrri","k":"henrri","c":"Comptabilité & fiscalité"},{"n":"Jedeclaremonmeuble","k":"jedeclaremonmeuble","c":"Comptabilité & fiscalité"},{"n":"Turno","k":"turno","c":"Ménage & opérations"},{"n":"Properly","k":"properly","c":"Ménage & opérations"},{"n":"Matterport","k":"matterport","c":"Photo & visite virtuelle"},{"n":"CubiCasa","k":"cubicasa","c":"Photo & visite virtuelle"},{"n":"Mashvisor","k":"mashvisor","c":"Étude de marché"},{"n":"Mailchimp","k":"mailchimp","c":"Marketing & email"}];
+    var q=document.getElementById('mk-q'),sug=document.getElementById('mk-sug'),clr=document.getElementById('mk-clear'),empty=document.getElementById('mk-empty'),qv=document.getElementById('mk-qv'),act=-1;
+    if(!q)return;
+    function nm(t){return String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’']/g,' ').trim()}
+    function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+    function filtre(v){
+      var w=nm(v).split(/ +/).filter(function(x){return x.length>1}),shown=0;
+      if(!w.length){apply('all',false);empty.style.display='none';return}
+      btns.forEach(function(b){b.classList.remove('on')});
+      cards.forEach(function(c){var t=c.getAttribute('data-q'),ok=w.every(function(x){return t.indexOf(x)>-1});c.hidden=!ok;if(ok)shown++});
+      if(n)n.textContent=shown;var ww=document.getElementById('mk-w');if(ww)ww.textContent=shown>1?'outils':'outil';
+      qv.textContent=v;empty.style.display=shown?'none':'block';
+    }
+    function ouvre(v){
+      var x=nm(v);act=-1;
+      if(x.length<2){sug.hidden=true;q.setAttribute('aria-expanded','false');return}
+      var cs=S.filter(function(c){return c.k.indexOf(x)>-1||x.split(/ +/).every(function(m){return m.length<2||c.k.indexOf(m)>-1})}).slice(0,4);
+      var ts=T.filter(function(t){return t.k.indexOf(x)>-1}).slice(0,5);
+      var h='';
+      if(cs.length)h+='<div class="mk-sug-t">Catégories</div>'+cs.map(function(c){return '<button type="button" role="option" data-cat="'+c.id+'"><i class="ph ph-'+c.i+'"></i>'+esc(c.l)+'<small>'+c.n+' outil'+(c.n>1?'s':'')+'</small></button>'}).join('');
+      if(ts.length)h+='<div class="mk-sug-t">Outils</div>'+ts.map(function(t){return '<button type="button" role="option" data-outil="'+esc(t.n)+'"><i class="ph ph-buildings"></i>'+esc(t.n)+'<small>'+esc(t.c)+'</small></button>'}).join('');
+      sug.innerHTML=h;sug.hidden=!h;q.setAttribute('aria-expanded',h?'true':'false');
+    }
+    function choisir(b){
+      sug.hidden=true;q.setAttribute('aria-expanded','false');
+      if(b.hasAttribute('data-cat')){q.value='';clr.hidden=true;empty.style.display='none';apply(b.getAttribute('data-cat'),true);return}
+      q.value=b.getAttribute('data-outil');clr.hidden=false;filtre(q.value);
+      var g=sec.querySelector('.mk-layout');window.scrollTo({top:g.getBoundingClientRect().top+window.pageYOffset-90,behavior:'smooth'});
+    }
+    q.addEventListener('input',function(){clr.hidden=!q.value;filtre(q.value);ouvre(q.value)});
+    q.addEventListener('focus',function(){if(q.value)ouvre(q.value)});
+    q.addEventListener('keydown',function(e){
+      var it=sug.querySelectorAll('button');
+      if(e.key==='ArrowDown'||e.key==='ArrowUp'){if(!it.length)return;e.preventDefault();act=(act+(e.key==='ArrowDown'?1:-1)+it.length)%it.length;it.forEach(function(b,i){b.classList.toggle('on',i===act)})}
+      else if(e.key==='Enter'){e.preventDefault();if(act>-1&&it[act])choisir(it[act]);else{sug.hidden=true;var g=sec.querySelector('.mk-layout');window.scrollTo({top:g.getBoundingClientRect().top+window.pageYOffset-90,behavior:'smooth'})}}
+      else if(e.key==='Escape'){sug.hidden=true}
+    });
+    sug.addEventListener('mousedown',function(e){e.preventDefault()});
+    sug.addEventListener('click',function(e){var b=e.target.closest('button');if(b)choisir(b)});
+    document.addEventListener('click',function(e){if(!e.target.closest('.mk-search'))sug.hidden=true});
+    clr.addEventListener('click',function(){q.value='';clr.hidden=true;sug.hidden=true;filtre('');q.focus()});
+    sec.querySelectorAll('.mk-help button').forEach(function(b){b.addEventListener('click',function(){q.value=b.getAttribute('data-q');clr.hidden=false;filtre(q.value);ouvre(q.value);q.focus()})});
+    btns.forEach(function(b){b.addEventListener('click',function(){q.value='';clr.hidden=true;empty.style.display='none'})});
   })();
   </script>
 </section>

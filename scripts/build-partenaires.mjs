@@ -9,7 +9,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { CATEGORIES, RACCOURCIS, OUTILS } from './data/partenaires.mjs'
+import { CATEGORIES, RACCOURCIS, OUTILS, MOTS } from './data/partenaires.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const FILE = path.join(ROOT, 'partenaires/index.html')
@@ -24,6 +24,12 @@ const amp = s => s.replace(/&(?!amp;)/g, '&amp;')
 const catById = Object.fromEntries(CATEGORIES.map(c => [c.id, c]))
 const count = id => OUTILS.filter(o => o.cats.includes(id)).length
 const nbOffres = OUTILS.filter(o => o.badge).length
+// Texte de recherche d'une carte : nom, accroche, description, catégories et leurs mots
+const norm = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[’']/g, ' ')
+const texteRecherche = o => norm([o.nom, o.offre || '', o.desc, ...o.cats.map(c => catById[c].label), ...o.cats.flatMap(c => MOTS[c] || [])].join(' ')).replace(/"/g, '')
+// Catégories proposées par la recherche (libellé + mots), pour le script de la page
+const SUGG = CATEGORIES.filter(c => count(c.id) > 0).map(c => ({ id: c.id, l: c.label, i: c.icon, n: count(c.id), k: norm([c.label, ...(MOTS[c.id] || [])].join('|')) }))
+const SUGG_OUTILS = OUTILS.map(o => ({ n: o.nom, k: norm(o.nom), c: catById[o.cats[0]].label }))
 
 function lien(l, i) {
   const cls = i === 0 ? 'mk-l mk-l1' : 'mk-l'
@@ -46,7 +52,7 @@ function carte(o) {
     : '<span class="mk-badge b-ref">Référencé</span>'
   const accroche = o.offre || catById[o.cats[0]].label
   const liens = o.liens.slice(0, 2)
-  return `      <article class="mk-card${o.badge ? ' is-offre' : ''}" data-cats="${o.cats.join(' ')}"${o.badge ? ' data-offre="1"' : ''}>
+  return `      <article class="mk-card${o.badge ? ' is-offre' : ''}" data-cats="${o.cats.join(' ')}" data-q="${texteRecherche(o)}" data-nom="${norm(o.nom)}"${o.badge ? ' data-offre="1"' : ''}>
         <div class="mk-head-c">
           <div class="mk-logo" style="color:${o.couleur}" aria-hidden="true">${o.mono}</div>
           <div class="mk-id"><h3 class="mk-nom">${o.nom}</h3>${chip}</div>
@@ -66,11 +72,31 @@ const html = `<!-- MARKET:START -->
     .mk-head{text-align:center;max-width:760px;margin:0 auto 44px}
     .mk-head .h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin-bottom:14px}
     .mk-head p{font-size:clamp(16px,1.6vw,19px);color:var(--tm);line-height:1.6;margin:0;font-family:'Fraunces','Fraunces Fallback',serif;font-weight:300}
-    .mk-tiles{display:grid;grid-template-columns:repeat(${RACCOURCIS.length},1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
+    .mk-tiles{display:grid;grid-template-columns:repeat(7,1fr);gap:8px 12px;max-width:940px;margin:0 auto 60px}
     .mk-tile{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;cursor:pointer;padding:14px 8px;border-radius:14px;font-family:'Outfit','Outfit Fallback',sans-serif;font-size:14.5px;color:var(--td);line-height:1.4;transition:background .15s}
     .mk-tile i{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:var(--cr);font-size:24px;color:var(--g);transition:background .15s,color .15s}
     .mk-tile:hover{background:rgba(0,76,63,.03)}
     .mk-tile:hover i,.mk-tile.on i{background:var(--g);color:var(--y)}
+    .mk-search{position:relative;max-width:720px;margin:0 auto 44px}
+    .mk-search label{display:flex;align-items:center;gap:12px;height:60px;padding:0 20px;background:#fff;border:1px solid rgba(0,76,63,.18);border-radius:16px;box-shadow:0 8px 26px rgba(0,76,63,.07);cursor:text}
+    .mk-search label:focus-within{border:1px solid var(--g);box-shadow:0 8px 26px rgba(0,76,63,.12),0 0 0 3px rgba(0,76,63,.08)}
+    .mk-search i.ph-magnifying-glass{font-size:20px;color:var(--g)}
+    .mk-search input{flex:1;min-width:0;border:0;outline:0;background:none;font:400 16px 'Outfit','Outfit Fallback',sans-serif;color:var(--td)}
+    .mk-search input::placeholder{color:#8a9887}
+    .mk-clear{border:0;background:var(--cr);width:30px;height:30px;border-radius:50%;cursor:pointer;color:var(--tm);display:grid;place-items:center}
+    .mk-clear[hidden]{display:none}
+    .mk-help{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:13px;color:var(--tl)}
+    .mk-help button{border:1px solid rgba(0,76,63,.15);background:#fff;border-radius:99px;padding:6px 12px;font:500 13px 'Outfit','Outfit Fallback',sans-serif;color:var(--tm);cursor:pointer}
+    .mk-help button:hover{border:1px solid var(--g);color:var(--g)}
+    .mk-sug{position:absolute;left:0;right:0;top:66px;z-index:20;background:#fff;border:1px solid rgba(0,76,63,.14);border-radius:14px;box-shadow:0 18px 40px rgba(0,26,17,.14);padding:8px;max-height:360px;overflow:auto}
+    .mk-sug[hidden]{display:none}
+    .mk-sug-t{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--tl);padding:8px 10px 4px}
+    .mk-sug button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;border-radius:10px;padding:10px;font:500 14.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);cursor:pointer;text-align:left}
+    .mk-sug button i{font-size:17px;color:var(--g)}
+    .mk-sug button small{margin-left:auto;font-size:12px;color:var(--tl)}
+    .mk-sug button:hover,.mk-sug button.on{background:var(--cr)}
+    .mk-empty{display:none;text-align:center;padding:36px 20px;border:1px dashed rgba(0,76,63,.25);border-radius:16px;color:var(--tm);font-size:15px;line-height:1.6}
+    .mk-empty a{color:var(--g);font-weight:600}
     .mk-layout{display:grid;grid-template-columns:230px 1fr;gap:clamp(28px,4vw,56px);align-items:start}
     .mk-side{position:sticky;top:90px;display:flex;flex-direction:column;gap:2px}
     .mk-f{display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;cursor:pointer;text-align:left;padding:11px 0;font-family:'Outfit','Outfit Fallback',sans-serif;font-size:15px;color:var(--tm);position:relative}
@@ -130,6 +156,12 @@ const html = `<!-- MARKET:START -->
       <p>Les outils que je recommande, les offres négociées pour les membres et le catalogue des outils LCD, par catégorie.</p>
     </div>
 
+    <div class="mk-search">
+      <label for="mk-q"><i class="ph ph-magnifying-glass" aria-hidden="true"></i><input id="mk-q" type="text" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="Que cherches-tu ? Un comptable, une serrure connectée, des prix dynamiques…" aria-label="Rechercher un outil ou un besoin" aria-controls="mk-sug" aria-expanded="false"><button type="button" class="mk-clear" id="mk-clear" aria-label="Effacer la recherche" hidden><i class="ph ph-x"></i></button></label>
+      <div class="mk-sug" id="mk-sug" role="listbox" hidden></div>
+      <div class="mk-help"><span>Idées :</span><button type="button" data-q="comptable LMNP">comptable LMNP</button><button type="button" data-q="serrure connectée">serrure connectée</button><button type="button" data-q="prix dynamique">prix dynamique</button><button type="button" data-q="créer une société">créer une société</button><button type="button" data-q="étude de marché">étude de marché</button></div>
+    </div>
+
     <div class="mk-tiles" role="group" aria-label="Catégories principales">
 ${RACCOURCIS.map(id => `      <button type="button" class="mk-tile" data-f="${id}"><i class="ph ph-${catById[id].icon}"></i>${catById[id].label}</button>`).join('\n')}
     </div>
@@ -148,6 +180,7 @@ ${CATEGORIES.map(c => `        <button type="button" class="mk-f" data-f="${c.id
         <div class="mk-grid">
 ${OUTILS.map(carte).join('\n')}
         </div>
+        <p class="mk-empty" id="mk-empty">Aucun outil pour « <span id="mk-qv"></span> ». Essaie un autre mot (comptable, ménage, serrure…) ou <a href="/contact">demande-moi conseil</a> : je te réponds.</p>
       </div>
     </div>
   </div>
@@ -170,6 +203,50 @@ ${OUTILS.map(carte).join('\n')}
     btns.forEach(function(b){b.addEventListener('click',function(){apply(b.getAttribute('data-f'),b.classList.contains('mk-tile'))})});
     var h=location.hash.slice(1);
     if(h&&sec.querySelector('[data-f="'+h+'"]'))apply(h,false);
+    // Recherche avec suggestions (17/11/2026)
+    var S=${JSON.stringify(SUGG)},T=${JSON.stringify(SUGG_OUTILS)};
+    var q=document.getElementById('mk-q'),sug=document.getElementById('mk-sug'),clr=document.getElementById('mk-clear'),empty=document.getElementById('mk-empty'),qv=document.getElementById('mk-qv'),act=-1;
+    if(!q)return;
+    function nm(t){return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[\u2019']/g,' ').trim()}
+    function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+    function filtre(v){
+      var w=nm(v).split(/ +/).filter(function(x){return x.length>1}),shown=0;
+      if(!w.length){apply('all',false);empty.style.display='none';return}
+      btns.forEach(function(b){b.classList.remove('on')});
+      cards.forEach(function(c){var t=c.getAttribute('data-q'),ok=w.every(function(x){return t.indexOf(x)>-1});c.hidden=!ok;if(ok)shown++});
+      if(n)n.textContent=shown;var ww=document.getElementById('mk-w');if(ww)ww.textContent=shown>1?'outils':'outil';
+      qv.textContent=v;empty.style.display=shown?'none':'block';
+    }
+    function ouvre(v){
+      var x=nm(v);act=-1;
+      if(x.length<2){sug.hidden=true;q.setAttribute('aria-expanded','false');return}
+      var cs=S.filter(function(c){return c.k.indexOf(x)>-1||x.split(/ +/).every(function(m){return m.length<2||c.k.indexOf(m)>-1})}).slice(0,4);
+      var ts=T.filter(function(t){return t.k.indexOf(x)>-1}).slice(0,5);
+      var h='';
+      if(cs.length)h+='<div class="mk-sug-t">Catégories</div>'+cs.map(function(c){return '<button type="button" role="option" data-cat="'+c.id+'"><i class="ph ph-'+c.i+'"></i>'+esc(c.l)+'<small>'+c.n+' outil'+(c.n>1?'s':'')+'</small></button>'}).join('');
+      if(ts.length)h+='<div class="mk-sug-t">Outils</div>'+ts.map(function(t){return '<button type="button" role="option" data-outil="'+esc(t.n)+'"><i class="ph ph-buildings"></i>'+esc(t.n)+'<small>'+esc(t.c)+'</small></button>'}).join('');
+      sug.innerHTML=h;sug.hidden=!h;q.setAttribute('aria-expanded',h?'true':'false');
+    }
+    function choisir(b){
+      sug.hidden=true;q.setAttribute('aria-expanded','false');
+      if(b.hasAttribute('data-cat')){q.value='';clr.hidden=true;empty.style.display='none';apply(b.getAttribute('data-cat'),true);return}
+      q.value=b.getAttribute('data-outil');clr.hidden=false;filtre(q.value);
+      var g=sec.querySelector('.mk-layout');window.scrollTo({top:g.getBoundingClientRect().top+window.pageYOffset-90,behavior:'smooth'});
+    }
+    q.addEventListener('input',function(){clr.hidden=!q.value;filtre(q.value);ouvre(q.value)});
+    q.addEventListener('focus',function(){if(q.value)ouvre(q.value)});
+    q.addEventListener('keydown',function(e){
+      var it=sug.querySelectorAll('button');
+      if(e.key==='ArrowDown'||e.key==='ArrowUp'){if(!it.length)return;e.preventDefault();act=(act+(e.key==='ArrowDown'?1:-1)+it.length)%it.length;it.forEach(function(b,i){b.classList.toggle('on',i===act)})}
+      else if(e.key==='Enter'){e.preventDefault();if(act>-1&&it[act])choisir(it[act]);else{sug.hidden=true;var g=sec.querySelector('.mk-layout');window.scrollTo({top:g.getBoundingClientRect().top+window.pageYOffset-90,behavior:'smooth'})}}
+      else if(e.key==='Escape'){sug.hidden=true}
+    });
+    sug.addEventListener('mousedown',function(e){e.preventDefault()});
+    sug.addEventListener('click',function(e){var b=e.target.closest('button');if(b)choisir(b)});
+    document.addEventListener('click',function(e){if(!e.target.closest('.mk-search'))sug.hidden=true});
+    clr.addEventListener('click',function(){q.value='';clr.hidden=true;sug.hidden=true;filtre('');q.focus()});
+    sec.querySelectorAll('.mk-help button').forEach(function(b){b.addEventListener('click',function(){q.value=b.getAttribute('data-q');clr.hidden=false;filtre(q.value);ouvre(q.value);q.focus()})});
+    btns.forEach(function(b){b.addEventListener('click',function(){q.value='';clr.hidden=true;empty.style.display='none'})});
   })();
   </script>
 </section>

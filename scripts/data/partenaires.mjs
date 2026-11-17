@@ -23,8 +23,28 @@ export const CATEGORIES = [
   { id: 'experiences', label: 'Activités & cadeaux', icon: 'gift' },
 ]
 
-// Catégories mises en avant dans la rangée d'icônes (desktop)
-export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces', 'compta', 'juridique', 'marketing', 'experiences']
+// Rangée d'icônes du haut : toutes les catégories depuis le 17/11/2026 (Jason :
+// « AirDNA n'a aucune catégorie » : Étude de marché, Tarification, Ménage et
+// Photo n'avaient pas d'icône, seulement une ligne dans la barre latérale)
+export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'prix', 'acces', 'compta', 'juridique', 'menage', 'photo', 'marche', 'marketing', 'experiences']
+
+// Mots que les hôtes tapent dans la recherche, par catégorie (17/11/2026,
+// « un facilitateur pour aider les gens » à trouver le bon outil)
+export const MOTS = {
+  gestion: ['channel manager', 'calendrier', 'synchronisation', 'pms', 'logiciel de gestion', 'airbnb et booking', 'double réservation'],
+  messagerie: ['message automatique', 'messages voyageurs', 'réponse automatique', 'automatisation', 'livret', 'check-in'],
+  direct: ['site de réservation', 'réservation directe', 'site internet', 'sans commission', 'moteur de réservation'],
+  banque: ['compte pro', 'compte bancaire', 'paiement', 'carte bancaire', 'encaisser', 'caution'],
+  prix: ['prix dynamique', 'tarif', 'yield', 'revenue management', 'augmenter mes prix', 'tarification'],
+  acces: ['serrure', 'serrure connectée', 'boîte à clés', 'arrivée autonome', 'clés', 'caméra', 'sécurité', 'digicode'],
+  compta: ['comptable', 'expert-comptable', 'lmnp', 'impôts', 'déclaration', 'facture', 'facturation', 'fiscalité', 'micro-bic', 'réel'],
+  juridique: ['créer une société', 'sasu', 'micro-entreprise', 'statuts', 'conciergerie', 'domiciliation', 'juridique', 'kbis'],
+  menage: ['ménage', 'planning ménage', 'femme de ménage', 'turnover', 'checklist'],
+  photo: ['photo', 'photos', 'visite virtuelle', 'plan', '3d'],
+  marche: ['étude de marché', 'rentabilité', 'taux d’occupation', 'investir', 'données', 'concurrence', 'estimation'],
+  marketing: ['newsletter', 'emailing', 'e-mail', 'fidéliser', 'crm', 'clients'],
+  experiences: ['activités', 'cadeau', 'bon cadeau', 'sorties', 'expériences'],
+}
 
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
