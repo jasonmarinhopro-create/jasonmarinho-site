@@ -105,7 +105,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .ap>div{min-width:0}
 @media(max-width:860px){.ap{grid-template-columns:1fr}}
 .ap-lh{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin:0 0 10px}
-.ap-list{display:flex;flex-direction:column;gap:6px;max-height:640px;overflow-y:auto;padding:2px 4px 2px 2px;scrollbar-width:thin}
+.ap-list{display:flex;flex-direction:column;gap:6px;max-height:480px;overflow-y:auto;padding:2px 4px 2px 2px;scrollbar-width:thin}
 @media(max-width:860px){.ap-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;max-height:none;padding-bottom:8px;scrollbar-width:none}.ap-list::-webkit-scrollbar{display:none}}
 .ap-list button{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;font:600 14.5px 'Outfit','Outfit Fallback',sans-serif;color:var(--td);cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
 .ap-list button:hover{border-color:var(--g)}
@@ -115,16 +115,19 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .ap-list .empty{font-size:13.5px}
 .serp{background:#fff;border:1px solid var(--bd);border-radius:22px;padding:clamp(14px,2.4vw,22px);box-shadow:0 20px 50px -30px rgba(0,51,41,.35)}
 .serp-bar{display:flex;align-items:center;gap:10px;border:1px solid #DADCE0;border-radius:999px;padding:11px 18px;font-size:15.5px;color:#202124;min-width:0}
-.serp-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.serp-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.serp-cp{flex:none;display:inline-flex;align-items:center;gap:6px;margin:-6px -10px -6px 0;border:1px solid var(--bd);background:#fff;border-radius:999px;padding:6px 12px;font:600 13px 'Outfit','Outfit Fallback',sans-serif;color:var(--g);cursor:pointer}
+.serp-cp:hover{border-color:var(--g)}
+.serp-cp.ok{background:var(--g);border-color:var(--g);color:#fff}
 .serp-bar i{color:#9AA0A6}
 .serp-pg{display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin:10px 2px 0}
 .serp-pg b{color:var(--g)}
 .serp-res{position:relative}
-.sr{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid #F1F3F4;align-items:center}
+.sr{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:4px 0;border-bottom:1px solid #F1F3F4;align-items:center}
 .sr:last-of-type{border-bottom:none}
 .sr span{font-size:12px;color:#B0B5B0;text-align:center;font-variant-numeric:tabular-nums}
-.sr div i{display:block;height:8px;border-radius:5px;background:#EEF0EE;margin:5px 0}
-.sr div i:first-child{width:38%;height:10px}.sr div i:last-child{width:82%}
+.sr div i{display:block;height:6px;border-radius:4px;background:#EEF0EE;margin:3px 0}
+.sr div i:first-child{width:38%;height:7px}.sr div i:last-child{width:82%}
 .me{position:absolute;left:-8px;right:-8px;top:0;background:#fff;border:2px solid var(--g);border-radius:14px;padding:10px 120px 10px 46px;cursor:pointer;box-shadow:0 14px 30px -14px rgba(0,76,63,.5);transition:top .55s cubic-bezier(.2,.8,.2,1),opacity .2s}
 .me.far{border-style:dashed}
 .me:hover{box-shadow:0 18px 36px -14px rgba(0,76,63,.6)}
@@ -137,6 +140,10 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 @media(max-width:640px){.me{padding-right:56px}.me-cp .l{display:none}.me-cp{padding:8px 10px}}
 .ap-det{margin-top:14px;background:#fff;border:1px solid var(--g);border-radius:18px;padding:16px 18px;box-shadow:0 14px 34px -22px rgba(0,51,41,.45)}
 .ap-det[hidden]{display:none}
+/* Détail ouvert : il prend la place des lignes grises, juste sous la carte (17/11/2026) */
+.serp-res.det .sr{display:none}
+.serp-res.det .me{position:relative;top:0!important;left:0;right:0;margin-top:8px}
+.serp-res.det .ap-det{margin-top:12px;box-shadow:none}
 .ap-det .vp{border:none;padding:0;background:none}
 .ap-det .vp-h{display:none}
 .me[hidden]{display:block;opacity:0;pointer-events:none}
@@ -222,7 +229,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .vs-picks button{border:1px solid var(--bd);background:#fff;color:var(--tm);font:500 13px 'Outfit','Outfit Fallback',sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
 .vs-picks button:hover{border-color:var(--g);color:var(--g)}
 .vs-intl{border:0;background:none;padding:0;font:inherit;color:var(--g);font-weight:600;text-decoration:underline;cursor:pointer}
-.vr{margin-top:30px}
+.vr{margin-top:30px;scroll-margin-top:90px}
 .vr-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
 .vr-h h3{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:clamp(26px,3vw,34px);line-height:1.1}
 .vr-h p{font-size:13.5px;color:var(--tm);margin-top:6px;line-height:1.55}
@@ -523,7 +530,7 @@ a.dm-city:hover{border-color:var(--g)}
     <div class="ap" data-ap>
       <div class="ap-l"><div class="ap-lh"><span>En première page</span><span data-ap-n></span></div><div class="ap-list" data-ap-list><p class="empty">Chargement…</p></div></div>
       <div class="ap-r">
-        <div class="serp"><div class="serp-bar"><i class="ph-bold ph-magnifying-glass"></i><span data-ap-q>…</span></div><div class="serp-pg"><span>Résultats</span><b data-ap-pg></b></div><div class="serp-res" data-ap-res></div></div>
+        <div class="serp"><div class="serp-bar"><i class="ph-bold ph-magnifying-glass"></i><span data-ap-q>…</span><button type="button" class="serp-cp" data-copy="" data-ap-cp title="Copier la recherche pour la taper dans Google"><i class="ph-bold ph-copy"></i>Copier</button></div><div class="serp-pg"><span>Résultats</span><b data-ap-pg></b></div><div class="serp-res" data-ap-res></div></div>
         <div class="ap-det" data-ap-det hidden></div>
         <div class="ap-k" data-ap-k></div>
         <div class="ap-a" data-ap-a></div>
@@ -670,6 +677,7 @@ a.dm-city:hover{border-color:var(--g)}
     var me = $('[data-me]'), msg = $('[data-ap-msg]'), rws = apRes.querySelectorAll('.sr');
     var qtxt = d.query || (KQ[current] + String(d.label || '').toLowerCase()).trim();
     setNum('[data-ap-q]', qtxt);
+    var bcp = $('[data-ap-cp]'); if (bcp) { bcp.setAttribute('data-copy', qtxt); bcp.setAttribute('aria-label', 'Copier la recherche ' + qtxt); }
     var pg = d.place ? Math.ceil(d.place / 10) : 1;
     rws.forEach(function(r, i){ r.querySelector('span').textContent = (pg - 1) * 10 + i + 1; });
     setNum('[data-ap-pg]', 'Page ' + pg);
@@ -709,9 +717,13 @@ a.dm-city:hover{border-color:var(--g)}
     var show = !!open && !me.hidden;
     me.classList.toggle('open', show);
     me.setAttribute('aria-expanded', String(show));
+    if (apRes && box.parentNode !== apRes) apRes.appendChild(box);
+    if (apRes) apRes.classList.toggle('det', show);
     if (!show) { box.hidden = true; if (k) k.hidden = false; return; }
     box.hidden = false; if (k) k.hidden = true;
     box.innerHTML = p ? pageCard(current, c.label, p, c.pros) : '<p class="empty">Chargement du détail…</p>';
+    // Détail visible tout de suite, sous la carte (17/11/2026, Jason : « s'ouvre en bas »)
+    if (open === 'scroll') requestAnimationFrame(function(){ me.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
   }
   function apFromRank(slug){
     var r = ((R && R[current]) || []).filter(function(x){ return rankSlug(x.path) === slug; })[0];
@@ -742,7 +754,7 @@ a.dm-city:hover{border-color:var(--g)}
   var apMe = $('[data-me]');
   if (apMe) {
     apMe.setAttribute('role', 'button'); apMe.setAttribute('tabindex', '0');
-    var tog = function(e){ if (e.target.closest('[data-copy]')) return; AP.det = !AP.det; if (AP.det && !AP.city && AP.slug) searchCity(AP.slug.replace(/-/g, ' '), false); apDet(AP.det); };
+    var tog = function(e){ if (e.target.closest('[data-copy]')) return; AP.det = !AP.det; if (AP.det && !AP.city && AP.slug) searchCity(AP.slug.replace(/-/g, ' '), false); apDet(AP.det ? 'scroll' : false); };
     apMe.addEventListener('click', tog);
     apMe.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(e); } });
   }
@@ -1068,20 +1080,21 @@ a.dm-city:hover{border-color:var(--g)}
     if (z.via === 'commune' || z.via === 'code-postal') renderRequest(q, false, html);
     else { vres.innerHTML = html; setUrl(null); }
   }
-  function searchCity(q, scroll){
+  // toRes : après « Voir », descendre jusqu'aux chiffres de la ville (17/11/2026)
+  function searchCity(q, scroll, toRes){
     q = String(q || '').trim().slice(0, 60);
     if (!q || !vres) return;
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = q;
     vres.innerHTML = '<p class="vr-wait">Recherche des chiffres de ' + esc(q) + '…</p>';
     if (scroll) pinTa();
     fetch(API + '?ville=' + encodeURIComponent(q)).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
-      if (d.found && d.city) renderCity(d);
+      if (d.found && d.city) { renderCity(d); if (toRes) requestAnimationFrame(function(){ vres.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); }
       else if (d.found) vres.innerHTML = '<p class="empty">Les chiffres de cette ville ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</p>';
       else { AP.slug = null; AP.city = null; apShow({ label: q, none: 'ville' }); apList(); if (d.zone) renderZone(q, d.zone); else renderRequest(q); }
     }).catch(function(){ vres.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment. Réessaie dans quelques minutes.</p>'; });
   }
   var apIn = apInput(); if (apIn) apIn.addEventListener('input', apList);
-  if (vform) vform.addEventListener('submit', function(e){ e.preventDefault(); var i = vform.querySelector('input[name=ville]'); searchCity(i && i.value, false); });
+  if (vform) vform.addEventListener('submit', function(e){ e.preventDefault(); var i = vform.querySelector('input[name=ville]'); searchCity(i && i.value, false, true); });
   if (vres) {
     vres.addEventListener('click', function(e){
       var b = e.target.closest('[data-pick]'); if (b) { searchCity(b.getAttribute('data-pick'), false); return; }
