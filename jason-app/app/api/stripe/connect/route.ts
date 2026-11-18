@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getServiceClient } from '@/lib/supabase/service'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 const log = logger('api/stripe/connect')
@@ -60,8 +61,10 @@ export async function POST() {
       })
       accountId = account.id
 
-      // Sauvegarder en base
-      await supabase
+      // Sauvegarder en base. Service role (18/11/2026) : stripe_account_id est
+      // protégé contre les écritures directes d'un membre (migration 193) ;
+      // filtre explicite sur le compte vérifié par getUser() ci-dessus.
+      await getServiceClient()
         .from('profiles')
         .update({ stripe_account_id: accountId })
         .eq('id', userId)
@@ -107,7 +110,8 @@ export async function GET() {
 
     // Mettre à jour en base si le statut a changé
     if (isComplete !== profile.stripe_onboarding_complete) {
-      await supabase
+      // Service role : colonne protégée (migration 193), compte vérifié ci-dessus
+      await getServiceClient()
         .from('profiles')
         .update({ stripe_onboarding_complete: isComplete })
         .eq('id', user.id)

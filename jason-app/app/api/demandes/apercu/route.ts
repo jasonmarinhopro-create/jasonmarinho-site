@@ -6,6 +6,7 @@ import { apercuDemande } from '@/lib/demandes/send'
 import { PRESTATIONS_PHOTO, FREQUENCES, BESOINS_DEPANNAGE } from '@/lib/demandes/rules'
 import { readEtablissement } from '@/lib/pros/clienteles'
 import { cors } from '../cors'
+import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -23,6 +24,10 @@ export async function GET(req: Request) {
   const b = u.searchParams.get('besoin')
   const besoin = b && ([...PRESTATIONS_PHOTO, ...FREQUENCES, ...BESOINS_DEPANNAGE] as readonly string[]).includes(b) ? b : null
   if (ville.length < 2) return NextResponse.json({ pros: [], phrase: '' }, { headers })
+  // Limite par adresse (18/11/2026, audit de sécurité) : route publique qui lit
+  // la base ; le cache CDN de 2 min se contourne en changeant de ville.
+  const rl = await rateLimit('demandes-apercu', getClientIp(req), 60, 60 * 60 * 1000)
+  if (!rl.allowed) return NextResponse.json({ pros: [], phrase: '' }, { status: 429, headers })
   const res = await apercuDemande(metier, ville, besoin, readEtablissement(u.searchParams.get('etablissement')))
   return NextResponse.json(res, { headers: { ...headers, 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } })
 }
