@@ -57,7 +57,7 @@ export default async function ProStatsPage({ metier, searchParams }: {
       return d
     },
     key,
-    { revalidate: 300, tags: [`pro-stats:${resolved.fiche.id}`] },
+    { revalidate: 1800, tags: [`pro-stats:${resolved.fiche.id}`] },
   )().catch(async () => {
     const d = partial ?? await run()
     if (partialMemo.size > 200) partialMemo.clear()
@@ -70,7 +70,7 @@ export default async function ProStatsPage({ metier, searchParams }: {
   return <ProStatsView data={data} basePath={proStatsPath(metier)} previewId={resolved.isAdminPreview ? resolved.fiche.id : null} />
 }
 
-const PARTIAL_TTL_MS = 60_000
+const PARTIAL_TTL_MS = 5 * 60_000
 const partialMemo = new Map<string, { at: number; data: Awaited<ReturnType<typeof loadProStats>> }>()
 
 function NoFiche({ metier, preview }: { metier: ProMetier; preview: boolean }) {

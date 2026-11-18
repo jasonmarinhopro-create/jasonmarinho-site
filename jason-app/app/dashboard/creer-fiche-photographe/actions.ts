@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidateTag } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
@@ -115,6 +116,8 @@ export async function submitPhotographerSignup(
     log.error('insert failed', insertErr)
     return { error: 'Erreur lors de l\'enregistrement.' }
   }
+  // Nouvel espace dans le menu du compte sans attendre la fin du cache (15 min)
+  revalidateTag(`spaces:${user.id}`)
   const photographerId = inserted.id
 
   // Stripe Checkout

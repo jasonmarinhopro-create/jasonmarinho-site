@@ -26,11 +26,11 @@ export const metadata = { title: 'Administration, Jason Marinho' }
 // faisait partie de la clé, donc presque chaque passage en mode admin
 // recalculait tout pendant que la base était lente. Maintenant : valeur
 // gardée et servie tout de suite, recalculée en arrière-plan au-delà de
-// 3 minutes (« stale-while-revalidate » de unstable_cache) ; les actions
+// 15 minutes (18/11/2026, avant 3 min ; « stale-while-revalidate » de unstable_cache) ; les actions
 // admin vident le cache (tag admin-overview). Un nouveau membre apparaît donc
 // au plus tard au passage suivant. Le trafic « en direct » reste calculé à
 // chaque fois (rafraîchi toutes les 25 s par LiveTraffic).
-const getAdminOverview = unstable_cache(computeAdminOverview, ['admin-overview-v4'], { revalidate: 180, tags: ['admin-overview'] })
+const getAdminOverview = unstable_cache(computeAdminOverview, ['admin-overview-v4'], { revalidate: 900, tags: ['admin-overview'] })
 // Dernière Vue d'ensemble réussie (par instance du serveur) : servie si la
 // base ne répond pas, avec un bandeau, plutôt que des zéros
 let lastOverview: Awaited<ReturnType<typeof computeAdminOverview>> | null = null

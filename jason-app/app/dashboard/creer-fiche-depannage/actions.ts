@@ -4,6 +4,7 @@
 // Même parcours que le ménage : fiche enregistrée en attente de paiement, puis
 // Stripe Checkout (place Fondateur tant qu'il en reste). Fermé tant que le
 // métier n'est pas ouvert (METIERS.depannage.ouvert), sauf pour l'admin qui teste.
+import { revalidateTag } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
@@ -95,6 +96,8 @@ export async function submitDepannageSignup(payload: DepannageSignupPayload): Pr
     log.error('enregistrement de la fiche', { err: insertErr?.message })
     return { error: 'Erreur lors de l\'enregistrement.' }
   }
+  // Nouvel espace dans le menu du compte sans attendre la fin du cache (15 min)
+  revalidateTag(`spaces:${user.id}`)
   const proId = inserted.id as string
   const meta = { [M.idColumn]: proId, tier, user_id: user.id }
 

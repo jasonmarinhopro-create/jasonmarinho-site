@@ -44,7 +44,7 @@ export const getCachedCommunityGroups = unstable_cache(
     return (res.data ?? []) as unknown as Array<{ id: string; name: string; platform: 'facebook' | 'whatsapp'; description: string; members_count: number; url: string; category: string; tag: string | null; sort_order: number; audiences?: string[] | null }>
   },
   ['community-groups-v2'],
-  { tags: [CACHE_TAGS.COMMUNITY_GROUPS], revalidate: 600 },
+  { tags: [CACHE_TAGS.COMMUNITY_GROUPS], revalidate: 3600 },
 )
 
 // ─── Roadmap ───────────────────────────────────────────────────────────────
@@ -136,7 +136,7 @@ export const getCachedPublishedActualites = unstable_cache(
     return dedupeActualites((data ?? []) as unknown as CachedActualite[])
   },
   ['actualites-published-v3'],
-  { tags: [CACHE_TAGS.ACTUALITES_PUBLISHED], revalidate: 300 },
+  { tags: [CACHE_TAGS.ACTUALITES_PUBLISHED], revalidate: 1800 },
 )
 
 // ─── Formations publiées (catalogue public) ───────────────────────────────
@@ -167,7 +167,7 @@ export const getCachedPublishedFormations = unstable_cache(
     return (data ?? []) as CachedFormation[]
   },
   ['formations-published-v1'],
-  { tags: [CACHE_TAGS.FORMATIONS_PUBLISHED], revalidate: 600 },
+  { tags: [CACHE_TAGS.FORMATIONS_PUBLISHED], revalidate: 3600 },
 )
 
 // ─── Catalogue gabarits (templates de messages) ───────────────────────────
@@ -201,6 +201,6 @@ export const getCachedTemplatesCatalog = unstable_cache(
     return (data ?? []) as CachedTemplate[]
   },
   ['templates-catalog-v1'],
-  { tags: [CACHE_TAGS.TEMPLATES_CATALOG], revalidate: 300 },
+  { tags: [CACHE_TAGS.TEMPLATES_CATALOG], revalidate: 1800 },
 )
 

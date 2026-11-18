@@ -36,7 +36,7 @@ async function cachedVisibility(period: Period, tab: Tab, today: string): Promis
       return res
     },
     ['admin-visibility-v1'],
-    { revalidate: 900, tags: ['admin-visibility'] },
+    { revalidate: 3600, tags: ['admin-visibility'] },
   )
   try {
     return await load(period, tab, today)

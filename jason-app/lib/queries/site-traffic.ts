@@ -95,13 +95,14 @@ export async function getChannelBreakdown(admin: SupabaseClient, hours = 24): Pr
 export const getCachedLiveVisitors = unstable_cache(
   async () => getLiveVisitorsCount(getServiceClient()),
   ['admin-live-visitors-v1'],
-  { revalidate: 30 },
+  // 5 min (18/11/2026, avant 30 s) : « en ce moment » reste parlant
+  { revalidate: 300 },
 )
 
 export const getCachedChannelBreakdown = unstable_cache(
   async () => getChannelBreakdown(getServiceClient(), 24),
   ['admin-channel-breakdown-v1'],
-  { revalidate: 300 },
+  { revalidate: 1800 },
 )
 
 export interface TopPage { path: string; views: number }

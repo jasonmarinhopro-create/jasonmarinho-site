@@ -53,7 +53,7 @@ const fetchSpacesDataForUser = (userId: string) => unstable_cache(
     return { logementsCount, ph, cl, dp, isInvestor: !!prof?.is_investor, projectsCount: projectsCount ?? 0 }
   },
   ['user-spaces-data', userId],
-  { revalidate: 300, tags: [`spaces:${userId}`] },
+  { revalidate: 900, tags: [`spaces:${userId}`] },
 )()
 
 export const getUserSpaces = cache(async (): Promise<SpacesResult> => {

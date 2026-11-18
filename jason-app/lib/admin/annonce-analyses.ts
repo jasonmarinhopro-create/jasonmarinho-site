@@ -39,7 +39,7 @@ const cached = unstable_cache(async (outil: AnalyseOutil) => {
   const stats = parseAnnonceAnalysesStats(data)
   if (!stats) throw new Error('annonce_analyses_stats : réponse inattendue')
   return stats
-}, ['annonce-analyses-stats-v2'], { revalidate: 300, tags: ['annonce-analyses'] })
+}, ['annonce-analyses-stats-v2'], { revalidate: 1800, tags: ['annonce-analyses'] })
 
 export interface AnnonceAnalyse {
   date: string
@@ -81,7 +81,7 @@ const cachedRecent = unstable_cache(async (outil: AnalyseOutil) => {
   const { data, error } = await getServiceClient().rpc('annonce_analyses_recentes', { p_limit: 20, p_outil: outil })
   if (error) throw new Error(error.message)
   return parseAnnonceAnalyses(data, outil)
-}, ['annonce-analyses-recentes-v2'], { revalidate: 300, tags: ['annonce-analyses'] })
+}, ['annonce-analyses-recentes-v2'], { revalidate: 1800, tags: ['annonce-analyses'] })
 
 /** Vide avant la migration 191 ou en cas d'erreur. À n'appeler qu'après la vérification du rôle admin. */
 export async function loadAnnonceAnalysesRecentes(outil: AnalyseOutil = 'airbnb'): Promise<AnnonceAnalyse[]> {

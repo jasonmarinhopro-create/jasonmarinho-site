@@ -31,7 +31,7 @@ export async function fetchUserShell(userId: string): Promise<UserShell | null> 
         return data as UserShell
       },
       ['user-shell-v1', userId],
-      { revalidate: 300, tags: [`spaces:${userId}`, `logements:${userId}`] },
+      { revalidate: 900, tags: [`spaces:${userId}`, `logements:${userId}`] },
     )()
   } catch {
     return null

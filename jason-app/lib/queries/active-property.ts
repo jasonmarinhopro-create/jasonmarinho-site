@@ -52,7 +52,7 @@ const fetchAllPropertiesForUser = (userId: string) => unstable_cache(
     return { ownedRes, sejoursRes, contractsRes }
   },
   ['active-property-data-v2', userId],
-  { revalidate: 300, tags: [`logements:${userId}`] },
+  { revalidate: 900, tags: [`logements:${userId}`] },
 )()
 
 // PERF : idem pour le matching par nom (2b ci-dessous) — auparavant hors-cache
@@ -78,7 +78,7 @@ const fetchLogementsByName = (userId: string, names: string[]) => unstable_cache
       .filter((r): r is { id: string; nom: string } => !!r)
   },
   ['active-property-name-match-v2', userId, ...[...names].sort()],
-  { revalidate: 300, tags: [`logements:${userId}`] },
+  { revalidate: 900, tags: [`logements:${userId}`] },
 )()
 
 export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {

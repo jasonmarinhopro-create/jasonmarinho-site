@@ -76,7 +76,7 @@ const compactBase = unstable_cache(async (since: string) => {
   const { data, error } = await getServiceClient().rpc('acquisition_base', { p_since: since })
   if (error || !data) throw new Error(error?.message ?? 'acquisition_base vide')
   return data as unknown
-}, ['acquisition-base-v1'], { revalidate: 120, tags: ['acquisition-base'] })
+}, ['acquisition-base-v1'], { revalidate: 900, tags: ['acquisition-base'] })
 
 async function loadBase(opts: { visitDays: number; gscDays: number }): Promise<Base> {
   const today = parisDay(new Date().toISOString())

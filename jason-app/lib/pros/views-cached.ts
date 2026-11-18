@@ -19,6 +19,6 @@ export function getViewsTrendCached(kind: ProKind, proId: string): Promise<Views
       return t
     },
     ['pro-views-trend-v1', kind, proId, today],
-    { revalidate: 600, tags: [`pro-views:${proId}`] },
+    { revalidate: 1800, tags: [`pro-views:${proId}`] },
   )().catch(() => getViewsTrend(getServiceClient(), kind, proId))
 }

@@ -158,6 +158,8 @@ export async function createLogement(data: LogementData): Promise<{ error?: stri
   }
 
   revalidatePath('/dashboard/logements')
+  // Sélecteur de logement et cadre (cache 15 min taggé)
+  revalidateTag(`logements:${profile.userId}`)
   await invalidateDashboardPrefill(profile.userId)
   return { id: row.id }
 }
@@ -369,6 +371,7 @@ export async function deleteLogement(id: string): Promise<{ error?: string }> {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/logements')
+  revalidateTag(`logements:${profile.userId}`)
   await invalidateDashboardPrefill(profile.userId)
   return {}
 }

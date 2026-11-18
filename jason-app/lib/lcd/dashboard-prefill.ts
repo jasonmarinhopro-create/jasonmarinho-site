@@ -156,7 +156,7 @@ export async function getDashboardPrefill(userId: string): Promise<LogementPrefi
       return prefill
     },
     ['dashboard-prefill', userId],
-    { tags: [prefillTag(userId)], revalidate: 60 },
+    { tags: [prefillTag(userId)], revalidate: 600 },
   )
 
   return cachedFetch(userId)

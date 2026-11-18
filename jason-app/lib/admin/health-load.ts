@@ -387,7 +387,7 @@ async function migrationsCheckCached(): Promise<HealthCheck> {
 
 // Page entière gardée 2 minutes : revenir sur l'onglet ne relance rien.
 // Au-delà de 10 minutes, on recalcule plutôt que d'afficher un vieil état.
-const healthCached = unstable_cache(async () => ({ checks: await loadHealthFresh(), at: Date.now() }), ['sante-page-v1'], { revalidate: 120 })
+const healthCached = unstable_cache(async () => ({ checks: await loadHealthFresh(), at: Date.now() }), ['sante-page-v1'], { revalidate: 600 })
 const HEALTH_MAX_AGE_MS = 10 * 60_000
 
 export async function loadHealth(): Promise<{ checks: HealthCheck[]; at: number }> {

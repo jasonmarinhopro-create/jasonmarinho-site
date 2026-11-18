@@ -224,7 +224,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // client entre routes soeurs) — via le même endpoint/logique que le
   // serveur, pour ne pas réintroduire le badge "fantôme" (notification
   // expirée mais pas encore purgée) qu'un calcul dupliqué recréerait.
-  // Rafraîchi aussi toutes les 3 minutes quand l'onglet est visible, et au retour
+  // Rafraîchi aussi toutes les 5 minutes quand l'onglet est visible, et au retour
   // sur l'onglet (refonte 29/09/2026) : une nouvelle réservation, un contrat
   // signé ou un paiement apparaît sans recharger la page.
   const refreshCounts = useCallback(() => {
@@ -247,9 +247,9 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     // Cloche instantanée : le fil est préchargé une fois la page affichée
     const warm = window.setTimeout(prefetchNotificationFeed, 2500)
     const tick = () => { if (document.visibilityState === 'visible') refreshCounts() }
-    // Toutes les 3 minutes (18/11/2026, avant : chaque minute, onglet par
+    // Toutes les 5 minutes (18/11/2026, avant : chaque minute, onglet par
     // onglet, sur une base gratuite déjà saturée) ; retour sur l'onglet : tout de suite.
-    const id = window.setInterval(tick, 180_000)
+    const id = window.setInterval(tick, 300_000)
     document.addEventListener('visibilitychange', tick)
     window.addEventListener('notif-refresh-count', refreshCounts)
     return () => {
