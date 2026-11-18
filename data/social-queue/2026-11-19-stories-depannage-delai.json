@@ -1,0 +1,12 @@
+{
+  "format": "stories",
+  "slug": "stories-depannage-delai",
+  "jour": "2026-11-19",
+  "photo": "img/exemple-fiches/photo-cuisine-2.jpg",
+  "frames": [
+    { "type": "point", "titre": "Plombier, électricien, serrurier ?", "texte": "Pour un hôte qui attend un voyageur, ton délai compte autant que ton prix." },
+    { "type": "liste", "titre": "Ce qu’il veut voir *tout de suite*", "items": ["Ta spécialité", "Ton délai : le jour même, sous 24 h…", "Soir, week-end ou urgence", "Ton tarif horaire et ton déplacement"] },
+    { "type": "astuce", "kicker": "Astuce", "titre": "Photos *avant et après*", "texte": "Une galerie de tes chantiers rassure plus qu’un long texte." },
+    { "type": "question", "titre": "Tu interviens *le week-end* ?" }
+  ]
+}
