@@ -34,11 +34,14 @@
   --radius-lg:    18px;
 
   /* ── DARK THEME (default) ── */
-  --bg:           #06100d;
-  --shell-bg:     #020806;
-  --panel-border: rgba(255,255,255,0.07);
-  --bg-2:         #071410;
-  --bg-3:         #0a1e18;
+  /* Sombre « vert profond » (18/11/2026, Jason : « beaucoup plus dans ma DA ») :
+   * le vert du logo (#004C3F) assombri, au lieu du noir. Menu (--shell-bg)
+   * un cran plus foncé que la page (--bg). Le mode AMOLED reste noir. */
+  --bg:           #03302A;
+  --shell-bg:     #00241D;
+  --panel-border: rgba(255,255,255,0.08);
+  --bg-2:         #05372F;
+  --bg-3:         #083F36;
 
   --surface:      rgba(255,255,255,0.04);
   --surface-2:    rgba(255,255,255,0.07);
@@ -51,7 +54,7 @@
    * Mais pour un élément FLOTTANT au-dessus de contenu arbitraire (popover
    * calendrier, onboarding, dropdown), un fond transparent rend le contenu
    * illisible. Toujours utiliser --floating-surface pour ces cas. */
-  --floating-surface: #0d1e18;
+  --floating-surface: #053A31;
   --floating-border:  rgba(255,255,255,0.12);
 
   --text:         #f0f4ff;
@@ -81,7 +84,7 @@
   --card-shadow:  none;
 
   /* Input autofill */
-  --autofill-bg:  #0d1a15;
+  --autofill-bg:  #053A31;
   --autofill-text: #f0f4ff;
 }
 

@@ -560,6 +560,57 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           )}
         </div>
 
+        {/* Bascule Hôte | Admin (18/11/2026, maquette validée par Jason, comme
+            le « mode test » de Stripe) : un clic, toujours visible, dans le
+            cadre. Comptes admin seulement (profile.role === 'admin', 2 comptes) ;
+            rien n'est rendu pour les autres. Menu réduit : une seule icône. */}
+        {isAdmin && (collapsed ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 2px' }}>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={adminMode}
+              onClick={toggleAdminMode}
+              title={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
+              aria-label={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
+              style={{
+                ...styles.adminIconBtn,
+                border: adminMode ? '1px solid var(--accent-text)' : '1px solid var(--panel-border)',
+                background: adminMode ? 'var(--accent-text)' : 'transparent',
+                color: adminMode ? 'var(--bg)' : 'var(--nav-item)',
+              }}
+            >
+              <Gear size={16} weight={adminMode ? 'fill' : 'regular'} />
+            </button>
+          </div>
+        ) : (
+          <div role="radiogroup" aria-label="Mode d'affichage" style={styles.modeSeg}>
+            {([
+              { admin: false, label: proRole === 'photographer' ? 'Photo' : proRole === 'cleaner' ? 'Ménage' : proRole === 'depannage' ? 'Dépannage' : investorMode ? 'Investir' : 'Hôte' },
+              { admin: true, label: 'Admin' },
+            ]).map(o => {
+              const on = adminMode === o.admin
+              return (
+                <button
+                  key={o.label}
+                  type="button"
+                  role="radio"
+                  aria-checked={on}
+                  onClick={() => { if (!on) toggleAdminMode() }}
+                  style={{
+                    ...styles.modeSegBtn,
+                    background: on ? 'var(--accent-text)' : 'transparent',
+                    color: on ? 'var(--bg)' : 'var(--nav-item)',
+                    cursor: on ? 'default' : 'pointer',
+                  }}
+                >
+                  {o.label}
+                </button>
+              )
+            })}
+          </div>
+        ))}
+
         {/* Navigation */}
         <nav style={styles.nav}>
           {investorMode ? (
@@ -742,9 +793,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
         {/* Bas du menu (refonte du 18/11/2026, Jason : « il y en a trop »,
             « le mode admin, j'y vais très souvent »). La carte du compte
             ouvre un menu plus large que la colonne (300 px, il déborde sur la
-            page comme les menus de compte de Linear, Notion ou Vercel) ; le
-            mode admin a son propre bouton à côté de la carte, en un clic. */}
-        <div ref={userMenuRef} style={{ ...styles.userWrap, ...(collapsed ? { flexDirection: 'column' as const, padding: '10px 8px' } : {}) }}>
+            page comme les menus de compte de Linear, Notion ou Vercel). Le
+            mode admin est la bascule « Hôte | Admin » sous le logo. */}
+        <div ref={userMenuRef} style={styles.userWrap}>
           {userMenuOpen && (
             <div style={{
               ...styles.userMenu,
@@ -880,26 +931,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               </>
             )}
           </button>
-          {/* Mode admin en un clic (admins seulement). Allumé : fond vert. */}
-          {isAdmin && (
-            <button
-              type="button"
-              role="switch"
-              aria-checked={adminMode}
-              onClick={() => { setUserMenuOpen(false); toggleAdminMode() }}
-              title={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
-              aria-label={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
-              style={{
-                ...styles.adminBtn,
-                border: adminMode ? '1px solid var(--accent-text)' : '1px solid var(--border-2)',
-                background: adminMode ? 'var(--accent-text)' : 'var(--surface)',
-                color: adminMode ? 'var(--bg)' : 'var(--text-2)',
-              }}
-            >
-              <Gear size={15} weight={adminMode ? 'fill' : 'regular'} />
-              {!collapsed && <span>Admin</span>}
-            </button>
-          )}
         </div>
       </aside>
     </>
@@ -1087,7 +1118,6 @@ const styles: Record<string, React.CSSProperties> = {
   // Carte user cliquable en bas-gauche (remplace l'ancien footer)
   userWrap: {
     position: 'relative',
-    display: 'flex', alignItems: 'center', gap: 6,
     padding: '10px 12px',
     paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
     borderTop: '1px solid var(--nav-border)',
@@ -1138,10 +1168,19 @@ const styles: Record<string, React.CSSProperties> = {
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
     fontSize: 11.5, color: 'var(--text-3)', fontWeight: 400,
   },
-  adminBtn: {
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-    height: 34, minWidth: 34, padding: '0 10px', borderRadius: 9, flexShrink: 0,
-    fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer',
+  modeSeg: {
+    display: 'flex', gap: 2, margin: '12px 12px 2px', padding: 3, flexShrink: 0,
+    borderRadius: 10, border: '1px solid var(--panel-border)',
+    background: 'color-mix(in srgb, var(--text) 4%, transparent)',
+  },
+  modeSegBtn: {
+    flex: 1, height: 28, borderRadius: 8, border: 'none',
+    fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit',
+    transition: 'background 0.15s, color 0.15s',
+  },
+  adminIconBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    width: 34, height: 34, borderRadius: 9, cursor: 'pointer',
     transition: 'background 0.15s, color 0.15s, border 0.15s',
   },
   userMenuHead: {
