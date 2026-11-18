@@ -25,11 +25,18 @@
   /* Sizing */
   --sidebar-w:    240px;
   --header-h:     64px;
+  /* Cadre « feuille posée » (18/11/2026) : la page est une feuille aux coins
+   * arrondis posée sur le fond du menu (--shell-bg), à --shell-gap du bord.
+   * Ordinateur seulement (au-dessus de 768 px), cf. .dash-main / .dash-header. */
+  --shell-gap:    8px;
+  --shell-radius: 14px;
   --radius:       12px;
   --radius-lg:    18px;
 
   /* ── DARK THEME (default) ── */
-  --bg:           #040d0b;
+  --bg:           #06100d;
+  --shell-bg:     #020806;
+  --panel-border: rgba(255,255,255,0.07);
   --bg-2:         #071410;
   --bg-3:         #0a1e18;
 
@@ -80,12 +87,16 @@
 
 /* ── LIGHT THEME ── */
 [data-theme="light"] {
-  --bg:           #ECF5EF;
-  --bg-2:         #E2EDE6;
-  --bg-3:         #D5E6DA;
+  /* 18/11/2026 : fond neutre (gris à peine teinté de vert) au lieu du vert
+   * clair ; le vert de la marque reste pour l'actif, les boutons, les chiffres. */
+  --bg:           #F7F8F6;
+  --bg-2:         #EDF0EC;
+  --bg-3:         #E1E6E0;
+  --shell-bg:     #ECEEEA;
+  --panel-border: rgba(16,40,32,0.09);
 
   --surface:      #FFFFFF;
-  --surface-2:    #F6FCF8;
+  --surface-2:    #F7F9F7;
   --border:       rgba(0,76,63,0.14);
   --border-2:     rgba(0,76,63,0.26);
 
@@ -116,7 +127,7 @@
   --accent-border-2:  rgba(0,76,63,0.28);
 
   /* Card shadow — essential to make cards pop against the bg */
-  --card-shadow:  0 1px 3px rgba(0,0,0,0.05), 0 4px 20px rgba(0,76,63,0.09);
+  --card-shadow:  0 1px 2px rgba(16,40,32,0.05), 0 4px 16px rgba(16,40,32,0.05);
 
   /* Input autofill */
   --autofill-bg:  #ffffff;
@@ -136,6 +147,8 @@
 
 [data-theme="amoled"] {
   --bg:           #000000;
+  --shell-bg:     #000000;
+  --panel-border: rgba(255,255,255,0.10);
   --bg-2:         #050505;
   --bg-3:         #0a0a0a;
 
@@ -1748,3 +1761,81 @@ a { color: inherit; }
 /* Fiche membre de l'admin : colonne principale + colonne de 360 px dès 1100 px */
 .member-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (min-width: 1100px) { .member-layout { grid-template-columns: minmax(0, 1fr) 360px; } }
+
+/* ══════════════════════════════════════════════════════════════════════
+ * CADRE DU DASHBOARD : « feuille posée sur le fond » (18/11/2026)
+ * Tous les espaces (hôte, pros, investisseur, admin) partagent ce cadre.
+ * - Menu de gauche sur --shell-bg, sans bordure.
+ * - Page (.dash-main) = feuille --bg, coins arrondis, à --shell-gap du bord.
+ * - En-tête (.dash-header) fondu dans le haut de la feuille : plus de bande
+ *   blanche séparée. Son bas reste à --header-h du haut de l'écran, donc les
+ *   éléments collants (top: var(--header-h)) ne bougent pas.
+ * La page défile toujours avec la fenêtre (rien ne change pour le défilement,
+ * les ancres et les éléments collants) : le pseudo-élément ::before de
+ * l'en-tête cache ce qui passe au-dessus et à droite de la feuille.
+ * Téléphone (768 px et moins) : pas de feuille, pleine largeur comme avant.
+ * ══════════════════════════════════════════════════════════════════════ */
+.dash-layout { background: var(--shell-bg); }
+.dash-sidebar { background: var(--shell-bg); }
+.dash-main {
+  margin-left: var(--sidebar-w);
+  padding-top: var(--header-h);
+  min-height: 100svh;
+  background: var(--bg);
+}
+.dash-header {
+  top: 0;
+  left: var(--sidebar-w);
+  right: 0;
+  height: var(--header-h);
+  background: var(--bg);
+  border-bottom: 1px solid var(--panel-border);
+}
+@media (min-width: 769px) {
+  .dash-main {
+    margin: var(--shell-gap) var(--shell-gap) var(--shell-gap) var(--sidebar-w);
+    padding-top: calc(var(--header-h) - var(--shell-gap));
+    min-height: calc(100svh - 2 * var(--shell-gap));
+    border: 1px solid var(--panel-border);
+    border-radius: var(--shell-radius);
+  }
+  .dash-header {
+    top: var(--shell-gap);
+    right: var(--shell-gap);
+    height: calc(var(--header-h) - var(--shell-gap));
+    background: transparent;
+    border-bottom: none;
+  }
+  /* Fond du cadre au-dessus et à droite de l'en-tête (cache le contenu qui
+   * défile sous l'écart du haut et sous les coins arrondis) */
+  .dash-header::before {
+    content: '';
+    position: absolute;
+    top: calc(-1 * var(--shell-gap)); right: calc(-1 * var(--shell-gap)); bottom: 0; left: 0;
+    background: var(--shell-bg);
+    z-index: -1;
+  }
+  /* Haut de la feuille : même fond et même contour que .dash-main */
+  .dash-header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    border: 1px solid var(--panel-border);
+    border-bottom-color: var(--panel-border);
+    border-radius: var(--shell-radius) var(--shell-radius) 0 0;
+    z-index: -1;
+  }
+}
+@media (max-width: 768px) {
+  .dash-sidebar { border-right: 1px solid var(--panel-border); }
+}
+@media (max-width: 767px) {
+  .dash-sos-label { display: none; }
+}
+@media (max-width: 560px) {
+  .jm-veille-hint { display: none; }
+}
+@media print {
+  .dash-main { margin: 0 !important; border: none !important; border-radius: 0 !important; padding-top: 0 !important; }
+}

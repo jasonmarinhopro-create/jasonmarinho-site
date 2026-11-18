@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { forAudience, type ActuAudience } from '@/lib/actualites/audience'
 import ActualitesView from '@/app/dashboard/actualites/ActualitesView'
+import VeilleTabBar from '@/components/actualites/VeilleTabBar'
 import type { Actualite } from '@/app/dashboard/actualites/page'
 
 const FREE_ARTICLES_LIMIT = 3
@@ -88,6 +89,8 @@ export default async function ActualitesScreen({ audience = 'hote' }: { audience
 
   return (
     <>
+      {/* Hôte : onglets Actualités / Guide LCD (18/11/2026) */}
+      {audience === 'hote' && <VeilleTabBar />}
       <ActualitesView
         articles={visibleArticles}
         isDecouverte={isDecouverte}

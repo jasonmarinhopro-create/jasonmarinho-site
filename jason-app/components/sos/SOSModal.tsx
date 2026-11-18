@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   X, Lock, ArrowRight, Warning,
-  Cat, Cigarette, ProhibitInset,
+  Cat, Cigarette, ProhibitInset, ShieldCheck, MagnifyingGlass, WarningOctagon,
 } from '@phosphor-icons/react/dist/ssr'
 import { SOS_SCENARIOS, type Channel } from '@/lib/sos/scenarios'
 
@@ -39,6 +39,7 @@ interface Props {
 export default function SOSModal({ open, onClose, plan }: Props) {
   const router = useRouter()
   const [selectedChannel, setSelectedChannel] = useState<Channel>('airbnb')
+  const [verifyQuery, setVerifyQuery] = useState('')
   const isLocked = plan === 'decouverte'
 
   // Fermeture sur Escape
@@ -59,6 +60,15 @@ export default function SOSModal({ open, onClose, plan }: Props) {
       return
     }
     router.push(`/dashboard/sos/${slug}?canal=${selectedChannel}`)
+    onClose()
+  }
+
+  // Sécurité voyageur (18/11/2026) : sortie du menu de gauche, elle ouvre le
+  // SOS. La recherche mène à la page Sécurité (?q=, déjà lue par la page).
+  function handleVerify(e: React.FormEvent) {
+    e.preventDefault()
+    const q = verifyQuery.trim()
+    router.push(q ? `/dashboard/securite?q=${encodeURIComponent(q)}` : '/dashboard/securite')
     onClose()
   }
 
@@ -83,15 +93,51 @@ export default function SOSModal({ open, onClose, plan }: Props) {
               <Warning size={11} weight="fill" />
               SOS Hôte
             </div>
-            <h2 style={s.title}>En cas de problème, suis le pas-à-pas</h2>
+            <h2 style={s.title}>Vérifie avant de dire oui, agis si ça tourne mal</h2>
             <p style={s.subtitle}>
-              Dégradation, avis injuste, voyageur problématique, litige plateforme…
-              Sélectionne ta situation et le canal concerné.
+              La base des hôtes pour vérifier un voyageur, puis le pas-à-pas pour chaque problème.
             </p>
           </div>
           <button onClick={onClose} style={s.closeBtn} aria-label="Fermer">
             <X size={18} />
           </button>
+        </div>
+
+        {/* Avant d'accepter : Sécurité voyageur */}
+        <section style={s.verify} aria-label="Vérifier un voyageur">
+          <div style={s.verifyHead}>
+            <ShieldCheck size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0 }} />
+            <span style={s.sectionTitle}>Avant d&apos;accepter un voyageur</span>
+          </div>
+          <form onSubmit={handleVerify} style={s.verifyForm}>
+            <label htmlFor="sos-verify" style={s.srOnly}>E-mail, téléphone ou nom du voyageur</label>
+            <div style={s.verifyField}>
+              <MagnifyingGlass size={15} style={{ color: 'var(--text-3)', flexShrink: 0 }} />
+              <input
+                id="sos-verify"
+                type="search"
+                value={verifyQuery}
+                onChange={e => setVerifyQuery(e.target.value)}
+                placeholder="E-mail, téléphone ou prénom et nom"
+                style={s.verifyInput}
+                autoComplete="off"
+              />
+            </div>
+            <button type="submit" style={s.verifyBtn}>Vérifier</button>
+          </form>
+          <div style={s.verifyLinks}>
+            <Link prefetch={false} href="/dashboard/securite?signaler=1" onClick={onClose} style={s.verifyLink}>
+              <WarningOctagon size={13} weight="bold" /> Signaler un voyageur
+            </Link>
+            <Link href="/dashboard/securite" onClick={onClose} style={s.verifyLink}>
+              Ouvrir Sécurité voyageur <ArrowRight size={12} weight="bold" />
+            </Link>
+          </div>
+        </section>
+
+        <div style={s.sectionTitleRow}>
+          <Warning size={15} weight="fill" style={{ color: 'var(--danger)', flexShrink: 0 }} />
+          <span style={s.sectionTitle}>J&apos;ai un problème</span>
         </div>
 
         {/* Channel selector */}
@@ -179,6 +225,42 @@ export default function SOSModal({ open, onClose, plan }: Props) {
 }
 
 const s: Record<string, React.CSSProperties> = {
+  verify: {
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: 12,
+    padding: '14px 16px',
+    marginBottom: 20,
+    display: 'flex', flexDirection: 'column', gap: 10,
+  },
+  verifyHead: { display: 'flex', alignItems: 'center', gap: 8 },
+  sectionTitleRow: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 },
+  sectionTitle: { fontSize: 13, fontWeight: 700, color: 'var(--text)' },
+  verifyForm: { display: 'flex', gap: 8, flexWrap: 'wrap' },
+  verifyField: {
+    flex: '1 1 220px', minWidth: 0,
+    display: 'flex', alignItems: 'center', gap: 8,
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
+    borderRadius: 9, padding: '0 12px', height: 40,
+  },
+  verifyInput: {
+    flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent',
+    color: 'var(--text)', fontSize: 14, fontFamily: 'inherit', height: '100%',
+  },
+  verifyBtn: {
+    height: 40, padding: '0 18px', borderRadius: 9,
+    border: '1px solid var(--accent-text)', background: 'var(--accent-text)', color: 'var(--bg)',
+    fontSize: 14, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer',
+  },
+  verifyLinks: { display: 'flex', gap: 16, flexWrap: 'wrap' },
+  verifyLink: {
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none',
+  },
+  srOnly: {
+    position: 'absolute', width: 1, height: 1, padding: 0, margin: -1,
+    overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0,
+  },
   overlay: {
     position: 'fixed', inset: 0, zIndex: 9999,
     background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',

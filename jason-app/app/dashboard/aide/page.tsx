@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import {
-  MagnifyingGlass, ArrowRight, ArrowUpRight, WhatsappLogo, ChatsCircle,
-  Heart, Star, Lifebuoy, ChatCircleDots, CaretRight, EnvelopeSimple,
+  MagnifyingGlass, ArrowRight, ArrowUpRight, WhatsappLogo,
+  Heart, Star, Lifebuoy, CaretRight, EnvelopeSimple,
 } from '@phosphor-icons/react/dist/ssr'
 import { HELP_CATEGORIES } from '@/lib/help/categories'
 import { listArticlesByCategory, getArticle } from '@/lib/help/loader'
@@ -120,24 +120,14 @@ export default async function AidePage() {
             </div>
           </section>
 
-          {/* Questions & réponses */}
-          <section style={s.sideCard}>
-            <div style={s.sideTitleRow}><ChatCircleDots size={16} weight="fill" style={{ color: 'var(--accent-text)' }} /> Une question de métier ?</div>
-            <p style={s.sideDesc}>Fiscalité, règles, voyageurs, prix : pose-la dans Questions &amp; réponses, Jason ou un hôte te répond sous 48 h.</p>
-            <Link prefetch={false} href="/dashboard/entre-hotes/forum?ask=1" style={s.sideLink}>
-              <ChatsCircle size={14} weight="bold" /> Poser ma question
-            </Link>
-          </section>
-
           {/* Tu aimes l'app ? (sortis du menu du compte, sept. 2026) */}
           <section style={{ ...s.sideCard, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
             <div style={s.sideTitleRow}><Heart size={16} weight="fill" style={{ color: 'var(--accent-text)' }} /> Tu aimes l&apos;app ?</div>
-            <p style={s.sideDesc}>Un avis Google sincère aide d&apos;autres hôtes à la trouver. Une idée pour l&apos;améliorer ? Propose-la, les membres votent.</p>
+            <p style={s.sideDesc}>Un avis Google sincère aide d&apos;autres hôtes à la trouver.</p>
             <div style={s.btnRow}>
               <a href="https://g.page/r/CcLzE7IbhS5_EAE/review" target="_blank" rel="noopener noreferrer" style={s.btnPrimary}>
                 <Star size={15} weight="fill" /> Laisser un avis
               </a>
-              <Link href="/dashboard/idees" style={s.btnGhost}>Proposer une idée</Link>
             </div>
           </section>
 

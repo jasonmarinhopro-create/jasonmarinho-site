@@ -4,7 +4,7 @@ import { useMenuLive } from './MenuLive'
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold, Lifebuoy, Heart,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, Lifebuoy,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar, { type ProNav } from './Sidebar'
@@ -38,7 +38,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/visibilite': 'Trouver des voyageurs',
   '/dashboard/visibilite/facebook': 'Trouver des voyageurs',
   '/dashboard/visibilite/google': 'Trouver des voyageurs',
-  '/dashboard/entre-hotes/ecosysteme': 'Entre Hôtes',
+  '/dashboard/entre-hotes/ecosysteme': 'Partenaires',
   '/dashboard/simulateurs': 'Simulateurs fiscaux',
   '/dashboard/calculateurs': 'Prix & Marché',
   '/dashboard/voyageurs': 'Mes Voyageurs',
@@ -78,11 +78,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/formations/profil-apprenant': 'Mon profil apprenant',
   '/dashboard/formations/favoris': 'Mes favoris',
   '/dashboard/formations/parcours': "Parcours d'apprentissage",
-  '/dashboard/ecosysteme': 'Partenaires & outils',
-  '/dashboard/idees': 'Idées & feuille de route',
-  '/dashboard/ma-fiche-photographe/idees': 'Idées & feuille de route',
-  '/dashboard/ma-fiche-menage/idees': 'Idées & feuille de route',
-  '/dashboard/investir/idees': 'Idées & feuille de route',
+  '/dashboard/ecosysteme': 'Partenaires',
   '/dashboard/guide': 'Guide LCD',
   '/dashboard/admin': 'Administration',
   '/dashboard/admin/membres': 'Membres',
@@ -175,12 +171,11 @@ interface HeaderProps {
   activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, newFormationAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav: proNavProp, contratsTodo: contratsTodoProp = 0, showOnboardingBtn: showOnboardingProp = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, newFormationAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav: proNavProp, contratsTodo: contratsTodoProp = 0, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
   // Compteurs du menu arrivés après le cadre (MenuLive, 14/11/2026)
   const live = useMenuLive()
   const proNav = live?.proNav ?? proNavProp
   const contratsTodo = live?.contratsTodo ?? contratsTodoProp
-  const showOnboardingBtn = live?.showOnboarding ?? showOnboardingProp
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -400,23 +395,8 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         </div>
 
         <div style={styles.right}>
-          {/* Onboarding parcours button — hôte uniquement : les parcours
-              (Parcours d'onboarding) couvrent uniquement les étapes hôte
-              (logement, voyageurs, Stripe…), sans équivalent pro/investisseur.
-              `showOnboardingBtn` vient du layout serveur et peut rester figé
-              après une nav client vers un autre espace (router cache) : on
-              regate donc côté client sur `currentSpaceKey`, calculé via
-              usePathname() qui suit chaque navigation. */}
-          {showOnboardingBtn && currentSpaceKey === 'host' && (
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding'))}
-              className="theme-toggle"
-              aria-label="Mes parcours d'onboarding"
-              title="Mes parcours"
-            >
-              <MapTrifold size={17} weight="regular" />
-            </button>
-          )}
+          {/* Bouton « Parcours » (carte) retiré le 18/11/2026 : le parcours se
+              rouvre depuis le menu du compte (Sidebar, « Reprendre mon parcours »). */}
 
           {/* Thème : clair ↔ sombre (l'icône montre le mode vers lequel on bascule) */}
           {(() => {
@@ -442,11 +422,12 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             <button
               style={styles.sosBtn}
               className="dash-sos-btn"
-              aria-label="SOS Hôte : en cas de problème"
-              title="SOS Hôte : en cas de problème"
+              aria-label="SOS Hôte : vérifier un voyageur ou régler un problème"
+              title="SOS Hôte : vérifier un voyageur ou régler un problème"
               onClick={() => setSosOpen(true)}
             >
               <Lifebuoy size={18} weight="regular" />
+              <span className="dash-sos-label">SOS</span>
             </button>
           )}
 
@@ -589,19 +570,9 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                     <UserCircle size={15} />
                     Mon compte
                   </Link>
-                  {userId && (
-                    <Link href={`/dashboard/chez-nous/membre/${userId}`} style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
-                      <UserCircle size={15} weight="duotone" />
-                      Profil forum
-                    </Link>
-                  )}
                   <Link href="/dashboard/abonnement" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <CreditCard size={15} />
                     Mon abonnement
-                  </Link>
-                  <Link href="/dashboard/idees" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
-                    <Heart size={15} />
-                    Idées
                   </Link>
                   <Link href="/dashboard/aide" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <Question size={15} />
@@ -662,12 +633,8 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
 const styles: Record<string, React.CSSProperties> = {
   header: {
     position: 'fixed',
-    top: 0,
-    left: 'var(--sidebar-w)',
-    right: 0,
-    height: 'var(--header-h)',
-    background: 'var(--nav-bg)',
-    borderBottom: '1px solid var(--nav-border)',
+    // Position, hauteur, fond et bordure : .dash-header (globals.css,
+    // « Cadre du dashboard », 18/11/2026) : fondu dans le haut de la page.
     // backdrop-filter retiré (cf. Sidebar) : --nav-bg est >=95% opaque,
     // donc invisible visuellement mais déclenche un bug Chrome de
     // ghosting (lisérets translucides) lors du repaint des nav items.
@@ -705,9 +672,10 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'var(--danger-bg)',
     border: '1px solid var(--danger-border)',
     borderRadius: 'var(--r-sm)',
-    width: '38px', height: '38px',
+    minWidth: '38px', height: '38px', padding: '0 10px', gap: 6,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--danger)',
+    fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '0.04em',
     transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
   notifBadge: {

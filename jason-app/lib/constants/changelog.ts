@@ -32,13 +32,6 @@ export const CHANGELOG: ChangelogEntry[] = [
     title: 'Nouvelle formation : louer en direct sans plateforme, en toute sécurité',
     description: 'Née d\'une suggestion de la communauté : vérifier l\'identité d\'un voyageur sans garder de copie de sa pièce (ce que la CNIL refuse), choisir une assurance qui couvre vraiment la location courte durée, faire un contrat solide, encaisser sans arnaque, taxe de séjour et fiche de police, et quand un juriste est utile. 6 modules, 12 leçons sourcées et un plan en 10 étapes, dans Formations.',
   },
-  {
-    id: 'idees-oct-2026',
-    date: '2026-10-13',
-    tag: 'nouveau',
-    title: 'Idées & feuille de route, ouvertes à tous',
-    description: 'Une idée pour améliorer l\'app ? Propose-la dans « Idées » (menu de chaque espace : hôte, photographe, équipe de ménage, investisseur). Les membres votent, et tu vois ce qui est prévu, en cours ou livré. Tu es prévenu quand ton idée avance.',
-  },
   // ─── Septembre 2026 ────────────────────────────────────────────
   {
     id: 'app-telephone-sep-2026',

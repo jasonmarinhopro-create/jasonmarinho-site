@@ -55,8 +55,15 @@ const nextConfig = {
       // path — utilise has+value.
       // Contributions retirées le 13/10/2026 (décision de Jason) : la page
       // /soutenir et l'espace Contributeurs deviennent « Idées », ouvert à tous.
-      { source: '/soutenir', destination: '/dashboard/idees', permanent: true },
-      { source: '/dashboard/contributeurs', destination: '/dashboard/idees', permanent: true },
+      // Idées supprimée le 18/11/2026 (décision de Jason : personne ne s'en
+      // servait) : les anciennes adresses ramènent à l'accueil de l'espace.
+      { source: '/soutenir', destination: '/dashboard', permanent: false },
+      { source: '/dashboard/contributeurs', destination: '/dashboard', permanent: false },
+      { source: '/dashboard/idees', destination: '/dashboard', permanent: false },
+      { source: '/dashboard/ma-fiche-photographe/idees', destination: '/dashboard/ma-fiche-photographe', permanent: false },
+      { source: '/dashboard/ma-fiche-menage/idees', destination: '/dashboard/ma-fiche-menage', permanent: false },
+      { source: '/dashboard/ma-fiche-depannage/idees', destination: '/dashboard/ma-fiche-depannage', permanent: false },
+      { source: '/dashboard/investir/idees', destination: '/dashboard/investir', permanent: false },
       { source: '/dashboard/calendrier', has: [{ type: 'query', key: 'view', value: 'list' }], destination: '/dashboard/reservations', permanent: false },
     ]
   },

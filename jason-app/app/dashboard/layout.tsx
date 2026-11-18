@@ -129,7 +129,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
 
   return (
     <ThemeProvider>
-      <div style={styles.layout}>
+      <div style={styles.layout} className="dash-layout">
         <Sidebar
           isAdmin={isAdmin}
           isContributor={profile.is_contributor ?? false}
@@ -281,13 +281,11 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     minHeight: '100svh',
   },
+  // Marges, fond, contour et coins de la feuille : .dash-main (globals.css,
+  // « Cadre du dashboard », 18/11/2026), différents ordinateur / téléphone.
   main: {
     flex: 1,
     minWidth: 0,
     overflowX: 'hidden',
-    marginLeft: 'var(--sidebar-w)',
-    paddingTop: 'var(--header-h)',
-    minHeight: '100svh',
-    background: 'var(--bg)',
   },
 }

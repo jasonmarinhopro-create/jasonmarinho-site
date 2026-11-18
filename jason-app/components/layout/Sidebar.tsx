@@ -16,7 +16,7 @@ import {
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, LinkSimple, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
   Broom, Wrench, Check, Plus, ChatText, ArrowLeft, Receipt, Binoculars, PresentationChart,
-  Lightbulb,
+  Handshake, Compass,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -71,32 +71,43 @@ type NavItemDef = {
 //   réception : la page le dit dans son bandeau.
 // - Le premier bloc a un titre, comme le second.
 const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
-  // Menu hôte en 4 blocs (17/10/2026, proposition validée par Jason) : avant,
-  // « Au quotidien » mélangeait 9 entrées (planning, voyageurs, argent,
-  // sécurité). Actualités reste en 2e position (décision de Jason : la veille
-  // LCD est un axe fort de la marque).
+  // Menu hôte resserré (18/11/2026, proposition validée par Jason) : de 16 à
+  // 12 entrées, aucune page supprimée sauf Idées.
+  // - Sécurité voyageur : rangée dans le bouton SOS (en-tête), la page garde
+  //   son adresse (liens des fiches voyageur, du guide, de l'accueil).
+  // - Guide LCD : rejoint Actualités (onglets « Actualités » / « Guide LCD »,
+  //   VeilleTabBar) ; Jason : « le guide doit aussi évoluer, comme les
+  //   actualités ». Il reste ainsi en 2e position, pas caché.
+  // - Entre Hôtes devient « Partenaires » (ouvre Partenaires & outils) ;
+  //   Questions & réponses reste en 2e onglet : le forum fait partie des
+  //   formules (2 questions par mois, illimité en Standard), sa suppression
+  //   attend l'accord de Jason sur l'offre.
+  // - Idées supprimée partout (personne ne s'en servait).
+  // Actualités reste en 2e position (axe fort de la marque).
   {
     label: 'Au quotidien',
     items: [
       { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
-      { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
+      {
+        href: '/dashboard/actualites',  label: 'Actualités & guide', icon: Newspaper, pulseIf: 'hasNewActualites',
+        activeMatch: ['/dashboard/actualites', '/dashboard/apprendre/guide', '/dashboard/guide'],
+      },
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
       // Mes réservations : page dédiée (KPIs, filtres, détail voyageur).
       { href: '/dashboard/reservations', label: 'Mes réservations', icon: ListChecks },
-      // Mes messages (01/10/2026, Jason : « rangé avec les outils c'est
-      // bizarre ») : messages à copier, pas une boîte de réception.
-      { href: '/dashboard/gabarits',    label: 'Mes messages',      icon: ChatText },
     ],
   },
   {
-    // Le chemin d'une réservation directe : le carnet, le contrat et le
-    // paiement, la vérification avant de dire oui.
+    // Le chemin d'une réservation directe : le carnet, les messages à
+    // envoyer, le contrat et le paiement.
     label: 'Mes voyageurs',
     items: [
       { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
+      // Mes messages (01/10/2026, Jason : « rangé avec les outils c'est
+      // bizarre ») : messages à copier, pas une boîte de réception.
+      { href: '/dashboard/gabarits',    label: 'Mes messages',      icon: ChatText },
       // Compteur : éléments « À traiter » de la page (lib/contracts/nav-count.ts)
       { href: '/dashboard/contrats',    label: 'Contrats & paiements', icon: Signature, countKey: 'contratsTodo' },
-      { href: '/dashboard/securite',    label: 'Sécurité voyageur', icon: ShieldCheck },
     ],
   },
   {
@@ -122,16 +133,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
         href: '/dashboard/visibilite/facebook', label: 'Trouver des voyageurs', icon: Megaphone,
         activeMatch: ['/dashboard/visibilite', '/dashboard/communaute', '/dashboard/audit-gbp'],
       },
-      // Formations et Guide LCD (26/10/2026, Jason : « le Guide LCD est trop
-      // caché ») : deux entrées au lieu d'« Apprendre » qui ouvrait les
-      // formations, le guide n'étant qu'un onglet. Point « du neuf » sur
-      // Formations tant qu'une formation de moins de 45 jours n'a pas été vue.
+      // Point « du neuf » tant qu'une formation de moins de 45 jours n'a pas été vue.
       { href: '/dashboard/apprendre/formations', label: 'Formations', icon: GraduationCap, activeMatch: ['/dashboard/apprendre/formations', '/dashboard/formations'], pulseIf: 'hasNewFormation' },
-      { href: '/dashboard/apprendre/guide', label: 'Guide LCD', icon: BookOpen, activeMatch: ['/dashboard/apprendre/guide', '/dashboard/guide'] },
-      // Entre Hôtes : Questions & réponses + Partenaires & outils.
-      { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes', '/dashboard/chez-nous', '/dashboard/ecosysteme'] },
-      // Idées & feuille de route (13/10/2026) : ouvert à tous les membres
-      { href: '/dashboard/idees', label: 'Idées', icon: Lightbulb },
+      // Partenaires & outils (ancien onglet d'Entre Hôtes, adresse conservée).
+      { href: '/dashboard/entre-hotes/ecosysteme', label: 'Partenaires', icon: Handshake, activeMatch: ['/dashboard/entre-hotes', '/dashboard/ecosysteme', '/dashboard/chez-nous'] },
     ],
   },
 ]
@@ -406,7 +411,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-photographe/facturation',
     '/dashboard/ma-fiche-photographe/statistiques',
     '/dashboard/ma-fiche-photographe/actualites',
-    '/dashboard/ma-fiche-photographe/idees',
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
     '/dashboard/ma-fiche-menage/clients',
@@ -415,14 +419,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-menage/planning',
     '/dashboard/ma-fiche-menage/statistiques',
     '/dashboard/ma-fiche-menage/actualites',
-    '/dashboard/ma-fiche-menage/idees',
     ...['', '/demandes', '/clients', '/trouver-des-clients', '/devis', '/facturation', '/statistiques'].map(p => `${METIERS.depannage.espace}${p}`),
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
     '/dashboard/investir/estimateur',
     '/dashboard/investir/comparateur',
     '/dashboard/investir/simulateurs',
-    '/dashboard/investir/idees',
   ], [])
 
   function NavItem({ href, label, Icon, adminColor, notifDot, activeMatch, count }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean; activeMatch?: string[]; count?: number }) {
@@ -572,7 +574,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 <NavItem href="/dashboard/investir/estimateur" label="Estimer un bien + PDF" Icon={ChartLineUp} />
                 <NavItem href="/dashboard/investir/comparateur" label="Comparer les villes" Icon={ChartBar} />
                 <NavItem href="/dashboard/investir/simulateurs" label="Rentabilité & fiscalité" Icon={Calculator} />
-                <NavItem href="/dashboard/investir/idees" label="Idées" Icon={Lightbulb} />
               </div>
             </div>
           ) : proRole && isAdmin && searchParams?.get('id') ? (
@@ -604,7 +605,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                sur les actualités du métier). */
             (() => {
               const base = METIERS[proRole].espace
-              // Actualités et Idées : les 3 métiers (dépannage depuis le 31/10/2026)
+              // Actualités : les 3 métiers (dépannage depuis le 31/10/2026). Idées supprimée le 18/11/2026.
               const veille = true
               const groups: Array<{ label: string; items: React.ReactNode }> = [
                 ...(proRole === 'cleaner' ? [{ label: 'Au quotidien', items: <NavItem href={`${base}/planning`} label="Mes ménages" Icon={CalendarCheck} /> }] : []),
@@ -621,7 +622,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 </> },
                 ...(veille ? [{ label: 'Rester informé', items: <>
                   <NavItem href={`${base}/actualites`} label="Actualités" Icon={Newspaper} notifDot={(proNewActus as Record<string, boolean>)[proRole] ?? false} />
-                  <NavItem href={`${base}/idees`} label="Idées" Icon={Lightbulb} />
                 </> }] : []),
               ]
               return (
@@ -789,6 +789,18 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 <Question size={15} />Centre d&apos;aide
               </Link>
               <InstallAppLink label="Installer l'app" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, gap: 10 }} />
+              {/* Parcours de démarrage (18/11/2026) : remplace l'icône carte de
+                  l'en-tête, sans libellé, peu comprise. Hôte seulement, tant
+                  que le parcours n'est pas fini ; même événement qu'avant. */}
+              {live?.showOnboarding && !proRole && !investorMode && !(adminMode && isAdmin) && (
+                <button
+                  type="button"
+                  onClick={() => { setUserMenuOpen(false); window.dispatchEvent(new CustomEvent('open-onboarding')) }}
+                  style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
+                >
+                  <Compass size={15} />Reprendre mon parcours
+                </button>
+              )}
 
               {/* Espaces : la liste n'apparaît que si on en a au moins 2 */}
               {(() => {
@@ -906,8 +918,8 @@ const styles: Record<string, React.CSSProperties> = {
   sidebar: {
     position: 'fixed', top: 0, left: 0,
     width: 'var(--sidebar-w)',
-    background: 'var(--nav-bg)',
-    borderRight: '1px solid var(--nav-border)',
+    // Fond (--shell-bg) et bordure : .dash-sidebar (globals.css, « Cadre du
+    // dashboard », 18/11/2026) : le menu et le fond ne font qu'un.
     display: 'flex', flexDirection: 'column',
     zIndex: 99,
     // backdrop-filter retiré : --nav-bg est >=95% opaque sur les 3 thèmes

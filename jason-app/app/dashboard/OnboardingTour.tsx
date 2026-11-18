@@ -53,14 +53,14 @@ export const DASHBOARD_HOME_STEPS: TourStep[] = [
   {
     id: 'apprendre',
     targetSelector: 'a[href="/dashboard/apprendre/formations"]',
-    title: "Apprendre : Formations + Guide LCD",
-    body: "18 formations (juridique, fiscal, Airbnb, Booking, automatisation…) et le Guide LCD pour les vraies situations : annulation, litige caution, mauvais commentaire.",
+    title: "Formations",
+    body: "18 formations (juridique, fiscal, Airbnb, Booking, automatisation…). Le Guide LCD, pour les vraies situations (annulation, litige caution, mauvais commentaire), est à côté des Actualités.",
   },
   {
     id: 'entre-hotes',
-    targetSelector: 'a[href="/dashboard/entre-hotes/forum"]',
-    title: "Entre Hôtes : ta communauté",
-    body: "Tes questions à Jason et aux autres hôtes (réponse sous 48 h), et les partenaires et outils recommandés (photographes, ménage, conciergeries).",
+    targetSelector: 'a[href="/dashboard/entre-hotes/ecosysteme"]',
+    title: "Partenaires",
+    body: "Les outils et services recommandés pour ta location, avec les offres réservées aux membres. Tes questions à Jason et aux autres hôtes sont dans l'onglet Questions & réponses.",
   },
   {
     id: 'done',
