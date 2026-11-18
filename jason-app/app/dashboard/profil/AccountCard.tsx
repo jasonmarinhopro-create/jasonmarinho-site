@@ -13,9 +13,11 @@ import { SectionCard, FieldRow, f } from './ProfilForm'
 // associé tout seul à la première connexion « Continuer avec Google » ; ici on
 // peut en associer un autre, ou le retirer (si un autre moyen de connexion reste).
 
-export default function AccountCard({ email, google = false }: { email: string; google?: boolean }) {
+export default function AccountCard({ email, google = false, initialIdentities = null }: { email: string; google?: boolean; initialIdentities?: UserIdentity[] | null }) {
   const { confirm, dialog } = useConfirm()
-  const [identities, setIdentities] = useState<UserIdentity[] | null>(null)
+  // Comptes associés lus par la page côté serveur (18/11/2026) : avant, un
+  // second appel à Supabase Auth partait du navigateur à chaque ouverture.
+  const [identities, setIdentities] = useState<UserIdentity[] | null>(initialIdentities)
   const [gBusy, setGBusy] = useState(false)
   const [gError, setGError] = useState('')
 
@@ -23,8 +25,8 @@ export default function AccountCard({ email, google = false }: { email: string; 
     if (new URLSearchParams(window.location.search).get('google') === 'echec') {
       setGError('L’association avec Google n’a pas abouti. Si ce compte Google sert déjà à un autre compte, connecte-toi avec lui ou écris-nous.')
     }
-    createClient().auth.getUserIdentities().then(({ data }) => setIdentities(data?.identities ?? []))
-  }, [])
+    if (!initialIdentities) createClient().auth.getUserIdentities().then(({ data }) => setIdentities(data?.identities ?? []))
+  }, [initialIdentities])
 
   const googleId = identities?.find(i => i.provider === 'google') ?? null
   const googleEmail = (googleId?.identity_data?.email as string | undefined) ?? null

@@ -30,6 +30,8 @@ export type ProfilData = {
   autresRevenusPro: number | null
   /** Connexion Google activée dans Supabase */
   google?: boolean
+  /** Moyens de connexion du compte (lus côté serveur) */
+  identities?: import('@supabase/supabase-js').UserIdentity[] | null
   /** Conditions générales de vente (migration 181), vide si absentes */
   cgv?: string
   /** Nom PayPal.me (migration 187) ; null si la colonne manque encore */
@@ -54,7 +56,7 @@ function fmtMemberSince(iso: string): string {
   try { return new Date(iso).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', timeZone: 'Europe/Paris' }) } catch { return '' }
 }
 
-export default function ProfilView({ userId, email, createdAt, fullName, planLabel, subscription, autresRevenusPro, pd, google = false, cgv = '', paypalMe = null }: ProfilData) {
+export default function ProfilView({ userId, email, createdAt, fullName, planLabel, subscription, autresRevenusPro, pd, google = false, cgv = '', paypalMe = null, identities = null }: ProfilData) {
   const initials = fullName
     ? fullName.split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : email.charAt(0).toUpperCase()
@@ -139,7 +141,7 @@ export default function ProfilView({ userId, email, createdAt, fullName, planLab
           <FiscalContextCard initialValue={autresRevenusPro} />
         </div>
         <div className="profil-col">
-          <AccountCard email={email} google={google} />
+          <AccountCard email={email} google={google} initialIdentities={identities} />
           <AbonnementCard planLabel={planLabel} subscription={subscription} />
           <NewsletterCard />
           <ChezNousIdentity

@@ -48,6 +48,7 @@ export default async function ProfilPage() {
       userId={profile.userId}
       email={authUser?.email ?? ''}
       createdAt={authUser?.created_at ?? ''}
+      identities={authUser?.identities ?? null}
       fullName={profile.full_name ?? ''}
       planLabel={planLabel}
       subscription={subscription}
