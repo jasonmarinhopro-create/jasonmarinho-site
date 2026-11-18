@@ -38,6 +38,17 @@ export default async function ProStatsPage({ metier, searchParams }: {
     isAdminPreview: resolved.isAdminPreview,
     isAdmin: resolved.isAdmin,
   })
+  const key = ['pro-stats-v1', metier, resolved.fiche.id, periodKey, today, String(resolved.isAdminPreview), String(resolved.isAdmin)]
+  // Résultat incomplet (Google ou visites en erreur) : jamais dans le cache de
+  // 5 min, mais gardé 1 min en mémoire (18/11/2026). Avant, chaque ouverture
+  // refaisait alors ses 16 à 22 lectures tant que Google restait en erreur.
+  const memoKey = key.join('|')
+  const memo = partialMemo.get(memoKey)
+  if (memo && Date.now() - memo.at < PARTIAL_TTL_MS) {
+    timer.mark('statistiques')
+    timer.done()
+    return <ProStatsView data={memo.data} basePath={proStatsPath(metier)} previewId={resolved.isAdminPreview ? resolved.fiche.id : null} />
+  }
   let partial: Awaited<ReturnType<typeof loadProStats>> | null = null
   const data = await unstable_cache(
     async () => {
@@ -45,14 +56,22 @@ export default async function ProStatsPage({ metier, searchParams }: {
       if (d.google.status === 'error' || d.visits.adminError || d.google.adminError) { partial = d; throw new Error('stats-partielles') }
       return d
     },
-    ['pro-stats-v1', metier, resolved.fiche.id, periodKey, today, String(resolved.isAdminPreview), String(resolved.isAdmin)],
+    key,
     { revalidate: 300, tags: [`pro-stats:${resolved.fiche.id}`] },
-  )().catch(async () => partial ?? run())
+  )().catch(async () => {
+    const d = partial ?? await run()
+    if (partialMemo.size > 200) partialMemo.clear()
+    partialMemo.set(memoKey, { at: Date.now(), data: d })
+    return d
+  })
   timer.mark('statistiques')
   timer.done()
 
   return <ProStatsView data={data} basePath={proStatsPath(metier)} previewId={resolved.isAdminPreview ? resolved.fiche.id : null} />
 }
+
+const PARTIAL_TTL_MS = 60_000
+const partialMemo = new Map<string, { at: number; data: Awaited<ReturnType<typeof loadProStats>> }>()
 
 function NoFiche({ metier, preview }: { metier: ProMetier; preview: boolean }) {
   const photo = metier === 'photographe'

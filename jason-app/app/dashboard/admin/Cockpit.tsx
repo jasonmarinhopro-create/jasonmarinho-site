@@ -35,12 +35,15 @@ const CHANNEL_COLOR: Record<string, string> = {
 export function LivePanel({ today: t }: { today: TodayData }) {
   const router = useRouter()
   const [updated, setUpdated] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
+  // Plus de rafraîchissement automatique toutes les 5 minutes (18/11/2026) :
+  // il recalculait toute la Vue d'ensemble (une dizaine de lectures) sur une
+  // base gratuite déjà saturée, même sans personne devant l'écran. Bouton
+  // « Actualiser » à la place.
   useEffect(() => {
     setUpdated(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' }))
-    // Toutes les 5 minutes, onglet visible seulement (lecture de la base)
-    const id = setInterval(() => { if (document.visibilityState === 'visible') router.refresh() }, 5 * 60_000)
-    return () => clearInterval(id)
-  }, [router, t])
+    setRefreshing(false)
+  }, [t])
 
   return (
     <section className="fade-up" style={{ ...c.card, padding: 0 }}>
@@ -48,7 +51,15 @@ export function LivePanel({ today: t }: { today: TodayData }) {
         <span style={{ ...c.dot, background: t.liveNow ? '#22A06B' : 'var(--text-3)', animation: t.liveNow ? 'pulse 2s ease-in-out infinite' : undefined }} />
         <strong style={{ fontSize: 15, color: 'var(--text)' }}>En ce moment sur jasonmarinho.com : {plural(t.liveNow, 'personne')}</strong>
         <span style={c.muted}>· {nf(t.last30)} sur les 30 dernières minutes</span>
-        <span style={{ ...c.muted, marginLeft: 'auto', fontSize: 12 }}>{updated ? `mis à jour ${updated} · toutes les 5 min` : ''}</span>
+        <span style={{ ...c.muted, marginLeft: 'auto', fontSize: 12 }}>{updated ? `mis à jour à ${updated}` : ''}</span>
+        <button
+          type="button"
+          onClick={() => { setRefreshing(true); router.refresh() }}
+          disabled={refreshing}
+          style={{ border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', borderRadius: 8, padding: '4px 10px', fontSize: 12, fontWeight: 600, fontFamily: 'inherit', cursor: refreshing ? 'default' : 'pointer' }}
+        >
+          {refreshing ? 'Actualisation…' : 'Actualiser'}
+        </button>
       </header>
       <div className="ck-cols3" style={c.cols3}>
         <div className="ck-col" style={c.col}>
@@ -415,21 +426,25 @@ const c: Record<string, React.CSSProperties> = {
 
 // ── Base injoignable ──────────────────────────────────────────────────────
 
-/** Vue d'ensemble sans aucune lecture réussie : nouvel essai tout seul toutes les 15 s */
+/** Vue d'ensemble sans aucune lecture réussie : nouvel essai tout seul, de
+ *  plus en plus espacé (15 s, 30 s, 1 min, puis toutes les 2 min). Avant le
+ *  18/11/2026 : toutes les 15 s sans fin, sur une base déjà saturée. */
+const retryDelay = (tries: number) => Math.min(15 * 2 ** tries, 120)
 export function OverviewUnavailable() {
   const router = useRouter()
-  const [left, setLeft] = useState(15)
   const [tries, setTries] = useState(0)
+  const [left, setLeft] = useState(retryDelay(0))
+  const delay = retryDelay(tries)
   useEffect(() => {
     const id = setInterval(() => {
       setLeft(l => {
-        if (l <= 1) { router.refresh(); setTries(t => t + 1); return 15 }
+        if (l <= 1) { router.refresh(); setTries(n => n + 1); return retryDelay(tries + 1) }
         return l - 1
       })
     }, 1000)
     return () => clearInterval(id)
-  }, [router])
-  const retry = () => { router.refresh(); setTries(t => t + 1); setLeft(15) }
+  }, [router, tries])
+  const retry = () => { router.refresh(); setTries(n => n + 1); setLeft(retryDelay(tries + 1)) }
   const R = 22, C = 2 * Math.PI * R
 
   return (
@@ -438,7 +453,7 @@ export function OverviewUnavailable() {
         <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true" style={{ position: 'absolute', inset: 0 }}>
           <circle cx="28" cy="28" r={R} fill="none" stroke="rgba(255,213,107,0.25)" strokeWidth="3" />
           <circle cx="28" cy="28" r={R} fill="none" stroke="#FFD56B" strokeWidth="3" strokeLinecap="round"
-            strokeDasharray={C} strokeDashoffset={C * (left / 15)} transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 1s linear' }} />
+            strokeDasharray={C} strokeDashoffset={C * (left / delay)} transform="rotate(-90 28 28)" style={{ transition: 'stroke-dashoffset 1s linear' }} />
         </svg>
         <span style={{ position: 'relative', fontFamily: 'var(--font-fraunces), serif', fontSize: 20, color: '#fff' }}>{left}</span>
       </div>
