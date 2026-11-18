@@ -1830,9 +1830,6 @@ a { color: inherit; }
 @media (max-width: 768px) {
   .dash-sidebar { border-right: 1px solid var(--panel-border); }
 }
-@media (max-width: 767px) {
-  .dash-sos-label { display: none; }
-}
 @media (max-width: 560px) {
   .jm-veille-hint { display: none; }
 }

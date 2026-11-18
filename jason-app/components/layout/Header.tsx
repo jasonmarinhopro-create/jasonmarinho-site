@@ -427,7 +427,6 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
               onClick={() => setSosOpen(true)}
             >
               <Lifebuoy size={18} weight="regular" />
-              <span className="dash-sos-label">SOS</span>
             </button>
           )}
 
@@ -672,10 +671,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'var(--danger-bg)',
     border: '1px solid var(--danger-border)',
     borderRadius: 'var(--r-sm)',
-    minWidth: '38px', height: '38px', padding: '0 10px', gap: 6,
+    width: '38px', height: '38px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     cursor: 'pointer', color: 'var(--danger)',
-    fontFamily: 'inherit', fontSize: 13, fontWeight: 700, letterSpacing: '0.04em',
     transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
   notifBadge: {

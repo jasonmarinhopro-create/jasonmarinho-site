@@ -30,7 +30,7 @@ updatedAt: "2026-11-18"
 - **Formations** : les formations, avec un point quand une nouvelle formation sort
 - **Partenaires** : les outils et services recommandés, avec les offres réservées aux membres, et l'onglet **Questions & réponses**
 
-## Le bouton SOS (en haut à droite)
+## Le bouton rouge (bouée, en haut à droite)
 
 - **Vérifier un voyageur** avant d'accepter : son e-mail, son téléphone ou son nom dans la base tenue par les hôtes (page **Sécurité voyageur**)
 - **Signaler un voyageur** après un problème
