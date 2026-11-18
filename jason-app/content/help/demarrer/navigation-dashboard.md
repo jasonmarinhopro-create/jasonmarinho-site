@@ -9,7 +9,7 @@ updatedAt: "2026-11-18"
 ## Au quotidien
 
 - **Accueil** : « À faire aujourd'hui », tes prochaines arrivées et départs, tes déclarations en attente
-- **Actualités & guide** : deux onglets. **Actualités**, la veille réglementaire et fiscale pour les hôtes, avec un point rouge quand il y a du nouveau. **Guide LCD**, les règles de ta location (taxe de séjour, fiche de police, contrat, assurance…), fiche par fiche
+- **S'informer** : deux onglets. **Actualités**, la veille réglementaire et fiscale pour les hôtes, avec un point rouge quand il y a du nouveau. **Guide LCD**, les règles de ta location (taxe de séjour, fiche de police, contrat, assurance…), fiche par fiche
 - **Calendrier** : tes réservations (Airbnb, Booking, directes) et l'onglet **Ménage**
 - **Mes réservations** : la liste de tous tes séjours, synchronisés ou saisis à la main
 
@@ -47,5 +47,5 @@ Clique sur ton nom en bas du menu :
 - **Mon compte** : identité du bailleur, encaissements (Stripe, IBAN), factures, connexion
 - **Mon abonnement** : ta formule, ton renouvellement, tes factures
 - **Centre d'aide** : tu y es
-- **Ajouter un espace** : si tu es aussi photographe, équipe de ménage ou investisseur
+- **Changer d'espace** : si tu es aussi photographe, équipe de ménage ou investisseur (ou **Ajouter un espace**)
 - **Reprendre mon parcours** : rouvre le parcours de démarrage, tant que tu ne l'as pas terminé

@@ -12,7 +12,7 @@ L'app Jason Marinho s'installe directement depuis le navigateur, sans passer par
 
 Ouvre **app.jasonmarinho.com/installer** sur ton téléphone. La page reconnaît ton appareil et affiche la bonne méthode. Tu la retrouves aussi :
 
-- dans le menu de ton compte (en bas du menu de gauche), **Installer l'app** ;
+- dans le **Centre d'aide** (menu de ton compte, en bas du menu de gauche), lien **Installer l'app** ;
 - sous le formulaire de connexion ;
 - en bas de chaque page de jasonmarinho.com.
 

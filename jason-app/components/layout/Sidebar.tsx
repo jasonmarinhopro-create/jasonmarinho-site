@@ -6,7 +6,6 @@ import { useState, useEffect, useRef, useMemo, useTransition } from 'react'
 import { createPortal } from 'react-dom'
 import ShellFallback from '@/components/layout/ShellFallback'
 import Link from 'next/link'
-import InstallAppLink from '@/components/pwa/InstallAppLink'
 import { usePathname, useSearchParams } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, FileText,
@@ -89,7 +88,7 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
     items: [
       { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
       {
-        href: '/dashboard/actualites',  label: 'Actualités & guide', icon: Newspaper, pulseIf: 'hasNewActualites',
+        href: '/dashboard/actualites',  label: 'S\'informer', icon: Newspaper, pulseIf: 'hasNewActualites',
         activeMatch: ['/dashboard/actualites', '/dashboard/apprendre/guide', '/dashboard/guide'],
       },
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
@@ -740,28 +739,18 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           <PropertySelector allProperties={allProperties} currentId={activePropertyId ?? 'all'} collapsed={collapsed} />
         )}
 
-        {/* Carte user cliquable — ouvre le menu vers le HAUT (Étape 3/7) */}
-        <div ref={userMenuRef} style={styles.userWrap}>
+        {/* Bas du menu (refonte du 18/11/2026, Jason : « il y en a trop »,
+            « le mode admin, j'y vais très souvent »). La carte du compte
+            ouvre un menu plus large que la colonne (300 px, il déborde sur la
+            page comme les menus de compte de Linear, Notion ou Vercel) ; le
+            mode admin a son propre bouton à côté de la carte, en un clic. */}
+        <div ref={userMenuRef} style={{ ...styles.userWrap, ...(collapsed ? { flexDirection: 'column' as const, padding: '10px 8px' } : {}) }}>
           {userMenuOpen && (
             <div style={{
               ...styles.userMenu,
-              // Quand sidebar est reduite (68px), le menu doit s'ouvrir a
-              // COTE (a droite) au lieu de dessus la carte user, sinon il
-              // se retrouve compresse a ~48px avec le texte qui explose.
-              ...(collapsed ? {
-                left: 'calc(100% + 6px)',
-                right: 'auto',
-                bottom: 0,
-                width: '260px',
-              } : {}),
+              // Menu réduit (68 px) : le menu s'ouvre à droite de la colonne
+              ...(collapsed ? { left: 'calc(100% + 6px)', bottom: 8 } : {}),
             }} role="menu">
-              {/* Menu du compte (refonte sept. 2026, demande de Jason : « un peu
-                  fouillis »). 3 blocs : compte, espaces (seulement s'il y en a
-                  plusieurs), admin + déconnexion. Retirés d'ici : Profil Entre
-                  Hôtes (lien sur la page Questions & réponses, pseudo dans Mon
-                  compte), Contributeurs, avis Google et jasonmarinho.com (encart
-                  « Tu aimes l'app ? » du Centre d'aide), les 3 « + Créer… »
-                  (une seule entrée « Ajouter un espace » → /dashboard/espaces). */}
               <div style={styles.userMenuHead}>
                 <div style={styles.userMenuAvatar}>
                   {(userName || '?').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
@@ -777,32 +766,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   </div>
                 </div>
               </div>
-              <div style={styles.userMenuDivider} />
 
-              <Link href="/dashboard/profil" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
-                <UserCircle size={15} />Mon compte
-              </Link>
-              <Link href="/dashboard/abonnement" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
-                <CreditCard size={15} />Mon abonnement
-              </Link>
-              <Link href="/dashboard/aide" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
-                <Question size={15} />Centre d&apos;aide
-              </Link>
-              <InstallAppLink label="Installer l'app" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, gap: 10 }} />
-              {/* Parcours de démarrage (18/11/2026) : remplace l'icône carte de
-                  l'en-tête, sans libellé, peu comprise. Hôte seulement, tant
-                  que le parcours n'est pas fini ; même événement qu'avant. */}
-              {live?.showOnboarding && !proRole && !investorMode && !(adminMode && isAdmin) && (
-                <button
-                  type="button"
-                  onClick={() => { setUserMenuOpen(false); window.dispatchEvent(new CustomEvent('open-onboarding')) }}
-                  style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
-                >
-                  <Compass size={15} />Reprendre mon parcours
-                </button>
-              )}
-
-              {/* Espaces : la liste n'apparaît que si on en a au moins 2 */}
+              {/* Espaces : la liste n'apparaît que si on en a au moins 2. Une
+                  ligne par espace (nom de la fiche à droite, en gris). */}
               {(() => {
                 const activeSpaces = spaces.filter(s => s.active)
                 const canAdd = ['photographer', 'cleaner', 'investor'].some(k => !activeSpaces.some(s => s.key === k))
@@ -812,14 +778,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     <div style={styles.userMenuDivider} />
                     {activeSpaces.length >= 2 && (
                       <>
-                        <div style={styles.userMenuSection}>Mes espaces</div>
+                        <div style={styles.userMenuSection}>Changer d&apos;espace</div>
                         {activeSpaces.map(s => {
-                          const isCurrent =
+                          const isCurrent = !(adminMode && isAdmin) && (
                             s.key === 'photographer' ? (pathname?.startsWith('/dashboard/ma-fiche-photographe') ?? false)
                             : s.key === 'cleaner'    ? (pathname?.startsWith('/dashboard/ma-fiche-menage') ?? false)
                             : s.key === 'depannage'  ? (pathname?.startsWith('/dashboard/ma-fiche-depannage') ?? false)
                             : s.key === 'investor'   ? (pathname?.startsWith('/dashboard/investir') ?? false)
-                            : !pathname?.startsWith('/dashboard/ma-fiche-') && !pathname?.startsWith('/dashboard/investir')
+                            : !pathname?.startsWith('/dashboard/ma-fiche-') && !pathname?.startsWith('/dashboard/investir'))
                           const SpaceIcon = SPACE_ICONS[s.key]
                           return (
                             <Link
@@ -837,6 +803,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                                 }
                               }}
                               aria-current={isCurrent ? 'page' : undefined}
+                              title={s.subtitle ? `${s.label} · ${s.subtitle}` : s.label}
                               style={{
                                 ...styles.userMenuItem,
                                 background: isCurrent ? 'var(--accent-bg)' : 'transparent',
@@ -844,12 +811,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                                 fontWeight: isCurrent ? 600 : 400,
                               }}
                             >
-                              <SpaceIcon size={15} weight={isCurrent ? 'fill' : 'regular'} />
-                              <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' as const }}>
-                                <span>{s.label}</span>
-                                {s.subtitle && <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 400 }}>{s.subtitle}</span>}
-                              </span>
-                              {isCurrent && <Check size={13} weight="bold" />}
+                              <SpaceIcon size={15} weight={isCurrent ? 'fill' : 'regular'} style={{ flexShrink: 0 }} />
+                              <span style={{ whiteSpace: 'nowrap' }}>{s.label}</span>
+                              {s.subtitle && <span style={styles.userMenuSub}>{s.subtitle}</span>}
+                              {isCurrent && <Check size={13} weight="bold" style={{ flexShrink: 0, marginLeft: s.subtitle ? 0 : 'auto' }} />}
                             </Link>
                           )
                         })}
@@ -865,23 +830,30 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               })()}
 
               <div style={styles.userMenuDivider} />
-              {/* Mode admin : un interrupteur, une seule fois (avant : bouton + mention
-                  « Mode admin » sous l'espace Hôte LCD) */}
-              {isAdmin && (
+              <Link href="/dashboard/profil" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <UserCircle size={15} />Mon compte
+              </Link>
+              <Link href="/dashboard/abonnement" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <CreditCard size={15} />Mon abonnement
+              </Link>
+              {/* Centre d'aide gardé ici : c'est aussi là qu'on écrit à Jason.
+                  « Installer l'app » est passé dans le Centre d'aide (18/11/2026). */}
+              <Link href="/dashboard/aide" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
+                <Question size={15} />Centre d&apos;aide
+              </Link>
+              {/* Parcours de démarrage (18/11/2026) : remplace l'icône carte de
+                  l'en-tête, sans libellé, peu comprise. Hôte seulement, tant
+                  que le parcours n'est pas fini ; même événement qu'avant. */}
+              {live?.showOnboarding && !proRole && !investorMode && !(adminMode && isAdmin) && (
                 <button
                   type="button"
-                  role="switch"
-                  aria-checked={adminMode}
-                  onClick={() => { setUserMenuOpen(false); toggleAdminMode() }}
-                  style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', textAlign: 'left', fontFamily: 'inherit' }}
+                  onClick={() => { setUserMenuOpen(false); window.dispatchEvent(new CustomEvent('open-onboarding')) }}
+                  style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
                 >
-                  <Gear size={15} />
-                  <span style={{ flex: 1 }}>Mode admin</span>
-                  <span style={{ ...styles.switchTrack, background: adminMode ? 'var(--accent-text)' : 'var(--border-2, var(--border))' }}>
-                    <span style={{ ...styles.switchThumb, transform: adminMode ? 'translateX(14px)' : 'translateX(0)' }} />
-                  </span>
+                  <Compass size={15} />Reprendre mon parcours
                 </button>
               )}
+              <div style={styles.userMenuDivider} />
               <button onClick={() => { setUserMenuOpen(false); handleSignOut() }} style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'var(--text-3)', fontFamily: 'inherit' }}>
                 <SignOut size={15} />Se déconnecter
               </button>
@@ -904,10 +876,30 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   <div style={styles.userCardName}>{userName || 'Mon compte'}</div>
                   <div style={styles.userCardPlan}>{userPlanLabel || 'Découverte'}</div>
                 </div>
-                <CaretDown size={11} style={{ color: 'var(--text-3)', transform: userMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s' }} />
+                <CaretDown size={11} style={{ color: 'var(--text-3)', transform: userMenuOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s', flexShrink: 0 }} />
               </>
             )}
           </button>
+          {/* Mode admin en un clic (admins seulement). Allumé : fond vert. */}
+          {isAdmin && (
+            <button
+              type="button"
+              role="switch"
+              aria-checked={adminMode}
+              onClick={() => { setUserMenuOpen(false); toggleAdminMode() }}
+              title={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
+              aria-label={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
+              style={{
+                ...styles.adminBtn,
+                border: adminMode ? '1px solid var(--accent-text)' : '1px solid var(--border-2)',
+                background: adminMode ? 'var(--accent-text)' : 'var(--surface)',
+                color: adminMode ? 'var(--bg)' : 'var(--text-2)',
+              }}
+            >
+              <Gear size={15} weight={adminMode ? 'fill' : 'regular'} />
+              {!collapsed && <span>Admin</span>}
+            </button>
+          )}
         </div>
       </aside>
     </>
@@ -1095,6 +1087,7 @@ const styles: Record<string, React.CSSProperties> = {
   // Carte user cliquable en bas-gauche (remplace l'ancien footer)
   userWrap: {
     position: 'relative',
+    display: 'flex', alignItems: 'center', gap: 6,
     padding: '10px 12px',
     paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
     borderTop: '1px solid var(--nav-border)',
@@ -1127,15 +1120,29 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '10.5px', color: 'var(--text-muted)',
     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
   },
+  // Plus large que la colonne (300 px) : il déborde sur la page, comme les
+  // menus de compte de Linear, Notion ou Vercel. Fond « flottant » opaque.
   userMenu: {
     position: 'absolute',
-    bottom: 'calc(100% - 4px)', left: '10px', right: '10px',
-    background: 'var(--bg-2)',
-    border: '1px solid var(--border-2)',
-    borderRadius: '12px',
-    padding: '4px',
-    boxShadow: '0 20px 40px rgba(0,0,0,0.35)',
+    bottom: 'calc(100% - 4px)', left: '10px',
+    width: 300, maxWidth: 'calc(100vw - 20px)',
+    background: 'var(--floating-surface)',
+    border: '1px solid var(--floating-border)',
+    borderRadius: '14px',
+    padding: '6px',
+    boxShadow: '0 16px 48px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08)',
     zIndex: 50,
+  },
+  userMenuSub: {
+    flex: 1, minWidth: 0, textAlign: 'right',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+    fontSize: 11.5, color: 'var(--text-3)', fontWeight: 400,
+  },
+  adminBtn: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+    height: 34, minWidth: 34, padding: '0 10px', borderRadius: 9, flexShrink: 0,
+    fontSize: 12.5, fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer',
+    transition: 'background 0.15s, color 0.15s, border 0.15s',
   },
   userMenuHead: {
     display: 'flex', alignItems: 'center', gap: '10px',

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import InstallAppLink from '@/components/pwa/InstallAppLink'
 import {
   MagnifyingGlass, ArrowRight, ArrowUpRight, WhatsappLogo,
   Heart, Star, Lifebuoy, CaretRight, EnvelopeSimple,
@@ -133,6 +134,8 @@ export default async function AidePage() {
 
           {/* Pour aller plus loin */}
           <nav style={s.moreLinks} aria-label="Pour aller plus loin">
+            {/* Sorti du menu du compte le 18/11/2026 (masqué dans l'app installée) */}
+            <InstallAppLink label="Installer l'app" style={s.moreLink} />
             <Link href="/dashboard/apprendre/formations" style={s.moreLink} className="aide-link">Formations <ArrowRight size={12} weight="bold" /></Link>
             <Link href="/dashboard/apprendre/guide" style={s.moreLink} className="aide-link">Guide LCD <ArrowRight size={12} weight="bold" /></Link>
             <a href="https://jasonmarinho.com/blog" target="_blank" rel="noopener noreferrer" style={s.moreLink} className="aide-link">Blog <ArrowUpRight size={12} weight="bold" /></a>

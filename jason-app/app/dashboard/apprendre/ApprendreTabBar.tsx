@@ -6,7 +6,7 @@ import VeilleTabBar from '@/components/actualites/VeilleTabBar'
 /**
  * Onglets de /dashboard/apprendre/*.
  * 18/11/2026 : le Guide LCD rejoint les Actualités (entrée de menu
- * « Actualités & guide ») et Formations a sa propre entrée. Sur le guide,
+ * « S'informer ») et Formations a sa propre entrée. Sur le guide,
  * on affiche donc les onglets Actualités / Guide LCD ; sur les formations,
  * aucun onglet.
  */

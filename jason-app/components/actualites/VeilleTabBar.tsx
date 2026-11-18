@@ -8,7 +8,7 @@ import { Newspaper, BookOpen } from '@phosphor-icons/react/dist/ssr'
  * Onglets « Actualités » / « Guide LCD » de l'espace hôte (18/11/2026).
  * Jason : le Guide LCD était trop caché et doit évoluer comme les
  * actualités. Les deux vivent sous une seule entrée du menu
- * (« Actualités & guide ») : l'actualité qui change, et les bonnes
+ * (« S'informer ») : l'actualité qui change, et les bonnes
  * pratiques qui restent. Les adresses ne changent pas
  * (/dashboard/actualites et /dashboard/apprendre/guide).
  */
