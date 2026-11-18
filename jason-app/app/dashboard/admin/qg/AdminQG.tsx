@@ -75,9 +75,11 @@ interface Props {
   initialDemandeId: string | null
 }
 
+// 18/11/2026 (Jason) : les 4 boîtes passent en ligne au-dessus du contenu
+// (avant : colonne de 232 px à gauche), le contenu prend toute la largeur.
 const QG_CSS = `
 .qg-shell{display:grid;gap:18px;align-items:start}
-@media(min-width:1000px){.qg-shell{grid-template-columns:232px minmax(0,1fr)}.qg-nav{position:sticky;top:84px;flex-direction:column}}
+@media(min-width:1000px){.qg-nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:999px){.qg-nav{overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:0 4px 2px}.qg-nav::-webkit-scrollbar{display:none}.qg-nav-hint{display:none}.qg-nav-item{width:auto!important}}
 .qg-nav-item:hover{border-color:var(--accent-border)!important}
 `
@@ -257,8 +259,8 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
               >
                 <span style={{ ...s.navIcon, color: n.color, background: tint(n.color, 12) }}>{n.icon}</span>
                 <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap' }}>{n.label}</span>
-                  <span className="qg-nav-hint" style={{ fontSize: 11.5, color: 'var(--text-3)', whiteSpace: 'nowrap' }}>{n.hint}</span>
+                  <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>{n.label}</span>
+                  <span className="qg-nav-hint" style={{ fontSize: 11.5, color: 'var(--text-3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>{n.hint}</span>
                 </span>
                 {n.count > 0
                   ? <span style={{ ...s.tabCount, background: n.color, color: '#fff' }}>{n.count}</span>
