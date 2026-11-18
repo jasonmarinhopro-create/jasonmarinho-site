@@ -224,7 +224,7 @@ const s: Record<string, React.CSSProperties> = {
   wrap: { padding: 'clamp(20px, 3vw, 44px)', width: '100%', display: 'flex', flexDirection: 'column', gap: 20 },
   asideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, color: 'var(--text)' },
   setup: { display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', padding: '16px 18px', borderRadius: 16, background: 'color-mix(in srgb, #FFD56B 18%, var(--surface))', border: '1px solid color-mix(in srgb, #FFD56B 55%, transparent)' },
-  setupIcon: { width: 38, height: 38, borderRadius: 12, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--accent-text)', color: '#FFD56B', flexShrink: 0 },
+  setupIcon: { width: 38, height: 38, borderRadius: 12, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--accent-text)', color: 'var(--bg)', flexShrink: 0 },
   cols: { display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' },
   side: { flex: '1 1 320px', maxWidth: '100%', display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 },
   card: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 18, padding: 18, display: 'flex', flexDirection: 'column', gap: 12 },

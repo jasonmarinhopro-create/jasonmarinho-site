@@ -702,7 +702,8 @@ const s: Record<string, React.CSSProperties> = {
   checkboxDone: {
     background: 'var(--accent-text)',
     borderColor: 'var(--accent-text)',
-    color: '#fff',
+    // var(--bg) et pas #fff : --accent-text est jaune en sombre
+    color: 'var(--bg)',
   },
   urgentBadge: {
     marginLeft: 'auto',

@@ -143,8 +143,8 @@ export default function Atelier(p: AtelierProps) {
                   style={{ ...(narrow ? a.mItem : a.item), ...(on ? a.itemOn : {}), ...(narrow && i < g.items.length - 1 ? { borderBottom: '1px solid var(--border)' } : {}) }}>
                   {!narrow && <span style={{ ...a.itemIcon, ...(on ? a.itemIconOn : s.attention ? a.itemIconWarn : {}) }}>{s.icon}</span>}
                   <span style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
-                    <span style={{ ...a.itemLabel, color: on ? '#fff' : 'var(--text)' }}>{s.label}</span>
-                    <span style={{ ...a.itemSum, color: on ? 'rgba(255,255,255,.75)' : s.attention ? '#8A5A12' : 'var(--text-3)' }}>{s.attention || s.summary}</span>
+                    <span style={{ ...a.itemLabel, color: on ? 'var(--bg)' : 'var(--text)' }}>{s.label}</span>
+                    <span style={{ ...a.itemSum, color: on ? 'color-mix(in srgb, var(--bg) 78%, transparent)' : s.attention ? 'var(--warning-text)' : 'var(--text-3)' }}>{s.attention || s.summary}</span>
                   </span>
                   {isPending
                     ? <span role="img" aria-label="Modifié, pas encore en ligne" style={a.dot} />
@@ -260,7 +260,7 @@ export function SaveBadge({ status, compact }: { status: SaveStatus; compact?: b
   const map: Record<Exclude<SaveStatus, 'idle'>, [string, string, string]> = {
     saving: ['Enregistrement…', 'var(--text-3)', 'var(--bg)'],
     saved: ['Enregistré', 'var(--accent-text)', 'var(--accent-bg)'],
-    local: ['Gardé sur cet appareil, on réessaie', '#8A5A12', 'rgba(255,213,107,.22)'],
+    local: ['Gardé sur cet appareil, on réessaie', 'var(--warning-text)', 'var(--warning-bg)'],
     error: ['Non enregistré', 'var(--danger-text)', 'var(--danger-bg)'],
   }
   const [full, color, bg] = map[status]
@@ -366,7 +366,7 @@ function ReviewDialog({ sections, onClose, onRevert, onPublish }: {
         </ul>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, flexWrap: 'wrap', marginTop: 4 }}>
           <button type="button" onClick={onClose} style={ui.btnGhost}>Continuer à modifier</button>
-          <button type="button" onClick={onPublish} style={{ ...b.publish, background: 'var(--accent-text)', color: '#fff' }}>
+          <button type="button" onClick={onPublish} style={{ ...b.publish, background: 'var(--accent-text)', color: 'var(--bg)' }}>
             <PaperPlaneTilt size={16} weight="bold" /> Tout mettre en ligne
           </button>
         </div>
@@ -382,7 +382,7 @@ const a: Record<string, React.CSSProperties> = {
   headEyebrow: { fontSize: 12.5, color: 'var(--text-3)', letterSpacing: '.02em' },
   h1: { margin: 0, fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 'clamp(24px, 3vw, 30px)', letterSpacing: '-.4px', color: 'var(--text)' },
   pill: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 11px', borderRadius: 999, background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 12.5, fontWeight: 600 },
-  pillWait: { background: 'rgba(255,213,107,.22)', color: '#8A5A12' },
+  pillWait: { background: 'var(--warning-bg)', color: 'var(--warning-text)' },
   pillDot: { width: 7, height: 7, borderRadius: '50%' },
   stats: { display: 'flex', gap: 8, flexWrap: 'wrap' },
   stat: { display: 'flex', alignItems: 'baseline', gap: 6, padding: '8px 12px', borderRadius: 12, background: 'var(--surface)', border: '1px solid var(--border)' },
@@ -396,10 +396,13 @@ const a: Record<string, React.CSSProperties> = {
   rail: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 18, padding: 8, display: 'flex', flexDirection: 'column' },
   groupName: { fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-3)', padding: '12px 10px 6px' },
   item: { display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: 10, borderRadius: 12, border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' },
+  // Partie ouverte : fond couleur de la marque (vert en clair, JAUNE en
+  // sombre), donc texte et icône en var(--bg), jamais en blanc (18/11/2026,
+  // Jason : « en sombre le jaune ne se voit pas »).
   itemOn: { background: 'var(--accent-text)' },
   itemIcon: { width: 32, height: 32, borderRadius: 10, background: 'var(--accent-bg)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  itemIconOn: { background: 'rgba(255,213,107,.18)', color: '#FFD56B' },
-  itemIconWarn: { background: 'rgba(255,213,107,.25)', color: '#8A5A12' },
+  itemIconOn: { background: 'color-mix(in srgb, var(--bg) 14%, transparent)', color: 'var(--bg)' },
+  itemIconWarn: { background: 'var(--warning-bg)', color: 'var(--warning-text)' },
   itemLabel: { display: 'block', fontSize: 14, fontWeight: 600, lineHeight: 1.3 },
   itemSum: { display: 'block', fontSize: 12, lineHeight: 1.35, marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   dot: { width: 9, height: 9, borderRadius: '50%', background: '#FFD56B', boxShadow: '0 0 0 1.5px #B7791F', flexShrink: 0 },
@@ -416,7 +419,7 @@ const a: Record<string, React.CSSProperties> = {
   nextL: { display: 'block', fontSize: 10.5, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-3)' },
   nextT: { display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: 19, lineHeight: 1.25, color: 'var(--text)', marginTop: 2 },
   nextS: { display: 'block', fontSize: 12.5, color: 'var(--text-3)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-  nextGo: { width: 42, height: 42, borderRadius: '50%', background: 'var(--accent-text)', color: '#FFD56B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  nextGo: { width: 42, height: 42, borderRadius: '50%', background: 'var(--accent-text)', color: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   mTop: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, margin: '-6px -6px 14px', paddingBottom: 10, borderBottom: '1px solid var(--border)' },
   mBack: { display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap', border: 'none', background: 'transparent', color: 'var(--accent-text)', fontFamily: 'inherit', fontSize: 15, fontWeight: 600, padding: '10px 6px', minHeight: 44, cursor: 'pointer' },
   mDone: { border: 'none', background: 'transparent', color: 'var(--accent-text)', fontFamily: 'inherit', fontSize: 15, fontWeight: 700, padding: '10px 8px', minHeight: 44, cursor: 'pointer' },

@@ -71,7 +71,7 @@ export const ui: Record<string, CSSProperties> = {
   groupTitle: { fontSize: 13.5, fontWeight: 700, color: 'var(--text)' },
   grid2: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 14 },
   toggleRow: { display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 16px', borderRadius: 14, border: '1px solid var(--border)', background: 'var(--bg)', cursor: 'pointer', fontFamily: 'inherit', minHeight: 56 },
-  toggleIcon: { width: 38, height: 38, borderRadius: 11, background: 'var(--accent-text)', color: '#FFD56B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  toggleIcon: { width: 38, height: 38, borderRadius: 11, background: 'var(--accent-text)', color: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   switchTrack: { position: 'relative', width: 44, height: 26, borderRadius: 999, flexShrink: 0, transition: 'background .15s' },
   switchKnob: { position: 'absolute', top: 3, width: 20, height: 20, borderRadius: '50%', transition: 'left .15s', boxShadow: '0 1px 3px rgba(0,0,0,.2)' },
   segment: { display: 'grid', gap: 4, padding: 4, borderRadius: 12, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)' },

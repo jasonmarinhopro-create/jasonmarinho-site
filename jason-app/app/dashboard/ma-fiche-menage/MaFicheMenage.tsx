@@ -621,5 +621,5 @@ const logoInitials: React.CSSProperties = { fontSize: 30, fontFamily: 'var(--fon
 const tile: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6, padding: 14, minHeight: 84, borderRadius: 14, border: '1px solid var(--border)', background: 'var(--surface)', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }
 const tileOn: React.CSSProperties = { border: '2px solid var(--accent-text)', background: 'var(--accent-bg)', padding: 13 }
 const chip: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 14px', borderRadius: 999, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: 13.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', minHeight: 40 }
-const chipOn: React.CSSProperties = { border: '1px solid var(--accent-text)', background: 'var(--accent-text)', color: '#fff' }
+const chipOn: React.CSSProperties = { border: '1px solid var(--accent-text)', background: 'var(--accent-text)', color: 'var(--bg)' }
 const stepBtn: React.CSSProperties = { width: 46, height: 46, borderRadius: 12, border: '1px solid var(--border)', background: 'var(--surface)', fontSize: 20, color: 'var(--accent-text)', cursor: 'pointer', fontFamily: 'inherit' }

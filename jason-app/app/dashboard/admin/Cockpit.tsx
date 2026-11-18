@@ -385,7 +385,7 @@ const c: Record<string, React.CSSProperties> = {
   bigInline: { fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 24, color: 'var(--text)' },
   seg: { display: 'inline-flex', padding: 3, borderRadius: 10, background: 'var(--bg-2, rgba(0,76,63,0.05))', border: '1px solid var(--border)' },
   segBtn: { border: '1px solid transparent', background: 'transparent', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 600, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit' },
-  segOn: { border: '1px solid var(--accent-text)', background: 'var(--accent-text)', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 600, color: '#fff', cursor: 'pointer', fontFamily: 'inherit' },
+  segOn: { border: '1px solid var(--accent-text)', background: 'var(--accent-text)', padding: '6px 12px', borderRadius: 8, fontSize: 13, fontWeight: 600, color: 'var(--bg)', cursor: 'pointer', fontFamily: 'inherit' },
   funnel: { display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden' },
   step: { position: 'relative', display: 'flex', flexDirection: 'column', gap: 2, padding: '14px 16px', borderLeft: '1px solid var(--border)', minWidth: 0 },
   stepVal: { fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 30, lineHeight: 1.1, color: 'var(--text)' },
