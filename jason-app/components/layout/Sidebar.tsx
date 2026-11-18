@@ -318,6 +318,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     const t = window.setTimeout(() => { setSwitchScreen('off'); setSwitchTarget(null) }, 450)
     return () => window.clearTimeout(t)
   }, [switching])
+  function prefetchAdminTarget() {
+    try { router.prefetch(adminMode ? '/dashboard' : '/dashboard/admin') } catch { /* ignore */ }
+  }
   function toggleAdminMode() {
     const next = !adminMode
     setSwitchTarget(next ? 'admin' : 'hote')
@@ -351,11 +354,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
   // ── Menu user (bas de sidebar, s'ouvre vers le haut) ──
   const [userMenuOpen, setUserMenuOpen] = useState(false)
-  // Menu ouvert par un admin : précharge la page vers laquelle l'interrupteur
-  // « Mode admin » va mener, pour que la bascule s'affiche sans attendre.
-  useEffect(() => {
-    if (userMenuOpen && isAdmin) router.prefetch(adminMode ? '/dashboard' : '/dashboard/admin')
-  }, [userMenuOpen, isAdmin, adminMode, router])
+  // Le préchargement de la page d'arrivée du mode admin se faisait à chaque
+  // ouverture de ce menu (Vue d'ensemble : 4 à 8 s de calcul serveur). Depuis
+  // le 18/11/2026 la bascule est sous le logo : préchargement au survol de la
+  // bascule seulement (prefetchAdminTarget).
   const userMenuRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!userMenuOpen) return
@@ -571,6 +573,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               role="switch"
               aria-checked={adminMode}
               onClick={toggleAdminMode}
+              onPointerEnter={prefetchAdminTarget}
+              onFocus={prefetchAdminTarget}
               title={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
               aria-label={adminMode ? 'Revenir en mode hôte' : 'Passer en mode admin'}
               style={{
@@ -584,7 +588,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
             </button>
           </div>
         ) : (
-          <div role="radiogroup" aria-label="Mode d'affichage" style={styles.modeSeg}>
+          <div role="radiogroup" aria-label="Mode d'affichage" style={styles.modeSeg} onPointerEnter={prefetchAdminTarget} onTouchStart={prefetchAdminTarget}>
             {([
               { admin: false, label: proRole === 'photographer' ? 'Photo' : proRole === 'cleaner' ? 'Ménage' : proRole === 'depannage' ? 'Dépannage' : investorMode ? 'Investir' : 'Hôte' },
               { admin: true, label: 'Admin' },

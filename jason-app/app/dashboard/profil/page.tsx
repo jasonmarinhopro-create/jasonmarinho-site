@@ -14,25 +14,29 @@ export default async function ProfilPage() {
 
   // getAuthUser() : getUser() validé côté serveur, mis en cache pour le rendu
   // (déjà appelé par getProfile), donc sans aller-retour supplémentaire.
-  const [authUser, { data: pd }, cgvRes, ppRes] = await Promise.all([
+  // Une seule lecture de la ligne du profil (18/11/2026 : avant, 3 lectures de
+  // la même ligne, cgv et paypal_me à part tant que leurs migrations 181 et 187
+  // manquaient ; les deux colonnes existent en base). Google en même temps.
+  const [authUser, { data: row }, google] = await Promise.all([
     getAuthUser(),
     supabase.from('profiles')
-      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city, stripe_subscription_id, stripe_customer_id, entreprise_numero, mention_tva')
+      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city, stripe_subscription_id, stripe_customer_id, entreprise_numero, mention_tva, cgv, paypal_me')
       .eq('id', profile.userId)
       .maybeSingle(),
-    // CGV (migration 181) : requête à part, la page s'affiche même sans la colonne
-    supabase.from('profiles').select('cgv').eq('id', profile.userId).maybeSingle(),
-    // Lien PayPal.me (migration 187), à part pour la même raison
-    supabase.from('profiles').select('paypal_me').eq('id', profile.userId).maybeSingle(),
-  ])
-  const cgv = cgvRes.error ? '' : ((cgvRes.data as { cgv?: string | null } | null)?.cgv ?? '')
-  const paypalMe = ppRes.error ? null : ((ppRes.data as { paypal_me?: string | null } | null)?.paypal_me ?? '')
-
-  // Abonnement Stripe (date de renouvellement, prix, statut) ; null si erreur
-  const [subscription, google] = await Promise.all([
-    pd?.stripe_subscription_id ? getSubscriptionDetails(pd.stripe_subscription_id) : Promise.resolve(null),
     googleActif(),
   ])
+  const { cgv: cgvRaw, paypal_me: paypalRaw, ...pd } = row ?? {} as NonNullable<typeof row>
+  const cgv = cgvRaw ?? ''
+  const paypalMe = paypalRaw ?? ''
+
+  // Abonnement Stripe (date de renouvellement, prix, statut) ; null si erreur
+  // ou si Stripe ne répond pas en 4 s (la page ne l'attend plus sans limite).
+  const subscription = pd.stripe_subscription_id
+    ? await Promise.race([
+        getSubscriptionDetails(pd.stripe_subscription_id),
+        new Promise<null>(resolve => setTimeout(() => resolve(null), 4000)),
+      ])
+    : null
 
   const planLabel: PlanLabel = profile.role === 'admin' ? 'Administrateur'
     : profile.plan === 'driing'   ? 'Membre Driing'
@@ -48,7 +52,7 @@ export default async function ProfilPage() {
       planLabel={planLabel}
       subscription={subscription}
       autresRevenusPro={profile.autres_revenus_pro ?? null}
-      pd={pd}
+      pd={row ? pd : null}
       google={google}
       cgv={cgv}
       paypalMe={paypalMe}
