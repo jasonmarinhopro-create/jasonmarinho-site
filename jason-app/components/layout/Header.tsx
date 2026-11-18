@@ -224,7 +224,8 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // client entre routes soeurs) — via le même endpoint/logique que le
   // serveur, pour ne pas réintroduire le badge "fantôme" (notification
   // expirée mais pas encore purgée) qu'un calcul dupliqué recréerait.
-  // Rafraîchi aussi toutes les 5 minutes quand l'onglet est visible, et au retour
+  // Relu aussi au retour sur l'onglet et en changeant de page (au plus
+  // toutes les 5 min, plus de minuteur depuis le 18/11/2026), et au retour
   // sur l'onglet (refonte 29/09/2026) : une nouvelle réservation, un contrat
   // signé ou un paiement apparaît sans recharger la page.
   const refreshCounts = useCallback(() => {
@@ -239,6 +240,17 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
       .catch(err => console.warn('[Header notif counts]', err))
   }, [userId])
 
+  // Dernière lecture des compteurs (le serveur les calcule au chargement)
+  const lastCountsAt = useRef(Date.now())
+  // Changement de page : compteurs relus si la dernière lecture date de plus
+  // de 5 minutes (le cadre n'est pas recalculé à la navigation)
+  useEffect(() => {
+    if (!userId) return
+    if (Date.now() - lastCountsAt.current < 300_000) return
+    lastCountsAt.current = Date.now()
+    refreshCounts()
+  }, [pathname, userId, refreshCounts])
+
   useEffect(() => {
     if (!userId) return
     // Pas d'appel au montage (10/11/2026) : le serveur vient de calculer ces
@@ -246,14 +258,19 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     // de chaque ouverture. Le minuteur et le retour sur l'onglet suffisent.
     // Cloche instantanée : le fil est préchargé une fois la page affichée
     const warm = window.setTimeout(prefetchNotificationFeed, 2500)
-    const tick = () => { if (document.visibilityState === 'visible') refreshCounts() }
-    // Toutes les 5 minutes (18/11/2026, avant : chaque minute, onglet par
-    // onglet, sur une base gratuite déjà saturée) ; retour sur l'onglet : tout de suite.
-    const id = window.setInterval(tick, 300_000)
+    // Plus de minuteur (18/11/2026, piste 3 de l'audit des appels : avant,
+    // chaque minute puis toutes les 5 min, onglet par onglet, même sans
+    // personne devant). Retour sur l'onglet : tout de suite, au plus une fois
+    // par minute ; changement de page : voir l'effet sur pathname plus bas.
+    const tick = () => {
+      if (document.visibilityState !== 'visible') return
+      if (Date.now() - lastCountsAt.current < 60_000) return
+      lastCountsAt.current = Date.now()
+      refreshCounts()
+    }
     document.addEventListener('visibilitychange', tick)
     window.addEventListener('notif-refresh-count', refreshCounts)
     return () => {
-      window.clearInterval(id)
       window.clearTimeout(warm)
       document.removeEventListener('visibilitychange', tick)
       window.removeEventListener('notif-refresh-count', refreshCounts)

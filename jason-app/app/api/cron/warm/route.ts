@@ -8,9 +8,8 @@
 // l'offre gratuite (petite machine partagée, 0,5 Go de mémoire), les services
 // non utilisés depuis un moment repartent lentement.
 //
-// Toutes les 5 minutes : un appel à l'authentification, un à l'API de la
-// base (fonction is_admin, qui renvoie tout de suite sans session) et une
-// lecture minuscule. Moins de 900 appels par jour, sans écriture.
+// Toutes les 5 minutes : un appel à l'authentification et une lecture
+// minuscule de l'API de la base (is_admin retiré le 18/11/2026). Moins de 900 appels par jour, sans écriture.
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -43,11 +42,9 @@ export async function GET(req: Request) {
   })
   const results = await Promise.all([
     timed('auth', () => fetch(`${url}/auth/v1/health`, opts(anon))),
-    // is_admin() : ouverte sans session (répond « false » tout de suite). Avant
-    // le 15/11/2026 on appelait menu_state, réservée aux membres connectés :
-    // la base notait « permission denied for function menu_state » toutes les
-    // 5 minutes (288 erreurs par jour dans les rapports Supabase).
-    timed('menu', () => fetch(`${url}/rest/v1/rpc/is_admin`, opts(anon, { method: 'POST', body: '{}' }))),
+    // Appel à is_admin() retiré le 18/11/2026 : c'était l'élément le plus
+    // coûteux de toute la base en temps de calcul (90 ms x 288 par jour, 7 %
+    // du total). La lecture minuscule ci-dessous réveille la même API.
     // Lecture publique minuscule (actualités publiées, règle d'accès publique) : pas de clé service
     timed('lecture', () => fetch(`${url}/rest/v1/actualites?select=id&limit=1`, opts(anon, { method: 'HEAD' }))),
   ])

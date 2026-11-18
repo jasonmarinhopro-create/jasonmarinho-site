@@ -65,7 +65,7 @@ Constat : les passages programmés GitHub arrivent avec 2 à 5 h de retard (17 h
 ## Carrousel du 26/10/2026 publié sur Facebook seulement (correctif)
 
 - Constat : Facebook publié à 17 h 40 (dernier passage), Instagram « délai dépassé » sur un carrousel resté « en traitement » chez Instagram, repris tel quel à chaque passage ; stories bloquées (elles attendent le post de leur réseau) ; plus aucun passage avant le lendemain 11 h.
-- Correctifs : pg_cron toutes les 10 minutes (`social-dispatch-10min`, migration 166, remplace les 4 passages de la migration 161 ; un passage sans post dû ne fait qu'une lecture) ; `graphFetch` en `cache: 'no-store'` ; un conteneur Instagram repris et toujours bloqué est abandonné (`InstagramMediaTimeoutError(null)`) et recréé au passage suivant, avec nouvel essai pendant 2 jours.
+- Correctifs : pg_cron toutes les 10 minutes, **toutes les 15 minutes depuis le 18/11/2026** (migration 194, audit des appels ; nom de tâche inchangé `social-dispatch-10min`, migration 166, remplace les 4 passages de la migration 161 ; un passage sans post dû ne fait qu'une lecture) ; `graphFetch` en `cache: 'no-store'` ; un conteneur Instagram repris et toujours bloqué est abandonné (`InstagramMediaTimeoutError(null)`) et recréé au passage suivant, avec nouvel essai pendant 2 jours.
 - Rattrapage manuel : `select social_dispatch_ping()` dans la base lance un passage tout de suite ; pour forcer un carrousel neuf, vider `pending_media_id` de la cible Instagram quand aucun passage ne tourne (sinon le passage en cours le réécrit).
 
 ## Stories du 27/10/2026 avec « undefined » dans le numéro (correctif)
