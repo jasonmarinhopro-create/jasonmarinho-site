@@ -28,6 +28,7 @@ import MenuLivePush from '@/components/layout/MenuLive'
 import PerfReporter from '@/components/perf/PerfReporter'
 import LastSeenPing from '@/components/layout/LastSeenPing'
 import { perfTimer } from '@/lib/perf/server-timing'
+import { getQgCount } from '@/lib/admin/qg-count'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): string {
   if (role === 'admin') return 'Administrateur'
@@ -251,12 +252,15 @@ async function MenuLiveLoader({ menuPromise, pathname, profile, onboardingOff, s
   const contratsTodo = !spaces.host ? 0
     : menu ? contractTodoCount(contractTodos(menu.contracts, parisToday()))
     : await loadContractTodoCount(profile.userId)
+  // Pastille du QG (admins seulement, gardée 15 min, lib/admin/qg-count.ts).
+  // Calculée sur toute page : la bascule Hôte | Admin ne recharge pas le cadre.
+  const qgCount = profile.role === 'admin' ? await getQgCount().catch(() => undefined) : undefined
   timer.mark(onboardingOff ? 'menu et cloche' : 'menu, cloche et parcours')
   timer.done()
 
   return (
     <>
-      <MenuLivePush value={{ proNav, contratsTodo, appNotifUnread, chezNousUnread, showOnboarding }} />
+      <MenuLivePush value={{ proNav, contratsTodo, appNotifUnread, chezNousUnread, showOnboarding, qgCount }} />
       {showOnboarding && (
         <OnboardingTracks
           pinnedTrack={profile.onboarding_pinned_track}

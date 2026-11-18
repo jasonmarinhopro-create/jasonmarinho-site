@@ -15,6 +15,8 @@ export type MenuLiveValue = {
   appNotifUnread: number
   chezNousUnread: number
   showOnboarding: boolean
+  /** Admins : éléments à traiter dans le QG (pastille du menu, cache 15 min) */
+  qgCount?: number
 }
 
 let current: MenuLiveValue | null = null

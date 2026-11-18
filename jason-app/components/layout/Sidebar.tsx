@@ -143,13 +143,19 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
 // Sidebar admin segmentée (29/09/2026, demande de Jason : « ça commence à
 // faire beaucoup ») : 4 blocs titrés. « Contenu » est replié par défaut
 // (ouvert automatiquement quand on est sur une de ses pages).
-type AdminItem = { href: string; label: string; Icon: React.ElementType }
+type AdminItem = { href: string; label: string; Icon: React.ElementType; activeMatch?: string[]; countKey?: 'qg' }
+// Menu admin regroupé (18/11/2026, maquette validée par Jason : « je commence
+// à en avoir partout ») : 9 entrées au lieu de 19. Les pages d'un même sujet
+// ont des onglets (AdminSectionTabs, app/dashboard/admin/layout.tsx) ; toutes
+// les adresses restent valables. Contenu (actualités, formations, guide,
+// modèles, groupes) sorti du menu à la demande de Jason (« je ne l'utilise
+// jamais ») : pages gardées, sans lien.
 const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; collapsible?: boolean }> = [
   {
     key: 'pilotage', label: 'Pilotage', items: [
       { href: '/dashboard/admin',             label: 'Vue d\'ensemble', Icon: Gear },
-      // QG : demandes d'hôtes, Driing, signalements et suggestions en une seule page
-      { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
+      // QG : demandes d'hôtes, Driing, signalements et suggestions ; pastille = à traiter
+      { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck, countKey: 'qg' },
       // État de santé : paiements, cautions, Stripe, iCal, e-mails, tâches, migrations
       { href: '/dashboard/admin/sante',       label: 'État de santé',   Icon: Heartbeat },
       // Ventes : objectifs (Supabase / Vercel Pro), entonnoirs, membres à réveiller
@@ -158,31 +164,16 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
   },
   {
     key: 'comptes', label: 'Utilisateurs', items: [
-      { href: '/dashboard/admin/membres',       label: 'Membres',           Icon: UsersThree },
-      { href: '/dashboard/admin/photographes',  label: 'Photo & vidéo',      Icon: Camera },
-      { href: '/dashboard/admin/menage',        label: 'Équipes de ménage', Icon: Sparkle },
-      { href: '/dashboard/admin/depannage',     label: 'Dépannage',         Icon: Wrench },
-      { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',     Icon: Briefcase },
+      { href: '/dashboard/admin/membres', label: 'Membres', Icon: UsersThree, activeMatch: ['/dashboard/admin/membres', '/dashboard/admin/investisseurs'] },
+      { href: '/dashboard/admin/photographes', label: 'Pros', Icon: Briefcase, activeMatch: ['/dashboard/admin/photographes', '/dashboard/admin/menage', '/dashboard/admin/depannage'] },
     ],
   },
   {
-    key: 'croissance', label: 'Acquisition', items: [
-      // Visibilité : Google Search Console + visites du site, fiches pros, villes, IA
-      { href: '/dashboard/admin/visibilite',  label: 'Visibilité',      Icon: Binoculars },
-      // Liens suivis (groupes Facebook) et provenance des inscriptions
-      { href: '/dashboard/admin/provenance',  label: 'Provenance',      Icon: LinkSimple },
+    key: 'croissance', label: 'Croissance', items: [
+      // Visibilité (Search Console, visites), Provenance (liens suivis), Référencement (indexation)
+      { href: '/dashboard/admin/visibilite', label: 'Trafic & SEO', Icon: Binoculars, activeMatch: ['/dashboard/admin/visibilite', '/dashboard/admin/provenance', '/dashboard/admin/indexation'] },
       { href: '/dashboard/admin/prospection', label: 'Prospection',     Icon: PaperPlaneTilt },
       { href: '/dashboard/admin/social',      label: 'Réseaux sociaux', Icon: ShareNetwork },
-      { href: '/dashboard/admin/indexation',  label: 'Référencement',   Icon: MagnifyingGlass },
-    ],
-  },
-  {
-    key: 'contenu', label: 'Contenu', collapsible: true, items: [
-      { href: '/dashboard/admin/actualites', label: 'Actualités',          Icon: Newspaper },
-      { href: '/dashboard/admin/formations', label: 'Formations',          Icon: GraduationCap },
-      { href: '/dashboard/admin/guides',     label: 'Guide LCD',           Icon: BookOpen },
-      { href: '/dashboard/admin/gabarits',   label: 'Modèles de messages', Icon: FileText },
-      { href: '/dashboard/admin/communaute', label: 'Groupes Facebook',    Icon: FacebookLogo },
     ],
   },
 ]
@@ -400,7 +391,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   // sous-page (les 2 sont prefixes valides du pathname).
   const allHrefs = useMemo(() => [
     ...navGroups.flatMap(g => g.items.map(i => i.href)),
-    ...adminGroups.flatMap(g => g.items.map(i => i.href)),
+    ...adminGroups.flatMap(g => g.items.flatMap(i => [i.href, ...(i.activeMatch ?? [])])),
+    // Pages admin sans entrée dans le menu (18/11/2026 : Contenu retiré, pages
+    // ouvertes depuis le QG) : sinon « Vue d'ensemble » s'allume dessus.
+    ...['actualites', 'formations', 'guides', 'gabarits', 'communaute', 'demandes', 'driing', 'signalements', 'sos-feedback', 'suggestions'].map(x => `/dashboard/admin/${x}`),
     // Espaces pros : necessaires au "match le plus profond gagne", sinon
     // "Ma fiche" reste active sur /demandes (les 2 items allumes).
     '/dashboard/ma-fiche-photographe',
@@ -690,36 +684,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               )
             })()
           ) : adminMode && isAdmin ? (
-            /* Mode admin dedicated : sidebar remplacée par Admin uniquement.
-               Header "Mode admin" + bouton retour hote dans la DA (jaune accent). */
-            <>
-              {!collapsed && (
-                <div style={styles.adminModeHeader}>
-                  <div style={styles.adminBadge}>
-                    <span style={styles.adminBadgeDot} />
-                    <span style={styles.adminBadgeLabel}>Mode admin</span>
-                  </div>
-                  <div style={styles.adminHelper}>Menu d'administration. Ton espace hôte est à un clic.</div>
-                </div>
-              )}
-              <button
-                onClick={toggleAdminMode}
-                className="jm-nav-item"
-                title={collapsed ? 'Retour mode hôte' : undefined}
-                style={{
-                  ...styles.navItem,
-                  ...styles.backToHostBtn,
-                  justifyContent: collapsed ? 'center' : 'flex-start',
-                }}
-              >
-                <div style={styles.backToHostIco}>
-                  <CaretDoubleLeft size={13} weight="bold" />
-                </div>
-                {!collapsed && (
-                  <span style={styles.backToHostLabel}>Retour mode hôte</span>
-                )}
-              </button>
-            </>
+            /* Mode admin : seulement le menu admin (plus bas). « Mode admin » et
+               « Retour mode hôte » retirés le 18/11/2026 : la bascule Hôte | Admin
+               sous le logo fait les deux. */
+            null
           ) : (
             <>
               {navGroups.map((group, i) => (
@@ -775,8 +743,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     {collapsed && g.key !== 'pilotage' && <div style={{ height: '1px', background: 'var(--nav-border)', margin: '6px 8px' }} />}
                     {(open || collapsed) && (
                       <div style={styles.navSection}>
-                        {g.items.map(({ href, label, Icon }) => (
-                          <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
+                        {g.items.map(({ href, label, Icon, activeMatch, countKey }) => (
+                          <NavItem key={href} href={href} label={label} Icon={Icon} activeMatch={activeMatch} count={countKey === 'qg' ? live?.qgCount ?? 0 : undefined} />
                         ))}
                       </div>
                     )}
@@ -790,7 +758,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
         {/* Sélecteur de logement (bas de sidebar, dropdown vers le haut).
             Masqué en espace investisseur : un investisseur pré-achat n'a
             pas de logement à sélectionner. */}
-        {!proRole && !investorMode && allProperties && (
+        {!proRole && !investorMode && !(adminMode && isAdmin) && allProperties && (
           <PropertySelector allProperties={allProperties} currentId={activePropertyId ?? 'all'} collapsed={collapsed} />
         )}
 
