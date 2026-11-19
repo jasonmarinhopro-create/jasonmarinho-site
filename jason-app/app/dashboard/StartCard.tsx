@@ -28,7 +28,7 @@ export default function StartCard({ hasLogement, logementNom, hasCalendar, hasRe
       key: 'logement', done: hasLogement,
       label: 'Ajoute ton logement',
       sub: hasLogement ? (logementNom ?? 'Logement ajouté') : 'Son nom et son adresse : tous les outils se préremplissent ensuite',
-      cta: { label: 'Ajouter', href: '/dashboard/logements' },
+      cta: { label: 'Ajouter', href: '/dashboard/logements?new=1' },
     },
     {
       key: 'calendrier', done: hasCalendar || hasReservation, skipped: calendarSkipped && !hasCalendar && !hasReservation,
@@ -82,7 +82,7 @@ export default function StartCard({ hasLogement, logementNom, hasCalendar, hasRe
               {now && (st.cta || st.skippable) && (
                 <span style={s.actions}>
                   {st.skippable && <SkipStepButton stepKey={SKIP_CALENDAR_KEY} />}
-                  {st.cta && <Link href={st.cta.href} style={s.cta}>{st.cta.label} <ArrowRight size={13} weight="bold" /></Link>}
+                  {st.cta && <Link prefetch={false} href={st.cta.href} style={s.cta}>{st.cta.label} <ArrowRight size={13} weight="bold" /></Link>}
                 </span>
               )}
             </li>
