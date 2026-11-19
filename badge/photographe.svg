@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="72" viewBox="0 0 240 72" role="img" aria-label="Photographe et vidéaste Airbnb, référencé sur l'annuaire Jason Marinho">
+  <title>Photographe et vidéaste Airbnb, référencé sur l'annuaire Jason Marinho</title>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#001a11"/><stop offset="1" stop-color="#00463a"/></linearGradient></defs>
+  <rect width="240" height="72" rx="14" fill="url(#g)"/>
+  <circle cx="34" cy="36" r="17" fill="#FFD56B"/>
+  <text x="34" y="42" text-anchor="middle" fill="#003329" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-weight="700">JM</text>
+  <text x="62" y="24" fill="#FFD56B" font-family="Helvetica, Arial, sans-serif" font-size="9.5" font-weight="700" letter-spacing="0.7">RÉFÉRENCÉ SUR L’ANNUAIRE</text>
+  <text x="62" y="44" fill="#FFFFFF" font-family="Georgia, 'Times New Roman', serif" font-size="19">Jason Marinho</text>
+  <text x="62" y="59" fill="#CFE3DB" font-family="Helvetica, Arial, sans-serif" font-size="10">Photographe et vidéaste Airbnb</text>
+</svg>

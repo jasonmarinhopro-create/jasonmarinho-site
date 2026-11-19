@@ -2,11 +2,14 @@
 // fiche publique il faut descendre, ce n'est pas intuitif ») : le lien de la
 // fiche, les statistiques des 30 derniers jours et les vues du mois, avant
 // l'atelier. Avant, ces trois cartes étaient tout en bas de la colonne de droite.
+// Dessous, quand la fiche est en ligne : le badge à coller sur le site du pro.
 import type { ReactNode } from 'react'
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import ViewsTrend from '@/components/pros/ViewsTrend'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { ShareNetwork } from '@phosphor-icons/react/dist/ssr'
+import BadgeSiteCard from '@/components/pros/BadgeSiteCard'
+import { badgeMetier } from '@/lib/pros/badge'
 
 export default function FicheOverview({ publicUrl, isActive, displayName, statsSlot, viewsTrend, metier, adminSlot }: {
   publicUrl: string | null
@@ -34,6 +37,8 @@ export default function FicheOverview({ publicUrl, isActive, displayName, statsS
       {statsSlot}
       {viewsTrend && <ViewsTrend trend={viewsTrend} metier={metier} compact style={{ margin: 0 }} />}
     </div>
+    {/* Badge pour le site du pro (19/11/2026), seulement quand la fiche est en ligne */}
+    {isActive && publicUrl && badgeMetier(metier) && <BadgeSiteCard metier={badgeMetier(metier)!} ficheUrl={publicUrl} nom={displayName} />}
     {adminSlot && <div style={{ marginBottom: 18 }}>{adminSlot}</div>}
     </>
   )
