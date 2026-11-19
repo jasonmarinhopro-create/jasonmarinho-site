@@ -157,7 +157,7 @@ export default async function DashboardPage() {
     // et les URL iCal (avant : 3 requêtes sur la même table, 05/10/2026)
     supabase
       .from('logements')
-      .select('nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre, prix_airbnb_nuit, prix_booking_nuit, prix_direct_nuit')
+      .select('id, nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre, prix_airbnb_nuit, prix_booking_nuit, prix_direct_nuit')
       .eq('user_id', userId),
     // Catalogue public caché 5 min, on slice côté JS pour ne garder que 3
     actusPromise,
@@ -260,7 +260,7 @@ export default async function DashboardPage() {
 
   const { data: contracts }       = pick<{ data: any[] | null }>(0, { data: [] })
   const { data: logementsAll }    = pick<{ data: Array<{
-    nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null
+    id?: string; nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null
     prix_airbnb_nuit: number | null; prix_booking_nuit: number | null; prix_direct_nuit: number | null
   }> | null }>(1, { data: [] })
   const allCachedNews             = forAudience(pick<any[]>(2, []), 'hote')
@@ -755,6 +755,7 @@ export default async function DashboardPage() {
             calendarSkipped={calendarSkipped}
             hasLogement={hasLogement}
             logementNom={(logementsAll ?? [])[0]?.nom ?? null}
+            logementId={(logementsAll ?? [])[0]?.id ?? null}
             hasCalendar={(icalFeedCount ?? 0) > 0}
             hasReservation={occupations.length > 0}
             extras={setupSteps.filter(st => ['contrat', 'menage', 'prix', 'objectif'].includes(st.key) && !st.done).map(st => ({ key: st.key, label: st.label, href: st.ctaHref }))}

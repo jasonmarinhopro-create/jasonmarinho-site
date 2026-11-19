@@ -100,7 +100,7 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
             <MapPin size={28} weight="duotone" style={{ color: 'var(--accent-text)', opacity: 0.85, marginBottom: '8px' }} />
             <div style={s.emptyTitle}>Préfilage indisponible</div>
             <div style={s.emptyDesc}>Ajoute au moins un logement pour comparer ton activité réelle au marché européen. Tu peux quand même tester les outils sans préfilage.</div>
-            <Link href="/dashboard/logements" style={s.emptyCta}>Ajouter mon premier logement →</Link>
+            <Link prefetch={false} href="/dashboard/logements?new=1" style={s.emptyCta}>Ajouter mon premier logement →</Link>
           </div>
         )}
 

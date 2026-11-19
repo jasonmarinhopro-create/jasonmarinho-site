@@ -244,7 +244,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
           <House size={14} />
           <span>
             Aucun logement enregistré.{' '}
-            <Link href="/dashboard/logements" style={s.warningLink}>Crée-en un</Link>
+            <Link prefetch={false} href="/dashboard/logements?new=1" style={s.warningLink}>Crée-en un</Link>
             {' '}pour pré-remplir tes posts.
           </span>
         </div>

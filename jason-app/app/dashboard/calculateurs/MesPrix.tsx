@@ -59,7 +59,7 @@ export default function MesPrix({ logements }: Props) {
           Ajoute ton premier logement pour définir une stratégie tarifaire
           (prix par plateforme + saisonnalité + comparaison marché local).
         </p>
-        <Link href="/dashboard/logements" style={s.emptyCta}>Ajouter mon premier logement →</Link>
+        <Link prefetch={false} href="/dashboard/logements?new=1" style={s.emptyCta}>Ajouter mon premier logement →</Link>
       </div>
     )
   }
