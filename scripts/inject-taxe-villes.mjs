@@ -101,6 +101,7 @@ function faqAnswer(slug, a, de) {
 
 let done = 0
 const skipped = []
+const grilles = [] // pour la section « Par ville » du simulateur
 for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbnb-'))) {
   const file = join(ROOT, dir, 'index.html')
   if (!existsSync(file)) continue
@@ -110,6 +111,8 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   if (!m) { skipped.push(`${slug} (ville)`); continue }
   const [, prep, ville] = m
   const a = `${prep} ${ville}`
+  // Nom complet (« au Mans » → « Le Mans », « aux Sables » → « Les Sables »)
+  const nom = prep === 'au' ? `Le ${ville}` : prep === 'aux' ? `Les ${ville}` : ville
   const de = prep === 'au' ? `du ${ville}` : prep === 'aux' ? `des ${ville}` : /^[AEIOUYÉÈÂÎH]/i.test(ville) ? `d'${ville}` : `de ${ville}`
 
   // 1. Paragraphe de la section « Taxe de séjour »
@@ -173,6 +176,10 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   // <ville> » (relevé Search Console du 17/10/2026, place 5 à 10, presque
   // aucun clic) : le montant en tête. Les autres gardent leur description.
   const g = officialGrid(slug)
+  if (g) {
+    const l4 = g.lignes.find(l => l.label.includes('4 étoiles'))
+    if (l4) grilles.push({ slug, ville: nom, t4: nb(fmtTotal(l4)) })
+  }
   if (g && TAX_INTENT.includes(slug)) {
     const l4 = g.lignes.find(l => l.label.includes('4 étoiles'))
     const desc = nb(`Taxe de séjour ${a} en 2026 : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé. Grille officielle, exemple chiffré et qui la collecte.`)
@@ -182,7 +189,7 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
     // « taxe de séjour <ville> » avec presque aucun clic, et leur titre disait
     // « Devenir hôte Airbnb à … ». Le titre reprend la recherche ; le H1 et
     // og:title gardent « Devenir hôte ». 60 caractères au plus.
-    const titres = [`Taxe de séjour ${ville} 2026 : tarifs et guide hôte Airbnb`, `Taxe de séjour ${ville} 2026 : tarifs et guide hôte`]
+    const titres = [`Taxe de séjour ${nom} 2026 : tarifs et guide hôte Airbnb`, `Taxe de séjour ${nom} 2026 : tarifs et guide hôte`]
     const titre = titres.find(t => t.length <= 60)
     if (titre) html = html.replace(/<title>[^<]*<\/title>/, `<title>${titre.replace(/&/g, '&amp;')}</title>`)
   }
@@ -190,5 +197,34 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   writeFileSync(file, html)
   done++
 }
-console.log(`Taxe de séjour : ${done} guides`)
+// 6. Simulateur de taxe de séjour : section « Le tarif officiel de ta ville »
+// avec un lien vers chaque guide qui porte la grille officielle (audit SEO du
+// 19/11/2026 : le simulateur ne renvoyait vers aucun guide). Avant la FAQ,
+// marqueurs TAXE-VILLES:START/END ; survit à generate-simulateurs-seo-pages.
+const SIMU_FILE = join(ROOT, 'services/simulateurs/taxe-de-sejour/index.html')
+if (existsSync(SIMU_FILE) && grilles.length) {
+  let simu = readFileSync(SIMU_FILE, 'utf8').replace(/<!-- TAXE-VILLES:START -->[\s\S]*?<!-- TAXE-VILLES:END -->\n/, '')
+  const chips = grilles.sort((x, y) => x.ville.localeCompare(y.ville, 'fr'))
+    .map(c => `<a href="/devenir-hote-airbnb-${c.slug}" style="display:flex;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:10px;background:#fff;border:1px solid var(--bd);color:var(--g);font-size:14px;font-weight:500;text-decoration:none"><span>${c.ville}</span><span style="color:var(--tl);font-weight:400">${c.t4}</span></a>`)
+    .join('\n      ')
+  const section = `<!-- TAXE-VILLES:START -->
+<section class="sec" id="par-ville">
+  <div class="s-in">
+    <div class="lbl dk">Par ville</div>
+    <h2 class="h2">Le tarif officiel <em>de ta ville</em></h2>
+    <p style="max-width:720px;color:var(--tm);line-height:1.65;margin:0 0 20px">Le simulateur applique les plafonds nationaux. Le tarif voté par ta commune peut être plus bas : chaque guide de ville donne la grille 2026 de la base officielle (DGFiP), du meublé non classé au 5 étoiles, taxes additionnelles comprises. À droite, le montant par personne et par nuit pour un meublé 4 étoiles.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px">
+      ${chips}
+    </div>
+  </div>
+</section>
+<!-- TAXE-VILLES:END -->
+`
+  const faq = simu.indexOf('<h2 class="h2">FAQ')
+  const at = faq > 0 ? simu.lastIndexOf('<section', faq) : -1
+  if (at > 0) { simu = simu.slice(0, at) + section + simu.slice(at); writeFileSync(SIMU_FILE, simu) }
+  else skipped.push('simulateur (FAQ introuvable)')
+}
+
+console.log(`Taxe de séjour : ${done} guides, ${grilles.length} villes dans le simulateur`)
 if (skipped.length) console.log('Ignorés :', skipped.join(', '))

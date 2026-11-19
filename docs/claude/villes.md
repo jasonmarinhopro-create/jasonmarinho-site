@@ -42,3 +42,9 @@ Jason (page Paris) : bloc « Photographes dans la région » décalé, grand vid
 ## Descriptions des pages pros de ville (18/11/2026)
 
 Description meta et og:description des pages `photographe-lcd-`, `menage-lcd-`, `depannage-lcd-` : `scripts/lib/desc-pros-villes.mjs`, posées par `node scripts/inject-desc-villes.mjs` (dans `creer-ville.mjs`, contrôle `--check` en CI). Relancer après `build-pages-pros-villes.mjs` comme les autres injections. Détail dans `seo-partenaires.md`, « Audit SEO du 18/11/2026 ».
+
+## Liens du blog vers les villes, lot D de l'audit SEO (19/11/2026)
+
+- `inject-villes-blog.mjs` : listes de villes refaites d'après la Search Console (20/10 au 16/11/2026, pages de ville en place 10 ou mieux, les plus vues d'abord), encadré « Par ville » dans 28 articles (ménage 10, photo 11, taxe et fiscalité 7) ; **liens dans le texte** (`LIENS_TEXTE`, `lierVilles`) : première mention de chaque ville dans 8 articles où la ville compte (marchés de Noël, saisonnalité, déclaration, numéro d'enregistrement, achat d'un appartement vers les guides hôte ; tarifs photographe vers les pages photographe ; ménage vers les pages ménage), seulement dans un paragraphe ou une liste, jamais dans un titre, un lien ou un `<strong>`. Liens marqués `data-vl="1"`, retirés et reposés à chaque passage. Nouvel article où une ville compte : l'ajouter à `LIENS_TEXTE`.
+- **Simulateur de taxe de séjour** : section « Le tarif officiel de ta ville » (`#par-ville`, marqueurs `TAXE-VILLES`, avant la FAQ), un lien par guide qui porte la grille DGFiP avec le tarif 4 étoiles ; posée par `inject-taxe-villes.mjs` (61 villes : Amiens attend son relevé, Versailles est exclue).
+- Bilan prévu vers le 16/12/2026 avec les titres du lot A.
