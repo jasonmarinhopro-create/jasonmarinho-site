@@ -15,7 +15,7 @@ import {
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, LinkSimple, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
   Broom, Wrench, Check, Plus, ChatText, ArrowLeft, Receipt, Binoculars, PresentationChart,
-  Handshake, Compass,
+  Handshake,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -864,18 +864,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               <Link href="/dashboard/aide" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
                 <Question size={15} />Centre d&apos;aide
               </Link>
-              {/* Parcours de démarrage (18/11/2026) : remplace l'icône carte de
-                  l'en-tête, sans libellé, peu comprise. Hôte seulement, tant
-                  que le parcours n'est pas fini ; même événement qu'avant. */}
-              {live?.showOnboarding && !proRole && !investorMode && !(adminMode && isAdmin) && (
-                <button
-                  type="button"
-                  onClick={() => { setUserMenuOpen(false); window.dispatchEvent(new CustomEvent('open-onboarding')) }}
-                  style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
-                >
-                  <Compass size={15} />Reprendre mon parcours
-                </button>
-              )}
               <div style={styles.userMenuDivider} />
               <button onClick={() => { setUserMenuOpen(false); handleSignOut() }} style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'var(--text-3)', fontFamily: 'inherit' }}>
                 <SignOut size={15} />Se déconnecter

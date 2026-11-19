@@ -77,7 +77,10 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // Avant : 6 à 14 requêtes séparées à chaque ouverture. Lancée avant
   // l'attente du profil ; null tant que la migration 148 manque (repli plus bas).
   const onProPath = pathname.startsWith('/dashboard/ma-fiche-photographe') || pathname.startsWith('/dashboard/ma-fiche-menage') || pathname.startsWith('/dashboard/investir')
-  const menuPromise = loadMenuState({ onboarding: !onProPath, pro: true })
+  // Parcours flottant en 7 thèmes supprimé le 19/11/2026 (décision de Jason :
+  // 0 terminé, 32 fermés) : plus calculé ni affiché. Remplacé par la carte
+  // « Démarrage » en 3 étapes de l'Accueil (StartCard).
+  const menuPromise = loadMenuState({ onboarding: false, pro: true })
 
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
@@ -88,7 +91,6 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // router cache des layouts.
   // L'espace investisseur (pré-achat) n'a ni logement ni voyageur :
   // l'onboarding hôte (Parcours) n'y a pas de sens.
-  const isOnProSpace = onProPath
 
   // PERF + fix flash : si l'onboarding est TERMINÉ (onboarding_completed_at),
   // on NE lance PAS detectTracksProgress (7 requêtes, ~200-500ms) et on NE
@@ -100,7 +102,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // monté (rendu null) pour écouter cet événement de restauration.
   // Pas de parcours en mode admin, ni quand le profil n'a pas pu être lu
   // (sinon le panneau s'ouvrait comme si l'utilisateur ne l'avait jamais fermé)
-  const onboardingOff = isOnProSpace || !!profile.onboarding_completed_at || pathname.startsWith('/dashboard/admin') || profile.profileUnavailable
+  const onboardingOff = true
 
   const [cachedActualites, spacesResult, activeProperty, cachedFormations] = await Promise.all([
     actualitesPromise,

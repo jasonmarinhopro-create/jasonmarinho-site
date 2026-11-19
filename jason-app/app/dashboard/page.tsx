@@ -13,7 +13,9 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 // ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
-import SetupChecklist, { type SetupStep } from './SetupChecklist'
+import { type SetupStep } from './SetupChecklist'
+import StartCard from './StartCard'
+import NewHostHome from './NewHostHome'
 import MesPlateformesWidget from './MesPlateformesWidget'
 import TodayBoard, { type TodayItem, type TodayAction } from './TodayBoard'
 import { loadHostMenageSlots, buildHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
@@ -723,6 +725,17 @@ export default async function DashboardPage() {
     { key: 'declarations', href: '/dashboard/voyageurs/declarations', count: (pendingDeclarations ?? []).length, names: (pendingDeclarations ?? []).map(d => d.voyageur_nom) },
   ]
 
+  // Nouvel inscrit sans logement ni réservation (19/11/2026) : Accueil dédié,
+  // un seul bouton (ajouter son logement), pas de tableau de zéros.
+  if (isNewHost) {
+    return (
+      <div style={s.page} className="dash-page">
+        <OnboardingTour userId={userId} initiallyDone={completedSteps.includes('tour:home')} />
+        <NewHostHome firstName={firstName} />
+      </div>
+    )
+  }
+
   return (
     <>
       <div style={s.page} className="dash-page">
@@ -733,19 +746,17 @@ export default async function DashboardPage() {
           initiallyDone={completedSteps.includes('tour:home')}
         />
 
-        {/* ── Setup checklist : visible jusqu'à 100% ou dismiss ─────────── */}
-        {/* On masque aussi si l'hôte a globalement masqué/terminé l'onboarding
-            (onboarding_dismissed / onboarding_completed_at) — évite le flash
-            "checklist qui apparaît puis disparaît" à l'hydratation. */}
-        <SetupChecklist
-          userId={userId}
-          steps={setupSteps}
-          initiallyDismissed={
-            completedSteps.includes('setup:dismissed') ||
-            !!profile?.onboarding_dismissed ||
-            !!profile?.onboarding_completed_at
-          }
-        />
+        {/* ── Démarrage en 3 étapes (19/11/2026) : remplace la liste de 7 et
+              le parcours flottant. Disparaît dès la première réservation. */}
+        {!(hasLogement && occupations.length > 0) && (
+          <StartCard
+            hasLogement={hasLogement}
+            logementNom={(logementsAll ?? [])[0]?.nom ?? null}
+            hasCalendar={(icalFeedCount ?? 0) > 0}
+            hasReservation={occupations.length > 0}
+            extras={setupSteps.filter(st => ['contrat', 'menage', 'prix', 'objectif'].includes(st.key) && !st.done).map(st => ({ key: st.key, label: st.label, href: st.ctaHref }))}
+          />
+        )}
 
         {/* ── En-tête (DA sept. 2026) : bandeau vert HubHero, ta journée à
               gauche, tes chiffres du mois à droite (avant : carte vert foncé

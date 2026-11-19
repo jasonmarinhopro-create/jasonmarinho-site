@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { getServiceClient } from '@/lib/supabase/service'
 import MembresUI from './MembresUI'
+import { allRows } from '@/lib/supabase/all-rows'
 import { perfTimer } from '@/lib/perf/server-timing'
 import { loadMemberActivity } from '@/lib/admin/activity-load'
 import { computeRevenue, type ProRow } from '@/lib/admin/revenue'
@@ -9,7 +10,7 @@ import { splitDemo } from '@/lib/pros/demo'
 
 export const metadata = { title: 'Membres, Jason Marinho' }
 
-export default async function MembresPage() {
+export default async function MembresPage({ searchParams }: { searchParams?: { filtre?: string } }) {
   // getProfile : session et profil déjà lus par le layout (dédupliqués)
   const timer = perfTimer('page /dashboard/admin/membres')
   const profile = await getProfile()
@@ -18,7 +19,7 @@ export default async function MembresPage() {
 
   const adminClient = getServiceClient()
 
-  const [{ data: members }, { data: photographers }, { data: cleaners }, { data: depannage }, activity] = await Promise.all([
+  const [{ data: members }, { data: photographers }, { data: cleaners }, { data: depannage }, activity, logementsRes] = await Promise.all([
     adminClient
       .from('profiles')
       .select(`
@@ -37,6 +38,8 @@ export default async function MembresPage() {
     adminClient.from('depannage_pros').select('user_id, tier, status, stripe_subscription_status'),
     // Dernière visite et dernière action de chaque membre (une source en panne n'empêche rien)
     loadMemberActivity().catch(() => new Map()),
+    // Membres avec au moins un logement (filtre « sans logement », 19/11/2026)
+    allRows<{ user_id: string | null }>((from, to) => adminClient.from('logements').select('user_id').not('user_id', 'is', null).order('id').range(from, to)),
   ])
 
   timer.mark('membres')
@@ -56,6 +59,7 @@ export default async function MembresPage() {
   const photographerIds = new Set((photographers ?? []).map(p => p.user_id))
   const cleanerIds = new Set((cleaners ?? []).map(c => c.user_id))
   const depannageIds = new Set((depannage ?? []).map(c => c.user_id))
+  const withLogement = new Set(logementsRes.rows.map(r => r.user_id))
 
   // Normalize Supabase join result: formation relation comes as array from generic client
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,6 +68,8 @@ export default async function MembresPage() {
     is_photographer: photographerIds.has(m.id),
     is_cleaner: cleanerIds.has(m.id),
     is_depannage: depannageIds.has(m.id),
+    // Lecture des logements en erreur : filtre inactif (undefined) plutôt que faux
+    has_logement: logementsRes.error ? undefined : withLogement.has(m.id),
     last_seen_at: activity.get(m.id)?.lastSeenAt ?? null,
     last_action: activity.get(m.id)?.lastAction ?? null,
     user_formations: (m.user_formations ?? []).map((uf: any) => ({
@@ -75,7 +81,7 @@ export default async function MembresPage() {
   return (
     <>
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
-        <MembresUI members={normalized} monthlyRevenue={revenue.monthly} />
+        <MembresUI members={normalized} monthlyRevenue={revenue.monthly} initialFilter={searchParams?.filtre === 'sans-logement' ? 'sans-logement' : 'all'} />
       </div>
     </>
   )

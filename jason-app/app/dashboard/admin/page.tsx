@@ -6,6 +6,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { Suspense, cache } from 'react'
 import { loadCockpitTraffic } from '@/lib/acquisition/load'
 import AdminUI, { AffiliationCard } from './AdminUI'
+import ActivationCard from './ActivationCard'
 import { LivePanel, AudienceCard, OverviewUnavailable } from './Cockpit'
 import { buildMemberSpaces, type CockpitProfile } from '@/lib/admin/members-cockpit'
 import { allRows } from '@/lib/supabase/all-rows'
@@ -193,6 +194,7 @@ export default async function AdminPage() {
         affilaeSlot={<Suspense fallback={<AffilaeSkeleton />}><AffilaeSection /></Suspense>}
         liveSlot={<Suspense fallback={<AffilaeSkeleton height={190} />}><LiveSection /></Suspense>}
         audienceSlot={<Suspense fallback={<AffilaeSkeleton height={620} />}><AudienceSection /></Suspense>}
+        activationSlot={<Suspense fallback={<AffilaeSkeleton height={380} />}><ActivationCard /></Suspense>}
         stats={overview.stats}
       />
     </div>

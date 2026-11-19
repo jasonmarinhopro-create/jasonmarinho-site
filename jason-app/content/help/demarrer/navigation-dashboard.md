@@ -48,4 +48,3 @@ Clique sur ton nom en bas du menu :
 - **Mon abonnement** : ta formule, ton renouvellement, tes factures
 - **Centre d'aide** : tu y es
 - **Changer d'espace** : si tu es aussi photographe, équipe de ménage ou investisseur (ou **Ajouter un espace**)
-- **Reprendre mon parcours** : rouvre le parcours de démarrage, tant que tu ne l'as pas terminé

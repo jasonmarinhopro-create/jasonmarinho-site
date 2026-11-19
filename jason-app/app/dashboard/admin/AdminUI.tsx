@@ -54,7 +54,7 @@ export default function AdminUI({
   todayLabel,
   stats,
   memberSpaces,
-  liveVisitors, affiliateClicks, affilaeSlot, liveSlot, audienceSlot,
+  liveVisitors, affiliateClicks, affilaeSlot, liveSlot, audienceSlot, activationSlot,
 }: {
   todayLabel: string
   stats: Stats
@@ -67,6 +67,8 @@ export default function AdminUI({
   /** « En ce moment » et Audience (diffusés à part : visites et Google Search Console) */
   liveSlot?: React.ReactNode
   audienceSlot?: React.ReactNode
+  /** « Où en sont tes membres » (19/11/2026) */
+  activationSlot?: React.ReactNode
 }) {
   // Payants : Standard des hôtes + fiches photographes et ménage payées
   // (Driing = offert aux clients Driing)
@@ -185,6 +187,8 @@ export default function AdminUI({
       <Shortcuts groups={shortcuts} />
 
       {audienceSlot}
+
+      {activationSlot}
 
       <MembersCard spaces={memberSpaces} />
 
