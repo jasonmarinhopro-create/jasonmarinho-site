@@ -423,7 +423,7 @@ function buildSitemap(items) {
   const today = new Date().toISOString().slice(0, 10)
   const urls = [
     `  <url><loc>https://jasonmarinho.com/securite/signalements</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>`,
-    `  <url><loc>https://jasonmarinho.com/securite/contester-signalement</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>`,
+    // /securite/contester-signalement : en noindex, donc hors sitemap (audit SEO 18/11/2026)
     ...items.map(it => {
       const lm = (it.created_at || today).slice(0, 10)
       return `  <url><loc>https://jasonmarinho.com/securite/signalements/${it.slug}</loc><lastmod>${lm}</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>`

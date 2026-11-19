@@ -8,6 +8,8 @@
 //   (avant : la même couverture-jason.webp pour les 230 articles) ;
 // - max-image-preview:large, que Google demande pour montrer une grande image
 //   dans Discover (developers.google.com/search/docs/appearance/google-discover).
+// - fetchpriority="high" : la photo est l'élément le plus grand du premier
+//   écran (LCP), le navigateur la demande avant le reste (audit SEO 18/11/2026).
 // Idempotent (marqueurs COVER), lancé au déploiement (build-site.sh) après les
 // générateurs. Un article sans couverture reste tel quel.
 //   node scripts/inject-blog-covers.mjs [--check]
@@ -45,7 +47,7 @@ for (const [slug, c] of Object.entries(covers)) {
   const cap = credit(c)
   const bloc = `<!-- COVER:START --><figure class="art-cover"><img src="/img/blog/${slug}.webp"`
     + (small ? ` srcset="/img/blog/${slug}-600.webp 600w, /img/blog/${slug}.webp 1200w" sizes="(max-width: 760px) 100vw, 700px"` : '')
-    + ` alt="${esc(alt)}" width="1200" height="630" decoding="async">${cap ? `<figcaption>${cap}</figcaption>` : ''}</figure><style>${CSS}</style><!-- COVER:END -->\n`
+    + ` alt="${esc(alt)}" width="1200" height="630" fetchpriority="high" decoding="async">${cap ? `<figcaption>${cap}</figcaption>` : ''}</figure><style>${CSS}</style><!-- COVER:END -->\n`
 
   let out = src.replace(RE, '')
   if (!out.includes('<div class="art-body">')) { missing++; continue }

@@ -15,6 +15,7 @@
 // déploiement, après le nettoyage des dossiers de fiches.
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { villesRegistre } from './registre-geo.mjs'
 import { resolveSecteur, departements, regions, distKm, normNom } from './secteur.mjs'
 import { jsonLd, MERES, SITE } from './fil-ariane.mjs'
@@ -407,7 +408,18 @@ function write(root, url, html) {
 
 /** Ajoute des adresses à un sitemap (avant </urlset>) */
 export function sitemapAvec(xml, urls) {
-  if (!urls.length) return xml
   const today = new Date().toISOString().slice(0, 10)
-  return xml.replace('</urlset>', urls.map(u => `  <url><loc>${SITE}${u}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>\n`).join('') + '</urlset>')
+  const out = urls.length
+    ? xml.replace('</urlset>', urls.map(u => `  <url><loc>${SITE}${u}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>\n`).join('') + '</urlset>')
+    : xml
+  return sansDoublonsDuSitemap(out)
+}
+
+// Adresses déjà déclarées dans sitemap.xml (annuaires, pages « devenir »,
+// inscription dépannage) : retirées du sitemap du métier, une adresse ne doit
+// figurer que dans un sitemap (audit SEO du 18/11/2026 : 6 doublons).
+// sitemap.xml les garde : c'est lui que lit la vérification d'indexation.
+export function sansDoublonsDuSitemap(xml, principal = fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), '../../sitemap.xml'), 'utf8')) {
+  const deja = new Set([...principal.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].trim()))
+  return xml.replace(/ *<url>\s*<loc>([^<]+)<\/loc>[\s\S]*?<\/url>\n?/g, (bloc, loc) => (deja.has(loc.trim()) ? '' : bloc))
 }

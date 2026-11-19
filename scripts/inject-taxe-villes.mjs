@@ -175,9 +175,16 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   const g = officialGrid(slug)
   if (g && TAX_INTENT.includes(slug)) {
     const l4 = g.lignes.find(l => l.label.includes('4 étoiles'))
-    const desc = nb(`Taxe de séjour ${a} en 2026 : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé. Règles, marché et fiscalité : le guide LCD.`)
+    const desc = nb(`Taxe de séjour ${a} en 2026 : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé. Grille officielle, exemple chiffré et qui la collecte.`)
     html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
     html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
+    // Titre (audit SEO du 18/11/2026) : ces guides sortent en place 5 à 9 sur
+    // « taxe de séjour <ville> » avec presque aucun clic, et leur titre disait
+    // « Devenir hôte Airbnb à … ». Le titre reprend la recherche ; le H1 et
+    // og:title gardent « Devenir hôte ». 60 caractères au plus.
+    const titres = [`Taxe de séjour ${ville} 2026 : tarifs et guide hôte Airbnb`, `Taxe de séjour ${ville} 2026 : tarifs et guide hôte`]
+    const titre = titres.find(t => t.length <= 60)
+    if (titre) html = html.replace(/<title>[^<]*<\/title>/, `<title>${titre.replace(/&/g, '&amp;')}</title>`)
   }
 
   writeFileSync(file, html)

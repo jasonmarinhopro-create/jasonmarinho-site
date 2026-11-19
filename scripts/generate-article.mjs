@@ -279,8 +279,8 @@ function generateArticleHTML(art) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e0c369807">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>
 ${SHARED_CSS}
 </style>

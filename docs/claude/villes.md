@@ -38,3 +38,7 @@ Jason : un hôtel reste de la location courte durée, en parler dans les pages d
 ## Bas des pages photographe et ménage : alignement (27/10/2026)
 
 Jason (page Paris) : bloc « Photographes dans la région » décalé, grand vide au-dessus, collé au bandeau crème en dessous ; encart Google titré « Cette page dans Google » au-dessus des chiffres de tout le site ; lien « Tous les chiffres » en double. Correctifs : `inject-villes-voisines.mjs` donne au bloc des pages pros la largeur et les marges de `.s-in` (0 au-dessus, `clamp(44px,6vw,68px)` en dessous) ; guides hôte inchangés. `chiffres-ville.js` : sans chiffres propres à la page, titre « Le site dans Google » et phrase « Pas encore assez de données pour cette page seule » ; le lien vers `/chiffres` n'est plus que dans l'en-tête. Relancer `inject-villes-voisines.mjs` après toute régénération des pages de ville (comme les autres injections).
+
+## Descriptions des pages pros de ville (18/11/2026)
+
+Description meta et og:description des pages `photographe-lcd-`, `menage-lcd-`, `depannage-lcd-` : `scripts/lib/desc-pros-villes.mjs`, posées par `node scripts/inject-desc-villes.mjs` (dans `creer-ville.mjs`, contrôle `--check` en CI). Relancer après `build-pages-pros-villes.mjs` comme les autres injections. Détail dans `seo-partenaires.md`, « Audit SEO du 18/11/2026 ».

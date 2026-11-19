@@ -28,6 +28,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ANNUAIRES } from './lib/annuaire-hote.mjs'
+import { descPhoto, descMenage, descDepannage } from './lib/desc-pros-villes.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -94,6 +95,8 @@ function escHtml(s) {
 const isPremium = v => v.adrMin >= 95
 
 // ── Squelette HTML commun ───────────────────────────────────────────────────
+// desc : description courte de lib/desc-pros-villes.mjs (155 caractères au plus,
+// phrase complète) ; le texte long de chaque page reste dans son JSON-LD.
 function pageShell({ title, desc, canonical, jsonLd, body }) {
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -101,10 +104,10 @@ function pageShell({ title, desc, canonical, jsonLd, body }) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escHtml(title)}</title>
-<meta name="description" content="${escHtml(desc.slice(0, 160))}">
+<meta name="description" content="${escHtml(desc)}">
 <link rel="canonical" href="${canonical}">
 <meta property="og:title" content="${escHtml(title)}">
-<meta property="og:description" content="${escHtml(desc.slice(0, 200))}">
+<meta property="og:description" content="${escHtml(desc)}">
 <meta property="og:url" content="${canonical}">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -400,7 +403,7 @@ function buildPhotographePage(v) {
   </div>
 </section>
 `
-  return pageShell({ title, desc, canonical: url, jsonLd, body })
+  return pageShell({ title, desc: descPhoto(v), canonical: url, jsonLd, body })
 }
 
 // ── PAGE MÉNAGE ─────────────────────────────────────────────────────────────
@@ -532,7 +535,7 @@ function buildMenagePage(v) {
   </div>
 </section>
 `
-  return pageShell({ title, desc, canonical: url, jsonLd, body })
+  return pageShell({ title, desc: descMenage(v), canonical: url, jsonLd, body })
 }
 
 // ── PAGE DÉPANNAGE (31/10/2026, docs/claude/projet-maintenance.md) ───────────
@@ -656,7 +659,7 @@ export function buildDepannagePage(v) {
   </div>
 </section>
 `
-  return pageShell({ title, desc, canonical: url, jsonLd, body })
+  return pageShell({ title, desc: descDepannage(v), canonical: url, jsonLd, body })
 }
 
 // ── MAIN ────────────────────────────────────────────────────────────────────

@@ -62,5 +62,7 @@ jobs:
         run: node scripts/inject-photos-villes.mjs --check
       - name: Chiffres Insee des pages de ville à jour
         run: node scripts/inject-chiffres-villes.mjs --check
+      - name: Descriptions des pages pros de ville complètes
+        run: node scripts/inject-desc-villes.mjs --check
       - name: Fil d'Ariane (relevé, sans échec)
         run: node scripts/audit-fil-ariane.mjs

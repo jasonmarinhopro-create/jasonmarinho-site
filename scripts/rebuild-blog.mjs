@@ -111,8 +111,12 @@ function rebuildSitemap() {
   </url>`)
     .join('\n')
 
+  // Date de mise à jour déjà posée par sitemap-lastmod.mjs (article modifié
+  // après sa parution) : gardée si elle est plus récente que la date de l'article
+  const lastmodActuel = new Map([...xml.matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g)].map(m => [m[1].trim(), m[2].trim()]))
   const blogEntries = sorted.map(art => {
-    const lastmod = art.date
+    const avant = lastmodActuel.get(`https://jasonmarinho.com/blog/${art.slug}`)
+    const lastmod = avant && avant > art.date ? avant : art.date
     return `  <url>
     <loc>https://jasonmarinho.com/blog/${art.slug}</loc>
     <lastmod>${lastmod}</lastmod>

@@ -1,7 +1,9 @@
 export default {
   slug: 'airbnb-guest-favorites-2026-criteres-badge-coup-de-coeur',
+  // Audit SEO 18/11/2026 : place 1,3 sur « airbnb plus badge », 0 clic sur 1 006 affichages
+  seoTitle: 'Badge Airbnb Plus ou Guest Favorites : critères 2026',
   title: 'Airbnb Guest Favorites : 5 critères à valider pour décrocher le badge Coup de cœur en 2026',
-  description: 'Note 4,9, cinq avis minimum, moins de 1 % d\'annulations, zéro litige, communication soignée : les 5 critères précis à valider pour rejoindre le programme Guest Favorites d\'Airbnb en 2026.',
+  description: 'Airbnb Plus a disparu en 2023 : le badge à viser est Guest Favorites (Coup de cœur). Note 4,9, 5 avis, moins de 1 % d\'annulations : les 5 critères 2026.',
   keywords: 'guest favorites airbnb, coup de coeur airbnb, badge airbnb 2026, guest favorite critères, top 2 millions airbnb, décrocher badge airbnb, note 4.9 airbnb',
   date: '2026-07-01',
   categorySlug: 'visibilite',
