@@ -494,19 +494,19 @@ export const VILLES_LOCAL = {
     usage: "<strong>Autre logement : changement d'usage soumis à des quotas par secteur</strong>, avec une seule autorisation par propriétaire. Le quota de l'intra-muros a été atteint dès son ouverture.",
     faqSuite: "Pour un autre logement, Saint-Malo applique des quotas d'autorisations de changement d'usage par secteur, avec une autorisation par propriétaire.",
     pics: [
-      "Route du Rhum : village ouvert dès le 20 octobre, départ le 1er novembre 2026",
+      "Route du Rhum : départ de Saint-Malo tous les 4 ans, début novembre (dernière édition en 2026, prochaine attendue en 2030)",
       "Étonnants Voyageurs, festival du livre, au week-end de la Pentecôte",
       "La Route du Rock en août, et tout l'été sur la Côte d'Émeraude",
     ],
     menage: [
-      "<strong>La Route du Rhum :</strong> deux semaines complètes en plein automne. Prévoyez vos équipes comme en été.",
+      "<strong>La Route du Rhum :</strong> tous les 4 ans, deux semaines complètes en plein automne. Les années de course, prévoyez vos équipes comme en été.",
       "<strong>Plages en pleine ville :</strong> sable rapporté dans les logements. Sols et douches à soigner à chaque passage.",
       "<strong>Ville close :</strong> accès en voiture limité intra-muros. Anticipez stationnement et transport du linge.",
     ],
     photo: [
       "<strong>Ce qui fait cliquer :</strong> les remparts, le granit, une vue sur le Grand Bé ou la plage du Sillon.",
       "<strong>Les marées :</strong> la vue change du tout au tout entre haute et basse mer. Shootez à marée haute pour les vues mer.",
-      "<strong>Timing :</strong> annonce prête avant l'automne pour capter la demande de la Route du Rhum.",
+      "<strong>Timing :</strong> annonce prête au printemps pour l'été ; les années de Route du Rhum, à jour aussi avant l'automne.",
     ],
     sources: [
       { label: 'Ville de Saint-Malo : meublés de tourisme', url: 'https://www.saint-malo.fr/accueil/vivre/meubles-de-tourisme/' },
@@ -1229,7 +1229,7 @@ export const VILLES_LOCAL = {
     pics: [
       "Festival du film britannique, à l'automne",
       "Été : plages et villas Belle Époque",
-      "Route du Rhum à Saint-Malo, juste en face, fin octobre et début novembre 2026",
+      "Route du Rhum à Saint-Malo, juste en face : départ tous les 4 ans, début novembre (prochaine édition attendue en 2030)",
     ],
     menage: [
       "<strong>Grandes villas :</strong> surfaces importantes. Un temps de ménage adapté.",
