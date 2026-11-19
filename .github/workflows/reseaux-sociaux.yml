@@ -12,6 +12,10 @@ name: Réseaux sociaux
 #                     qu'Instagram traitait encore). Jamais pendant le cron
 #                     Vercel de 7 h (/api/cron/social-dispatch), pour ne pas
 #                     publier deux fois le même post.
+#     xx:25 de 07 à 20 stories « Nouvelle demande » (19/11/2026) : demandes
+#                     d'hôtes récentes annoncées tout de suite (demandes.mjs).
+#                     Chromium installé seulement s'il y en a une. File
+#                     d'attente à part, pour ne pas retarder les autres passages.
 # Journaux : nombres et noms de fichiers seulement (dépôt public).
 
 on:
@@ -25,17 +29,18 @@ on:
     - cron: '50 17 * * *'
     - cron: '15 18 * * *'
     - cron: '15 20 * * *'
+    - cron: '25 7-20 * * *'
   workflow_dispatch:
     inputs:
       taches:
-        description: 'queue, sync, replies, stats, dispatch, scopes (séparées par des virgules)'
+        description: 'queue, demandes, sync, replies, stats, dispatch, scopes (séparées par des virgules)'
         default: 'queue'
 
 permissions:
   contents: write
 
 concurrency:
-  group: reseaux-sociaux
+  group: reseaux-sociaux-${{ github.event.schedule == '25 7-20 * * *' && 'demandes' || 'file' }}
   cancel-in-progress: false
 
 jobs:
@@ -46,6 +51,7 @@ jobs:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       SOCIAL_CRON_SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -61,14 +67,20 @@ jobs:
             "schedule:40 9 * * *"|"schedule:15 20 * * *") T="replies,historique" ;;
             "schedule:5 17 * * *") T="dispatch" ;;
             "schedule:50 17 * * *") T="dispatch,historique" ;;
+            "schedule:25 7-20 * * *") T="demandes" ;;
             *) T="" ;;
           esac
           echo "taches=$T" >> "$GITHUB_OUTPUT"
           echo "Tâches : $T"
 
+      - name: Demandes à annoncer
+        id: d
+        if: contains(steps.t.outputs.taches, 'demandes')
+        run: node scripts/social/publish-queue.mjs demandes-compter
+
       - name: Outils de rendu (Chromium, ffmpeg)
         # Inutiles quand la file ne contient que des réponses aux commentaires
-        if: contains(steps.t.outputs.taches, 'queue') && hashFiles('data/social-queue/2*.json') != ''
+        if: (contains(steps.t.outputs.taches, 'queue') && hashFiles('data/social-queue/2*.json') != '') || steps.d.outputs.demandes > 0
         run: |
           mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
           sudo apt-get -qq update >/dev/null && sudo apt-get -qq install -y ffmpeg >/dev/null
@@ -78,6 +90,12 @@ jobs:
         env:
           NODE_PATH: /tmp/pw/node_modules
         run: node scripts/social/publish-queue.mjs
+
+      - name: Stories des nouvelles demandes
+        if: steps.d.outputs.demandes > 0
+        env:
+          NODE_PATH: /tmp/pw/node_modules
+        run: node scripts/social/publish-queue.mjs demandes
 
       - name: Secret de publication pour la base (pg_cron, migration 161)
         # pg_cron appelle la route de publication à l'heure ; il lit ce secret
@@ -91,7 +109,7 @@ jobs:
           rm -f /tmp/s.json
 
       - name: Tâches de l'app
-        if: steps.t.outputs.taches != 'queue'
+        if: steps.t.outputs.taches != 'queue' && steps.t.outputs.taches != 'demandes'
         run: |
           call() { curl -s -o /tmp/r.json -w "%{http_code}" -H "Authorization: Bearer $SOCIAL_CRON_SECRET" "https://app.jasonmarinho.com$1"; }
           OPS=""
@@ -118,7 +136,7 @@ jobs:
           if echo "${{ steps.t.outputs.taches }}" | grep -q sync; then node scripts/social/commentaires.mjs exporter || echo "::warning::export des commentaires en échec"; fi
 
       - name: Enregistrer
-        if: always() && (contains(steps.t.outputs.taches, 'historique') || contains(steps.t.outputs.taches, 'queue'))
+        if: always() && (contains(steps.t.outputs.taches, 'historique') || contains(steps.t.outputs.taches, 'queue') || steps.d.outputs.demandes > 0)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -126,6 +144,7 @@ jobs:
           # Seulement ce que le workflow écrit : historique et refus (jamais les consignes)
           mkdir -p /tmp/save/social && cp data/social/historique.md /tmp/save/social/ 2>/dev/null || true
           cp data/social/commentaires.enc /tmp/save/social/ 2>/dev/null || true
+          cp data/social/photos-utilisees.json /tmp/save/social/ 2>/dev/null || true
           [ -d data/social/refusees ] && cp -r data/social/refusees /tmp/save/social/ || true
           git ls-files --deleted data/social-queue > /tmp/traitees.txt
           # File vidée sur la branche de la routine (si elle existe encore)
@@ -144,6 +163,7 @@ jobs:
             git add -A data/social-queue/ data/social/historique.md
             [ -d data/social/refusees ] && git add -A data/social/refusees
             [ -f data/social/commentaires.enc ] && git add data/social/commentaires.enc
+            [ -f data/social/photos-utilisees.json ] && git add data/social/photos-utilisees.json
             if git diff --staged --quiet; then echo "Rien à enregistrer."; exit 0; fi
             git commit -q -m "chore: réseaux sociaux, historique à jour"
             git push -q origin HEAD:main && exit 0

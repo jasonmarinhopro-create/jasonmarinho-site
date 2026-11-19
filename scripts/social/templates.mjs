@@ -7,8 +7,16 @@
 export const SIZES = { feed: { w: 1080, h: 1350 }, reel: { w: 1080, h: 1920 } }
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+// Typographie française (19/11/2026) : espace insécable avant ? ! ; : » et
+// après «, entre un nombre et son unité, pour qu'aucun signe ne parte seul à
+// la ligne (« C’est quoi le code Wi-Fi ? » coupé avant le » le 16/11).
+export const fr = s => String(s ?? '')
+  .replace(/«\s*/g, '«\u00A0').replace(/\s*»/g, '\u00A0»')
+  .replace(/\s+([?!;])/g, '\u202F$1').replace(/\s+:/g, '\u00A0:')
+  .replace(/(\d)\s+(€|%|h\b|min\b|km\b|m²|nuits?\b|jours?\b|ans?\b|mois\b|séjours?\b|écrans?\b)/g, '$1\u00A0$2')
+  .replace(/(\d)\s+(\d{3})\b/g, '$1\u202F$2')
 // *mot* : italique jaune (comme les titres du site)
-const rich = s => esc(s).replace(/\*([^*]+)\*/g, '<em>$1</em>')
+const rich = s => esc(fr(s)).replace(/\*([^*]+)\*/g, '<em>$1</em>')
 
 /** Diapositives complètes : numéros des points, fin ajoutée si absente. */
 /** Numéro affiché sur chaque écran « point » (01, 02…), carrousel comme stories */
@@ -60,27 +68,27 @@ body{font-family:'Outfit','Outfit Fallback',sans-serif;-webkit-font-smoothing:an
 .kick{display:inline-flex;align-self:flex-start;align-items:center;gap:14px;font-size:26px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#FFD56B}
 .kick::before{content:'';width:46px;height:4px;border-radius:4px;background:currentColor}
 .cream .kick{color:#556B2F}
-h1{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:${h > 1500 ? 104 : 92}px;line-height:1.04;letter-spacing:-2px}
-h2{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:${h > 1500 ? 86 : 78}px;line-height:1.08;letter-spacing:-1.4px}
+h1{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:${h > 1500 ? 112 : 100}px;line-height:1.04;letter-spacing:-2px}
+h2{font-family:'Fraunces','Fraunces Fallback',serif;font-weight:400;font-size:${h > 1500 ? 96 : 88}px;line-height:1.08;letter-spacing:-1.4px}
 h1 em,h2 em{font-style:italic;font-weight:300;color:#FFD56B}
 .cream h1 em,.cream h2 em{color:#004C3F}
-.sub{font-size:36px;line-height:1.45;font-weight:300;color:rgba(255,255,255,.82);max-width:880px}
-.txt{font-size:42px;line-height:1.5;font-weight:300;color:#3D5038;max-width:900px}
+.sub{font-size:40px;line-height:1.45;font-weight:300;color:rgba(255,255,255,.82);max-width:880px}
+.txt{font-size:47px;line-height:1.5;font-weight:300;color:#3D5038;max-width:900px}
 .dark .txt{color:rgba(255,255,255,.82)}
-.num{font-family:'Fraunces','Fraunces Fallback',serif;font-size:150px;line-height:.9;font-weight:300;font-style:italic;color:#004C3F;opacity:.9}
+.num{font-family:'Fraunces','Fraunces Fallback',serif;font-size:170px;line-height:.9;font-weight:300;font-style:italic;color:#004C3F;opacity:.9}
 .num small{display:block;width:90px;height:6px;border-radius:6px;background:#FFD56B;margin-top:22px}
 ul{list-style:none;display:flex;flex-direction:column;gap:30px;margin-top:10px}
-li{display:flex;gap:24px;align-items:flex-start;font-size:42px;line-height:1.38;font-weight:400;color:#1d2b1a}
+li{display:flex;gap:24px;align-items:flex-start;font-size:47px;line-height:1.38;font-weight:400;color:#1d2b1a}
 .dark li{color:#fff}
 li .ck{flex:none;width:52px;height:52px;border-radius:50%;background:#004C3F;color:#FFD56B;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:28px;margin-top:2px}
 .dark li .ck{background:#FFD56B;color:#003329}
 .stat{font-family:'Fraunces','Fraunces Fallback',serif;font-size:${h > 1500 ? 230 : 200}px;line-height:.95;font-weight:300;color:#FFD56B;letter-spacing:-6px}
-.lab{font-size:42px;line-height:1.35;font-weight:400;max-width:860px}
+.lab{font-size:48px;line-height:1.35;font-weight:400;max-width:860px}
 .src{font-size:24px;color:rgba(255,255,255,.55)}
 .cream .src{color:#6E7F6B}
 .tip{background:#fff;border:2px solid rgba(0,76,63,.12);border-left:10px solid #FFD56B;border-radius:28px;padding:48px 50px;display:flex;flex-direction:column;gap:22px;box-shadow:0 24px 60px rgba(0,51,41,.08)}
 .tip b{font-size:26px;letter-spacing:3px;text-transform:uppercase;color:#556B2F}
-.tip p{font-size:40px;line-height:1.45;color:#1d2b1a}
+.tip p{font-size:45px;line-height:1.45;color:#1d2b1a}
 .foot{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;font-size:26px;font-weight:500;letter-spacing:.5px;opacity:.75}
 .cream .foot{color:#003329}
 .swipe{display:flex;align-items:center;gap:12px;font-weight:600}
@@ -102,6 +110,16 @@ p em,li em,.lab em{font-style:normal;font-weight:600;color:#FFD56B}
 .wm{position:absolute;right:-90px;bottom:-60px;width:560px;height:560px;object-fit:contain;opacity:.05;z-index:1}
 .cream .rule{position:absolute;left:0;top:0;bottom:0;width:14px;background:linear-gradient(180deg,#004C3F,#00463a)}
 [data-in]{will-change:opacity,transform}
+.dark .num{color:#FFD56B}
+.sun{background:radial-gradient(ellipse 80% 60% at 92% 0%,rgba(255,255,255,.45),transparent 65%),#FFD56B;color:#003329}
+.sun .brand{color:#003329}.sun .brand em{color:#004C3F}
+.sun .kick{color:#004C3F}
+.sun h1{font-size:${h > 1500 ? 132 : 120}px;letter-spacing:-3px}
+.sun h1 em,.sun h2 em{color:#004C3F}
+.sun .sub{color:#003329;opacity:.82}
+.sun .foot{color:#003329}
+.sun .wm{opacity:.09}
+.bg.soft::after{background:linear-gradient(180deg,rgba(0,26,17,.62) 0%,rgba(0,26,17,.55) 45%,rgba(0,26,17,.9) 100%)}
 `
 
 function inner(slide, spec, i, total, size) {
@@ -113,7 +131,9 @@ function inner(slide, spec, i, total, size) {
   const at = () => `data-in="${(d++ * 0.28 + 0.15).toFixed(2)}"`
   switch (slide.type) {
     case 'couverture':
-      return { cls: 'dark', bg: spec.photo, html: `${head}<div class="body" style="justify-content:flex-end;padding-bottom:20px">${slide.kicker ? `<div class="kick" ${at()}>${esc(slide.kicker)}</div>` : ''}<h1 ${at()}>${rich(slide.titre)}</h1>${slide.sous_titre ? `<p class="sub" ${at()}>${rich(slide.sous_titre)}</p>` : ''}</div>${foot}` }
+      // Variante typographique (19/11/2026) : fond jaune, sans photo, pour varier le fil
+      if (slide.style === 'jaune') return { cls: 'sun', html: `${head}<div class="body" style="justify-content:flex-end;padding-bottom:20px">${slide.kicker ? `<div class="kick" ${at()}>${esc(slide.kicker)}</div>` : ''}<h1 ${at()}>${rich(slide.titre)}</h1>${slide.sous_titre ? `<p class="sub" ${at()}>${rich(slide.sous_titre)}</p>` : ''}</div>${foot}` }
+      return { cls: 'dark', bg: slide.photo ?? spec.photo, html: `${head}<div class="body" style="justify-content:flex-end;padding-bottom:20px">${slide.kicker ? `<div class="kick" ${at()}>${esc(slide.kicker)}</div>` : ''}<h1 ${at()}>${rich(slide.titre)}</h1>${slide.sous_titre ? `<p class="sub" ${at()}>${rich(slide.sous_titre)}</p>` : ''}</div>${foot}` }
     case 'point':
       return { cls: 'cream', html: `${head}<div class="body"><div class="num" ${at()}>${slide.num ?? ''}<small></small></div><h2 ${at()}>${rich(slide.titre)}</h2>${slide.texte ? `<p class="txt" ${at()}>${rich(slide.texte)}</p>` : ''}</div>${foot}` }
     case 'liste':
@@ -124,19 +144,25 @@ function inner(slide, spec, i, total, size) {
       return { cls: 'cream', html: `${head}<div class="body"><div class="tip" ${at()}><b>${esc(slide.kicker || 'Astuce')}</b>${slide.titre ? `<h2 style="font-size:${reel ? 64 : 58}px">${rich(slide.titre)}</h2>` : ''}<p>${rich(slide.texte)}</p></div></div>${foot}` }
     case 'question':
       // Pas de sticker sondage par l'API : la question invite à répondre en message
-      return { cls: 'dark', html: `${head}<div class="deco"></div><div class="body"><div class="kick" ${at()}>${esc(slide.kicker || 'Ta réponse')}</div><h2 ${at()}>${rich(slide.titre)}</h2><p class="sub" ${at()}>${rich(slide.texte || 'Réponds-nous en message : on lit tout et on répond.')}</p><div class="dm" ${at()}><i class="ph-bold ph-chat-circle-dots"></i>Envoie ta réponse en message</div></div>${foot}` }
+      return { cls: 'dark', html: `${head}<div class="deco"></div><div class="body"><div class="kick" ${at()}>${esc(slide.kicker || 'Ta réponse')}</div><h2 ${at()}>${rich(slide.titre)}</h2><p class="sub" ${at()}>${rich(slide.texte || 'Réponds-nous en message privé : on lit tout et on répond.')}</p></div>${foot}` }
     case 'fin':
     default:
       return { cls: 'dark', html: `${head}<div class="deco"></div><div class="deco2"></div><div class="body"><img class="mono" src="/logo-nav.webp" alt="" ${at()}><h2 ${at()}>${rich(slide.titre || 'Tout est sur *le site*')}</h2>${slide.texte ? `<p class="sub" ${at()}>${rich(slide.texte)}</p>` : ''}<div class="cta" ${at()}>${esc(slide.bouton || 'Lien en bio')}</div><div class="url" ${at()}>jasonmarinho.com</div></div>${reel ? '' : '<div class="foot"><span></span></div>'}` }
   }
 }
 
+/** Écran sur photo (« photo » d'un écran autre que la couverture) : passe en texte clair. */
+function withPhoto(s, photo) {
+  if (!photo || s.bg) return s
+  return { ...s, cls: s.cls === 'cream' ? 'dark' : s.cls, bg: photo, soft: true }
+}
+
 /** Page HTML d'une diapositive (ou d'une scène du Reel). */
 export function slideHtml(spec, slides, i, size, { reel = false } = {}) {
-  const s = inner(slides[i], spec, i, slides.length, size)
+  const s = withPhoto(inner(slides[i], spec, i, slides.length, size), slides[i].type === 'couverture' ? null : slides[i].photo)
   const bars = reel ? `<div class="bars">${slides.map((_, k) => `<div><b data-bar="${k}"></b></div>`).join('')}</div>` : ''
-  const bg = s.bg ? `<div class="bg" data-kb style="background-image:url('/${esc(String(s.bg).replace(/^\/+/, ''))}')"></div>` : ''
-  const deco = s.cls === 'cream' ? '<div class="rule"></div><img class="wm" src="/logo-nav.webp" alt="">' : ''
+  const bg = s.bg ? `<div class="bg${s.soft ? ' soft' : ''}" data-kb style="background-image:url('/${esc(String(s.bg).replace(/^\/+/, ''))}')"></div>` : ''
+  const deco = s.cls === 'cream' || s.cls === 'sun' ? `${s.cls === 'cream' ? '<div class="rule"></div>' : ''}<img class="wm" src="/logo-nav.webp" alt="">` : ''
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${CSS(size)}</style></head><body><div class="s ${s.cls}">${bg}${deco}${bars}${s.html}</div></body></html>`
 }
 
@@ -164,7 +190,7 @@ export function storyHtml(spec, coverSrc) {
 .st .pill{align-self:flex-start;display:inline-flex;align-items:center;gap:14px;background:#FFD56B;color:#003329;font-weight:700;font-size:30px;letter-spacing:3px;text-transform:uppercase;padding:16px 28px;border-radius:999px}
 .st .card{position:relative;align-self:center;width:700px;height:875px;border-radius:40px;overflow:hidden;transform:rotate(-2.5deg);box-shadow:0 50px 90px rgba(0,0,0,.45),0 0 0 6px rgba(255,255,255,.9)}
 .st .card img{width:100%;height:100%;object-fit:cover;display:block}
-.st h2{font-size:76px;line-height:1.08}
+.st h2{font-size:90px;line-height:1.06}
 .st .go{display:flex;align-items:center;gap:18px;font-size:36px;font-weight:600;color:#FFD56B}
 .st .go i{font-size:40px}
 `
@@ -176,12 +202,32 @@ export function storyHtml(spec, coverSrc) {
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${css}</style></head><body><div class="s dark st"><div class="deco"></div>${body}</div></body></html>`
 }
 
+// Stories (19/11/2026, retour de Jason « tu peux mieux faire ») : le texte
+// remplissait le haut de l'écran et laissait la moitié basse vide, un « 01 »
+// sans objet, un faux bouton. Désormais : texte plus grand et centré dans la
+// zone sûre, pas de numéro, et la photo du fichier (« photo ») en fond du
+// premier écran ou la photo propre à un écran.
+const STORY_CSS = `.s{padding:250px 90px 320px}
+.s .body{justify-content:center;gap:40px}
+.s h2{font-size:104px;line-height:1.06}
+.s .txt,.s .sub{font-size:52px;line-height:1.4}
+.s li{font-size:54px;gap:28px}
+.s li .ck{width:62px;height:62px;font-size:32px}
+.s .lab{font-size:54px}
+.s .stat{font-size:300px}
+.s .kick{font-size:32px}
+.s .tip{padding:60px 56px;gap:28px}
+.s .tip p{font-size:52px}
+.s .num{display:none}
+.brand{font-size:34px}.brand img{width:60px;height:60px}`
+
 /** Écran d'une série de stories (1080 x 1920, marges des zones sûres des stories). */
 export function storyFrameHtml(spec, frames, i) {
   const size = { w: 1080, h: 1920 }
   const list = numberPoints(frames)
-  const s = inner(list[i], spec, i, list.length, size)
-  const bg = s.bg ? `<div class="bg" style="background-image:url('/${esc(String(s.bg).replace(/^\/+/, ''))}')"></div>` : ''
-  const deco = s.cls === 'cream' ? '<div class="rule"></div><img class="wm" src="/logo-nav.webp" alt="">' : ''
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${CSS(size)}.s{padding:250px 96px 300px}</style></head><body><div class="s ${s.cls}">${bg}${deco}${s.html}</div></body></html>`
+  const photo = list[i].type === 'couverture' ? (list[i].photo ?? spec.photo) : (list[i].photo ?? (i === 0 ? spec.photo : null))
+  const s = withPhoto(inner({ ...list[i], photo: undefined }, { ...spec, photo: null }, i, list.length, size), photo)
+  const bg = s.bg ? `<div class="bg${s.soft ? ' soft' : ''}" style="background-image:url('/${esc(String(s.bg).replace(/^\/+/, ''))}')"></div>` : ''
+  const deco = s.cls === 'cream' || s.cls === 'sun' ? `${s.cls === 'cream' ? '<div class="rule"></div>' : ''}<img class="wm" src="/logo-nav.webp" alt="">` : ''
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${CSS(size)}${STORY_CSS}</style></head><body><div class="s ${s.cls}">${bg}${deco}${s.html}</div></body></html>`
 }

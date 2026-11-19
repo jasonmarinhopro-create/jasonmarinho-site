@@ -75,3 +75,34 @@ Les écrans `point` d'une série de stories affichaient « undefined » à la pl
 ## Posts épinglés du 01/11/2026 et champ « maintenant »
 
 Jason voulait remplacer ses 3 posts épinglés (images faites avec ChatGPT, qui dénotaient) par 3 carrousels du gabarit maison, en comptant le nouvel annuaire du dépannage : 1 Hôtes (tout Jason Marinho), 2 Trouver un pro, 3 Pros (les 3 annuaires). Validés par Jason avant publication, publiés le jour même sur Facebook et Instagram ; c'est lui qui les épingle. Champ facultatif `"maintenant": true` dans un fichier de la file (`checkSpec`, testé) : le post part au passage suivant (une minute après la programmation, puis `select social_dispatch_ping()`), hors calendrier, sans prendre de créneau. Réservé aux posts validés par Jason ; la routine ne s'en sert pas.
+
+## Visuels revus, photos Pexels, stories « Nouvelle demande » (19/11/2026)
+
+Demande de Jason (regard d'expert sur les visuels, mêmes photos trop souvent,
+une story à chaque demande reçue).
+- **Gabarits** (`scripts/social/templates.mjs`) : `fr()` pose les espaces
+  insécables (avant `: ; ? !`, dans « », entre un nombre et son unité) ;
+  textes agrandis ; stories plein écran (plus de numéro « 01 », plus de faux
+  bouton « Réponds en message privé ») ; premier écran d'une série sur la
+  photo ; `photo` possible sur chaque diapositive (`withPhoto`) ; couverture
+  `style: "jaune"`. Tests : `jason-app/lib/social/templates.test.ts`.
+- **Photos** (`scripts/social/photos.mjs`) : `photo: "pexels:<recherche|id>"`
+  résolu dans le workflow (secret `PEXELS_API_KEY`, déjà utilisé par
+  `blog-covers.yml`) ; pas de reprise d'une photo publiée depuis 60 jours
+  (`data/social/photos-utilisees.json`, ids et dates seulement, enregistré
+  par l'étape « Enregistrer ») ; échec : fond vert, jamais de post bloqué.
+  Téléchargées dans `tmp-social/` (ignoré par git). L'environnement de Claude
+  ne joint pas `api.pexels.com` (mais bien `images.pexels.com`).
+- **Stories de demande** (`scripts/social/demandes.mjs`) : cron `25 7-20 * * *`
+  (file d'attente `reseaux-sociaux-demandes`, à part) ;
+  `publish-queue.mjs demandes-compter` lit `demandes_hotes` des 36 dernières
+  heures (colonnes affichables seulement), Chromium n'est installé que s'il y
+  a quelque chose ; une série par demande (regroupée par `groupe`), slug
+  `demande-<8 car. de l'id>` (anti-doublon par `media_urls`), 4 par jour au
+  plus, demandes `close` ou sans ville écartées ; créneau `maintenant`, corps
+  préfixé `Demande : ` (hors calcul du créneau des stories du jour), puis appel
+  de `/api/cron/social-dispatch` (la réservation atomique de `dispatch.ts`
+  empêche tout doublon). Tests : `jason-app/lib/social/demandes.test.ts`,
+  `photos.test.ts`.
+- Musique des Reels : pas encore (Pexels n'a pas de musique) ; à brancher si
+  Jason fournit des pistes libres de droits.

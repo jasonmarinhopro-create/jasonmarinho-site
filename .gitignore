@@ -3,3 +3,6 @@ node_modules/
 .vercel/
 *.log
 .DS_Store
+
+# Photos Pexels téléchargées pour le rendu des réseaux sociaux
+tmp-social/

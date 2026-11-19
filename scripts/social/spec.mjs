@@ -17,8 +17,12 @@ export const STORY_TYPES = ['chiffre', 'astuce', 'question', 'point', 'liste', '
 
 const EMOJI = /\p{Extended_Pictographic}/u
 
+// Photo d'un fichier, d'une scène ou d'un écran : une image du dépôt (img/…)
+// ou « pexels:<recherche ou id> », cherchée par le workflow (scripts/social/photos.mjs).
+const photoOk = (p, exists) => p === undefined || /^pexels:.{2,80}$/.test(p) || (/^img\/[\w/.-]+\.(jpg|jpeg|png|webp)$/.test(p) && exists(p))
+
 /** Écrans de stories (types de STORY_TYPES, textes courts) */
-function checkFrames(frames, max) {
+function checkFrames(frames, max, exists = (_p) => true) {
   const errs = []
   if (!Array.isArray(frames) || frames.length < 1 || frames.length > max) return [`1 à ${max} écrans`]
   frames.forEach((f, i) => {
@@ -26,6 +30,7 @@ function checkFrames(frames, max) {
     if (!(f?.titre || f?.valeur || f?.texte)) errs.push(`écran ${i + 1} : texte manquant`)
     if ((f?.titre ?? '').replace(/\*/g, '').length > 90) errs.push(`écran ${i + 1} : titre trop long (90 caractères)`)
     if (f?.type === 'liste' && !(Array.isArray(f.items) && f.items.length >= 2 && f.items.length <= 4)) errs.push(`écran ${i + 1} : une liste a 2 à 4 éléments`)
+    if (!photoOk(f?.photo, exists)) errs.push(`écran ${i + 1} : photo introuvable (img/… ou pexels:…)`)
   })
   return errs
 }
@@ -37,11 +42,13 @@ export function checkStories(spec, { exists = (_p) => true } = {}) {
   if (!spec || typeof spec !== 'object') return ['fichier illisible']
   if (!/^[a-z0-9-]{3,80}$/.test(spec.slug ?? '')) errs.push('slug manquant ou invalide (minuscules, chiffres, tirets)')
   if (spec.jour !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(spec.jour)) errs.push('jour : AAAA-MM-JJ')
-  errs.push(...checkFrames(spec.frames, 4))
+  errs.push(...checkFrames(spec.frames, 4, exists))
   const all = JSON.stringify(spec)
   if (all.includes('—')) errs.push('tiret cadratin interdit')
   if (EMOJI.test(all)) errs.push('emoji interdit')
-  if (spec.photo && (!/^img\/[\w/.-]+\.(jpg|jpeg|png|webp)$/.test(spec.photo) || !exists(spec.photo))) errs.push('photo introuvable dans img/')
+  if (!photoOk(spec.photo, exists)) errs.push('photo introuvable (img/… ou pexels:…)')
+  // Demande reçue (19/11/2026) : publiée au prochain passage, hors calendrier
+  if (spec.maintenant !== undefined && spec.maintenant !== true) errs.push('maintenant : true ou absent')
   return errs
 }
 
@@ -75,9 +82,11 @@ export function checkSpec(spec, { exists = (_p) => true } = {}) {
     if (s?.type === 'liste' && !(Array.isArray(s.items) && s.items.length >= 2 && s.items.length <= 5)) errs.push(`diapositive ${i + 1} : une liste a 2 à 5 éléments`)
     if (s?.type !== 'fin' && !(s?.titre || s?.valeur || s?.texte)) errs.push(`diapositive ${i + 1} : texte manquant`)
     if ((s?.titre ?? '').replace(/\*/g, '').length > 90) errs.push(`diapositive ${i + 1} : titre trop long (90 caractères)`)
+    if (!photoOk(s?.photo, exists)) errs.push(`diapositive ${i + 1} : photo introuvable (img/… ou pexels:…)`)
+    if (s?.style !== undefined && !(s.type === 'couverture' && s.style === 'jaune')) errs.push(`diapositive ${i + 1} : style « jaune » seulement sur la couverture`)
   })
   if (spec.story !== undefined && spec.story !== false && !(spec.story && typeof spec.story === 'object' && (spec.story.texte === undefined || (typeof spec.story.texte === 'string' && spec.story.texte.replace(/\*/g, '').length <= 90)))) errs.push('story : false, ou { "texte": accroche de 90 caractères au plus }')
-  if (spec.story && typeof spec.story === 'object' && spec.story.frames !== undefined) errs.push(...checkFrames(spec.story.frames, 3).map(e => `story : ${e}`))
+  if (spec.story && typeof spec.story === 'object' && spec.story.frames !== undefined) errs.push(...checkFrames(spec.story.frames, 3, exists).map(e => `story : ${e}`))
   const legende = String(spec.legende ?? '')
   if (legende.length < 40) errs.push('légende trop courte')
   if (legende.length > 1800) errs.push('légende trop longue (1 800 caractères)')
@@ -87,7 +96,7 @@ export function checkSpec(spec, { exists = (_p) => true } = {}) {
   if (spec.lien && !/^https:\/\/(app\.)?jasonmarinho\.com(\/|$)/.test(spec.lien)) errs.push('le lien doit pointer vers jasonmarinho.com')
   // Post validé par Jason à publier tout de suite (posts épinglés du 01/11/2026), hors calendrier
   if (spec.maintenant !== undefined && spec.maintenant !== true) errs.push('maintenant : true ou absent')
-  if (spec.photo && (!/^img\/[\w/.-]+\.(jpg|jpeg|png|webp)$/.test(spec.photo) || !exists(spec.photo))) errs.push('photo introuvable dans img/')
+  if (!photoOk(spec.photo, exists)) errs.push('photo introuvable (img/… ou pexels:…)')
   const tags = spec.hashtags ?? []
   if (!Array.isArray(tags) || tags.length > 8 || tags.some(t => !/^#[\p{L}\p{N}_]{2,40}$/u.test(t))) errs.push('hashtags : 8 au plus, de la forme #mot')
   return errs
