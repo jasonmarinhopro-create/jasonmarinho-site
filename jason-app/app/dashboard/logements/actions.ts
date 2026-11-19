@@ -1,6 +1,8 @@
 'use server'
 
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { cookies } from 'next/headers'
+import { ACTIVE_PROPERTY_COOKIE, ALL_PROPERTIES } from '@/lib/queries/active-property'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 import { syncLogementIcalUrls } from '@/lib/ical/sync'
@@ -370,7 +372,13 @@ export async function deleteLogement(id: string): Promise<{ error?: string }> {
     .eq('user_id', profile.userId)
 
   if (error) return { error: error.message }
+  // Le logement supprimé était le logement actif : retour à « Tous les logements »
+  const cookieStore = await cookies()
+  if (cookieStore.get(ACTIVE_PROPERTY_COOKIE)?.value === id) {
+    cookieStore.set({ name: ACTIVE_PROPERTY_COOKIE, value: ALL_PROPERTIES, path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' })
+  }
   revalidatePath('/dashboard/logements')
+  revalidatePath(`/dashboard/logements/${id}`)
   revalidateTag(`logements:${profile.userId}`)
   await invalidateDashboardPrefill(profile.userId)
   return {}
