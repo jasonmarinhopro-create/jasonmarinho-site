@@ -74,3 +74,19 @@ describe('fichier de publication des réseaux', () => {
     expect(checkSpec({ ...ok, story: { frames: [1, 2, 3, 4].map(() => ({ type: 'astuce', texte: 'x' })) } }).some(e => e.startsWith('story'))).toBe(true)
   })
 })
+
+describe('musique des Reels (19/11/2026)', () => {
+  it('une piste connue, false, ou rien', () => {
+    expect(checkSpec({ ...ok, format: 'reel', musique: 'elan' })).toEqual([])
+    expect(checkSpec({ ...ok, format: 'reel', musique: false })).toEqual([])
+    expect(checkSpec({ ...ok, format: 'reel', musique: 'rock' }).some(e => e.startsWith('musique'))).toBe(true)
+  })
+  it('choix stable d’après le slug, ou imposé', async () => {
+    const { musiqueDuReel } = await import('../../../scripts/social/render.mjs')
+    const pistes = ['calme.m4a', 'elan.m4a', 'lumiere.m4a', 'matin.m4a']
+    expect(musiqueDuReel({ slug: 'a' }, pistes)).toBe(musiqueDuReel({ slug: 'a' }, pistes))
+    expect(musiqueDuReel({ slug: 'a', musique: 'matin' }, pistes)).toMatch(/matin\.m4a$/)
+    expect(musiqueDuReel({ slug: 'a', musique: false }, pistes)).toBeNull()
+    expect(musiqueDuReel({ slug: 'a' }, [])).toBeNull()
+  })
+})

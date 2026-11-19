@@ -1,6 +1,6 @@
 // Rendu des visuels d'une publication (24/10/2026) : PNG 1080 x 1350 pour le
 // carrousel et la photo simple, MP4 1080 x 1920 (30 i/s, piste son muette)
-// pour le Reel. Chromium (Playwright) rend les gabarits de templates.mjs,
+// pour le Reel (musique depuis le 19/11/2026, voir musiqueDuReel). Chromium (Playwright) rend les gabarits de templates.mjs,
 // servis depuis la racine du dépôt (polices et logo du site), ffmpeg assemble
 // les images du Reel.
 //   node scripts/social/render.mjs <spec.json> <dossier de sortie>
@@ -15,6 +15,22 @@ import { SIZES, normalizeSlides, slideHtml, sceneDuration, storyHtml, storyFrame
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const FPS = 30
+const MUSIQUE = path.join(ROOT, 'data/social/musique')
+
+/**
+ * Musique du Reel (19/11/2026, demande de Jason) : pistes originales composées
+ * pour la marque (scripts/social/musique-source/synth.py), donc sans licence
+ * ni signalement de droits par Meta. `musique` dans le fichier : un nom
+ * (« lumiere », « matin », « elan », « calme ») ou false ; sinon une piste
+ * choisie d'après le slug (toujours la même pour un même post).
+ */
+export function musiqueDuReel(spec, pistes = fs.existsSync(MUSIQUE) ? fs.readdirSync(MUSIQUE).filter(f => f.endsWith('.m4a')).sort() : []) {
+  if (spec.musique === false || !pistes.length) return null
+  if (typeof spec.musique === 'string' && pistes.includes(`${spec.musique}.m4a`)) return path.join(MUSIQUE, `${spec.musique}.m4a`)
+  let h = 0
+  for (const c of String(spec.slug ?? '')) h = (h * 31 + c.charCodeAt(0)) >>> 0
+  return path.join(MUSIQUE, pistes[h % pistes.length])
+}
 const TYPES = { '.css': 'text/css', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.html': 'text/html; charset=utf-8' }
 
 /** Serveur local : /__slide renvoie la page en cours, le reste vient du dépôt. */
@@ -105,15 +121,21 @@ export async function renderReel(spec, outDir) {
   } finally { await browser.close(); srv.close() }
   const ffmpeg = process.env.FFMPEG || 'ffmpeg'
   const mp4 = path.join(outDir, 'reel.mp4')
+  const sec = n / FPS
+  const piste = musiqueDuReel(spec)
+  // Piste en boucle si le Reel est plus long, fondu à l'entrée et à la fin ; sans piste : son muet
+  const audio = piste
+    ? ['-stream_loop', '-1', '-i', piste, '-af', `afade=t=in:d=0.4,afade=t=out:st=${Math.max(0, sec - 1.5).toFixed(2)}:d=1.5`, '-t', sec.toFixed(2)]
+    : ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo', '-shortest']
   execFileSync(ffmpeg, ['-loglevel', 'error', '-y', '-framerate', String(FPS), '-i', path.join(frames, '%05d.jpg'),
-    '-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo', '-shortest',
+    ...audio,
     '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'medium', '-crf', '20', '-pix_fmt', 'yuv420p', '-r', String(FPS),
     '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', mp4])
   // Couverture : la première scène, une fois le texte affiché
   const cover = path.join(outDir, 'cover.jpg')
   fs.copyFileSync(path.join(frames, `${String(Math.min(n - 1, Math.round(1.8 * FPS))).padStart(5, '0')}.jpg`), cover)
   fs.rmSync(frames, { recursive: true, force: true })
-  return { mp4, cover, seconds: n / FPS }
+  return { mp4, cover, seconds: sec, musique: piste ? path.basename(piste, '.m4a') : null }
 }
 
 /** Story qui annonce le post : la couverture (slide-01.png ou cover.jpg du Reel) en carte. */

@@ -3,6 +3,7 @@
 // (24/10/2026). Règles pures, testées par jason-app/lib/social/spec.test.ts.
 
 export const FORMATS = ['reel', 'carrousel', 'photo']
+export const MUSIQUES = ['lumiere', 'matin', 'elan', 'calme']
 export const SLIDE_TYPES = ['couverture', 'point', 'liste', 'chiffre', 'astuce', 'question', 'fin']
 // Heure de publication : 17 h UTC (18 h à Paris en hiver, 19 h en été)
 export const PUBLISH_HOUR_UTC = 17
@@ -96,6 +97,8 @@ export function checkSpec(spec, { exists = (_p) => true } = {}) {
   if (spec.lien && !/^https:\/\/(app\.)?jasonmarinho\.com(\/|$)/.test(spec.lien)) errs.push('le lien doit pointer vers jasonmarinho.com')
   // Post validé par Jason à publier tout de suite (posts épinglés du 01/11/2026), hors calendrier
   if (spec.maintenant !== undefined && spec.maintenant !== true) errs.push('maintenant : true ou absent')
+  // Musique du Reel (render.mjs, musiqueDuReel) : une piste de data/social/musique ou false
+  if (spec.musique !== undefined && spec.musique !== false && !MUSIQUES.includes(spec.musique)) errs.push(`musique : ${MUSIQUES.join(', ')} ou false`)
   if (!photoOk(spec.photo, exists)) errs.push('photo introuvable (img/… ou pexels:…)')
   const tags = spec.hashtags ?? []
   if (!Array.isArray(tags) || tags.length > 8 || tags.some(t => !/^#[\p{L}\p{N}_]{2,40}$/u.test(t))) errs.push('hashtags : 8 au plus, de la forme #mot')

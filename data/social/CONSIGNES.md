@@ -180,6 +180,10 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
 - `photo` sur une **diapositive** (`point`, `liste`, `chiffre`, `astuce`) :
   la diapositive passe sur la photo, assombrie. Une ou deux par carrousel au
   plus, pour rythmer ; jamais sur toutes.
+- `musique` (Reel, facultatif) : `"lumiere"` (douce, guitare), `"matin"`
+  (piano posé), `"elan"` (rythmée), `"calme"` (feutrée) ou `false` (muet).
+  Sans le champ : une des quatre, choisie d'après le slug. Pistes originales
+  de la marque, aucune mention à faire.
 - `"style": "jaune"` sur la `couverture` (sans photo) : fond jaune de la
   marque, titre vert. À alterner avec les couvertures photo, pour que le
   profil ne soit pas une suite d'images vertes.

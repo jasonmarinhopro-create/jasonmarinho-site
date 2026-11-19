@@ -104,5 +104,12 @@ une story à chaque demande reçue).
   de `/api/cron/social-dispatch` (la réservation atomique de `dispatch.ts`
   empêche tout doublon). Tests : `jason-app/lib/social/demandes.test.ts`,
   `photos.test.ts`.
-- Musique des Reels : pas encore (Pexels n'a pas de musique) ; à brancher si
-  Jason fournit des pistes libres de droits.
+- **Musique des Reels** (même jour, Jason : « trouve des pistes libres de
+  droits ») : les sites de musique libre (Pixabay, FreePD, Free Music Archive,
+  archive.org) sont bloqués depuis l'environnement de Claude ; 4 pistes
+  **originales** composées par code à la place (`scripts/social/musique-source/synth.py`,
+  numpy), propriété de Jason, aucune licence ni signalement de droits Meta :
+  `data/social/musique/{lumiere,matin,elan,calme}.m4a` (40 s environ, -17 LUFS,
+  crête sous -2 dBFS). `render.mjs` (`musiqueDuReel`) en prend une d'après le
+  slug, ou celle du champ `musique` (`false` : muet) ; boucle si le Reel est
+  plus long, fondus d'entrée et de fin.
