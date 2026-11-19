@@ -70,7 +70,7 @@ const fetchLogementsByName = (userId: string, names: string[]) => unstable_cache
     const admin2 = getServiceClient()
     const results = await Promise.all(
       names.map(nom =>
-        admin2.from('logements').select('id, nom').ilike('nom', nom).limit(1).maybeSingle()
+        admin2.from('logements').select('id, nom').eq('user_id', userId).ilike('nom', nom.replace(/[%_\\,]/g, '\\$&')).limit(1).maybeSingle()
       )
     )
     return results
@@ -131,7 +131,8 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
   ;(contractsRes.data ?? []).forEach(r => { if (r.logement_nom) distinctNames.add(String(r.logement_nom).trim()) })
   const names = Array.from(distinctNames).filter(Boolean)
 
-  // 2b. Cherche les vrais UUIDs pour ces noms (sans filtre user_id).
+  // 2b. Cherche les vrais UUIDs pour ces noms, parmi les logements du compte
+  // seulement (19/11/2026 : avant, tous les comptes, fuite de noms).
   // Match INSENSIBLE A LA CASSE via ilike (le .in() precedent echouait
   // sur "casa do peidreiro" vs "Casa Do Peidreiro" — casse differente
   // entre la row logements et le sejour.logement).
