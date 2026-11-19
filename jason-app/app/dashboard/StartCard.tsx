@@ -1,5 +1,10 @@
 import Link from 'next/link'
 import { Check, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import SkipStepButton from './SkipStepButton'
+
+/** Clé enregistrée quand l'hôte passe l'étape calendrier (19/11/2026) ; la
+ *  carte disparaît alors dès le logement ajouté. */
+export const SKIP_CALENDAR_KEY = 'start:skip-calendrier'
 
 // Carte « Démarrage » de l'Accueil (19/11/2026, maquette validée par Jason) :
 // 3 étapes au lieu de la liste de 7 et du parcours flottant de 7 thèmes
@@ -9,8 +14,10 @@ import { Check, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 
 export interface StartExtra { key: string; label: string; href: string }
 
-export default function StartCard({ hasLogement, logementNom, hasCalendar, hasReservation, extras }: {
+export default function StartCard({ hasLogement, logementNom, hasCalendar, hasReservation, calendarSkipped = false, extras }: {
   hasLogement: boolean
+  /** Étape calendrier passée par l'hôte (« Passer cette étape ») */
+  calendarSkipped?: boolean
   logementNom: string | null
   hasCalendar: boolean
   hasReservation: boolean
@@ -24,10 +31,13 @@ export default function StartCard({ hasLogement, logementNom, hasCalendar, hasRe
       cta: { label: 'Ajouter', href: '/dashboard/logements' },
     },
     {
-      key: 'calendrier', done: hasCalendar || hasReservation,
+      key: 'calendrier', done: hasCalendar || hasReservation, skipped: calendarSkipped && !hasCalendar && !hasReservation,
       label: 'Connecte ton calendrier Airbnb ou Booking',
-      sub: 'Tes réservations, le planning ménage et tes revenus se remplissent tout seuls',
+      sub: calendarSkipped && !hasCalendar && !hasReservation
+        ? 'Étape passée : tu pourras le faire plus tard depuis ta fiche logement'
+        : 'Tes réservations, le planning ménage et tes revenus se remplissent tout seuls',
       cta: { label: 'Connecter', href: '/dashboard/logements' },
+      skippable: true,
     },
     {
       key: 'regarder', done: hasReservation,
@@ -36,8 +46,10 @@ export default function StartCard({ hasLogement, logementNom, hasCalendar, hasRe
       cta: null,
     },
   ]
-  const doneCount = steps.filter(s => s.done).length
-  const current = steps.find(s => !s.done)?.key
+  type Step = (typeof steps)[number] & { skipped?: boolean; skippable?: boolean }
+  const list = steps as Step[]
+  const doneCount = list.filter(s => s.done || s.skipped).length
+  const current = list.find(s => !s.done && !s.skipped)?.key
   const left = 3 - doneCount
 
   return (
@@ -51,7 +63,7 @@ export default function StartCard({ hasLogement, logementNom, hasCalendar, hasRe
         <span style={s.progTxt}>{doneCount} sur 3</span>
       </div>
       <ol style={s.steps}>
-        {steps.map((st, i) => {
+        {list.map((st, i) => {
           const now = st.key === current
           return (
             <li key={st.key} style={{ ...s.step, border: now ? '1.5px solid var(--accent-text)' : '1px solid var(--border)' }}>
@@ -61,14 +73,17 @@ export default function StartCard({ hasLogement, logementNom, hasCalendar, hasRe
                 color: st.done ? 'var(--bg)' : now ? 'var(--accent-text)' : 'var(--text-3)',
                 border: st.done || now ? '1.5px solid var(--accent-text)' : '1.5px solid var(--border-2)',
               }}>
-                {st.done ? <Check size={14} weight="bold" /> : i + 1}
+                {st.done ? <Check size={14} weight="bold" /> : st.skipped ? '–' : i + 1}
               </span>
               <span style={{ flex: 1, minWidth: 0 }}>
                 <strong style={{ ...s.stepLabel, color: st.done ? 'var(--text-3)' : 'var(--text)', textDecoration: st.done ? 'line-through' : 'none' }}>{st.label}</strong>
                 <span style={s.stepSub}>{st.sub}</span>
               </span>
-              {now && st.cta && (
-                <Link href={st.cta.href} style={s.cta}>{st.cta.label} <ArrowRight size={13} weight="bold" /></Link>
+              {now && (st.cta || st.skippable) && (
+                <span style={s.actions}>
+                  {st.skippable && <SkipStepButton stepKey={SKIP_CALENDAR_KEY} />}
+                  {st.cta && <Link href={st.cta.href} style={s.cta}>{st.cta.label} <ArrowRight size={13} weight="bold" /></Link>}
+                </span>
               )}
             </li>
           )
@@ -100,7 +115,8 @@ const s: Record<string, React.CSSProperties> = {
   num: { width: 28, height: 28, borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, flexShrink: 0 },
   stepLabel: { display: 'block', fontSize: 14.5, fontWeight: 600 },
   stepSub: { display: 'block', fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.45 },
-  cta: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 10, background: 'var(--accent-text)', color: 'var(--bg)', fontWeight: 600, fontSize: 13.5, textDecoration: 'none', whiteSpace: 'nowrap', marginLeft: 'auto' },
+  actions: { display: 'inline-flex', alignItems: 'center', gap: 12, marginLeft: 'auto', flexWrap: 'wrap' },
+  cta: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 10, background: 'var(--accent-text)', color: 'var(--bg)', fontWeight: 600, fontSize: 13.5, textDecoration: 'none', whiteSpace: 'nowrap' },
   extras: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px 12px', marginTop: 12 },
   extrasTitle: { fontSize: 12.5, color: 'var(--text-3)' },
   extrasList: { display: 'flex', flexWrap: 'wrap', gap: 6 },

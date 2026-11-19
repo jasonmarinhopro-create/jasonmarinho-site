@@ -14,7 +14,7 @@ import {
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 // ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
 import { type SetupStep } from './SetupChecklist'
-import StartCard from './StartCard'
+import StartCard, { SKIP_CALENDAR_KEY } from './StartCard'
 import NewHostHome from './NewHostHome'
 import MesPlateformesWidget from './MesPlateformesWidget'
 import TodayBoard, { type TodayItem, type TodayAction } from './TodayBoard'
@@ -684,6 +684,8 @@ export default async function DashboardPage() {
   // Nouvel hôte (ni logement ni réservation) : la checklist de démarrage suffit,
   // pas de colonnes de zéros (« Aucune arrivée », « 0 € », « Calendrier serein »).
   const isNewHost = !hasLogement && occupations.length === 0
+  // Étape calendrier passée par l'hôte (carte Démarrage, 19/11/2026)
+  const calendarSkipped = completedSteps.includes(SKIP_CALENDAR_KEY)
 
   // ── Bloc « À faire aujourd'hui » ────────────────────────────────────
   const occLabel = (o: Occ) => ({
@@ -748,8 +750,9 @@ export default async function DashboardPage() {
 
         {/* ── Démarrage en 3 étapes (19/11/2026) : remplace la liste de 7 et
               le parcours flottant. Disparaît dès la première réservation. */}
-        {!(hasLogement && occupations.length > 0) && (
+        {!(hasLogement && (occupations.length > 0 || calendarSkipped)) && (
           <StartCard
+            calendarSkipped={calendarSkipped}
             hasLogement={hasLogement}
             logementNom={(logementsAll ?? [])[0]?.nom ?? null}
             hasCalendar={(icalFeedCount ?? 0) > 0}
