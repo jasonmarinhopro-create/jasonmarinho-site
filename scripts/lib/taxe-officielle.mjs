@@ -6,6 +6,7 @@
 // tarif = part votée par la commune ; total = avec les taxes additionnelles
 // (départementale, régionale, Île-de-France), tel que publié par la DGFiP.
 import { readFileSync, existsSync } from 'node:fs'
+import { ANNEE_TARIFS } from './annee.mjs'
 
 const FILE = new URL('../data/taxe-sejour-officielle.json', import.meta.url)
 export const TAXE_SOURCE_URL = 'https://data.economie.gouv.fr/explore/dataset/delta_deliberation_ts_tarif0/'
@@ -78,11 +79,18 @@ export function officialGrid(slug) {
   const d = load()
   const c = COMMUNES[slug]
   if (!d || !c) return null
-  const rows = (d.communes[c[0]] ?? []).filter(r => r.libelle_commune === c[1] && Number(String(r.date_effet).slice(0, 4)) <= 2026)
+  const rows = (d.communes[c[0]] ?? []).filter(r => r.libelle_commune === c[1] && Number(String(r.date_effet).slice(0, 4)) <= ANNEE_TARIFS)
   const best = new Map()
   for (const r of rows) {
     const k = r.hebergement
-    if (!best.has(k) || Number(best.get(k).date_effet) < Number(r.date_effet)) best.set(k, r)
+    // La base a parfois deux lignes de la même année pour la même catégorie,
+    // l'une avec les taxes additionnelles, l'autre sans (Caen, Reims,
+    // Saint-Tropez…) : avant le 19/11/2026, l'ordre de réponse de l'API
+    // décidait. À égalité d'année, la ligne la plus complète (total le plus
+    // élevé, taxes additionnelles comprises) l'emporte.
+    const b = best.get(k)
+    const an = x => Number(String(x.date_effet).slice(0, 4))
+    if (!b || an(b) < an(r) || (an(b) === an(r) && Number(r.tarif_total ?? 0) > Number(b.tarif_total ?? 0))) best.set(k, r)
   }
   const lignes = []
   let annee = 0
