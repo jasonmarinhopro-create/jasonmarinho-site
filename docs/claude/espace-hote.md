@@ -191,3 +191,10 @@ Jason : « c'est forcément -100 % quand on commence un nouveau mois ». Le déb
 - **Aide** `suivre-revenus.md` : sections « Les réservations importées sans montant » et « Déductible ou amortissable ? », avec des lignes `> Source :` et des liens.
 - **Assurance de l'emprunt** retirée du conseil « Crédit » : aucune source officielle trouvée pour la dire déductible.
 - **Réseau** : la session Claude n'atteint pas impots.gouv.fr. Les liens ont été vérifiés par la recherche web (identifiants BOFiP relevés dans les résultats).
+
+## Démarrage et Accueil d'un nouvel hôte (19/11/2026, maquette validée par Jason)
+
+Constat (base, comptes admin exclus) : 6 inscrits sur 63 avec un logement, parcours de démarrage 0 terminé et 32 fermés. Décisions de Jason :
+- **Carte « Démarrage » en 3 étapes** (`app/dashboard/StartCard.tsx`) en haut de l'Accueil : ajoute ton logement, connecte ton calendrier Airbnb ou Booking (cochée aussi dès qu'une réservation existe), regarde ce qui arrive (cochée à la première réservation). La carte disparaît quand l'hôte a un logement et au moins une réservation. Contrat, ménage, prix et objectif non faits : « Pour aller plus loin », sans compteur. Remplace `SetupChecklist` (7 étapes ; le composant reste pour son type `SetupStep`). **« Passer cette étape »** sur l'étape calendrier (Jason, 19/11 : « si ça ne les intéresse pas ») : `SkipStepButton`, clé `start:skip-calendrier` dans `onboarding_completed_steps` (via `markOnboardingStep`) ; la carte disparaît alors dès le logement ajouté.
+- **Parcours flottant en 7 thèmes supprimé pour tous** (`OnboardingTracks` plus rendu, `onboardingOff = true` dans le layout, `menu_state` appelé avec `p_onboarding: false` : plus de calcul à chaque page). « Reprendre mon parcours » retiré du menu du compte. Données en base gardées.
+- **Accueil d'un nouvel inscrit sans logement ni réservation** (`app/dashboard/NewHostHome.tsx`) : un bouton « Ajouter mon logement », un aperçu flouté marqué « Exemple » (jamais présenté comme ses chiffres) et la formation « Mettre le bon prix en location courte durée » (choisie par Jason : terminée à 98 % en moyenne par ceux qui la commencent).

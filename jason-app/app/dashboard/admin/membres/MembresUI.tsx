@@ -36,6 +36,8 @@ interface Member {
   /** Dernière visite (visite notée par l'app, connexion ou action) */
   last_seen_at?: string | null
   last_action?: { at: string; label: string } | null
+  /** Au moins un logement (19/11/2026, filtre « sans logement » de la Vue d'ensemble) */
+  has_logement?: boolean
 }
 
 interface MemberDetails {
@@ -135,10 +137,10 @@ const PLANS = [
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function MembresUI({ members, monthlyRevenue }: { members: Member[]; monthlyRevenue: number }) {
+export default function MembresUI({ members, monthlyRevenue, initialFilter = 'all' }: { members: Member[]; monthlyRevenue: number; initialFilter?: string }) {
   const router = useRouter()
   const [search, setSearch]       = useState('')
-  const [filterPlan, setFilterPlan] = useState<string>('all')
+  const [filterPlan, setFilterPlan] = useState<string>(initialFilter)
   // Tri : inscription la plus récente (par défaut) ou dernière visite
   const [sortBy, setSortBy] = useState<'inscription' | 'visite'>('inscription')
   // Vue grille vs liste : la grille reste lisible pour une cinquantaine de
@@ -266,7 +268,8 @@ export default function MembresUI({ members, monthlyRevenue }: { members: Member
       (filterPlan === 'investor'     && !!m.is_investor) ||
       (filterPlan === 'photographer' && !!m.is_photographer) ||
       (filterPlan === 'cleaner'      && !!m.is_cleaner) ||
-      (filterPlan === 'depannage'    && !!m.is_depannage)
+      (filterPlan === 'depannage'    && !!m.is_depannage) ||
+      (filterPlan === 'sans-logement' && m.role !== 'admin' && m.has_logement === false)
     return matchSearch && matchPlan
   })
   if (sortBy === 'visite') {
@@ -283,6 +286,7 @@ export default function MembresUI({ members, monthlyRevenue }: { members: Member
   const totalPhotographers = members.filter(m => m.is_photographer).length
   const totalCleaners  = members.filter(m => m.is_cleaner).length
   const totalDepannage = members.filter(m => m.is_depannage).length
+  const totalSansLogement = members.filter(m => m.role !== 'admin' && m.has_logement === false).length
 
   return (
     <div style={s.wrap}>
@@ -335,6 +339,7 @@ export default function MembresUI({ members, monthlyRevenue }: { members: Member
           { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#B7791F' },
           { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--accent-text)' },
           { filter: 'depannage',    icon: <Wrench size={16} weight="fill" />,      value: totalDepannage,     label: 'dépannage',     color: '#A4502A' },
+          { filter: 'sans-logement', icon: <House size={16} weight="fill" />,      value: totalSansLogement,  label: 'sans logement', color: '#B7791F' },
           { filter: null,           icon: <CurrencyEur size={16} />,               value: `${monthlyRevenue.toFixed(2).replace('.', ',')} €`, label: 'par mois', color: 'var(--accent-text)' },
         ].map(({ filter: f, icon, value, label, color }) => {
           const active = f !== null && filterPlan === f && f !== 'all'

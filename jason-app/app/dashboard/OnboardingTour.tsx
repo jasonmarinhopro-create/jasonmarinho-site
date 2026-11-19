@@ -65,8 +65,8 @@ export const DASHBOARD_HOME_STEPS: TourStep[] = [
   {
     id: 'done',
     targetSelector: null,
-    title: "Tu as la carte. Bonne route ✨",
-    body: "Le widget « Parcours » en bas à droite te guide étape par étape, et une visite guidée se lance à ta première visite des pages clés, relançable via « Comment ça marche ? » en haut de chaque page.",
+    title: "Tu as la carte. Bonne route",
+    body: "La carte « Démarrage » de l'Accueil te guide en 3 étapes, et une visite guidée se lance à ta première visite des pages clés, relançable via « Comment ça marche ? » en haut de chaque page.",
   },
 ]
 
