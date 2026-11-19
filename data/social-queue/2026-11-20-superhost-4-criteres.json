@@ -1,0 +1,23 @@
+{
+  "slug": "superhost-4-criteres",
+  "format": "carrousel",
+  "public": "hotes",
+  "photo": "img/exemple-fiches/photo-chambre-3.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Superhost", "titre": "Superhost : *4 critères*, et un seul suffit à tout perdre", "sous_titre": "Ce qu’Airbnb vérifie tous les trimestres." },
+    { "type": "chiffre", "kicker": "Critère 1", "valeur": "4,8", "label": "de note moyenne au moins, sur les *365 derniers jours*.", "source": "Airbnb, programme Superhost" },
+    { "type": "chiffre", "kicker": "Critère 2", "valeur": "90 %", "label": "des nouveaux messages répondus en moins de *24 h*.", "source": "Airbnb, programme Superhost" },
+    { "type": "chiffre", "kicker": "Critère 3", "valeur": "< 1 %", "label": "d’annulations côté hôte. Le critère *le plus piégeux*.", "source": "Airbnb, programme Superhost" },
+    { "type": "liste", "kicker": "Critère 4", "titre": "Une activité *minimum*", "items": ["10 séjours terminés sur 365 jours", "ou 3 séjours qui totalisent 100 nuits"] },
+    { "type": "astuce", "kicker": "Le piège", "titre": "Synchronise *tes calendriers*", "texte": "Accepter une date déjà prise ailleurs, puis annuler : c’est l’erreur classique. Relie Airbnb, Booking et tes réservations directes." }
+  ],
+  "legende": "Le badge Superhost se joue sur quatre critères, vérifiés tous les trois mois. Il suffit d’en rater un pour le perdre.\n\nLa note, le taux de réponse, les annulations et l’activité minimum : le plus traître reste l’annulation côté hôte, souvent due à un calendrier pas à jour entre plusieurs plateformes.\n\nEt toi, tu es Superhost : oui ou pas encore ?",
+  "hashtags": ["#airbnb", "#superhost", "#locationcourteduree", "#hoteairbnb", "#lcd"],
+  "lien": "https://jasonmarinho.com/blog/superhost-airbnb-criteres-methode-2026",
+  "story": {
+    "texte": "Le critère Superhost que *tout le monde* sous-estime",
+    "frames": [
+      { "type": "question", "titre": "Tu es Superhost : *oui* ou pas encore ?" }
+    ]
+  }
+}
