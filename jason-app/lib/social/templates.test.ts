@@ -33,3 +33,11 @@ describe('visuels des réseaux sociaux', () => {
     expect(() => assertNoBlank('<p>Taxe de séjour</p>')).not.toThrow()
   })
 })
+
+describe('typographie des visuels (19/11/2026)', () => {
+  it('espaces insécables avant : ; ? ! » et entre un nombre et son unité', async () => {
+    const { fr } = await import('../../../scripts/social/templates.mjs')
+    expect(fr('« Superhost » : 10 séjours ?')).toBe('« Superhost » : 10 séjours ?')
+    expect(fr('1 000 €')).toBe('1 000 €')
+  })
+})

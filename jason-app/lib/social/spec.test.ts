@@ -26,7 +26,16 @@ describe('fichier de publication des réseaux', () => {
     expect(checkSpec({ ...ok, maintenant: 'oui' })).toContain('maintenant : true ou absent')
     expect(checkSpec({ ...ok, format: 'story' }).length).toBeGreaterThan(0)
     expect(checkSpec({ ...ok, slides: ok.slides.slice(1) })).toContain('la première diapositive doit être une couverture')
-    expect(checkSpec({ ...ok, photo: 'img/absente.jpg' }, { exists: () => false })).toContain('photo introuvable dans img/')
+    expect(checkSpec({ ...ok, photo: 'img/absente.jpg' }, { exists: () => false })).toContain('photo introuvable (img/… ou pexels:…)')
+  })
+  it('photos Pexels, photo par diapositive et couverture jaune (19/11/2026)', () => {
+    expect(checkSpec({ ...ok, photo: 'pexels:annecy lac hiver' })).toEqual([])
+    expect(checkSpec({ ...ok, photo: 'pexels:' })).toContain('photo introuvable (img/… ou pexels:…)')
+    expect(checkSpec({ ...ok, photo: 'https://exemple.fr/a.jpg' })).toContain('photo introuvable (img/… ou pexels:…)')
+    const slides = [{ ...ok.slides[0], style: 'jaune' }, { ...ok.slides[1], photo: 'pexels:clés porte' }, ok.slides[2]]
+    expect(checkSpec({ ...ok, slides })).toEqual([])
+    expect(checkSpec({ ...ok, slides: [ok.slides[0], { ...ok.slides[1], style: 'jaune' }] }).length).toBeGreaterThan(0)
+    expect(checkStories({ format: 'stories', slug: 'demande-a1b2c3d4', maintenant: true, frames: [{ type: 'couverture', titre: 'A', photo: 'pexels:123' }, { type: 'astuce', texte: 'B' }] })).toEqual([])
   })
   it('story : accroche courte, ou désactivée', () => {
     expect(checkSpec({ ...ok, story: { texte: 'La 3e, *presque tout le monde* la fait' } })).toEqual([])

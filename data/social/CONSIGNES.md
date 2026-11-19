@@ -166,6 +166,23 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
   `photo-interieur-1.jpg`, `menage-1.jpg` (toutes dans `img/exemple-fiches/`).
   Pour le dépannage : `photo-sdb-1.jpg`, `photo-sdb-2.jpg` ou `photo-cuisine-2.jpg`.
   Sans photo : fond vert de la marque.
+- **Photos Pexels (19/11/2026, demande de Jason : « tu utilises souvent les
+  mêmes photos »)** : `photo` peut aussi valoir `"pexels:<recherche>"` (mots
+  précis, en français ou en anglais : `"pexels:annecy lac hiver"`,
+  `"pexels:plombier évier"`, `"pexels:linge de lit blanc"`) ou
+  `"pexels:<id>"` (pour une ville, l'id de `scripts/data/photos-villes.mjs`).
+  Le workflow cherche, écarte toute photo déjà publiée depuis 60 jours
+  (`data/social/photos-utilisees.json`) et prend la suivante ; rien trouvé :
+  fond vert. **Préfère Pexels aux 12 images de `img/exemple-fiches/`**, et
+  n'utilise pas une de ces 12 si elle a servi dans les 3 dernières semaines
+  (historique). Une photo doit montrer le sujet (la ville, le geste, la pièce),
+  pas une chambre d'hôtel au hasard : si rien ne colle, pas de photo.
+- `photo` sur une **diapositive** (`point`, `liste`, `chiffre`, `astuce`) :
+  la diapositive passe sur la photo, assombrie. Une ou deux par carrousel au
+  plus, pour rythmer ; jamais sur toutes.
+- `"style": "jaune"` sur la `couverture` (sans photo) : fond jaune de la
+  marque, titre vert. À alterner avec les couvertures photo, pour que le
+  profil ne soit pas une suite d'images vertes.
 - `lien` : une page du site qui existe (prends-la dans `llms.txt`).
 - `story` (depuis le 24/10/2026, demande de Jason) : chaque post part avec
   une série de stories Facebook et Instagram, publiée en même temps que lui :
@@ -206,7 +223,9 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
   inventé, source sur l'écran `chiffre`).
 - `jour` (facultatif) : la date de publication, 12 h (Paris) ; sans `jour`,
   aujourd'hui si ce n'est pas trop tard, sinon le premier jour libre.
-- `photo` (facultatif) : fond de l'écran `couverture` si tu en mets un.
+- `photo` (conseillée) : fond du **premier écran**, quel qu'il soit (une
+  série qui s'ouvre sur une photo arrête mieux le pouce) ; chaque écran peut
+  aussi avoir sa `photo`. Mêmes règles qu'au-dessus (`pexels:…` de préférence).
 - Varie les publics comme pour les posts, et ne reprends pas un sujet de
   stories des 30 derniers jours (historique : lignes « stories »).
 
@@ -257,6 +276,17 @@ site, puis le lien de la page qui va plus loin (seuls les liens
 proposition (« écris-moi en message privé »). Rien de fiscal ou juridique
 au-delà de ce qu'écrit le site, aucune promesse de résultat, aucun prix
 inventé. Pas d'emoji ni de tiret cadratin (la réponse serait refusée).
+
+## Stories « Nouvelle demande » (automatiques, 19/11/2026)
+
+Demande de Jason : dès qu'un hôte dépose une demande (Trouver un pro), une
+série de stories l'annonce (« Un photographe recherché à Annecy »). **Tu n'as
+rien à faire** : le workflow les fait seul, toutes les heures de 8 h à 21 h
+(4 par jour au plus), sans nom, contact, message ni budget. Elles ne prennent
+pas le créneau de tes stories du jour. Dans l'historique : lignes
+« stories demande ». Au rapport du dimanche : leur nombre, et si une ville ou
+un métier revient souvent, c'est un sujet de post (un manque de pros, par
+exemple).
 
 ## Rapport du dimanche soir
 

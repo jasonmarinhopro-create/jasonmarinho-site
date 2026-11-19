@@ -5,7 +5,12 @@
 // social_post_targets) au prochain créneau. Le cron de l'app le publie.
 // Puis réécrit data/social/historique.md depuis la base (posts et chiffres,
 // jamais de nom de commentateur : dépôt public).
+// Aussi (19/11/2026) : photos « pexels:… » cherchées et téléchargées avant le
+// rendu (photos.mjs), et stories « Nouvelle demande » pour chaque demande
+// d'hôte récente (demandes.mjs), publiées tout de suite.
 //   node scripts/social/publish-queue.mjs            file + historique
+//   node scripts/social/publish-queue.mjs demandes-compter  demandes à annoncer (nombre)
+//   node scripts/social/publish-queue.mjs demandes   stories de demande (passage horaire)
 //   node scripts/social/publish-queue.mjs historique  historique seul
 
 import fs from 'node:fs'
@@ -14,6 +19,8 @@ import { fileURLToPath } from 'node:url'
 import { checkSpec, checkStories, captions, nextSlot, storySlot } from './spec.mjs'
 import { renderFeed, renderReel, renderStory, renderStoryFrames } from './render.mjs'
 import { appliquer } from './commentaires.mjs'
+import { resolvePhotos, readUsed, writeUsed } from './photos.mjs'
+import { regrouper, demandeStories, aAnnoncer, DEMANDES_FENETRE_H, DEMANDES_PAR_JOUR } from './demandes.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const QUEUE = path.join(ROOT, 'data/social-queue')
@@ -22,6 +29,14 @@ const URL_ = process.env.NEXT_PUBLIC_SUPABASE_URL
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const BUCKET = 'social-post-media'
 const MIME = { '.png': 'image/png', '.jpg': 'image/jpeg', '.mp4': 'video/mp4' }
+const USED_FILE = path.join(ROOT, 'data/social/photos-utilisees.json')
+const TODAY = new Date().toISOString().slice(0, 10)
+const usedPhotos = readUsed(USED_FILE)
+let usedChanged = false
+async function photos(spec) {
+  const ids = await resolvePhotos(spec, { root: ROOT, key: process.env.PEXELS_API_KEY, used: usedPhotos, today: TODAY, log: m => console.log(`::warning title=Photo (${spec.slug})::${m}`) })
+  if (ids.length) usedChanged = true
+}
 
 // Panne passagère de Supabase (28/10/2026 : HTTP 522 de 9 h à 10 h 50, stories
 // du lendemain mises aux refusées) : on réessaie, puis la publication reste
@@ -67,6 +82,7 @@ async function publishOne(file) {
   const recent = await rest(`social_posts?select=media_urls&created_at=gte.${new Date(Date.now() - 45 * 86400000).toISOString()}`)
   if (recent.some(p => (p.media_urls ?? []).some(u => u.includes(`-${spec.slug}/`)))) return { slug: spec.slug, format: spec.format, slot: 'déjà programmé', images: 0, skipped: true }
 
+  await photos(spec)
   const out = fs.mkdtempSync(path.join(process.env.RUNNER_TEMP || '/tmp', 'social-'))
   const stamp = new Date().toISOString().slice(0, 10)
   const dir = `auto/${stamp}-${spec.slug}`
@@ -115,23 +131,33 @@ async function publishOne(file) {
 
 /** Série de stories d'un jour sans post (fichier « format": "stories" ») */
 async function publishStories(file) {
-  const spec = JSON.parse(fs.readFileSync(file, 'utf8'))
+  return publishStoriesSpec(JSON.parse(fs.readFileSync(file, 'utf8')))
+}
+
+// Corps des séries « Nouvelle demande » : elles ne prennent pas le créneau du jour
+const DEMANDE_PREFIX = 'Demande : '
+
+async function publishStoriesSpec(spec) {
   const errs = checkStories(spec, { exists: p => fs.existsSync(path.join(ROOT, p)) })
   if (errs.length) throw new Error(errs.join(' ; '))
   const recent = await rest(`social_posts?select=media_urls&created_at=gte.${new Date(Date.now() - 45 * 86400000).toISOString()}`)
   if (recent.some(p => (p.media_urls ?? []).some(u => u.includes(`-${spec.slug}/`)))) return { slug: spec.slug, slot: 'déjà programmée', images: 0 }
 
   const today = new Date().toISOString().slice(0, 10)
-  const taken = await rest(`social_posts?select=scheduled_at&status=neq.failed&platforms=cs.{instagram_story}&platforms=not.cs.{instagram}&scheduled_at=gte.${today}T00:00:00Z`)
-  const slot = storySlot(new Date(), taken.map(p => String(p.scheduled_at).slice(0, 10)), spec.jour ?? null)
+  const taken = await rest(`social_posts?select=scheduled_at,body&status=neq.failed&platforms=cs.{instagram_story}&platforms=not.cs.{instagram}&scheduled_at=gte.${today}T00:00:00Z`)
+  const slot = spec.maintenant
+    ? new Date(Date.now() + 60000)
+    : storySlot(new Date(), taken.filter(p => !String(p.body ?? '').startsWith(DEMANDE_PREFIX)).map(p => String(p.scheduled_at).slice(0, 10)), spec.jour ?? null)
+  await photos(spec)
   const out = fs.mkdtempSync(path.join(process.env.RUNNER_TEMP || '/tmp', 'stories-'))
   const dir = `auto/${slot.toISOString().slice(0, 10)}-${spec.slug}`
   const frames = []
   for (const f of await renderStoryFrames(spec, spec.frames, out)) frames.push(await upload(f, `${dir}/${path.basename(f)}`))
   const [admin] = await rest('profiles?select=id&role=eq.admin&limit=1')
   const resume = spec.frames.map(f => String(f.titre || f.valeur || f.texte || '').replace(/\*/g, '')).join(' / ')
+  const isDemande = spec.slug.startsWith('demande-')
   const [post] = await rest('social_posts', { method: 'POST', body: JSON.stringify({
-    created_by: admin.id, body: `Stories : ${resume}`.slice(0, 300), media_urls: frames, platforms: ['facebook_story', 'instagram_story'], scheduled_at: slot.toISOString(), status: 'scheduled',
+    created_by: admin.id, body: `${isDemande ? DEMANDE_PREFIX : 'Stories : '}${resume}`.slice(0, 300), media_urls: frames, platforms: ['facebook_story', 'instagram_story'], scheduled_at: slot.toISOString(), status: 'scheduled',
   }) })
   await rest('social_post_targets', { method: 'POST', body: JSON.stringify(['facebook_story', 'instagram_story'].map(platform => (
     { post_id: post.id, platform, status: 'pending', body_override: null, media_override: frames }))) })
@@ -139,11 +165,49 @@ async function publishStories(file) {
   return { slug: spec.slug, slot: slot.toISOString(), images: frames.length }
 }
 
+/**
+ * Stories « Nouvelle demande » : demandes d'hôtes des DEMANDES_FENETRE_H
+ * dernières heures pas encore annoncées, DEMANDES_PAR_JOUR séries au plus par
+ * jour. Seules les colonnes affichables sont lues (ni nom, ni e-mail, ni
+ * téléphone, ni message, ni budget). Renvoie le nombre de séries programmées.
+ */
+async function demandesAAnnoncer() {
+  const since = new Date(Date.now() - DEMANDES_FENETRE_H * 3600000).toISOString()
+  const rows = await rest(`demandes_hotes?select=id,created_at,groupe,metier,ville,logement,quand,frequence,etablissement,status,sent_to&created_at=gte.${since}&order=created_at.asc&limit=100`)
+  if (!rows.length) return []
+  const recent = await rest(`social_posts?select=media_urls,body,created_at&created_at=gte.${new Date(Date.now() - 4 * 86400000).toISOString()}`)
+  const faits = new Set(recent.flatMap(p => (p.media_urls ?? []).map(u => (/\/auto\/\d{4}-\d{2}-\d{2}-(demande-[a-z0-9]+)\//.exec(u) ?? [])[1]).filter(Boolean)))
+  const duJour = recent.filter(p => String(p.body ?? '').startsWith(DEMANDE_PREFIX) && String(p.created_at).slice(0, 10) === TODAY).length
+  return aAnnoncer(regrouper(rows), faits, DEMANDES_PAR_JOUR - duJour)
+}
+
+async function annoncerDemandes() {
+  let n = 0
+  for (const g of await demandesAAnnoncer()) {
+    try {
+      const r = await publishStoriesSpec(demandeStories(g))
+      if (r.images) n++
+      console.log(`::notice title=Story de demande::${r.slug} (${r.images} écrans) le ${r.slot}`)
+    } catch (err) { console.log(`::warning title=Story de demande non programmée::${err.message.slice(0, 160)}`) }
+  }
+  return n
+}
+
+/** Publication tout de suite (stories de demande), sans attendre le passage de 11 h ou 17 h. */
+async function dispatchNow() {
+  if (!process.env.SOCIAL_CRON_SECRET) return
+  // La publication réserve chaque post (statut « publishing » posé sous condition) : pas de doublon possible
+  await new Promise(r => setTimeout(r, 65000))
+  const res = await fetch('https://app.jasonmarinho.com/api/cron/social-dispatch', { headers: { Authorization: `Bearer ${process.env.SOCIAL_CRON_SECRET}` }, cache: 'no-store' }).catch(() => null)
+  const json = res ? await res.json().catch(() => null) : null
+  console.log(`::notice title=Publication lancée::HTTP ${res?.status ?? 'réseau'} ${JSON.stringify({ processed: json?.processed, remaining: json?.remaining })}`)
+}
+
 /** Historique lu par la routine : anti-doublon des sujets et chiffres du rapport. */
 async function writeHistory() {
   const posts = await rest('social_posts?select=id,body,platforms,media_urls,scheduled_at,status,created_at,social_post_targets(platform,status,like_count,comment_count,published_at,error)&order=created_at.desc&limit=120')
   const comments = await rest('social_comments?select=reply_status,created_at&created_at=gte.' + new Date(Date.now() - 30 * 86400000).toISOString()).catch(() => [])
-  const fmt = p => !(p.platforms ?? []).includes('facebook') && (p.platforms ?? []).includes('instagram_story') ? `stories (${(p.media_urls ?? []).length} écrans)` : (p.media_urls ?? []).some(u => /\.mp4/i.test(u)) ? 'reel' : (p.media_urls ?? []).length > 1 ? 'carrousel' : (p.media_urls ?? []).length ? 'photo' : 'texte'
+  const fmt = p => !(p.platforms ?? []).includes('facebook') && (p.platforms ?? []).includes('instagram_story') ? `${String(p.body ?? '').startsWith(DEMANDE_PREFIX) ? 'stories demande' : 'stories'} (${(p.media_urls ?? []).length} écrans)` : (p.media_urls ?? []).some(u => /\.mp4/i.test(u)) ? 'reel' : (p.media_urls ?? []).length > 1 ? 'carrousel' : (p.media_urls ?? []).length ? 'photo' : 'texte'
   const firstLine = b => String(b ?? '').split('\n').find(l => l.trim())?.slice(0, 110) ?? ''
   const slugOf = p => ((p.media_urls ?? [])[0]?.match(/\/auto\/\d{4}-\d{2}-\d{2}-([a-z0-9-]+)\//) ?? [])[1] ?? '(manuel)'
   const lines = posts.map(p => {
@@ -171,6 +235,23 @@ if (!URL_ || !KEY) { console.log('::error::NEXT_PUBLIC_SUPABASE_URL ou SUPABASE_
 
 let failed = 0
 let replies = 0
+if (process.argv[2] === 'demandes-compter') {
+  // Avant d'installer Chromium : y a-t-il une demande à annoncer ? (nombre seulement)
+  const n = (await demandesAAnnoncer().catch(err => { console.log(`::warning title=Demandes non lues::${err.message.slice(0, 160)}`); return [] })).length
+  console.log(`Demandes à annoncer : ${n}`)
+  if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `demandes=${n}\n`)
+  process.exit(0)
+}
+if (process.argv[2] === 'demandes') {
+  // Passage horaire : rien d'autre que les demandes
+  const n = await annoncerDemandes().catch(err => { console.log(`::warning title=Demandes non lues::${err.message.slice(0, 160)}`); return 0 })
+  if (n) await dispatchNow()
+  if (usedChanged) writeUsed(USED_FILE, usedPhotos, TODAY)
+  fs.rmSync(path.join(ROOT, 'tmp-social'), { recursive: true, force: true })
+  if (n) await writeHistory().catch(err => { console.log(`::warning title=Historique non mis à jour::${err.message.slice(0, 120)}`) })
+  console.log(`Stories de demande programmées : ${n}`)
+  process.exit(0)
+}
 if (process.argv[2] !== 'historique') {
   const files = fs.existsSync(QUEUE) ? fs.readdirSync(QUEUE).filter(f => f.endsWith('.json')).sort() : []
   for (const f of files) {
@@ -211,6 +292,8 @@ if (process.argv[2] !== 'historique') {
     }
   }
 }
+if (usedChanged) writeUsed(USED_FILE, usedPhotos, TODAY)
+fs.rmSync(path.join(ROOT, 'tmp-social'), { recursive: true, force: true })
 // Réponses publiées tout de suite plutôt qu'au prochain passage (10 h ou 21 h)
 if (replies && process.env.SOCIAL_CRON_SECRET) {
   const res = await fetch('https://app.jasonmarinho.com/api/cron/social-ops?do=replies', { headers: { Authorization: `Bearer ${process.env.SOCIAL_CRON_SECRET}` }, cache: 'no-store' }).catch(() => null)
