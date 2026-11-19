@@ -83,7 +83,14 @@ export function officialGrid(slug) {
   const best = new Map()
   for (const r of rows) {
     const k = r.hebergement
-    if (!best.has(k) || Number(best.get(k).date_effet) < Number(r.date_effet)) best.set(k, r)
+    // La base a parfois deux lignes de la même année pour la même catégorie,
+    // l'une avec les taxes additionnelles, l'autre sans (Caen, Reims,
+    // Saint-Tropez…) : avant le 19/11/2026, l'ordre de réponse de l'API
+    // décidait. À égalité d'année, la ligne la plus complète (total le plus
+    // élevé, taxes additionnelles comprises) l'emporte.
+    const b = best.get(k)
+    const an = x => Number(String(x.date_effet).slice(0, 4))
+    if (!b || an(b) < an(r) || (an(b) === an(r) && Number(r.tarif_total ?? 0) > Number(b.tarif_total ?? 0))) best.set(k, r)
   }
   const lignes = []
   let annee = 0
