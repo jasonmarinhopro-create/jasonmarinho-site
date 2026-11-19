@@ -191,14 +191,14 @@ function computeInsights(s: {
     logements = {
       message: 'Ajoute ton premier logement pour activer le pilotage',
       ctaLabel: 'Ajouter un logement',
-      ctaHref: '/dashboard/logements',
+      ctaHref: '/dashboard/logements?new=1',
       tone: 'opportunity',
     }
   } else if (s.nbLogements === 1) {
     logements = {
       message: 'Compare ton portefeuille en ajoutant tes autres biens',
       ctaLabel: 'Ajouter un logement',
-      ctaHref: '/dashboard/logements',
+      ctaHref: '/dashboard/logements?new=1',
       tone: 'neutral',
     }
   } else if (s.nbLogementsActifs < s.nbLogements) {

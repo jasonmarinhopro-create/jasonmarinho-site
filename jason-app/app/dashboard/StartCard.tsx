@@ -14,11 +14,13 @@ export const SKIP_CALENDAR_KEY = 'start:skip-calendrier'
 
 export interface StartExtra { key: string; label: string; href: string }
 
-export default function StartCard({ hasLogement, logementNom, hasCalendar, hasReservation, calendarSkipped = false, extras }: {
+export default function StartCard({ hasLogement, logementNom, logementId = null, hasCalendar, hasReservation, calendarSkipped = false, extras }: {
   hasLogement: boolean
   /** Étape calendrier passée par l'hôte (« Passer cette étape ») */
   calendarSkipped?: boolean
   logementNom: string | null
+  /** Premier logement : « Connecter » ouvre la section calendriers de sa fiche */
+  logementId?: string | null
   hasCalendar: boolean
   hasReservation: boolean
   extras: StartExtra[]
@@ -36,7 +38,7 @@ export default function StartCard({ hasLogement, logementNom, hasCalendar, hasRe
       sub: calendarSkipped && !hasCalendar && !hasReservation
         ? 'Étape passée : tu pourras le faire plus tard depuis ta fiche logement'
         : 'Tes réservations, le planning ménage et tes revenus se remplissent tout seuls',
-      cta: { label: 'Connecter', href: '/dashboard/logements' },
+      cta: { label: 'Connecter', href: logementId ? `/dashboard/logements/${logementId}#modifier-calendriers` : '/dashboard/logements' },
       skippable: true,
     },
     {

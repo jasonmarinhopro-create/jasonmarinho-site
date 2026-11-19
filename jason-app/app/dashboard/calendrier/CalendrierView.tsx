@@ -2077,7 +2077,7 @@ export default function CalendrierView({
                     Pour ajouter un séjour, il te faut au moins un logement.
                   </div>
                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    <Link href="/dashboard/logements" className="btn-primary" style={{ fontSize: '12px', padding: '7px 12px' }}>
+                    <Link prefetch={false} href="/dashboard/logements?new=1" className="btn-primary" style={{ fontSize: '12px', padding: '7px 12px' }}>
                       + Logement
                     </Link>
                   </div>
