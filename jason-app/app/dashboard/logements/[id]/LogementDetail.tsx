@@ -9,7 +9,7 @@
 // récents, informations, propriétaire). Chaque carte s'édite sur place ;
 // `#modifier-<carte>` ouvre directement son formulaire.
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import {
@@ -556,6 +556,50 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
   const completion = Math.round((doneCount / checklist.length) * 100)
   const missing = checklist.filter(c => !c.done)
 
+  // ── Ta fiche en sections (19/11/2026) : statut de chaque section du rail.
+  // done : true (fait), false (à compléter), null (facultatif, sans badge).
+  const ficheSections: Array<{ key: string; group: string; label: string; done: boolean | null }> = [
+    { key: 'infos', group: 'L’essentiel', label: 'Informations générales', done: !!(l.nom && l.adresse) },
+    { key: 'caracteristiques', group: 'L’essentiel', label: 'Caractéristiques et conformité', done: numeroOk },
+    { key: 'calendriers', group: 'L’essentiel', label: 'Calendriers connectés', done: icalStatus.length > 0 },
+    { key: 'accueil', group: 'Pour tes voyageurs', label: 'Arrivée des voyageurs', done: !!(l.heure_arrivee && (l.wifi_nom || l.code_acces)) },
+    { key: 'equipements', group: 'Pour tes voyageurs', label: 'Équipements et règles', done: (l.equipements ?? []).length > 0 },
+    { key: 'description', group: 'Pour tes voyageurs', label: 'Description', done: !!l.description },
+    { key: 'contacts', group: 'Pour tes voyageurs', label: 'Contacts utiles', done: null },
+    { key: 'tarifs', group: 'Pour tes contrats', label: 'Tarifs', done: !!l.tarif_nuitee_moyen },
+    { key: 'regles', group: 'Pour tes contrats', label: 'Annulation et règlement', done: !!(l.conditions_annulation && l.reglement_interieur) },
+    { key: 'contrat', group: 'Pour tes contrats', label: 'Contrat', done: null },
+    { key: 'annonces', group: 'Le reste', label: 'Annonces en ligne', done: null },
+    { key: 'proprietaire', group: 'Le reste', label: 'Propriétaire', done: null },
+  ]
+  const ficheRequired = ficheSections.filter(x => x.done !== null)
+  const ficheDone = ficheRequired.filter(x => x.done).length
+  const ficheTotal = ficheRequired.length
+  // Ancre d'une carte (#modifier-<id> ou #<id>) → section du rail
+  const sectionOf = (cardId: string) => (cardId === 'annulation' || cardId === 'reglement' ? 'regles' : cardId)
+  const [active, setActive] = useState<string>(() => ficheSections.find(x => x.done === false)?.key ?? 'infos')
+  useEffect(() => {
+    const fromHash = () => {
+      const id = window.location.hash.replace(/^#(modifier-)?/, '')
+      const key = sectionOf(id)
+      if (ficheSections.some(x => x.key === key)) {
+        setActive(key)
+        document.getElementById('fiche')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+    fromHash()
+    window.addEventListener('hashchange', fromHash)
+    return () => window.removeEventListener('hashchange', fromHash)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  function openSection(key: string) {
+    setActive(key)
+    if (window.location.hash) window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    if (window.matchMedia('(max-width: 899px)').matches) document.getElementById('fiche')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+  const activeIndex = ficheSections.findIndex(x => x.key === active)
+  const nextSection = activeIndex >= 0 ? ficheSections[activeIndex + 1] ?? null : null
+
   const facts: Array<{ Icon: React.ElementType; value: string; label: string }> = [
     { Icon: Users, value: String(l.capacite_max), label: l.capacite_max > 1 ? 'voyageurs' : 'voyageur' },
     ...(l.nb_chambres ? [{ Icon: Door, value: String(l.nb_chambres), label: l.nb_chambres > 1 ? 'chambres' : 'chambre' }] : []),
@@ -727,6 +771,7 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
       </div>
 
       {/* ─── 2 colonnes ─── */}
+      {/* ─── Réservations et voyageurs ─── */}
       <div style={s.columns}>
         <div style={s.colMain}>
           {/* Réservations à venir */}
@@ -825,554 +870,8 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
             )}
           </Section>
 
-          {/* Calendriers connectés */}
-          <EditableCard
-            id="calendriers"
-            title="Calendriers connectés"
-            subtitle="Tes réservations Airbnb, Booking et Vrbo arrivent toutes seules, les ménages se planifient"
-            icon={<LinkSimple size={17} weight="bold" />}
-            onSave={saveCalendriers}
-            onCancel={() => {
-              setDraftIcalAirbnb(l.ical_airbnb ?? '')
-              setDraftIcalBooking(l.ical_booking ?? '')
-              setDraftIcalVrbo(l.ical_vrbo ?? '')
-              setDraftIcalAutre(l.ical_autre ?? '')
-            }}
-            hasValue={icalStatus.length > 0}
-            addLabel="Connecter"
-            emptyView={
-              <div style={s.emptyBox}>
-                <CalendarBlank size={26} weight="duotone" color="var(--accent-text)" />
-                <strong style={{ fontSize: '14px', color: 'var(--text)' }}>Aucun calendrier connecté</strong>
-                <span style={{ fontSize: '12.5px', color: 'var(--text-3)', lineHeight: 1.5, maxWidth: '440px' }}>
-                  Colle le lien d&apos;export de ton annonce Airbnb ou Booking : tes réservations s&apos;affichent ici,
-                  dans le calendrier et dans le planning de ton équipe de ménage.
-                </span>
-                <a href="#modifier-calendriers" style={s.btnSoft}><LinkSimple size={13} weight="bold" /> Connecter un calendrier</a>
-              </div>
-            }
-            view={<IcalSyncSection logementId={l.id} status={icalStatus} />}
-            edit={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={s.editGrid2}>
-                  <Field label="Airbnb"><input style={s.editInput} type="url" value={draftIcalAirbnb} onChange={e => setDraftIcalAirbnb(e.target.value)} placeholder="https://www.airbnb.fr/calendar/ical/…" /></Field>
-                  <Field label="Booking.com"><input style={s.editInput} type="url" value={draftIcalBooking} onChange={e => setDraftIcalBooking(e.target.value)} placeholder="https://admin.booking.com/…/ical.html?…" /></Field>
-                  <Field label="Vrbo / Abritel"><input style={s.editInput} type="url" value={draftIcalVrbo} onChange={e => setDraftIcalVrbo(e.target.value)} placeholder="https://www.vrbo.com/icalendar/…" /></Field>
-                  <Field label="Autre (site, logiciel…)"><input style={s.editInput} type="url" value={draftIcalAutre} onChange={e => setDraftIcalAutre(e.target.value)} placeholder="https://…" /></Field>
-                </div>
-                <div style={s.tip}>
-                  <Info size={15} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
-                  <span>
-                    <strong>Airbnb</strong> : Calendrier, ton annonce, Disponibilités, Synchroniser les calendriers, Exporter le calendrier.{' '}
-                    <strong>Booking.com</strong> : extranet, Tarifs et disponibilités, Synchroniser les calendriers, Exporter.{' '}
-                    <Link href="/dashboard/aide/logements-voyageurs/synchroniser-airbnb-ical" style={{ color: 'var(--accent-text)', fontWeight: 600 }}>Guide pas à pas</Link>
-                  </span>
-                </div>
-              </div>
-            }
-          />
-
-          {/* Caractéristiques & conformité */}
-          <EditableCard
-            id="caracteristiques"
-            title="Caractéristiques et conformité"
-            subtitle={isPT ? 'Capacité et pièces, reprises dans tes contrats' : "Capacité, numéro d'enregistrement, classement et DPE, repris dans tes contrats"}
-            icon={<ShieldCheck size={17} weight="fill" />}
-            onSave={saveCaracteristiques}
-            onCancel={() => {
-              setDraftCapacite(l.capacite_max); setDraftSurface(l.surface_m2); setDraftChambres(l.nb_chambres)
-              setDraftLits(l.nb_lits); setDraftSdb(l.nb_sdb); setDraftNumeroEnreg(l.numero_enregistrement ?? '')
-              setDraftClassement(l.classement_etoiles); setDraftDpe(l.dpe ?? '')
-            }}
-            view={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={s.tiles}>
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>{isPT ? 'Numéro AL' : "Numéro d'enregistrement"}</span>
-                    {numeroOk
-                      ? <span style={{ ...s.tileValue, fontSize: '15px', wordBreak: 'break-all' }}>{isPT ? l.numero_al : l.numero_enregistrement}</span>
-                      : <a href={isPT ? '#modifier-infos' : '#modifier-caracteristiques'} style={s.tileMissing}><Warning size={13} weight="fill" /> À renseigner</a>}
-                  </div>
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>Classement</span>
-                    {l.classement_etoiles
-                      ? <span style={{ ...s.tileValue, color: AMBER, display: 'flex', gap: '2px' }}>{Array.from({ length: l.classement_etoiles }).map((_, i) => <Star key={i} size={16} weight="fill" />)}</span>
-                      : <span style={{ ...s.tileValue, fontSize: '15px', color: 'var(--text-3)' }}>Non classé</span>}
-                  </div>
-                  {!isPT && (
-                    <div style={{ ...s.tile, flex: '2 1 260px' }}>
-                      <span style={s.tileLabel}>Diagnostic de performance énergétique</span>
-                      <div style={s.dpeScale} aria-label={l.dpe ? `DPE ${l.dpe}` : 'DPE non renseigné'}>
-                        {DPE_SCALE.map(letter => {
-                          const dc = dpeColor(letter)
-                          const on = l.dpe === letter
-                          return (
-                            <span key={letter} style={{
-                              ...s.dpeCell, background: on ? dc.fg : dc.bg, color: on ? '#fff' : dc.fg,
-                              transform: on ? 'scale(1.12)' : undefined, fontWeight: on ? 800 : 600,
-                              boxShadow: on ? '0 2px 8px rgba(0,0,0,0.18)' : undefined,
-                            }}>{letter}</span>
-                          )
-                        })}
-                      </div>
-                      {!l.dpe && <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Non renseigné</span>}
-                    </div>
-                  )}
-                </div>
-                <div style={s.inlineFacts}>
-                  <span><Users size={14} weight="duotone" /> {l.capacite_max} voyageur{l.capacite_max > 1 ? 's' : ''}</span>
-                  <span><Door size={14} weight="duotone" /> {l.nb_chambres ?? '?'} chambre{(l.nb_chambres ?? 0) > 1 ? 's' : ''}</span>
-                  <span><Bed size={14} weight="duotone" /> {l.nb_lits ?? '?'} lit{(l.nb_lits ?? 0) > 1 ? 's' : ''}</span>
-                  <span><Shower size={14} weight="duotone" /> {l.nb_sdb ?? '?'} salle{(l.nb_sdb ?? 0) > 1 ? 's' : ''} de bain</span>
-                  <span><Ruler size={14} weight="duotone" /> {l.surface_m2 ? `${l.surface_m2} m²` : 'surface ?'}</span>
-                </div>
-              </div>
-            }
-            edit={
-              <div style={s.editGrid}>
-                <Field label="Capacité (personnes)"><input style={s.editInput} type="number" min={1} value={draftCapacite} onChange={e => setDraftCapacite(parseInt(e.target.value) || 1)} /></Field>
-                <Field label="Surface (m²)"><input style={s.editInput} type="number" min={0} value={draftSurface ?? ''} onChange={e => setDraftSurface(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
-                <Field label="Chambres"><input style={s.editInput} type="number" min={0} value={draftChambres ?? ''} onChange={e => setDraftChambres(e.target.value ? parseInt(e.target.value) : null)} /></Field>
-                <Field label="Lits"><input style={s.editInput} type="number" min={0} value={draftLits ?? ''} onChange={e => setDraftLits(e.target.value ? parseInt(e.target.value) : null)} /></Field>
-                <Field label="Salles de bain"><input style={s.editInput} type="number" min={0} value={draftSdb ?? ''} onChange={e => setDraftSdb(e.target.value ? parseInt(e.target.value) : null)} /></Field>
-                {!isPT && (
-                  <Field label="Numéro d'enregistrement"><input style={s.editInput} type="text" value={draftNumeroEnreg} onChange={e => setDraftNumeroEnreg(e.target.value)} placeholder="Délivré par ta mairie" /></Field>
-                )}
-                <Field label={isPT ? 'Classement (étoiles)' : 'Classement Atout France'}>
-                  <select style={s.editInput} value={draftClassement ?? ''} onChange={e => setDraftClassement(e.target.value ? parseInt(e.target.value) : null)}>
-                    <option value="">Non classé</option>
-                    {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n} étoile{n > 1 ? 's' : ''}</option>)}
-                  </select>
-                </Field>
-                {!isPT && (
-                  <Field label="DPE">
-                    <select style={s.editInput} value={draftDpe} onChange={e => setDraftDpe(e.target.value)}>
-                      <option value="">Non renseigné</option>
-                      {DPE_SCALE.map(x => <option key={x} value={x}>{x}</option>)}
-                    </select>
-                  </Field>
-                )}
-                {isPT && <p style={{ ...s.hintText, gridColumn: '1 / -1' }}>Le numéro d&apos;Alojamento Local se renseigne dans Informations générales.</p>}
-              </div>
-            }
-          />
-
-          {/* Équipements */}
-          <EditableCard
-            id="equipements"
-            title="Équipements et règles"
-            subtitle="Ce que trouvent tes voyageurs, animaux et tabac compris"
-            icon={<Sparkle size={17} weight="fill" />}
-            onSave={saveEquipements}
-            onCancel={() => { setDraftEquipements(l.equipements ?? []); setDraftAnimaux(l.animaux_acceptes ?? false); setDraftFumeur(l.fumeur_accepte ?? false) }}
-            hasValue={!!(l.equipements && l.equipements.length > 0) || l.animaux_acceptes || l.fumeur_accepte}
-            addLabel="Ajouter"
-            emptyView={<p style={s.emptyHint}>Aucun équipement renseigné pour l&apos;instant.</p>}
-            view={
-              <div style={s.equipGrid}>
-                {(l.equipements ?? []).map(eq => {
-                  const def = EQUIPEMENT_LABELS[eq] ?? { label: eq, Icon: Check }
-                  return <span key={eq} style={s.equipTile}><def.Icon size={20} weight="duotone" color="var(--accent-text)" />{def.label}</span>
-                })}
-                <span style={{ ...s.equipTile, ...(l.animaux_acceptes ? {} : s.equipOff) }}><PawPrint size={20} weight="duotone" color={l.animaux_acceptes ? 'var(--accent-text)' : 'var(--text-3)'} />{l.animaux_acceptes ? 'Animaux acceptés' : 'Pas d\'animaux'}</span>
-                <span style={{ ...s.equipTile, ...(l.fumeur_accepte ? {} : s.equipOff) }}><Cigarette size={20} weight="duotone" color={l.fumeur_accepte ? 'var(--accent-text)' : 'var(--text-3)'} />{l.fumeur_accepte ? 'Fumeur autorisé' : 'Non-fumeur'}</span>
-              </div>
-            }
-            edit={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={s.equipGrid}>
-                  {Object.entries(EQUIPEMENT_LABELS).map(([slug, { label, Icon }]) => {
-                    const on = draftEquipements.includes(slug)
-                    return (
-                      <button
-                        key={slug}
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => setDraftEquipements(prev => on ? prev.filter(e => e !== slug) : [...prev, slug])}
-                        style={{ ...s.equipTile, ...s.equipToggle, ...(on ? s.equipToggleOn : {}) }}
-                      >
-                        <Icon size={20} weight={on ? 'fill' : 'duotone'} />{label}
-                        {on && <Check size={12} weight="bold" style={{ position: 'absolute', top: '7px', right: '8px' }} />}
-                      </button>
-                    )
-                  })}
-                </div>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {([
-                    { on: draftAnimaux, set: setDraftAnimaux, Icon: PawPrint, label: 'Animaux acceptés' },
-                    { on: draftFumeur, set: setDraftFumeur, Icon: Cigarette, label: 'Fumeur autorisé' },
-                  ]).map(t => (
-                    <button key={t.label} type="button" aria-pressed={t.on} onClick={() => t.set(!t.on)} style={{ ...s.toggleChip, ...(t.on ? s.toggleChipOn : {}) }}>
-                      <t.Icon size={15} weight={t.on ? 'fill' : 'duotone'} /> {t.label}
-                      <span style={{ ...s.switch, ...(t.on ? s.switchOn : {}) }}><span style={{ ...s.switchDot, ...(t.on ? s.switchDotOn : {}) }} /></span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            }
-          />
-
-          {/* Tarifs */}
-          <EditableCard
-            id="tarifs"
-            title="Tarifs"
-            subtitle="Prix de base repris dans tes contrats et tes calculs"
-            icon={<Tag size={17} weight="fill" />}
-            onSave={saveTarifs}
-            onCancel={() => { setDraftTarifNuit(l.tarif_nuitee_moyen); setDraftFraisMenage(l.frais_menage); setDraftCaution(l.caution); setDraftMethodesPaiement(l.methodes_paiement ?? '') }}
-            hasValue={!!(l.tarif_nuitee_moyen || l.frais_menage || l.caution || l.methodes_paiement)}
-            addLabel="Ajouter"
-            emptyView={<p style={s.emptyHint}>Aucun tarif renseigné pour l&apos;instant.</p>}
-            view={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={s.tiles}>
-                  <div style={{ ...s.tile, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
-                    <span style={s.tileLabel}>Nuitée moyenne</span>
-                    <span style={{ ...s.tileValue, color: 'var(--accent-text)' }}>{l.tarif_nuitee_moyen ? fmtEur(l.tarif_nuitee_moyen) : '?'}</span>
-                  </div>
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>Frais de ménage</span>
-                    <span style={s.tileValue}>{l.frais_menage ? fmtEur(l.frais_menage) : '?'}</span>
-                  </div>
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>Caution</span>
-                    <span style={s.tileValue}>{l.caution ? fmtEur(l.caution) : '?'}</span>
-                  </div>
-                </div>
-                {l.methodes_paiement && (
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <span style={s.tileLabel}>Paiements acceptés</span>
-                    {l.methodes_paiement.split(',').map(m => m.trim()).filter(Boolean).map(m => <span key={m} style={s.pill}>{m}</span>)}
-                  </div>
-                )}
-                <Link prefetch={false} href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`} style={s.linkRow}>
-                  <TrendUp size={16} weight="bold" />
-                  <span style={{ flex: 1 }}>Prix par plateforme et par saison</span>
-                  <ArrowRight size={13} weight="bold" />
-                </Link>
-              </div>
-            }
-            edit={
-              <div style={s.editGrid}>
-                <Field label="Nuitée moyenne (€)"><input style={s.editInput} type="number" min={0} value={draftTarifNuit ?? ''} onChange={e => setDraftTarifNuit(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
-                <Field label="Frais de ménage (€)"><input style={s.editInput} type="number" min={0} value={draftFraisMenage ?? ''} onChange={e => setDraftFraisMenage(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
-                <Field label="Caution (€)"><input style={s.editInput} type="number" min={0} value={draftCaution ?? ''} onChange={e => setDraftCaution(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
-                <Field label="Paiements acceptés"><input style={s.editInput} type="text" value={draftMethodesPaiement} onChange={e => setDraftMethodesPaiement(e.target.value)} placeholder="Virement, carte, espèces" /></Field>
-              </div>
-            }
-          />
-
-          {/* Description */}
-          <EditableCard
-            id="description"
-            title="Description"
-            subtitle="Présentation du logement, reprise dans le contrat (en français, portugais ou anglais)"
-            icon={<FileText size={17} weight="fill" />}
-            onSave={saveDescription}
-            onCancel={() => { setDraftDescription(l.description ?? ''); setDraftDescriptionPt(l.description_pt ?? ''); setDraftDescriptionEn(l.description_en ?? '') }}
-            hasValue={!!l.description}
-            addLabel="Rédiger"
-            emptyView={<p style={s.emptyHint}>Présente ton logement en quelques lignes : son ambiance, ses atouts, le quartier.</p>}
-            view={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <p style={s.descText}>{l.description}</p>
-                <LangBadges pt={!!l.description_pt} en={!!l.description_en} />
-              </div>
-            }
-            edit={
-              <LangTextarea
-                fr={draftDescription} pt={draftDescriptionPt} en={draftDescriptionEn}
-                onChangeFr={setDraftDescription} onChangePt={setDraftDescriptionPt} onChangeEn={setDraftDescriptionEn}
-                placeholder="Décris ton logement, son ambiance, ses atouts…"
-                rows={6}
-              />
-            }
-          />
-
-          {/* Conditions & règlement */}
-          <div style={s.pair}>
-            <EditableCard
-              id="annulation"
-              title="Conditions d'annulation"
-              subtitle="Article du contrat"
-              icon={<Scroll size={17} weight="fill" />}
-              onSave={saveConditions}
-              onCancel={() => { setDraftConditions(l.conditions_annulation ?? ''); setDraftConditionsPt(l.conditions_annulation_pt ?? ''); setDraftConditionsEn(l.conditions_annulation_en ?? '') }}
-              hasValue={!!l.conditions_annulation}
-              addLabel="Rédiger"
-              emptyView={<p style={s.emptyHint}>Sans texte ici, le contrat reprend les conditions par défaut.</p>}
-              view={
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <p style={{ ...s.descText, whiteSpace: 'pre-wrap' }}>{l.conditions_annulation}</p>
-                  <LangBadges pt={!!l.conditions_annulation_pt} en={!!l.conditions_annulation_en} />
-                </div>
-              }
-              edit={
-                <LangTextarea
-                  fr={draftConditions} pt={draftConditionsPt} en={draftConditionsEn}
-                  onChangeFr={setDraftConditions} onChangePt={setDraftConditionsPt} onChangeEn={setDraftConditionsEn}
-                  placeholder="Ex. : annulation gratuite jusqu'à 30 jours avant l'arrivée, 50 % entre 30 et 7 jours, 100 % après."
-                />
-              }
-            />
-            <EditableCard
-              id="reglement"
-              title="Règlement intérieur"
-              subtitle="Les règles de la maison, dans le contrat"
-              icon={<ListChecks size={17} weight="bold" />}
-              onSave={saveReglement}
-              onCancel={() => { setDraftReglement(l.reglement_interieur ?? ''); setDraftReglementPt(l.reglement_interieur_pt ?? ''); setDraftReglementEn(l.reglement_interieur_en ?? '') }}
-              hasValue={!!l.reglement_interieur}
-              addLabel="Rédiger"
-              emptyView={<p style={s.emptyHint}>Sans texte ici, le contrat reprend le règlement par défaut.</p>}
-              view={
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <p style={{ ...s.descText, whiteSpace: 'pre-wrap' }}>{l.reglement_interieur}</p>
-                  <LangBadges pt={!!l.reglement_interieur_pt} en={!!l.reglement_interieur_en} />
-                </div>
-              }
-              edit={
-                <LangTextarea
-                  fr={draftReglement} pt={draftReglementPt} en={draftReglementEn}
-                  onChangeFr={setDraftReglement} onChangePt={setDraftReglementPt} onChangeEn={setDraftReglementEn}
-                  placeholder={'- Pas de fête\n- Non-fumeur à l\'intérieur\n- Arrivée après 16 h'}
-                />
-              }
-            />
-          </div>
-
-          {/* Contrat : réglages repris par l'assistant de contrat */}
-          <EditableCard
-            id="contrat"
-            title="Contrat"
-            subtitle="Tes règles, reprises dans chaque contrat de ce logement"
-            icon={<FileText size={17} weight="fill" />}
-            onSave={saveContrat}
-            onCancel={resetContrat}
-            hasValue
-            view={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={s.tiles}>
-                  {(l.pays ?? 'FR') === 'FR' && (
-                    <div style={s.tile}>
-                      <span style={s.tileLabel}>Sommes versées à la réservation</span>
-                      <span style={s.tileValue}>{contratOpts.regime === 'acompte' ? 'Acompte' : 'Arrhes'}</span>
-                    </div>
-                  )}
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>Caution rendue sous</span>
-                    <span style={s.tileValue}>{contratOpts.delai_caution_jours} jours</span>
-                  </div>
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>Charges</span>
-                    <span style={s.tileValue}>{contratOpts.charges_incluses ? 'Comprises' : 'En plus'}</span>
-                  </div>
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>Arrivée</span>
-                    <span style={s.tileValue}>{contratOpts.arrivee_autonome ? 'Autonome' : 'Pièce d\u2019identité montrée'}</span>
-                  </div>
-                  <div style={s.tile}>
-                    <span style={s.tileLabel}>Solde à régler</span>
-                    <span style={s.tileValue}>{soldeDelaiLabel(contratOpts.solde_avant_heures)}</span>
-                  </div>
-                </div>
-                {l.clauses_particulieres
-                  ? <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <span style={s.tileLabel}>Clauses particulières</span>
-                      <p style={{ ...s.descText, whiteSpace: 'pre-wrap' }}>{l.clauses_particulieres}</p>
-                      <LangBadges pt={!!l.clauses_particulieres_pt} en={!!l.clauses_particulieres_en} />
-                    </div>
-                  : <p style={s.emptyHint}>Pas de clause particulière. Ajoute ici ce qui est propre à ce logement : linge fourni, accès piscine, bois de chauffage…</p>}
-                <Link href={`/apercu-contrat/${l.id}`} style={s.linkRow}>
-                  <Eye size={16} weight="bold" />
-                  <span style={{ flex: 1 }}><strong>Voir le contrat de ce logement</strong>, tel que ton voyageur le recevra, avec un lien « Modifier » sur chaque article</span>
-                  <ArrowRight size={13} weight="bold" />
-                </Link>
-                <p style={{ ...s.emptyHint, margin: 0 }}>Le contrat reprend aussi tout seul l&apos;état descriptif du logement (type, surface, pièces, couchages, équipements, classement, numéro d&apos;enregistrement) depuis Caractéristiques et Équipements.</p>
-              </div>
-            }
-            edit={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                <div style={s.editGrid2}>
-                  {(l.pays ?? 'FR') === 'FR' && (
-                    <Field label="Sommes versées à la réservation">
-                      <select style={s.editInput} value={draftRegime} onChange={e => setDraftRegime(e.target.value === 'acompte' ? 'acompte' : 'arrhes')}>
-                        <option value="arrhes">Arrhes (conseillé) : le voyageur qui annule les perd, tu rends le double si tu annules</option>
-                        <option value="acompte">Acompte : réservation ferme, le voyageur reste redevable du prix</option>
-                      </select>
-                    </Field>
-                  )}
-                  <Field label="Caution rendue au plus tard (jours après le départ)">
-                    <input style={s.editInput} type="number" min={1} max={60} value={draftDelaiCaution} onChange={e => setDraftDelaiCaution(Math.max(1, Math.min(60, parseInt(e.target.value) || 7)))} />
-                  </Field>
-                  <Field label="Charges (eau, électricité, chauffage, internet)">
-                    <select style={s.editInput} value={draftCharges ? 'oui' : 'non'} onChange={e => setDraftCharges(e.target.value === 'oui')}>
-                      <option value="oui">Comprises dans le prix</option>
-                      <option value="non">En plus du prix</option>
-                    </select>
-                  </Field>
-                  <Field label="Arrivée des voyageurs">
-                    <select style={s.editInput} value={draftAutonome ? 'autonome' : 'piece'} onChange={e => setDraftAutonome(e.target.value === 'autonome')}>
-                      <option value="piece">Le voyageur montre une pièce d&apos;identité à l&apos;arrivée</option>
-                      <option value="autonome">Arrivée autonome : pas de pièce d&apos;identité demandée sur place</option>
-                    </select>
-                  </Field>
-                  <Field label="Échéance du solde (après l'acompte ou les arrhes)">
-                    <select style={s.editInput} value={draftSolde} onChange={e => setDraftSolde(soldeDelai(e.target.value))}>
-                      {SOLDE_DELAIS.map(h => <option key={h} value={h}>{soldeDelaiLabel(h)}</option>)}
-                    </select>
-                  </Field>
-                </div>
-                <div>
-                  <span style={{ ...s.tileLabel, display: 'block', marginBottom: '6px' }}>Clauses particulières</span>
-                  <LangTextarea
-                    fr={draftClauses} pt={draftClausesPt} en={draftClausesEn}
-                    onChangeFr={setDraftClauses} onChangePt={setDraftClausesPt} onChangeEn={setDraftClausesEn}
-                    placeholder={'Ex. : linge de lit et serviettes fournis.\nAccès à la piscine de 9 h à 20 h.\nBois de chauffage en supplément : 15 € le stère.'}
-                  />
-                  <p style={{ ...s.emptyHint, marginTop: '6px' }}>Une clause ne peut pas retirer au voyageur un droit que la loi lui donne.</p>
-                </div>
-              </div>
-            }
-          />
-
-          {/* Annonces */}
-          <EditableCard
-            id="annonces"
-            title="Annonces en ligne"
-            subtitle="Tes pages Airbnb, Booking, Google et ton site, utilisées par les outils de visibilité"
-            icon={<Globe size={17} weight="fill" />}
-            onSave={saveLiens}
-            onCancel={() => { setDraftLienAirbnb(l.lien_airbnb ?? ''); setDraftLienBooking(l.lien_booking ?? ''); setDraftLienGmb(l.lien_gmb ?? ''); setDraftLienSiteDirect(l.lien_site_direct ?? ''); setDraftLienDriing(l.lien_driing ?? '') }}
-            hasValue={annonces.length > 0}
-            addLabel="Ajouter"
-            emptyView={<p style={s.emptyHint}>Aucun lien d&apos;annonce pour l&apos;instant.</p>}
-            view={
-              <div style={s.annonceGrid}>
-                {annonces.map(a => (
-                  <a key={a.key} href={a.url!} target="_blank" rel="noopener noreferrer" style={s.annonce}>
-                    <span style={{ ...s.annonceLogo, background: `color-mix(in srgb, ${a.color} 14%, transparent)`, color: a.color }}>
-                      {a.letter || <Globe size={16} weight="bold" />}
-                    </span>
-                    <span style={{ flex: 1, minWidth: 0, fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>{a.label}</span>
-                    <ArrowSquareOut size={13} color="var(--text-3)" />
-                  </a>
-                ))}
-              </div>
-            }
-            edit={
-              <div style={s.editGrid2}>
-                <Field label="Airbnb"><input style={s.editInput} type="url" value={draftLienAirbnb} onChange={e => setDraftLienAirbnb(e.target.value)} placeholder="https://www.airbnb.fr/rooms/…" /></Field>
-                <Field label="Booking.com"><input style={s.editInput} type="url" value={draftLienBooking} onChange={e => setDraftLienBooking(e.target.value)} placeholder="https://www.booking.com/…" /></Field>
-                <Field label="Fiche Google"><input style={s.editInput} type="url" value={draftLienGmb} onChange={e => setDraftLienGmb(e.target.value)} placeholder="https://maps.google.com/…" /></Field>
-                <Field label="Driing"><input style={s.editInput} type="url" value={draftLienDriing} onChange={e => setDraftLienDriing(e.target.value)} placeholder="https://driing.co/…" /></Field>
-                <Field label="Site de réservation directe" wide><input style={s.editInput} type="url" value={draftLienSiteDirect} onChange={e => setDraftLienSiteDirect(e.target.value)} placeholder="https://…" /></Field>
-              </div>
-            }
-          />
         </div>
-
-        {/* ─── Colonne de droite ─── */}
         <div style={s.colSide}>
-          {/* Arrivée des voyageurs */}
-          <EditableCard
-            id="accueil"
-            title="Arrivée des voyageurs"
-            subtitle="Horaires, Wi-Fi et code, repris dans tes messages"
-            icon={<Key size={17} weight="fill" />}
-            onSave={saveInfosPratiques}
-            onCancel={() => { setDraftHeureArrivee(l.heure_arrivee ?? ''); setDraftHeureDepart(l.heure_depart ?? ''); setDraftWifiNom(l.wifi_nom ?? ''); setDraftWifiMdp(l.wifi_mdp ?? ''); setDraftCodeAcces(l.code_acces ?? '') }}
-            hasValue={!!(l.heure_arrivee || l.heure_depart || l.code_acces || l.wifi_nom)}
-            addLabel="Ajouter"
-            emptyView={<p style={s.emptyHint}>Horaires d&apos;arrivée et de départ, Wi-Fi, code de la boîte à clés.</p>}
-            view={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={s.timeRow}>
-                  <div style={s.timeTile}>
-                    <SignIn size={18} weight="duotone" color="var(--accent-text)" />
-                    <span style={s.tileLabel}>Arrivée</span>
-                    <span style={s.timeValue}>{l.heure_arrivee ? `dès ${l.heure_arrivee.slice(0, 5)}` : '?'}</span>
-                  </div>
-                  <div style={s.timeTile}>
-                    <SignOut size={18} weight="duotone" color={AMBER} />
-                    <span style={s.tileLabel}>Départ</span>
-                    <span style={s.timeValue}>{l.heure_depart ? `avant ${l.heure_depart.slice(0, 5)}` : '?'}</span>
-                  </div>
-                </div>
-                {l.wifi_nom && (
-                  <div style={s.secretRow}>
-                    <WifiHigh size={18} weight="bold" color="var(--accent-text)" />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={s.secretLabel}>Wi-Fi : {l.wifi_nom}</div>
-                      {l.wifi_mdp && <div style={s.secretValue}>{l.wifi_mdp}</div>}
-                    </div>
-                    <CopyButton value={l.wifi_mdp || l.wifi_nom} />
-                  </div>
-                )}
-                {l.code_acces && (
-                  <div style={s.secretRow}>
-                    <Key size={18} weight="bold" color="var(--accent-text)" />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={s.secretLabel}>Code d&apos;accès</div>
-                      <div style={s.secretValue}>{l.code_acces}</div>
-                    </div>
-                    <CopyButton value={l.code_acces} />
-                  </div>
-                )}
-                <Link href="/dashboard/outils-impression#affiche" style={s.linkRow}>
-                  <Printer size={16} weight="bold" />
-                  <span style={{ flex: 1 }}>Imprimer l&apos;affiche Wi-Fi et accueil</span>
-                  <ArrowRight size={13} weight="bold" />
-                </Link>
-              </div>
-            }
-            edit={
-              <div style={s.editGrid}>
-                <Field label="Heure d'arrivée"><input style={s.editInput} type="time" value={draftHeureArrivee} onChange={e => setDraftHeureArrivee(e.target.value)} /></Field>
-                <Field label="Heure de départ"><input style={s.editInput} type="time" value={draftHeureDepart} onChange={e => setDraftHeureDepart(e.target.value)} /></Field>
-                <Field label="Nom du Wi-Fi"><input style={s.editInput} type="text" value={draftWifiNom} onChange={e => setDraftWifiNom(e.target.value)} placeholder="MaBox-5G" /></Field>
-                <Field label="Mot de passe Wi-Fi"><input style={s.editInput} type="text" value={draftWifiMdp} onChange={e => setDraftWifiMdp(e.target.value)} /></Field>
-                <Field label="Code d'accès (boîte à clés, porte)" wide><input style={s.editInput} type="text" value={draftCodeAcces} onChange={e => setDraftCodeAcces(e.target.value)} placeholder="1234A" /></Field>
-              </div>
-            }
-          />
-
-          {/* Contacts utiles */}
-          <EditableCard
-            id="contacts"
-            title="Contacts utiles"
-            subtitle="Ménage et urgence, à portée de main"
-            icon={<Phone size={17} weight="fill" />}
-            onSave={saveContacts}
-            onCancel={() => { setDraftUrgenceNom(l.contact_urgence_nom ?? ''); setDraftUrgenceTel(l.contact_urgence_tel ?? ''); setDraftMenageNom(l.contact_menage_nom ?? ''); setDraftMenageTel(l.contact_menage_tel ?? '') }}
-            hasValue={!!(l.contact_urgence_nom || l.contact_menage_nom || l.telephone)}
-            addLabel="Ajouter"
-            emptyView={<p style={s.emptyHint}>Ta personne de ménage, un voisin ou un artisan à appeler en cas d&apos;urgence.</p>}
-            view={
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                {contacts.map(c => (
-                  <div key={c.key} style={s.contact}>
-                    <span style={{ ...s.contactIcon, color: c.color, background: `color-mix(in srgb, ${c.color} 12%, transparent)` }}><c.Icon size={16} weight="fill" /></span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={s.tileLabel}>{c.role}</div>
-                      <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>{c.name}</div>
-                      {c.tel && <div style={{ fontSize: '12.5px', color: 'var(--text-2)' }}>{c.tel}</div>}
-                    </div>
-                    {c.tel && <a href={`tel:${c.tel.replace(/\s/g, '')}`} style={s.callBtn} aria-label={`Appeler ${c.name}`}><Phone size={14} weight="fill" /></a>}
-                  </div>
-                ))}
-              </div>
-            }
-            edit={
-              <div style={s.editGrid}>
-                <Field label="Ménage : nom"><input style={s.editInput} type="text" value={draftMenageNom} onChange={e => setDraftMenageNom(e.target.value)} placeholder="Personne ou société" /></Field>
-                <Field label="Ménage : téléphone"><input style={s.editInput} type="tel" value={draftMenageTel} onChange={e => setDraftMenageTel(e.target.value)} placeholder="06 00 00 00 00" /></Field>
-                <Field label="Urgence : nom"><input style={s.editInput} type="text" value={draftUrgenceNom} onChange={e => setDraftUrgenceNom(e.target.value)} placeholder="Voisin, artisan…" /></Field>
-                <Field label="Urgence : téléphone"><input style={s.editInput} type="tel" value={draftUrgenceTel} onChange={e => setDraftUrgenceTel(e.target.value)} placeholder="06 00 00 00 00" /></Field>
-              </div>
-            }
-          />
-
           {/* Voyageurs récents */}
           <Section icon={<Users size={17} weight="fill" />} title="Voyageurs récents" subtitle="Les derniers passés par ici">
             {recentVoyageurs.length === 0 ? (
@@ -1397,89 +896,727 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
             )}
           </Section>
 
-          {/* Informations générales */}
-          <EditableCard
-            id="infos"
-            title="Informations générales"
-            subtitle="Nom, type, adresse et pays"
-            icon={<Info size={17} weight="fill" />}
-            onSave={saveInfosGenerales}
-            onCancel={() => { setDraftNom(l.nom); setDraftType(l.type_logement ?? ''); setDraftAdresse(l.adresse); setDraftTelephone(l.telephone ?? ''); setDraftPays(l.pays ?? 'FR'); setDraftNumeroAl(l.numero_al ?? '') }}
-            view={
-              <div style={s.rows}>
-                <Row k="Nom" v={l.nom} />
-                <Row k="Type" v={typeLabel} />
-                <Row k="Adresse" v={l.adresse} />
-                <Row k="Pays" v={isPT ? 'Portugal' : 'France'} />
-                {isPT && <Row k="N° Alojamento Local" v={l.numero_al || 'À renseigner'} muted={!l.numero_al} />}
-              </div>
-            }
-            edit={
-              <div style={s.editGrid}>
-                <Field label="Nom du logement" wide><input style={s.editInput} type="text" value={draftNom} onChange={e => setDraftNom(e.target.value)} /></Field>
-                <Field label="Type">
-                  <select style={s.editInput} value={draftType} onChange={e => setDraftType(e.target.value)}>
-                    <option value="">Non renseigné</option>
-                    {Object.entries(TYPE_LABELS).map(([slug, label]) => <option key={slug} value={slug}>{label}</option>)}
-                  </select>
-                </Field>
-                <Field label="Pays">
-                  <select style={s.editInput} value={draftPays} onChange={e => setDraftPays(e.target.value)}>
-                    <option value="FR">France</option>
-                    <option value="PT">Portugal</option>
-                  </select>
-                </Field>
-                <Field label="Adresse complète" wide><input style={s.editInput} type="text" value={draftAdresse} onChange={e => setDraftAdresse(e.target.value)} /></Field>
-                <Field label="Téléphone du logement"><input style={s.editInput} type="tel" value={draftTelephone} onChange={e => setDraftTelephone(e.target.value)} placeholder="06 00 00 00 00" /></Field>
-                {draftPays === 'PT' && (
-                  <Field label="N° Alojamento Local"><input style={s.editInput} type="text" value={draftNumeroAl} onChange={e => setDraftNumeroAl(e.target.value)} placeholder="12345/AL" /></Field>
-                )}
-                <p style={{ ...s.hintText, gridColumn: '1 / -1' }}>
-                  Si tu renommes le logement, tout l&apos;historique (séjours, contrats, déclarations, revenus) suit automatiquement.
-                </p>
-              </div>
-            }
-          />
-
-          {/* Propriétaire (conciergerie) */}
-          <EditableCard
-            id="proprietaire"
-            title="Propriétaire"
-            subtitle="Si tu gères ce logement pour quelqu'un (conciergerie)"
-            icon={<Handshake size={17} weight="fill" />}
-            onSave={saveProprietaire}
-            onCancel={() => { setDraftPropNom(l.proprietaire_nom ?? ''); setDraftPropEmail(l.proprietaire_email ?? ''); setDraftPropTel(l.proprietaire_telephone ?? ''); setDraftHonoraires(l.honoraires_pct); setDraftIban(l.iban ?? ''); setDraftBic(l.bic ?? '') }}
-            hasValue={!!(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null || l.iban)}
-            addLabel="Ajouter"
-            emptyView={<p style={s.emptyHint}>C&apos;est ton logement ? Rien à remplir ici. Sinon, les contrats seront au nom du propriétaire.</p>}
-            view={
-              <div style={s.rows}>
-                {l.proprietaire_nom && <Row k="Nom" v={l.proprietaire_nom} />}
-                {l.proprietaire_email && <Row k="E-mail" v={<a href={`mailto:${l.proprietaire_email}`} style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>{l.proprietaire_email}</a>} />}
-                {l.proprietaire_telephone && <Row k="Téléphone" v={<a href={`tel:${l.proprietaire_telephone.replace(/\s/g, '')}`} style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>{l.proprietaire_telephone}</a>} />}
-                {l.honoraires_pct != null && <Row k="Honoraires" v={<strong style={{ color: AMBER_DARK }}>{l.honoraires_pct} %</strong>} />}
-                {l.iban && <Row k="IBAN" v={<span style={{ fontFamily: 'monospace', letterSpacing: '0.4px', wordBreak: 'break-all' }}>{l.iban}</span>} />}
-                {l.bic && <Row k="BIC" v={<span style={{ fontFamily: 'monospace' }}>{l.bic}</span>} />}
-              </div>
-            }
-            edit={
-              <div style={s.editGrid}>
-                <Field label="Nom du propriétaire" wide><input style={s.editInput} type="text" value={draftPropNom} onChange={e => setDraftPropNom(e.target.value)} placeholder="Jean Dupont" /></Field>
-                <Field label="E-mail"><input style={s.editInput} type="email" value={draftPropEmail} onChange={e => setDraftPropEmail(e.target.value)} /></Field>
-                <Field label="Téléphone"><input style={s.editInput} type="tel" value={draftPropTel} onChange={e => setDraftPropTel(e.target.value)} /></Field>
-                <Field label="Honoraires (%)"><input style={s.editInput} type="number" min={0} max={100} value={draftHonoraires ?? ''} onChange={e => setDraftHonoraires(e.target.value ? parseFloat(e.target.value) : null)} placeholder="20" /></Field>
-                <Field label="BIC"><input style={{ ...s.editInput, fontFamily: 'monospace' }} type="text" value={draftBic} onChange={e => setDraftBic(e.target.value)} /></Field>
-                <Field label="IBAN du propriétaire" wide><input style={{ ...s.editInput, fontFamily: 'monospace' }} type="text" value={draftIban} onChange={e => setDraftIban(e.target.value)} placeholder="FR76 …" /></Field>
-                <p style={{ ...s.hintText, gridColumn: '1 / -1' }}>
-                  Si tu le renseignes, c&apos;est cet IBAN qui s&apos;affiche au locataire pour le virement (pas le tien) : l&apos;argent va directement au propriétaire.
-                </p>
-              </div>
-            }
-          />
 
           {sideExtra}
         </div>
       </div>
+
+      {/* ─── Ta fiche : une section à la fois (19/11/2026, maquette validée
+            par Jason, comme l'atelier des fiches pros). Rail à gauche, section
+            ouverte à droite ; les cartes (EditableCard) sont inchangées. ─── */}
+      <section id="fiche" style={s.atelier} className="lg-atelier" aria-label="Ta fiche">
+        {/* Téléphone : sections en bandeau horizontal au-dessus de la section ouverte */}
+        <style>{'@media (max-width: 899px) { .lg-atelier { grid-template-columns: 1fr !important } .lg-rail { position: static !important; flex-direction: row !important; overflow-x: auto; padding: 8px !important; gap: 6px !important } .lg-rail-head, .lg-rail-glabel, .lg-rail-sub { display: none !important } .lg-rail-group { display: contents } .lg-rail-item { width: auto !important; flex-shrink: 0; white-space: nowrap } }'}</style>
+        <nav style={s.rail} className="lg-rail" aria-label="Sections de la fiche">
+          <div style={s.railHead} className="lg-rail-head">
+            <span style={s.railTitle}>Ta fiche</span>
+            <span style={s.railProg}><span style={s.railBar}><i style={{ ...s.railBarFill, width: `${Math.round((ficheDone / ficheTotal) * 100)}%` }} /></span>{ficheDone} / {ficheTotal}</span>
+          </div>
+          {FICHE_GROUPS.map(g => (
+            <div key={g} className="lg-rail-group">
+              <div style={s.railGroup} className="lg-rail-glabel">{g}</div>
+              {ficheSections.filter(x => x.group === g).map(x => {
+                const on = x.key === active
+                return (
+                  <button key={x.key} type="button" onClick={() => openSection(x.key)} aria-current={on ? 'true' : undefined} className="lg-rail-item"
+                    style={{ ...s.railItem, background: on ? 'var(--accent-text)' : 'transparent' }}>
+                    <span style={{ minWidth: 0, flex: 1, textAlign: 'left' }}>
+                      <span style={{ ...s.railLabel, color: on ? 'var(--bg)' : 'var(--text)' }}>{x.label}</span>
+                      <span style={{ ...s.railSub, color: on ? 'var(--bg)' : x.done === false ? 'var(--warning-text)' : 'var(--text-3)', opacity: on ? 0.8 : 1 }} className="lg-rail-sub">
+                        {x.done === true ? 'Fait' : x.done === false ? 'À compléter' : 'Facultatif'}
+                      </span>
+                    </span>
+                    {x.done === true && !on && <CheckCircle size={15} weight="fill" color="var(--accent-text)" />}
+                  </button>
+                )
+              })}
+            </div>
+          ))}
+        </nav>
+        <div style={s.panel}>
+            {active === 'infos' && (
+              <>
+              {/* Informations générales */}
+              <EditableCard
+                id="infos"
+                title="Informations générales"
+                subtitle="Nom, type, adresse et pays"
+                icon={<Info size={17} weight="fill" />}
+                onSave={saveInfosGenerales}
+                onCancel={() => { setDraftNom(l.nom); setDraftType(l.type_logement ?? ''); setDraftAdresse(l.adresse); setDraftTelephone(l.telephone ?? ''); setDraftPays(l.pays ?? 'FR'); setDraftNumeroAl(l.numero_al ?? '') }}
+                view={
+                  <div style={s.rows}>
+                    <Row k="Nom" v={l.nom} />
+                    <Row k="Type" v={typeLabel} />
+                    <Row k="Adresse" v={l.adresse} />
+                    <Row k="Pays" v={isPT ? 'Portugal' : 'France'} />
+                    {isPT && <Row k="N° Alojamento Local" v={l.numero_al || 'À renseigner'} muted={!l.numero_al} />}
+                  </div>
+                }
+                edit={
+                  <div style={s.editGrid}>
+                    <Field label="Nom du logement" wide><input style={s.editInput} type="text" value={draftNom} onChange={e => setDraftNom(e.target.value)} /></Field>
+                    <Field label="Type">
+                      <select style={s.editInput} value={draftType} onChange={e => setDraftType(e.target.value)}>
+                        <option value="">Non renseigné</option>
+                        {Object.entries(TYPE_LABELS).map(([slug, label]) => <option key={slug} value={slug}>{label}</option>)}
+                      </select>
+                    </Field>
+                    <Field label="Pays">
+                      <select style={s.editInput} value={draftPays} onChange={e => setDraftPays(e.target.value)}>
+                        <option value="FR">France</option>
+                        <option value="PT">Portugal</option>
+                      </select>
+                    </Field>
+                    <Field label="Adresse complète" wide><input style={s.editInput} type="text" value={draftAdresse} onChange={e => setDraftAdresse(e.target.value)} /></Field>
+                    <Field label="Téléphone du logement"><input style={s.editInput} type="tel" value={draftTelephone} onChange={e => setDraftTelephone(e.target.value)} placeholder="06 00 00 00 00" /></Field>
+                    {draftPays === 'PT' && (
+                      <Field label="N° Alojamento Local"><input style={s.editInput} type="text" value={draftNumeroAl} onChange={e => setDraftNumeroAl(e.target.value)} placeholder="12345/AL" /></Field>
+                    )}
+                    <p style={{ ...s.hintText, gridColumn: '1 / -1' }}>
+                      Si tu renommes le logement, tout l&apos;historique (séjours, contrats, déclarations, revenus) suit automatiquement.
+                    </p>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'caracteristiques' && (
+              <>
+              {/* Caractéristiques & conformité */}
+              <EditableCard
+                id="caracteristiques"
+                title="Caractéristiques et conformité"
+                subtitle={isPT ? 'Capacité et pièces, reprises dans tes contrats' : "Capacité, numéro d'enregistrement, classement et DPE, repris dans tes contrats"}
+                icon={<ShieldCheck size={17} weight="fill" />}
+                onSave={saveCaracteristiques}
+                onCancel={() => {
+                  setDraftCapacite(l.capacite_max); setDraftSurface(l.surface_m2); setDraftChambres(l.nb_chambres)
+                  setDraftLits(l.nb_lits); setDraftSdb(l.nb_sdb); setDraftNumeroEnreg(l.numero_enregistrement ?? '')
+                  setDraftClassement(l.classement_etoiles); setDraftDpe(l.dpe ?? '')
+                }}
+                view={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <div style={s.tiles}>
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>{isPT ? 'Numéro AL' : "Numéro d'enregistrement"}</span>
+                        {numeroOk
+                          ? <span style={{ ...s.tileValue, fontSize: '15px', wordBreak: 'break-all' }}>{isPT ? l.numero_al : l.numero_enregistrement}</span>
+                          : <a href={isPT ? '#modifier-infos' : '#modifier-caracteristiques'} style={s.tileMissing}><Warning size={13} weight="fill" /> À renseigner</a>}
+                      </div>
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>Classement</span>
+                        {l.classement_etoiles
+                          ? <span style={{ ...s.tileValue, color: AMBER, display: 'flex', gap: '2px' }}>{Array.from({ length: l.classement_etoiles }).map((_, i) => <Star key={i} size={16} weight="fill" />)}</span>
+                          : <span style={{ ...s.tileValue, fontSize: '15px', color: 'var(--text-3)' }}>Non classé</span>}
+                      </div>
+                      {!isPT && (
+                        <div style={{ ...s.tile, flex: '2 1 260px' }}>
+                          <span style={s.tileLabel}>Diagnostic de performance énergétique</span>
+                          <div style={s.dpeScale} aria-label={l.dpe ? `DPE ${l.dpe}` : 'DPE non renseigné'}>
+                            {DPE_SCALE.map(letter => {
+                              const dc = dpeColor(letter)
+                              const on = l.dpe === letter
+                              return (
+                                <span key={letter} style={{
+                                  ...s.dpeCell, background: on ? dc.fg : dc.bg, color: on ? '#fff' : dc.fg,
+                                  transform: on ? 'scale(1.12)' : undefined, fontWeight: on ? 800 : 600,
+                                  boxShadow: on ? '0 2px 8px rgba(0,0,0,0.18)' : undefined,
+                                }}>{letter}</span>
+                              )
+                            })}
+                          </div>
+                          {!l.dpe && <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Non renseigné</span>}
+                        </div>
+                      )}
+                    </div>
+                    <div style={s.inlineFacts}>
+                      <span><Users size={14} weight="duotone" /> {l.capacite_max} voyageur{l.capacite_max > 1 ? 's' : ''}</span>
+                      <span><Door size={14} weight="duotone" /> {l.nb_chambres ?? '?'} chambre{(l.nb_chambres ?? 0) > 1 ? 's' : ''}</span>
+                      <span><Bed size={14} weight="duotone" /> {l.nb_lits ?? '?'} lit{(l.nb_lits ?? 0) > 1 ? 's' : ''}</span>
+                      <span><Shower size={14} weight="duotone" /> {l.nb_sdb ?? '?'} salle{(l.nb_sdb ?? 0) > 1 ? 's' : ''} de bain</span>
+                      <span><Ruler size={14} weight="duotone" /> {l.surface_m2 ? `${l.surface_m2} m²` : 'surface ?'}</span>
+                    </div>
+                  </div>
+                }
+                edit={
+                  <div style={s.editGrid}>
+                    <Field label="Capacité (personnes)"><input style={s.editInput} type="number" min={1} value={draftCapacite} onChange={e => setDraftCapacite(parseInt(e.target.value) || 1)} /></Field>
+                    <Field label="Surface (m²)"><input style={s.editInput} type="number" min={0} value={draftSurface ?? ''} onChange={e => setDraftSurface(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
+                    <Field label="Chambres"><input style={s.editInput} type="number" min={0} value={draftChambres ?? ''} onChange={e => setDraftChambres(e.target.value ? parseInt(e.target.value) : null)} /></Field>
+                    <Field label="Lits"><input style={s.editInput} type="number" min={0} value={draftLits ?? ''} onChange={e => setDraftLits(e.target.value ? parseInt(e.target.value) : null)} /></Field>
+                    <Field label="Salles de bain"><input style={s.editInput} type="number" min={0} value={draftSdb ?? ''} onChange={e => setDraftSdb(e.target.value ? parseInt(e.target.value) : null)} /></Field>
+                    {!isPT && (
+                      <Field label="Numéro d'enregistrement"><input style={s.editInput} type="text" value={draftNumeroEnreg} onChange={e => setDraftNumeroEnreg(e.target.value)} placeholder="Délivré par ta mairie" /></Field>
+                    )}
+                    <Field label={isPT ? 'Classement (étoiles)' : 'Classement Atout France'}>
+                      <select style={s.editInput} value={draftClassement ?? ''} onChange={e => setDraftClassement(e.target.value ? parseInt(e.target.value) : null)}>
+                        <option value="">Non classé</option>
+                        {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n} étoile{n > 1 ? 's' : ''}</option>)}
+                      </select>
+                    </Field>
+                    {!isPT && (
+                      <Field label="DPE">
+                        <select style={s.editInput} value={draftDpe} onChange={e => setDraftDpe(e.target.value)}>
+                          <option value="">Non renseigné</option>
+                          {DPE_SCALE.map(x => <option key={x} value={x}>{x}</option>)}
+                        </select>
+                      </Field>
+                    )}
+                    {isPT && <p style={{ ...s.hintText, gridColumn: '1 / -1' }}>Le numéro d&apos;Alojamento Local se renseigne dans Informations générales.</p>}
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'calendriers' && (
+              <>
+              {/* Calendriers connectés */}
+              <EditableCard
+                id="calendriers"
+                title="Calendriers connectés"
+                subtitle="Tes réservations Airbnb, Booking et Vrbo arrivent toutes seules, les ménages se planifient"
+                icon={<LinkSimple size={17} weight="bold" />}
+                onSave={saveCalendriers}
+                onCancel={() => {
+                  setDraftIcalAirbnb(l.ical_airbnb ?? '')
+                  setDraftIcalBooking(l.ical_booking ?? '')
+                  setDraftIcalVrbo(l.ical_vrbo ?? '')
+                  setDraftIcalAutre(l.ical_autre ?? '')
+                }}
+                hasValue={icalStatus.length > 0}
+                addLabel="Connecter"
+                emptyView={
+                  <div style={s.emptyBox}>
+                    <CalendarBlank size={26} weight="duotone" color="var(--accent-text)" />
+                    <strong style={{ fontSize: '14px', color: 'var(--text)' }}>Aucun calendrier connecté</strong>
+                    <span style={{ fontSize: '12.5px', color: 'var(--text-3)', lineHeight: 1.5, maxWidth: '440px' }}>
+                      Colle le lien d&apos;export de ton annonce Airbnb ou Booking : tes réservations s&apos;affichent ici,
+                      dans le calendrier et dans le planning de ton équipe de ménage.
+                    </span>
+                    <a href="#modifier-calendriers" style={s.btnSoft}><LinkSimple size={13} weight="bold" /> Connecter un calendrier</a>
+                  </div>
+                }
+                view={<IcalSyncSection logementId={l.id} status={icalStatus} />}
+                edit={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={s.editGrid2}>
+                      <Field label="Airbnb"><input style={s.editInput} type="url" value={draftIcalAirbnb} onChange={e => setDraftIcalAirbnb(e.target.value)} placeholder="https://www.airbnb.fr/calendar/ical/…" /></Field>
+                      <Field label="Booking.com"><input style={s.editInput} type="url" value={draftIcalBooking} onChange={e => setDraftIcalBooking(e.target.value)} placeholder="https://admin.booking.com/…/ical.html?…" /></Field>
+                      <Field label="Vrbo / Abritel"><input style={s.editInput} type="url" value={draftIcalVrbo} onChange={e => setDraftIcalVrbo(e.target.value)} placeholder="https://www.vrbo.com/icalendar/…" /></Field>
+                      <Field label="Autre (site, logiciel…)"><input style={s.editInput} type="url" value={draftIcalAutre} onChange={e => setDraftIcalAutre(e.target.value)} placeholder="https://…" /></Field>
+                    </div>
+                    <div style={s.tip}>
+                      <Info size={15} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
+                      <span>
+                        <strong>Airbnb</strong> : Calendrier, ton annonce, Disponibilités, Synchroniser les calendriers, Exporter le calendrier.{' '}
+                        <strong>Booking.com</strong> : extranet, Tarifs et disponibilités, Synchroniser les calendriers, Exporter.{' '}
+                        <Link href="/dashboard/aide/logements-voyageurs/synchroniser-airbnb-ical" style={{ color: 'var(--accent-text)', fontWeight: 600 }}>Guide pas à pas</Link>
+                      </span>
+                    </div>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'accueil' && (
+              <>
+              {/* Arrivée des voyageurs */}
+              <EditableCard
+                id="accueil"
+                title="Arrivée des voyageurs"
+                subtitle="Horaires, Wi-Fi et code, repris dans tes messages"
+                icon={<Key size={17} weight="fill" />}
+                onSave={saveInfosPratiques}
+                onCancel={() => { setDraftHeureArrivee(l.heure_arrivee ?? ''); setDraftHeureDepart(l.heure_depart ?? ''); setDraftWifiNom(l.wifi_nom ?? ''); setDraftWifiMdp(l.wifi_mdp ?? ''); setDraftCodeAcces(l.code_acces ?? '') }}
+                hasValue={!!(l.heure_arrivee || l.heure_depart || l.code_acces || l.wifi_nom)}
+                addLabel="Ajouter"
+                emptyView={<p style={s.emptyHint}>Horaires d&apos;arrivée et de départ, Wi-Fi, code de la boîte à clés.</p>}
+                view={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={s.timeRow}>
+                      <div style={s.timeTile}>
+                        <SignIn size={18} weight="duotone" color="var(--accent-text)" />
+                        <span style={s.tileLabel}>Arrivée</span>
+                        <span style={s.timeValue}>{l.heure_arrivee ? `dès ${l.heure_arrivee.slice(0, 5)}` : '?'}</span>
+                      </div>
+                      <div style={s.timeTile}>
+                        <SignOut size={18} weight="duotone" color={AMBER} />
+                        <span style={s.tileLabel}>Départ</span>
+                        <span style={s.timeValue}>{l.heure_depart ? `avant ${l.heure_depart.slice(0, 5)}` : '?'}</span>
+                      </div>
+                    </div>
+                    {l.wifi_nom && (
+                      <div style={s.secretRow}>
+                        <WifiHigh size={18} weight="bold" color="var(--accent-text)" />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={s.secretLabel}>Wi-Fi : {l.wifi_nom}</div>
+                          {l.wifi_mdp && <div style={s.secretValue}>{l.wifi_mdp}</div>}
+                        </div>
+                        <CopyButton value={l.wifi_mdp || l.wifi_nom} />
+                      </div>
+                    )}
+                    {l.code_acces && (
+                      <div style={s.secretRow}>
+                        <Key size={18} weight="bold" color="var(--accent-text)" />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={s.secretLabel}>Code d&apos;accès</div>
+                          <div style={s.secretValue}>{l.code_acces}</div>
+                        </div>
+                        <CopyButton value={l.code_acces} />
+                      </div>
+                    )}
+                    <Link href="/dashboard/outils-impression#affiche" style={s.linkRow}>
+                      <Printer size={16} weight="bold" />
+                      <span style={{ flex: 1 }}>Imprimer l&apos;affiche Wi-Fi et accueil</span>
+                      <ArrowRight size={13} weight="bold" />
+                    </Link>
+                  </div>
+                }
+                edit={
+                  <div style={s.editGrid}>
+                    <Field label="Heure d'arrivée"><input style={s.editInput} type="time" value={draftHeureArrivee} onChange={e => setDraftHeureArrivee(e.target.value)} /></Field>
+                    <Field label="Heure de départ"><input style={s.editInput} type="time" value={draftHeureDepart} onChange={e => setDraftHeureDepart(e.target.value)} /></Field>
+                    <Field label="Nom du Wi-Fi"><input style={s.editInput} type="text" value={draftWifiNom} onChange={e => setDraftWifiNom(e.target.value)} placeholder="MaBox-5G" /></Field>
+                    <Field label="Mot de passe Wi-Fi"><input style={s.editInput} type="text" value={draftWifiMdp} onChange={e => setDraftWifiMdp(e.target.value)} /></Field>
+                    <Field label="Code d'accès (boîte à clés, porte)" wide><input style={s.editInput} type="text" value={draftCodeAcces} onChange={e => setDraftCodeAcces(e.target.value)} placeholder="1234A" /></Field>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'equipements' && (
+              <>
+              {/* Équipements */}
+              <EditableCard
+                id="equipements"
+                title="Équipements et règles"
+                subtitle="Ce que trouvent tes voyageurs, animaux et tabac compris"
+                icon={<Sparkle size={17} weight="fill" />}
+                onSave={saveEquipements}
+                onCancel={() => { setDraftEquipements(l.equipements ?? []); setDraftAnimaux(l.animaux_acceptes ?? false); setDraftFumeur(l.fumeur_accepte ?? false) }}
+                hasValue={!!(l.equipements && l.equipements.length > 0) || l.animaux_acceptes || l.fumeur_accepte}
+                addLabel="Ajouter"
+                emptyView={<p style={s.emptyHint}>Aucun équipement renseigné pour l&apos;instant.</p>}
+                view={
+                  <div style={s.equipGrid}>
+                    {(l.equipements ?? []).map(eq => {
+                      const def = EQUIPEMENT_LABELS[eq] ?? { label: eq, Icon: Check }
+                      return <span key={eq} style={s.equipTile}><def.Icon size={20} weight="duotone" color="var(--accent-text)" />{def.label}</span>
+                    })}
+                    <span style={{ ...s.equipTile, ...(l.animaux_acceptes ? {} : s.equipOff) }}><PawPrint size={20} weight="duotone" color={l.animaux_acceptes ? 'var(--accent-text)' : 'var(--text-3)'} />{l.animaux_acceptes ? 'Animaux acceptés' : 'Pas d\'animaux'}</span>
+                    <span style={{ ...s.equipTile, ...(l.fumeur_accepte ? {} : s.equipOff) }}><Cigarette size={20} weight="duotone" color={l.fumeur_accepte ? 'var(--accent-text)' : 'var(--text-3)'} />{l.fumeur_accepte ? 'Fumeur autorisé' : 'Non-fumeur'}</span>
+                  </div>
+                }
+                edit={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={s.equipGrid}>
+                      {Object.entries(EQUIPEMENT_LABELS).map(([slug, { label, Icon }]) => {
+                        const on = draftEquipements.includes(slug)
+                        return (
+                          <button
+                            key={slug}
+                            type="button"
+                            aria-pressed={on}
+                            onClick={() => setDraftEquipements(prev => on ? prev.filter(e => e !== slug) : [...prev, slug])}
+                            style={{ ...s.equipTile, ...s.equipToggle, ...(on ? s.equipToggleOn : {}) }}
+                          >
+                            <Icon size={20} weight={on ? 'fill' : 'duotone'} />{label}
+                            {on && <Check size={12} weight="bold" style={{ position: 'absolute', top: '7px', right: '8px' }} />}
+                          </button>
+                        )
+                      })}
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      {([
+                        { on: draftAnimaux, set: setDraftAnimaux, Icon: PawPrint, label: 'Animaux acceptés' },
+                        { on: draftFumeur, set: setDraftFumeur, Icon: Cigarette, label: 'Fumeur autorisé' },
+                      ]).map(t => (
+                        <button key={t.label} type="button" aria-pressed={t.on} onClick={() => t.set(!t.on)} style={{ ...s.toggleChip, ...(t.on ? s.toggleChipOn : {}) }}>
+                          <t.Icon size={15} weight={t.on ? 'fill' : 'duotone'} /> {t.label}
+                          <span style={{ ...s.switch, ...(t.on ? s.switchOn : {}) }}><span style={{ ...s.switchDot, ...(t.on ? s.switchDotOn : {}) }} /></span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'description' && (
+              <>
+              {/* Description */}
+              <EditableCard
+                id="description"
+                title="Description"
+                subtitle="Présentation du logement, reprise dans le contrat (en français, portugais ou anglais)"
+                icon={<FileText size={17} weight="fill" />}
+                onSave={saveDescription}
+                onCancel={() => { setDraftDescription(l.description ?? ''); setDraftDescriptionPt(l.description_pt ?? ''); setDraftDescriptionEn(l.description_en ?? '') }}
+                hasValue={!!l.description}
+                addLabel="Rédiger"
+                emptyView={<p style={s.emptyHint}>Présente ton logement en quelques lignes : son ambiance, ses atouts, le quartier.</p>}
+                view={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <p style={s.descText}>{l.description}</p>
+                    <LangBadges pt={!!l.description_pt} en={!!l.description_en} />
+                  </div>
+                }
+                edit={
+                  <LangTextarea
+                    fr={draftDescription} pt={draftDescriptionPt} en={draftDescriptionEn}
+                    onChangeFr={setDraftDescription} onChangePt={setDraftDescriptionPt} onChangeEn={setDraftDescriptionEn}
+                    placeholder="Décris ton logement, son ambiance, ses atouts…"
+                    rows={6}
+                  />
+                }
+              />
+
+              </>
+            )}
+            {active === 'contacts' && (
+              <>
+              {/* Contacts utiles */}
+              <EditableCard
+                id="contacts"
+                title="Contacts utiles"
+                subtitle="Ménage et urgence, à portée de main"
+                icon={<Phone size={17} weight="fill" />}
+                onSave={saveContacts}
+                onCancel={() => { setDraftUrgenceNom(l.contact_urgence_nom ?? ''); setDraftUrgenceTel(l.contact_urgence_tel ?? ''); setDraftMenageNom(l.contact_menage_nom ?? ''); setDraftMenageTel(l.contact_menage_tel ?? '') }}
+                hasValue={!!(l.contact_urgence_nom || l.contact_menage_nom || l.telephone)}
+                addLabel="Ajouter"
+                emptyView={<p style={s.emptyHint}>Ta personne de ménage, un voisin ou un artisan à appeler en cas d&apos;urgence.</p>}
+                view={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {contacts.map(c => (
+                      <div key={c.key} style={s.contact}>
+                        <span style={{ ...s.contactIcon, color: c.color, background: `color-mix(in srgb, ${c.color} 12%, transparent)` }}><c.Icon size={16} weight="fill" /></span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={s.tileLabel}>{c.role}</div>
+                          <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>{c.name}</div>
+                          {c.tel && <div style={{ fontSize: '12.5px', color: 'var(--text-2)' }}>{c.tel}</div>}
+                        </div>
+                        {c.tel && <a href={`tel:${c.tel.replace(/\s/g, '')}`} style={s.callBtn} aria-label={`Appeler ${c.name}`}><Phone size={14} weight="fill" /></a>}
+                      </div>
+                    ))}
+                  </div>
+                }
+                edit={
+                  <div style={s.editGrid}>
+                    <Field label="Ménage : nom"><input style={s.editInput} type="text" value={draftMenageNom} onChange={e => setDraftMenageNom(e.target.value)} placeholder="Personne ou société" /></Field>
+                    <Field label="Ménage : téléphone"><input style={s.editInput} type="tel" value={draftMenageTel} onChange={e => setDraftMenageTel(e.target.value)} placeholder="06 00 00 00 00" /></Field>
+                    <Field label="Urgence : nom"><input style={s.editInput} type="text" value={draftUrgenceNom} onChange={e => setDraftUrgenceNom(e.target.value)} placeholder="Voisin, artisan…" /></Field>
+                    <Field label="Urgence : téléphone"><input style={s.editInput} type="tel" value={draftUrgenceTel} onChange={e => setDraftUrgenceTel(e.target.value)} placeholder="06 00 00 00 00" /></Field>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'tarifs' && (
+              <>
+              {/* Tarifs */}
+              <EditableCard
+                id="tarifs"
+                title="Tarifs"
+                subtitle="Prix de base repris dans tes contrats et tes calculs"
+                icon={<Tag size={17} weight="fill" />}
+                onSave={saveTarifs}
+                onCancel={() => { setDraftTarifNuit(l.tarif_nuitee_moyen); setDraftFraisMenage(l.frais_menage); setDraftCaution(l.caution); setDraftMethodesPaiement(l.methodes_paiement ?? '') }}
+                hasValue={!!(l.tarif_nuitee_moyen || l.frais_menage || l.caution || l.methodes_paiement)}
+                addLabel="Ajouter"
+                emptyView={<p style={s.emptyHint}>Aucun tarif renseigné pour l&apos;instant.</p>}
+                view={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={s.tiles}>
+                      <div style={{ ...s.tile, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
+                        <span style={s.tileLabel}>Nuitée moyenne</span>
+                        <span style={{ ...s.tileValue, color: 'var(--accent-text)' }}>{l.tarif_nuitee_moyen ? fmtEur(l.tarif_nuitee_moyen) : '?'}</span>
+                      </div>
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>Frais de ménage</span>
+                        <span style={s.tileValue}>{l.frais_menage ? fmtEur(l.frais_menage) : '?'}</span>
+                      </div>
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>Caution</span>
+                        <span style={s.tileValue}>{l.caution ? fmtEur(l.caution) : '?'}</span>
+                      </div>
+                    </div>
+                    {l.methodes_paiement && (
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span style={s.tileLabel}>Paiements acceptés</span>
+                        {l.methodes_paiement.split(',').map(m => m.trim()).filter(Boolean).map(m => <span key={m} style={s.pill}>{m}</span>)}
+                      </div>
+                    )}
+                    <Link prefetch={false} href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`} style={s.linkRow}>
+                      <TrendUp size={16} weight="bold" />
+                      <span style={{ flex: 1 }}>Prix par plateforme et par saison</span>
+                      <ArrowRight size={13} weight="bold" />
+                    </Link>
+                  </div>
+                }
+                edit={
+                  <div style={s.editGrid}>
+                    <Field label="Nuitée moyenne (€)"><input style={s.editInput} type="number" min={0} value={draftTarifNuit ?? ''} onChange={e => setDraftTarifNuit(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
+                    <Field label="Frais de ménage (€)"><input style={s.editInput} type="number" min={0} value={draftFraisMenage ?? ''} onChange={e => setDraftFraisMenage(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
+                    <Field label="Caution (€)"><input style={s.editInput} type="number" min={0} value={draftCaution ?? ''} onChange={e => setDraftCaution(e.target.value ? parseFloat(e.target.value) : null)} /></Field>
+                    <Field label="Paiements acceptés"><input style={s.editInput} type="text" value={draftMethodesPaiement} onChange={e => setDraftMethodesPaiement(e.target.value)} placeholder="Virement, carte, espèces" /></Field>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'regles' && (
+              <>
+              {/* Conditions & règlement */}
+              <div style={s.pair}>
+                <EditableCard
+                  id="annulation"
+                  title="Conditions d'annulation"
+                  subtitle="Article du contrat"
+                  icon={<Scroll size={17} weight="fill" />}
+                  onSave={saveConditions}
+                  onCancel={() => { setDraftConditions(l.conditions_annulation ?? ''); setDraftConditionsPt(l.conditions_annulation_pt ?? ''); setDraftConditionsEn(l.conditions_annulation_en ?? '') }}
+                  hasValue={!!l.conditions_annulation}
+                  addLabel="Rédiger"
+                  emptyView={<p style={s.emptyHint}>Sans texte ici, le contrat reprend les conditions par défaut.</p>}
+                  view={
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <p style={{ ...s.descText, whiteSpace: 'pre-wrap' }}>{l.conditions_annulation}</p>
+                      <LangBadges pt={!!l.conditions_annulation_pt} en={!!l.conditions_annulation_en} />
+                    </div>
+                  }
+                  edit={
+                    <LangTextarea
+                      fr={draftConditions} pt={draftConditionsPt} en={draftConditionsEn}
+                      onChangeFr={setDraftConditions} onChangePt={setDraftConditionsPt} onChangeEn={setDraftConditionsEn}
+                      placeholder="Ex. : annulation gratuite jusqu'à 30 jours avant l'arrivée, 50 % entre 30 et 7 jours, 100 % après."
+                    />
+                  }
+                />
+                <EditableCard
+                  id="reglement"
+                  title="Règlement intérieur"
+                  subtitle="Les règles de la maison, dans le contrat"
+                  icon={<ListChecks size={17} weight="bold" />}
+                  onSave={saveReglement}
+                  onCancel={() => { setDraftReglement(l.reglement_interieur ?? ''); setDraftReglementPt(l.reglement_interieur_pt ?? ''); setDraftReglementEn(l.reglement_interieur_en ?? '') }}
+                  hasValue={!!l.reglement_interieur}
+                  addLabel="Rédiger"
+                  emptyView={<p style={s.emptyHint}>Sans texte ici, le contrat reprend le règlement par défaut.</p>}
+                  view={
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <p style={{ ...s.descText, whiteSpace: 'pre-wrap' }}>{l.reglement_interieur}</p>
+                      <LangBadges pt={!!l.reglement_interieur_pt} en={!!l.reglement_interieur_en} />
+                    </div>
+                  }
+                  edit={
+                    <LangTextarea
+                      fr={draftReglement} pt={draftReglementPt} en={draftReglementEn}
+                      onChangeFr={setDraftReglement} onChangePt={setDraftReglementPt} onChangeEn={setDraftReglementEn}
+                      placeholder={'- Pas de fête\n- Non-fumeur à l\'intérieur\n- Arrivée après 16 h'}
+                    />
+                  }
+                />
+              </div>
+
+              </>
+            )}
+            {active === 'contrat' && (
+              <>
+              {/* Contrat : réglages repris par l'assistant de contrat */}
+              <EditableCard
+                id="contrat"
+                title="Contrat"
+                subtitle="Tes règles, reprises dans chaque contrat de ce logement"
+                icon={<FileText size={17} weight="fill" />}
+                onSave={saveContrat}
+                onCancel={resetContrat}
+                hasValue
+                view={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={s.tiles}>
+                      {(l.pays ?? 'FR') === 'FR' && (
+                        <div style={s.tile}>
+                          <span style={s.tileLabel}>Sommes versées à la réservation</span>
+                          <span style={s.tileValue}>{contratOpts.regime === 'acompte' ? 'Acompte' : 'Arrhes'}</span>
+                        </div>
+                      )}
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>Caution rendue sous</span>
+                        <span style={s.tileValue}>{contratOpts.delai_caution_jours} jours</span>
+                      </div>
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>Charges</span>
+                        <span style={s.tileValue}>{contratOpts.charges_incluses ? 'Comprises' : 'En plus'}</span>
+                      </div>
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>Arrivée</span>
+                        <span style={s.tileValue}>{contratOpts.arrivee_autonome ? 'Autonome' : 'Pièce d\u2019identité montrée'}</span>
+                      </div>
+                      <div style={s.tile}>
+                        <span style={s.tileLabel}>Solde à régler</span>
+                        <span style={s.tileValue}>{soldeDelaiLabel(contratOpts.solde_avant_heures)}</span>
+                      </div>
+                    </div>
+                    {l.clauses_particulieres
+                      ? <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <span style={s.tileLabel}>Clauses particulières</span>
+                          <p style={{ ...s.descText, whiteSpace: 'pre-wrap' }}>{l.clauses_particulieres}</p>
+                          <LangBadges pt={!!l.clauses_particulieres_pt} en={!!l.clauses_particulieres_en} />
+                        </div>
+                      : <p style={s.emptyHint}>Pas de clause particulière. Ajoute ici ce qui est propre à ce logement : linge fourni, accès piscine, bois de chauffage…</p>}
+                    <Link href={`/apercu-contrat/${l.id}`} style={s.linkRow}>
+                      <Eye size={16} weight="bold" />
+                      <span style={{ flex: 1 }}><strong>Voir le contrat de ce logement</strong>, tel que ton voyageur le recevra, avec un lien « Modifier » sur chaque article</span>
+                      <ArrowRight size={13} weight="bold" />
+                    </Link>
+                    <p style={{ ...s.emptyHint, margin: 0 }}>Le contrat reprend aussi tout seul l&apos;état descriptif du logement (type, surface, pièces, couchages, équipements, classement, numéro d&apos;enregistrement) depuis Caractéristiques et Équipements.</p>
+                  </div>
+                }
+                edit={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <div style={s.editGrid2}>
+                      {(l.pays ?? 'FR') === 'FR' && (
+                        <Field label="Sommes versées à la réservation">
+                          <select style={s.editInput} value={draftRegime} onChange={e => setDraftRegime(e.target.value === 'acompte' ? 'acompte' : 'arrhes')}>
+                            <option value="arrhes">Arrhes (conseillé) : le voyageur qui annule les perd, tu rends le double si tu annules</option>
+                            <option value="acompte">Acompte : réservation ferme, le voyageur reste redevable du prix</option>
+                          </select>
+                        </Field>
+                      )}
+                      <Field label="Caution rendue au plus tard (jours après le départ)">
+                        <input style={s.editInput} type="number" min={1} max={60} value={draftDelaiCaution} onChange={e => setDraftDelaiCaution(Math.max(1, Math.min(60, parseInt(e.target.value) || 7)))} />
+                      </Field>
+                      <Field label="Charges (eau, électricité, chauffage, internet)">
+                        <select style={s.editInput} value={draftCharges ? 'oui' : 'non'} onChange={e => setDraftCharges(e.target.value === 'oui')}>
+                          <option value="oui">Comprises dans le prix</option>
+                          <option value="non">En plus du prix</option>
+                        </select>
+                      </Field>
+                      <Field label="Arrivée des voyageurs">
+                        <select style={s.editInput} value={draftAutonome ? 'autonome' : 'piece'} onChange={e => setDraftAutonome(e.target.value === 'autonome')}>
+                          <option value="piece">Le voyageur montre une pièce d&apos;identité à l&apos;arrivée</option>
+                          <option value="autonome">Arrivée autonome : pas de pièce d&apos;identité demandée sur place</option>
+                        </select>
+                      </Field>
+                      <Field label="Échéance du solde (après l'acompte ou les arrhes)">
+                        <select style={s.editInput} value={draftSolde} onChange={e => setDraftSolde(soldeDelai(e.target.value))}>
+                          {SOLDE_DELAIS.map(h => <option key={h} value={h}>{soldeDelaiLabel(h)}</option>)}
+                        </select>
+                      </Field>
+                    </div>
+                    <div>
+                      <span style={{ ...s.tileLabel, display: 'block', marginBottom: '6px' }}>Clauses particulières</span>
+                      <LangTextarea
+                        fr={draftClauses} pt={draftClausesPt} en={draftClausesEn}
+                        onChangeFr={setDraftClauses} onChangePt={setDraftClausesPt} onChangeEn={setDraftClausesEn}
+                        placeholder={'Ex. : linge de lit et serviettes fournis.\nAccès à la piscine de 9 h à 20 h.\nBois de chauffage en supplément : 15 € le stère.'}
+                      />
+                      <p style={{ ...s.emptyHint, marginTop: '6px' }}>Une clause ne peut pas retirer au voyageur un droit que la loi lui donne.</p>
+                    </div>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {active === 'annonces' && (
+              <>
+              {/* Annonces */}
+              <EditableCard
+                id="annonces"
+                title="Annonces en ligne"
+                subtitle="Tes pages Airbnb, Booking, Google et ton site, utilisées par les outils de visibilité"
+                icon={<Globe size={17} weight="fill" />}
+                onSave={saveLiens}
+                onCancel={() => { setDraftLienAirbnb(l.lien_airbnb ?? ''); setDraftLienBooking(l.lien_booking ?? ''); setDraftLienGmb(l.lien_gmb ?? ''); setDraftLienSiteDirect(l.lien_site_direct ?? ''); setDraftLienDriing(l.lien_driing ?? '') }}
+                hasValue={annonces.length > 0}
+                addLabel="Ajouter"
+                emptyView={<p style={s.emptyHint}>Aucun lien d&apos;annonce pour l&apos;instant.</p>}
+                view={
+                  <div style={s.annonceGrid}>
+                    {annonces.map(a => (
+                      <a key={a.key} href={a.url!} target="_blank" rel="noopener noreferrer" style={s.annonce}>
+                        <span style={{ ...s.annonceLogo, background: `color-mix(in srgb, ${a.color} 14%, transparent)`, color: a.color }}>
+                          {a.letter || <Globe size={16} weight="bold" />}
+                        </span>
+                        <span style={{ flex: 1, minWidth: 0, fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>{a.label}</span>
+                        <ArrowSquareOut size={13} color="var(--text-3)" />
+                      </a>
+                    ))}
+                  </div>
+                }
+                edit={
+                  <div style={s.editGrid2}>
+                    <Field label="Airbnb"><input style={s.editInput} type="url" value={draftLienAirbnb} onChange={e => setDraftLienAirbnb(e.target.value)} placeholder="https://www.airbnb.fr/rooms/…" /></Field>
+                    <Field label="Booking.com"><input style={s.editInput} type="url" value={draftLienBooking} onChange={e => setDraftLienBooking(e.target.value)} placeholder="https://www.booking.com/…" /></Field>
+                    <Field label="Fiche Google"><input style={s.editInput} type="url" value={draftLienGmb} onChange={e => setDraftLienGmb(e.target.value)} placeholder="https://maps.google.com/…" /></Field>
+                    <Field label="Driing"><input style={s.editInput} type="url" value={draftLienDriing} onChange={e => setDraftLienDriing(e.target.value)} placeholder="https://driing.co/…" /></Field>
+                    <Field label="Site de réservation directe" wide><input style={s.editInput} type="url" value={draftLienSiteDirect} onChange={e => setDraftLienSiteDirect(e.target.value)} placeholder="https://…" /></Field>
+                  </div>
+                }
+              />
+              </>
+            )}
+            {active === 'proprietaire' && (
+              <>
+              {/* Propriétaire (conciergerie) */}
+              <EditableCard
+                id="proprietaire"
+                title="Propriétaire"
+                subtitle="Si tu gères ce logement pour quelqu'un (conciergerie)"
+                icon={<Handshake size={17} weight="fill" />}
+                onSave={saveProprietaire}
+                onCancel={() => { setDraftPropNom(l.proprietaire_nom ?? ''); setDraftPropEmail(l.proprietaire_email ?? ''); setDraftPropTel(l.proprietaire_telephone ?? ''); setDraftHonoraires(l.honoraires_pct); setDraftIban(l.iban ?? ''); setDraftBic(l.bic ?? '') }}
+                hasValue={!!(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null || l.iban)}
+                addLabel="Ajouter"
+                emptyView={<p style={s.emptyHint}>C&apos;est ton logement ? Rien à remplir ici. Sinon, les contrats seront au nom du propriétaire.</p>}
+                view={
+                  <div style={s.rows}>
+                    {l.proprietaire_nom && <Row k="Nom" v={l.proprietaire_nom} />}
+                    {l.proprietaire_email && <Row k="E-mail" v={<a href={`mailto:${l.proprietaire_email}`} style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>{l.proprietaire_email}</a>} />}
+                    {l.proprietaire_telephone && <Row k="Téléphone" v={<a href={`tel:${l.proprietaire_telephone.replace(/\s/g, '')}`} style={{ color: 'var(--accent-text)', textDecoration: 'none' }}>{l.proprietaire_telephone}</a>} />}
+                    {l.honoraires_pct != null && <Row k="Honoraires" v={<strong style={{ color: AMBER_DARK }}>{l.honoraires_pct} %</strong>} />}
+                    {l.iban && <Row k="IBAN" v={<span style={{ fontFamily: 'monospace', letterSpacing: '0.4px', wordBreak: 'break-all' }}>{l.iban}</span>} />}
+                    {l.bic && <Row k="BIC" v={<span style={{ fontFamily: 'monospace' }}>{l.bic}</span>} />}
+                  </div>
+                }
+                edit={
+                  <div style={s.editGrid}>
+                    <Field label="Nom du propriétaire" wide><input style={s.editInput} type="text" value={draftPropNom} onChange={e => setDraftPropNom(e.target.value)} placeholder="Jean Dupont" /></Field>
+                    <Field label="E-mail"><input style={s.editInput} type="email" value={draftPropEmail} onChange={e => setDraftPropEmail(e.target.value)} /></Field>
+                    <Field label="Téléphone"><input style={s.editInput} type="tel" value={draftPropTel} onChange={e => setDraftPropTel(e.target.value)} /></Field>
+                    <Field label="Honoraires (%)"><input style={s.editInput} type="number" min={0} max={100} value={draftHonoraires ?? ''} onChange={e => setDraftHonoraires(e.target.value ? parseFloat(e.target.value) : null)} placeholder="20" /></Field>
+                    <Field label="BIC"><input style={{ ...s.editInput, fontFamily: 'monospace' }} type="text" value={draftBic} onChange={e => setDraftBic(e.target.value)} /></Field>
+                    <Field label="IBAN du propriétaire" wide><input style={{ ...s.editInput, fontFamily: 'monospace' }} type="text" value={draftIban} onChange={e => setDraftIban(e.target.value)} placeholder="FR76 …" /></Field>
+                    <p style={{ ...s.hintText, gridColumn: '1 / -1' }}>
+                      Si tu le renseignes, c&apos;est cet IBAN qui s&apos;affiche au locataire pour le virement (pas le tien) : l&apos;argent va directement au propriétaire.
+                    </p>
+                  </div>
+                }
+              />
+
+              </>
+            )}
+            {nextSection && (
+              <button type="button" onClick={() => openSection(nextSection.key)} style={s.nextBtn}>
+                <span style={{ flex: 1, textAlign: 'left' }}>
+                  <span style={s.nextSmall}>Section suivante</span>
+                  <span style={s.nextLabel}>{nextSection.label}</span>
+                </span>
+                <ArrowRight size={16} weight="bold" />
+              </button>
+            )}
+        </div>
+      </section>
 
       {quick && (
         <QuickSejourModal
@@ -1517,7 +1654,27 @@ function Row({ k, v, muted }: { k: string; v: React.ReactNode; muted?: boolean }
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
+// Groupes du rail, dans l'ordre d'affichage
+const FICHE_GROUPS = ['L’essentiel', 'Pour tes voyageurs', 'Pour tes contrats', 'Le reste']
+
 const s: Record<string, React.CSSProperties> = {
+  // ── Ta fiche en sections (19/11/2026) ──
+  atelier: { display: 'grid', gridTemplateColumns: '260px minmax(0, 1fr)', gap: '18px', alignItems: 'start', marginTop: '18px', scrollMarginTop: 'calc(var(--header-h) + 12px)' },
+  rail: { position: 'sticky', top: 'calc(var(--header-h) + 12px)', display: 'flex', flexDirection: 'column', gap: '2px', padding: '14px 10px', borderRadius: '18px', background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)' },
+  railHead: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '2px 8px 6px' },
+  railTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', color: 'var(--text)' },
+  railProg: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12.5px', color: 'var(--text-3)', fontVariantNumeric: 'tabular-nums' },
+  railBar: { flex: 1, height: '6px', borderRadius: '99px', background: 'var(--border)', overflow: 'hidden', display: 'block' },
+  railBarFill: { display: 'block', height: '100%', background: 'var(--accent-text)', borderRadius: '99px' },
+  railGroup: { fontSize: '10.5px', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--text-3)', padding: '12px 8px 4px' },
+  railItem: { display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '8px 10px', borderRadius: '11px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', transition: 'background .15s' },
+  railLabel: { display: 'block', fontSize: '13.5px', fontWeight: 600, lineHeight: 1.3 },
+  railSub: { display: 'block', fontSize: '11.5px', lineHeight: 1.3, marginTop: '1px' },
+  panel: { display: 'flex', flexDirection: 'column', gap: '18px', minWidth: 0 },
+  nextBtn: { display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '14px 16px', borderRadius: '14px', border: '1px dashed var(--accent-border)', background: 'transparent', color: 'var(--accent-text)', cursor: 'pointer', fontFamily: 'inherit' },
+  nextSmall: { display: 'block', fontSize: '12px', color: 'var(--text-3)' },
+  nextLabel: { display: 'block', fontSize: '15px', fontWeight: 600, color: 'var(--text)' },
+
   page: { padding: 'clamp(16px,3vw,40px)', width: '100%', display: 'flex', flexDirection: 'column', gap: '18px', boxSizing: 'border-box' },
   backLink: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--text-2)', textDecoration: 'none', width: 'fit-content' },
 

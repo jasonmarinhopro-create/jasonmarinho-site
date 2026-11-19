@@ -200,9 +200,13 @@ export default function LogementsPage({ logements: initial }: Props) {
   const isNewFromUrl = searchParams.get('new') === '1'
   useEffect(() => {
     if (editIdFromUrl) {
-      const target = logements.find(l => l.id === editIdFromUrl)
-      if (target) openEdit(target)
-      if (!fromDetail) router.replace('/dashboard/logements')
+      // 19/11/2026 : la modification se fait dans la fiche du logement, en
+      // sections ; l'ancien lien ?edit=<id> y mène directement.
+      if (logements.some(l => l.id === editIdFromUrl)) {
+        router.replace(`/dashboard/logements/${editIdFromUrl}#modifier-infos`)
+      } else if (!fromDetail) {
+        router.replace('/dashboard/logements')
+      }
       return
     }
     if (isNewFromUrl) {
