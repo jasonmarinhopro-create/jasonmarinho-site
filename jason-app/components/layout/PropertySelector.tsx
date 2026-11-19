@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { House, CaretUp, Check, SquaresFour, Gear, Plus } from '@phosphor-icons/react/dist/ssr'
 import type { PropertyLite } from '@/lib/queries/active-property'
 
@@ -29,6 +29,12 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
   const [busy, setBusy] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const pathname = usePathname()
+  // Choix affiché tout de suite au clic (le layout, qui fournit currentId,
+  // n'est pas re-rendu lors d'une navigation : sans ça la coche restait
+  // sur l'ancien choix).
+  const [picked, setPicked] = useState(currentId)
+  useEffect(() => { setPicked(currentId) }, [currentId])
 
   // Fermeture au clic extérieur
   useEffect(() => {
@@ -60,8 +66,11 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
     )
   }
 
-  const current = allProperties.find(p => p.id === currentId) ?? null
-  const isAll = currentId === 'all' || !current
+  // Sur la fiche d'un logement, c'est ce logement qui est coché
+  const onFiche = pathname?.match(/^\/dashboard\/logements\/([^/?#]+)/)?.[1] ?? null
+  const selectedId = onFiche && allProperties.some(p => p.id === onFiche) ? onFiche : picked
+  const current = allProperties.find(p => p.id === selectedId) ?? null
+  const isAll = selectedId === 'all' || !current
   const label = isAll
     ? (allProperties.length > 1 ? 'Tous les logements' : allProperties[0].nom)
     : current!.nom
@@ -72,32 +81,35 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
   const interactive = true
   const hasMultiple = allProperties.length > 1
 
+  function saveChoice(id: string) {
+    // Persiste le cookie du logement actif (filtre dashboard)
+    return fetch('/api/me/active-property', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ propertyId: id }),
+      keepalive: true,
+    }).catch(() => null)
+  }
+
   async function pick(id: string) {
-    setBusy(true)
-    try {
-      // Persiste le cookie du logement actif (filtre dashboard)
-      const res = await fetch('/api/me/active-property', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ propertyId: id }),
-      }).catch(() => null)
-      // Réseau coupé : on reste sur place plutôt que de laisser l'erreur remonter
-      if (!res) return
-      setOpen(false)
-      // Comportement selon le type :
-      // - 'all' : reste sur la page courante, refresh pour appliquer le filtre
-      // - 'virtual:xxx' : logement non-persisté en DB → va sur la liste
-      // - UUID réel : ouvre directement la page detail du logement
-      if (id === 'all') {
-        router.refresh()
-      } else if (id.startsWith('virtual:')) {
-        router.push('/dashboard/logements')
-      } else {
-        router.push(`/dashboard/logements/${id}`)
-      }
-    } finally {
+    setOpen(false)
+    setPicked(id)
+    if (id === 'all') {
+      // Le filtre « Tous » s'applique à la page courante : le cookie doit
+      // être posé avant de rafraîchir.
+      setBusy(true)
+      const res = await saveChoice(id)
       setBusy(false)
+      if (!res) { setPicked(currentId); return }
+      // Depuis la fiche d'un logement, « Tous » ramène à la liste
+      if (onFiche) router.push('/dashboard/logements')
+      else router.refresh()
+      return
     }
+    // Logement précis : on ouvre sa fiche tout de suite, le cookie part en parallèle
+    void saveChoice(id)
+    if (id.startsWith('virtual:')) router.push('/dashboard/logements')
+    else router.push(`/dashboard/logements/${id}`)
   }
 
   return (
@@ -118,7 +130,7 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
           )}
           {/* Liste des logements */}
           {allProperties.map(p => {
-            const active = p.id === currentId
+            const active = p.id === selectedId
             return (
               <button
                 key={p.id}

@@ -413,6 +413,8 @@ export default function LogementsPage({ logements: initial }: Props) {
       if (res.error) { setError(res.error); return }
       setLogements(prev => prev.filter(l => l.id !== id))
       setDeleteConfirm(null)
+      // Met à jour le sélecteur de logement de la barre latérale (layout)
+      router.refresh()
     })
   }
 
@@ -678,12 +680,23 @@ export default function LogementsPage({ logements: initial }: Props) {
                         >
                           <CurrencyEur size={13} weight="bold" />
                         </Link>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setDeleteConfirm(l.id) }}
-                          style={iconBtn} title="Supprimer"
-                        >
-                          <Trash size={13} />
-                        </button>
+                        {deleteConfirm === l.id ? (
+                          <>
+                            <button onClick={(e) => { e.stopPropagation(); handleDelete(l.id) }} disabled={isPending} style={deleteConfirmBtn}>
+                              {isPending ? 'Suppression…' : 'Supprimer'}
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); setDeleteConfirm(null) }} style={cancelBtn}>
+                              Annuler
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setDeleteConfirm(l.id) }}
+                            style={iconBtn} title="Supprimer"
+                          >
+                            <Trash size={13} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -830,8 +843,9 @@ export default function LogementsPage({ logements: initial }: Props) {
                   )}
 
                   {/* Delete confirm */}
+                  {/* Clic dans la confirmation : ne doit pas ouvrir la fiche (carte cliquable) */}
                   {deleteConfirm === l.id && (
-                    <div style={deleteBox}>
+                    <div style={deleteBox} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
                       <p style={{ margin: '0 0 10px', fontSize: '13px', color: 'var(--text-2)' }}>
                         Supprimer ce logement ? Cette action est irréversible.
                       </p>
