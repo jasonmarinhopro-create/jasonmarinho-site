@@ -9,6 +9,7 @@ import { createLogement, updateLogement, deleteLogement, type LogementData } fro
 import { COUNTRIES, ACTIVE_COUNTRIES, getCountry, type CountryCode } from '@/lib/countries'
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import InfosPratiquesEditor from '@/components/logements/InfosPratiquesEditor'
+import NewLogementWizard from '@/components/logements/NewLogementWizard'
 import type { InfosPratiques } from '@/lib/logements/infos-pratiques'
 
 const DEFAULT_ANNULATION =
@@ -847,14 +848,19 @@ export default function LogementsPage({ logements: initial }: Props) {
         )}
       </div>
 
-      {/* Create / Edit Modal */}
-      {modal && (
+      {/* Création : assistant en 3 écrans (19/11/2026), puis la fiche du logement */}
+      {modal === 'create' && (
+        <NewLogementWizard base={emptyForm()} typeLabels={TYPE_LOGEMENT_LABELS} onClose={closeModal} />
+      )}
+
+      {/* Modification (la création passe par NewLogementWizard) */}
+      {modal === 'edit' && (
         <div style={overlay} onClick={closeModal}>
           <div style={modalBox} onClick={e => e.stopPropagation()}>
             <div style={modalHeader}>
               <div>
-                <p style={modalTag}>{modal === 'create' ? 'Nouveau logement' : 'Modifier le logement'}</p>
-                <h3 style={modalTitle}>{modal === 'create' ? 'Créer une fiche logement' : form.nom || 'Modifier'}</h3>
+                <p style={modalTag}>Modifier le logement</p>
+                <h3 style={modalTitle}>{form.nom || 'Modifier'}</h3>
               </div>
               <button onClick={closeModal} style={closeBtn}><X size={18} /></button>
             </div>
@@ -1309,11 +1315,7 @@ export default function LogementsPage({ logements: initial }: Props) {
             <div style={modalFooter}>
               <button onClick={closeModal} style={ghostBtn}>Annuler</button>
               <button onClick={handleSave} disabled={isPending} style={saveBtn}>
-                {isPending ? 'Enregistrement…' : modal === 'create' ? (
-                  <><Plus size={14} /> Créer le logement</>
-                ) : (
-                  <><Check size={14} /> Enregistrer</>
-                )}
+                {isPending ? 'Enregistrement…' : <><Check size={14} /> Enregistrer</>}
               </button>
             </div>
           </div>

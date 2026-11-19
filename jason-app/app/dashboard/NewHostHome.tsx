@@ -14,7 +14,7 @@ export default function NewHostHome({ firstName }: { firstName: string }) {
         <h1 style={s.title}>Ajoute ton logement, <em style={s.em}>on s’occupe du reste</em></h1>
         <p style={s.desc}>Son nom et son adresse, puis le lien de ton calendrier Airbnb ou Booking : ton Accueil se remplit tout seul (arrivées, ménages, revenus).</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
-          <Link href="/dashboard/logements" style={s.cta}>Ajouter mon logement <ArrowRight size={14} weight="bold" /></Link>
+          <Link prefetch={false} href="/dashboard/logements?new=1" style={s.cta}>Ajouter mon logement <ArrowRight size={14} weight="bold" /></Link>
         </div>
       </section>
 
