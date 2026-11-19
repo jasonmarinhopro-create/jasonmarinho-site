@@ -14,6 +14,7 @@ import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
 import { officialGrid, fmtTarif, fmtTotal, TAXE_SOURCE_URL } from './lib/taxe-officielle.mjs'
+import { ANNEE_TARIFS as AN } from './lib/annee.mjs'
 
 const ROOT = new URL('..', import.meta.url).pathname
 const TARIFS_URL = 'https://entreprendre.service-public.gouv.fr/vosdroits/R46583'
@@ -56,7 +57,7 @@ function officialParagraphs(slug, a, g) {
   const td = 'style="padding:8px 10px;border-bottom:1px solid rgba(0,76,63,.1);vertical-align:top"'
   const rows = g.lignes.slice(1).map(l => `<tr><td ${td}>${l.label}</td><td ${td}>${fmtTarif(l)}</td><td ${td}><strong>${fmtTotal(l)}</strong></td></tr>`).join('')
   return nb(`<!-- TAXE:START -->
-<p>Tarifs de la taxe de séjour ${a} en 2026, par personne et par nuit, d'après la base officielle de la DGFiP. La colonne « À collecter » est le montant à faire payer, ${addsText(g)}. Les mineurs ne la paient pas.</p>
+<p>Tarifs de la taxe de séjour ${a} en ${AN}, par personne et par nuit, d'après la base officielle de la DGFiP. La colonne « À collecter » est le montant à faire payer, ${addsText(g)}. Les mineurs ne la paient pas.</p>
   <div style="overflow-x:auto;margin:14px 0"><table style="width:100%;border-collapse:collapse;font-size:.95em">
     <thead><tr><th ${th}>Hébergement</th><th ${th}>Part communale</th><th ${th}>À collecter</th></tr></thead>
     <tbody><tr><td ${td}>${nc.label}</td><td ${td}>${fmtTarif(nc)} du prix HT par personne</td><td ${td}><strong>${fmtTotal(nc)}</strong> du prix HT par personne</td></tr>${rows}</tbody>
@@ -72,7 +73,7 @@ function fmtTotalOn(l, prix) {
 function officialFaq(a, g) {
   const by = k => g.lignes.find(l => l.label.includes(k))
   const nc = g.lignes[0]
-  return nb(`D'après la base officielle de la DGFiP, la taxe de séjour ${a} en 2026 est de ${fmtTotal(by('1 étoile'))} en meublé 1 étoile, ${fmtTotal(by('3 étoiles'))} en 3 étoiles, ${fmtTotal(by('4 étoiles'))} en 4 étoiles et ${fmtTotal(by('5 étoiles'))} en 5 étoiles, par personne et par nuit (${addsText(g).replace(' : ', ', ')}). Chambres d'hôtes : ${fmtTotal(by("Chambres"))}. Meublé non classé : ${fmtTotal(nc)} du prix HT de la nuitée par personne, plafonné au tarif le plus élevé de la commune. Les mineurs sont exonérés.`)
+  return nb(`D'après la base officielle de la DGFiP, la taxe de séjour ${a} en ${AN} est de ${fmtTotal(by('1 étoile'))} en meublé 1 étoile, ${fmtTotal(by('3 étoiles'))} en 3 étoiles, ${fmtTotal(by('4 étoiles'))} en 4 étoiles et ${fmtTotal(by('5 étoiles'))} en 5 étoiles, par personne et par nuit (${addsText(g).replace(' : ', ', ')}). Chambres d'hôtes : ${fmtTotal(by("Chambres"))}. Meublé non classé : ${fmtTotal(nc)} du prix HT de la nuitée par personne, plafonné au tarif le plus élevé de la commune. Les mineurs sont exonérés.`)
 }
 
 function paragraphs(slug, a, de) {
@@ -80,8 +81,8 @@ function paragraphs(slug, a, de) {
   if (g) return officialParagraphs(slug, a, g)
   const local = localTaxe(slug)
   const first = local
-    ? `<p>${local} Pour un meublé classé, le tarif voté ${a} reste dans les plafonds nationaux 2026 : ${PLAFONDS}. Les mineurs ne la paient pas.</p>`
-    : `<p>Le tarif est voté par la commune ou l'intercommunalité ${de}, dans les plafonds nationaux 2026 : ${PLAFONDS}. ${NON_CLASSE}. Une taxe additionnelle départementale de 10 % s'y ajoute le plus souvent, et les mineurs ne la paient pas.</p>`
+    ? `<p>${local} Pour un meublé classé, le tarif voté ${a} reste dans les plafonds nationaux ${AN} : ${PLAFONDS}. Les mineurs ne la paient pas.</p>`
+    : `<p>Le tarif est voté par la commune ou l'intercommunalité ${de}, dans les plafonds nationaux ${AN} : ${PLAFONDS}. ${NON_CLASSE}. Une taxe additionnelle départementale de 10 % s'y ajoute le plus souvent, et les mineurs ne la paient pas.</p>`
   const extra = EXTRA[slug] ? ` ${EXTRA[slug]}` : ''
   return nb(`<!-- TAXE:START -->
 ${first}
@@ -94,8 +95,8 @@ function faqAnswer(slug, a, de) {
   if (g) return officialFaq(a, g)
   const local = localTaxe(slug)
   const base = local
-    ? `${strip(local)} Pour un meublé classé, le tarif reste dans les plafonds nationaux 2026 : jusqu'à 1,00 € (1 et 2 étoiles, chambres d'hôtes), 1,70 € (3 étoiles), 2,60 € (4 étoiles) et 3,60 € (5 étoiles) par personne et par nuit.`
-    : `Le tarif est voté par la commune ou l'intercommunalité ${de}. En 2026, il ne peut pas dépasser 1,00 € (1 et 2 étoiles, chambres d'hôtes), 1,70 € (3 étoiles), 2,60 € (4 étoiles) et 3,60 € (5 étoiles) par personne et par nuit. Pour un meublé non classé, c'est 1 % à 5 % du prix HT de la nuitée par personne, plafonné au tarif le plus élevé de la commune, plus le plus souvent 10 % de taxe départementale.`
+    ? `${strip(local)} Pour un meublé classé, le tarif reste dans les plafonds nationaux ${AN} : jusqu'à 1,00 € (1 et 2 étoiles, chambres d'hôtes), 1,70 € (3 étoiles), 2,60 € (4 étoiles) et 3,60 € (5 étoiles) par personne et par nuit.`
+    : `Le tarif est voté par la commune ou l'intercommunalité ${de}. En ${AN}, il ne peut pas dépasser 1,00 € (1 et 2 étoiles, chambres d'hôtes), 1,70 € (3 étoiles), 2,60 € (4 étoiles) et 3,60 € (5 étoiles) par personne et par nuit. Pour un meublé non classé, c'est 1 % à 5 % du prix HT de la nuitée par personne, plafonné au tarif le plus élevé de la commune, plus le plus souvent 10 % de taxe départementale.`
   return nb(`${base}${EXTRA[slug] ? ' ' + EXTRA[slug] : ''} Les mineurs sont exonérés. Le tarif exact ${a} est dans la base officielle des tarifs par commune (service-public.gouv.fr).`)
 }
 
@@ -122,7 +123,7 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
     const h = html.search(/<h3[^>]*>(?:(?!<\/h3>)[\s\S])*Taxe de séjour(?:(?!<\/h3>)[\s\S])*<\/h3>/i)
     const faqAt = html.indexOf('<section id="faq">')
     if (h < 0 && officialGrid(slug) && faqAt >= 0) {
-      html = html.slice(0, faqAt) + `<section id="taxe-de-sejour">\n  <h2><em>Taxe de séjour</em> ${a} en 2026</h2>\n  ` + paragraphs(slug, a, de) + `\n</section>\n\n` + html.slice(faqAt)
+      html = html.slice(0, faqAt) + `<section id="taxe-de-sejour">\n  <h2><em>Taxe de séjour</em> ${a} en ${AN}</h2>\n  ` + paragraphs(slug, a, de) + `\n</section>\n\n` + html.slice(faqAt)
     } else if (h < 0) { skipped.push(`${slug} (section)`); continue } else {
     const pStart = html.indexOf('<p>', h)
     const pEnd = html.indexOf('</p>', pStart)
@@ -132,7 +133,7 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   }
 
   // 2. Question de FAQ (HTML)
-  const q = `Combien coûte la taxe de séjour ${a} en 2026 ?`
+  const q = `Combien coûte la taxe de séjour ${a} en ${AN} ?`
   const ans = faqAnswer(slug, a, de)
   html = html.replace(/\s*<!-- TAXE-FAQ:START -->[\s\S]*?<!-- TAXE-FAQ:END -->/, '')
   const fancy = html.indexOf('<details class="faq-i">')
@@ -182,14 +183,14 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   }
   if (g && TAX_INTENT.includes(slug)) {
     const l4 = g.lignes.find(l => l.label.includes('4 étoiles'))
-    const desc = nb(`Taxe de séjour ${a} en 2026 : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé. Grille officielle, exemple chiffré et qui la collecte.`)
+    const desc = nb(`Taxe de séjour ${a} en ${AN} : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé. Grille officielle, exemple chiffré et qui la collecte.`)
     html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
     html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
     // Titre (audit SEO du 18/11/2026) : ces guides sortent en place 5 à 9 sur
     // « taxe de séjour <ville> » avec presque aucun clic, et leur titre disait
     // « Devenir hôte Airbnb à … ». Le titre reprend la recherche ; le H1 et
     // og:title gardent « Devenir hôte ». 60 caractères au plus.
-    const titres = [`Taxe de séjour ${nom} 2026 : tarifs et guide hôte Airbnb`, `Taxe de séjour ${nom} 2026 : tarifs et guide hôte`]
+    const titres = [`Taxe de séjour ${nom} ${AN} : tarifs et guide hôte Airbnb`, `Taxe de séjour ${nom} ${AN} : tarifs et guide hôte`]
     const titre = titres.find(t => t.length <= 60)
     if (titre) html = html.replace(/<title>[^<]*<\/title>/, `<title>${titre.replace(/&/g, '&amp;')}</title>`)
   }
@@ -212,7 +213,7 @@ if (existsSync(SIMU_FILE) && grilles.length) {
   <div class="s-in">
     <div class="lbl dk">Par ville</div>
     <h2 class="h2">Le tarif officiel <em>de ta ville</em></h2>
-    <p style="max-width:720px;color:var(--tm);line-height:1.65;margin:0 0 20px">Le simulateur applique les plafonds nationaux. Le tarif voté par ta commune peut être plus bas : chaque guide de ville donne la grille 2026 de la base officielle (DGFiP), du meublé non classé au 5 étoiles, taxes additionnelles comprises. À droite, le montant par personne et par nuit pour un meublé 4 étoiles.</p>
+    <p style="max-width:720px;color:var(--tm);line-height:1.65;margin:0 0 20px">Le simulateur applique les plafonds nationaux. Le tarif voté par ta commune peut être plus bas : chaque guide de ville donne la grille ${AN} de la base officielle (DGFiP), du meublé non classé au 5 étoiles, taxes additionnelles comprises. À droite, le montant par personne et par nuit pour un meublé 4 étoiles.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px">
       ${chips}
     </div>

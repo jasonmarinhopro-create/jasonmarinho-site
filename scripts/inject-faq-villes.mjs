@@ -22,6 +22,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
 import { officialGrid, fmtTotal } from './lib/taxe-officielle.mjs'
+import { ANNEE_TARIFS } from './lib/annee.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CHECK = process.argv.includes('--check')
@@ -82,7 +83,7 @@ function taxe(slug, v) {
   if (!g || !l4 || !g.lignes[0]?.label.toLowerCase().includes('non class')) return null
   const guide = `/devenir-hote-airbnb-${slug}`
   if (!fs.existsSync(path.join(ROOT, guide.slice(1), 'index.html'))) return null
-  return nb(`En 2026 ${v.a}, d'après la base officielle de la DGFiP : <strong>${fmtTotal(g.lignes[0])}</strong> du prix HT par personne et par nuit pour un meublé non classé, <strong>${fmtTotal(l4)}</strong> par personne et par nuit en 4 étoiles, taxes additionnelles comprises. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez. Toute la grille : ${lien(guide, `taxe de séjour ${v.a}`)}.`)
+  return nb(`En ${ANNEE_TARIFS} ${v.a}, d'après la base officielle de la DGFiP : <strong>${fmtTotal(g.lignes[0])}</strong> du prix HT par personne et par nuit pour un meublé non classé, <strong>${fmtTotal(l4)}</strong> par personne et par nuit en 4 étoiles, taxes additionnelles comprises. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez. Toute la grille : ${lien(guide, `taxe de séjour ${v.a}`)}.`)
 }
 
 // Met à jour la FAQ HTML (details) et le JSON-LD (FAQPage)

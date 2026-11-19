@@ -6,6 +6,7 @@
 // tarif = part votée par la commune ; total = avec les taxes additionnelles
 // (départementale, régionale, Île-de-France), tel que publié par la DGFiP.
 import { readFileSync, existsSync } from 'node:fs'
+import { ANNEE_TARIFS } from './annee.mjs'
 
 const FILE = new URL('../data/taxe-sejour-officielle.json', import.meta.url)
 export const TAXE_SOURCE_URL = 'https://data.economie.gouv.fr/explore/dataset/delta_deliberation_ts_tarif0/'
@@ -78,7 +79,7 @@ export function officialGrid(slug) {
   const d = load()
   const c = COMMUNES[slug]
   if (!d || !c) return null
-  const rows = (d.communes[c[0]] ?? []).filter(r => r.libelle_commune === c[1] && Number(String(r.date_effet).slice(0, 4)) <= 2026)
+  const rows = (d.communes[c[0]] ?? []).filter(r => r.libelle_commune === c[1] && Number(String(r.date_effet).slice(0, 4)) <= ANNEE_TARIFS)
   const best = new Map()
   for (const r of rows) {
     const k = r.hebergement
