@@ -7,6 +7,7 @@ import { priseToken } from './prise'
 import { memberMailSecret } from '@/lib/admin/member-mail-secret'
 import 'server-only'
 import { Resend } from 'resend'
+import { EMAIL_REPLY_TO } from '@/lib/email/template'
 import { randomBytes, randomUUID } from 'node:crypto'
 import { unstable_cache } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
@@ -115,7 +116,7 @@ async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], va
     partielNote: partiel(d, metier, pros),
     inscriptionUrl: `${SITE}/annuaires/${T[metier].dir}/inscription`,
   })
-  await r.emails.send({ from: FROM, to: d.email, subject, html })
+  await r.emails.send({ from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
     .catch(e => log.error('e-mail à l’hôte', { err: e instanceof Error ? e.message : String(e) }))
 }
 
@@ -172,7 +173,7 @@ async function emailsRegroupes(d: DemandeInput, villes: Array<{ ville: string } 
   const r = resend()
   if (r) {
     const { subject, html } = hoteMultiEmail(d, villes.map(v => ({ ville: v.ville, pros: v.pros.map(p => proMail(p, d.metier)), suiviUrl: v.token ? suiviUrl(v.token) : null })), { inscriptionUrl: `${SITE}/annuaires/${T[d.metier].dir}/inscription` })
-    await r.emails.send({ from: FROM, to: d.email, subject, html })
+    await r.emails.send({ from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
       .catch(e => log.error('e-mail à l’hôte (plusieurs villes)', { err: e instanceof Error ? e.message : String(e) }))
   }
   const sansPro = villes.filter(v => !v.pros.length)
@@ -304,7 +305,7 @@ export async function listProsChoix(metier: DemandeMetier): Promise<ProChoix[]> 
 async function emailHoteManuel(d: DemandeInput & { suivi_token?: string | null }, metier: DemandeMetier, pro: Pro, premier: boolean) {
   const r = resend(); if (!r) return
   const { subject, html } = hoteManuelEmail(d, proMail(pro, metier), d.suivi_token ? suiviUrl(d.suivi_token) : null, premier)
-  await r.emails.send({ from: FROM, to: d.email, subject, html })
+  await r.emails.send({ from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
     .catch(e => log.error('e-mail à l’hôte (envoi manuel)', { err: e instanceof Error ? e.message : String(e) }))
 }
 

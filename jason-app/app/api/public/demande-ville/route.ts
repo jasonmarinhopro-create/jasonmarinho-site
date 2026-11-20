@@ -73,6 +73,7 @@ export async function POST(req: Request) {
     { label: 'Contact', value: r.email ? `<a href="mailto:${escHtml(r.email)}" style="color:#004C3F">${escHtml(r.email)}</a>` : 'Aucune adresse laissée' },
   ]
   const html = buildEmail({
+    etiquette: 'Pour toi · Page de ville',
     title: `Une page pour ${ville} ?`,
     preview: `${PLURIEL[r.metier][0]} · ${nombre}`,
     body: [
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
         ? emailP('Elle souhaite être prévenue quand la page sera en ligne : réponds simplement à cet e-mail pour lui écrire.')
         : emailP('Elle n’a pas laissé d’adresse : rien à lui répondre.'),
       emailBtn(`https://jasonmarinho.com/chiffres?ville=${encodeURIComponent(r.ville)}#ta-ville`, 'Voir la recherche sur la page des chiffres', 'secondary'),
-      emailNote('Pour créer la ville, demande-le à Claude : une ville = 3 pages (photographe et vidéaste, ménage, guide hôte), faits vérifiés et sources, méthode « Créer une ville » de CLAUDE.md.'),
+      emailNote('Pour créer la ville, demande-le à Claude : une ville = 4 pages (photographe et vidéaste, ménage, dépannage, guide hôte), faits vérifiés et sources, méthode « Créer une ville » de CLAUDE.md.'),
     ].join(''),
   })
   await sendAdminEmail({

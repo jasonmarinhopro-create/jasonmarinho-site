@@ -3,19 +3,12 @@
 // une carte blanche, une étiquette, un titre, le besoin en fiche, un seul bouton principal.
 // Fonctions pures (testées), sans envoi : send.ts les appelle.
 
-import { escHtml } from '@/lib/email/template'
+import { buildEmail, EMAIL_COLORS, EMAIL_SANS, EMAIL_SERIF, escHtml } from '@/lib/email/template'
 import { etablissementLabel } from '@/lib/pros/clienteles'
 
-const BG = '#F3F6F4'
-const CARD = '#FFFFFF'
-const LINE = '#E3EBE6'
-const INK = '#0F1F17'
-const SOFT = '#5B6B62'
-const GREEN = '#004C3F'
-const TINT = '#EEF5F1'
-const YELLOW = '#FFD56B'
-const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
-const SERIF = "Georgia,'Times New Roman',serif"
+const { line: LINE, ink: INK, soft: SOFT, green: GREEN, tint: TINT, yellow: YELLOW } = EMAIL_COLORS
+const SANS = EMAIL_SANS
+const SERIF = EMAIL_SERIF
 
 export type DemandeMailMetier = 'photographe' | 'menage' | 'depannage'
 
@@ -48,34 +41,9 @@ const telHref = (t: string) => `tel:${t.replace(/[^\d+]/g, '')}`
 
 // ── Briques ──────────────────────────────────────────────────────────
 
-function layout({ preview, etiquette, title, body, footer }: { preview: string; etiquette: string; title: string; body: string; footer: string }): string {
-  return `<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="color-scheme" content="light" />
-<meta name="supported-color-schemes" content="light" />
-<title>${escHtml(title)}</title>
-</head>
-<body style="margin:0;padding:0;background:${BG};-webkit-text-size-adjust:100%;">
-<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${escHtml(preview)}&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BG};">
-<tr><td align="center" style="padding:36px 14px 48px;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
-<tr><td style="padding:0 6px 18px;font-family:${SERIF};font-size:17px;color:${INK};letter-spacing:-0.2px;">Jason <em style="color:${GREEN};">Marinho</em></td></tr>
-<tr><td style="background:${CARD};border:1px solid ${LINE};border-radius:20px;padding:34px 30px 30px;">
-<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:${TINT};border-radius:999px;padding:5px 11px;font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:${GREEN};">${escHtml(etiquette)}</td></tr></table>
-<h1 style="margin:16px 0 0;font-family:${SERIF};font-size:26px;line-height:1.25;font-weight:400;color:${INK};letter-spacing:-0.4px;">${escHtml(title)}</h1>
-<div style="width:36px;height:3px;border-radius:3px;background:${YELLOW};margin:18px 0 22px;font-size:0;line-height:0;">&nbsp;</div>
-${body}
-</td></tr>
-<tr><td style="padding:22px 8px 0;font-family:${SANS};font-size:12px;line-height:1.7;color:${SOFT};text-align:center;">${footer}</td></tr>
-</table>
-</td></tr>
-</table>
-</body>
-</html>`
+/** Gabarit commun (lib/email/template.ts) : même maquette pour tous les e-mails */
+function layout({ preview, etiquette, title, body, footer, signature }: { preview: string; etiquette: string; title: string; body: string; footer: string; signature?: boolean | string }): string {
+  return buildEmail({ preview, etiquette, title: escHtml(title), body, footer, signature })
 }
 
 const p = (html: string, mb = 18) => `<p style="margin:0 0 ${mb}px;font-family:${SANS};font-size:15px;line-height:1.65;color:#2B3A32;">${html}</p>`
@@ -234,7 +202,7 @@ export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; s
       `<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>`,
       small(`Tu connais ${d.metier === 'menage' ? 'une équipe' : 'un pro'} dans ton coin ? ${link(o.inscriptionUrl, 'Envoie-lui ce lien')} : dès que sa fiche est en ligne, elle reçoit ta demande.`),
     ].join('')
-    return { subject: `Ta demande à ${d.ville} est enregistrée`, html: layout({ preview: 'On la transmet dès qu’un pro de ta zone rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: 'Ta demande est enregistrée', body, footer: FOOTER_HOTE }) }
+    return { subject: `Ta demande à ${d.ville} est enregistrée`, html: layout({ preview: 'On la transmet dès qu’un pro de ta zone rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: 'Ta demande est enregistrée', body, footer: FOOTER_HOTE, signature: 'Je regarde chaque demande sans pro moi-même. Si tu as une précision à ajouter, réponds à cet e-mail.' }) }
   }
   const qui = n > 1 ? `${n} ${m.labels}` : m.un
   const body = [
@@ -253,7 +221,7 @@ export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; s
   ].join('')
   return {
     subject: `Ta demande à ${d.ville} est partie chez ${n} pro${n > 1 ? 's' : ''}`,
-    html: layout({ preview: `${n > 1 ? `${n} pros l’ont reçue` : 'Un pro l’a reçue'} : réponse directe par e-mail`, etiquette: `Ta demande · ${m.etiquette}`, title: o.vague === 1 ? 'Ta demande est partie' : 'Ta demande part plus loin', body, footer: FOOTER_HOTE }),
+    html: layout({ preview: `${n > 1 ? `${n} pros l’ont reçue` : 'Un pro l’a reçue'} : réponse directe par e-mail`, etiquette: `Ta demande · ${m.etiquette}`, title: o.vague === 1 ? 'Ta demande est partie' : 'Ta demande part plus loin', body, footer: FOOTER_HOTE, signature: 'Un souci avec un pro, ou pas de nouvelles ? Réponds à cet e-mail, je m’en occupe.' }),
   }
 }
 
@@ -292,7 +260,7 @@ export function hoteMultiEmail(d: DemandeMail, villes: Array<{ ville: string; pr
   ].join('')
   return {
     subject: `Ta demande dans ${nv} villes : ${villes.map(v => v.ville).join(', ')}`,
-    html: layout({ preview: n ? `${n} pro${n > 1 ? 's' : ''} l’${n > 1 ? 'ont' : 'a'} déjà reçue` : 'On la transmet dès qu’un pro de ces villes rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: `Ta demande part dans ${nv} villes`, body, footer: FOOTER_HOTE }),
+    html: layout({ preview: n ? `${n} pro${n > 1 ? 's' : ''} l’${n > 1 ? 'ont' : 'a'} déjà reçue` : 'On la transmet dès qu’un pro de ces villes rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: `Ta demande part dans ${nv} villes`, body, footer: FOOTER_HOTE, signature: true }),
   }
 }
 
@@ -317,7 +285,7 @@ export function hoteManuelEmail(d: DemandeMail, pro: ProMail, suiviUrl: string |
     `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid ${LINE};border-bottom:1px solid ${LINE};margin:0 0 22px;">${proLigne(pro, true)}</table>`,
     suiviUrl ? button(suiviUrl, 'Suivre ma demande') : '',
   ].join('')
-  return { subject: premier ? `Ta demande à ${d.ville} : un pro l’a reçue` : `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html: layout({ preview: `${pro.nom} a reçu ta demande`, etiquette: `Ta demande · ${m.etiquette}`, title: premier ? 'Un pro a reçu ta demande' : 'Un pro de plus a reçu ta demande', body, footer: FOOTER_HOTE }) }
+  return { subject: premier ? `Ta demande à ${d.ville} : un pro l’a reçue` : `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html: layout({ preview: `${pro.nom} a reçu ta demande`, etiquette: `Ta demande · ${m.etiquette}`, title: premier ? 'Un pro a reçu ta demande' : 'Un pro de plus a reçu ta demande', body, footer: FOOTER_HOTE, signature: true }) }
 }
 
 /** À Jason : le besoin sans les coordonnées, la suite, le lien vers la fiche du QG */

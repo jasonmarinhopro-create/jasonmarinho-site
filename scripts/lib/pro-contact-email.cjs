@@ -1,6 +1,8 @@
-// E-mails du bouton « Contacter » d'une fiche pro (api/photographer/contact.js, api/cleaner/contact.js).
-// Même gabarit que les e-mails de la demande « Trouver un pro » (jason-app/lib/demandes/emails.ts) :
-// carte blanche, étiquette, titre Georgia, besoin en fiche, un seul bouton. Garder les deux alignés.
+// E-mails envoyés par le site statique : bouton « Contacter » d'une fiche pro,
+// alertes à Jason (inscription d'un pro, demande de retrait d'un signalement).
+// Même gabarit que tous les e-mails de l'app (jason-app/lib/email/template.ts) :
+// carte blanche, étiquette, titre Georgia, filet jaune, un seul bouton, signature
+// de Jason avec sa photo. Garder les deux alignés.
 // Hors du dossier api/ : n'est pas une fonction serverless (12 au plus).
 
 const BG = '#F3F6F4'
@@ -41,6 +43,18 @@ function lireMessage(message) {
   }
   return { rows, texte: lignes.join('\n').trim() }
 }
+
+const PHOTO = 'https://jasonmarinho.com/signature-jason.jpg'
+/** Signature de Jason (même rendu que emailSignature() de l'app) */
+const signature = note => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:26px 0 0;border-top:1px solid ${LINE};"><tr><td style="padding:22px 0 0;">
+<table role="presentation" cellpadding="0" cellspacing="0"><tr>
+<td valign="top" style="padding:0 14px 0 0;"><img src="${PHOTO}" width="52" height="52" alt="Jason Marinho" style="display:block;width:52px;height:52px;border-radius:50%;border:0;"></td>
+<td valign="top" style="font-family:${SANS};">
+<div style="font-family:${SERIF};font-size:19px;font-style:italic;line-height:1.2;color:${GREEN};">Jason</div>
+<div style="margin-top:2px;font-size:12.5px;color:${SOFT};">Fondateur de jasonmarinho.com</div>
+<div style="margin-top:10px;font-size:14px;line-height:1.6;color:#2B3A32;">${note}</div>
+</td></tr></table>
+</td></tr></table>`
 
 function layout({ preview, etiquette, title, body, footer }) {
   return `<!DOCTYPE html>
@@ -162,6 +176,7 @@ function contactEmails(o) {
       fiche(rows),
       texte ? citation(texte) : '',
       small(`Pas de réponse d’ici quelques jours ? ${link(`https://jasonmarinho.com/trouver-un-pro?metier=${o.metier}`, 'Décris ton besoin')} : on le transmet aux pros les plus proches de chez toi.`),
+      signature('Un souci avec un pro, ou pas de nouvelles ? Réponds à cet e-mail, je m’en occupe.'),
     ].join(''),
     footer: `${link('https://jasonmarinho.com', 'jasonmarinho.com')} · Location courte durée<br>Aucune commission : le devis et le paiement se règlent entre toi et le pro.`,
   })
@@ -172,4 +187,25 @@ function contactEmails(o) {
   }
 }
 
-module.exports = { contactEmails, lireMessage, cleanPhone }
+/**
+ * Alerte à Jason envoyée par le site (inscription d'un pro, retrait d'un
+ * signalement) : même gabarit que les alertes de l'app (« Pour toi · … »).
+ * @param {{ etiquette: string, title: string, intro: string, rows: Array<[string, string]>, citation?: string, btn: { href: string, label: string }, note?: string }} o
+ */
+function adminEmail(o) {
+  return layout({
+    preview: o.intro,
+    etiquette: `Pour toi · ${o.etiquette}`,
+    title: o.title,
+    body: [
+      p(esc(o.intro)),
+      fiche(o.rows.filter(r => r[1])),
+      o.citation ? citation(o.citation) : '',
+      button(o.btn.href, o.btn.label),
+      o.note ? '<div style="height:14px;line-height:14px;font-size:0;">&nbsp;</div>' + small(esc(o.note)) : '',
+    ].join(''),
+    footer: `Jason Marinho &middot; Location courte durée<br>${link('https://app.jasonmarinho.com', 'app.jasonmarinho.com')}`,
+  })
+}
+
+module.exports = { contactEmails, lireMessage, cleanPhone, adminEmail }

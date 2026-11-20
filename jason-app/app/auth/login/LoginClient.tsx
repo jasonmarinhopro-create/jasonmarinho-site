@@ -306,10 +306,14 @@ function LoginInner({ google, asParam, googleFail, sansCompte }: { google: boole
       return
     }
     setResendLoading(true)
-    const { error } = await sb().auth.resend({ type: 'signup', email })
+    // Notre e-mail en français (l'ancien auth.resend envoyait le modèle anglais de Supabase)
+    const res = await fetch('/api/resend-confirmation', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify({ email }),
+    }).catch(() => null)
     setResendLoading(false)
-    if (error) {
-      setError("Impossible de renvoyer l'email. Réessaie dans quelques minutes.")
+    if (!res?.ok) {
+      const j = await res?.json().catch(() => null) as { error?: string } | null
+      setError(j?.error ?? "Impossible de renvoyer l'email. Réessaie dans quelques minutes.")
     } else {
       setResendSent(true)
     }

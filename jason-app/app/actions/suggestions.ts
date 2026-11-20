@@ -2,10 +2,10 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
+import { buildEmail, emailCitation, emailInfoBlock, EMAIL_FROM, escHtml } from '@/lib/email/template'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
-const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
 export async function saveSuggestion(
   type: 'formation' | 'partner',
@@ -44,27 +44,24 @@ export async function saveSuggestion(
 
   // Notification email
   const subject = type === 'formation'
-    ? '💡 Nouvelle suggestion de formation'
-    : '🤝 Nouvelle suggestion de partenaire'
+    ? 'Nouvelle suggestion de formation'
+    : 'Nouvelle suggestion de partenaire'
 
   await getResend().emails.send({
-    from: FROM_EMAIL,
+    from: EMAIL_FROM,
     to: NOTIFY_EMAIL,
+    ...(userEmail && userEmail.includes('@') ? { replyTo: userEmail } : {}),
     subject,
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #1a1a2e;">${subject}</h2>
-        <div style="background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 16px 0;">
-          <p style="margin: 0; font-size: 15px; color: #333; line-height: 1.6;">${message.trim()}</p>
-        </div>
-        <p style="color: #666; font-size: 13px;">
-          <strong>De :</strong> ${userName} (${userEmail})
-        </p>
-        <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 12px; margin-top: 24px;">
-          Suggestion reçue via la plateforme jasonmarinho.com
-        </p>
-      </div>
-    `,
+    html: buildEmail({
+      etiquette: 'Pour toi · Idée d’un membre',
+      title: subject,
+      preview: message.trim().slice(0, 120),
+      body: [
+        emailCitation(message.trim()),
+        emailInfoBlock([{ label: 'De', value: escHtml(`${userName} (${userEmail})`) }]),
+      ].join(''),
+      footer: 'Réponds à cet e-mail : ta réponse arrive chez le membre. Pense à le prévenir si l’idée voit le jour.',
+    }),
   }).catch(() => {
     // Ne pas bloquer si l'email échoue
   })

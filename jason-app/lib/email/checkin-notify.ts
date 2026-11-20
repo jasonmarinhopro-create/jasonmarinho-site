@@ -2,13 +2,13 @@
 // Sans ça, l'hôte est aveugle : impossible de savoir si un voyageur a
 // (re)rempli sa fiche, ajouté un accompagnant, ou si rien ne s'est passé.
 
-import { Resend } from 'resend'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySupabase = any
-import { buildEmail, emailInfoBlock, emailP, escHtml } from './template'
+import { buildEmail, emailBtn, emailInfoBlock, emailP, escHtml } from './template'
+import { sendEmail } from './send'
 import { createNotification } from '@/lib/notifications/create'
 
-const FROM = 'Jason Marinho <noreply@jasonmarinho.com>'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
 export async function notifyHostCheckinSubmitted(supabase: AnySupabase, opts: {
   userId: string
@@ -56,14 +56,14 @@ export async function notifyHostCheckinSubmitted(supabase: AnySupabase, opts: {
 
   const intro =
     opts.kind === 'companion'
-      ? `<strong style="color:#e8ede8;">${escHtml(opts.companionName ?? '')}</strong> vient de remplir sa fiche via le lien de groupe de ${escHtml(mainName)}.`
+      ? `<strong>${escHtml(opts.companionName ?? '')}</strong> vient de remplir sa fiche via le lien de groupe de ${escHtml(mainName)}.`
       : opts.kind === 'main-first'
-        ? `<strong style="color:#e8ede8;">${escHtml(mainName)}</strong> vient de compléter son check-in en ligne.`
-        : `<strong style="color:#e8ede8;">${escHtml(mainName)}</strong> vient de modifier son check-in en ligne (fiche déjà complétée auparavant).`
+        ? `<strong>${escHtml(mainName)}</strong> vient de compléter son check-in en ligne.`
+        : `<strong>${escHtml(mainName)}</strong> vient de modifier son check-in en ligne (fiche déjà complétée auparavant).`
 
   const compRows = comps.map((c: { prenom: string; nom: string; id_numero: string | null; date_naissance: string | null; siba_sent_at: string | null }) => {
     const complete = !!(c.id_numero && c.date_naissance)
-    const statut = c.siba_sent_at ? '✓ envoyé à SIBA' : complete ? 'fiche complète' : 'fiche incomplète'
+    const statut = c.siba_sent_at ? 'envoyé à SIBA' : complete ? 'fiche complète' : 'fiche incomplète'
     return { label: `${c.prenom} ${c.nom}`, value: statut }
   })
 
@@ -74,17 +74,15 @@ export async function notifyHostCheckinSubmitted(supabase: AnySupabase, opts: {
       { label: 'Groupe déclaré', value: `${groupSize} voyageur${groupSize > 1 ? 's' : ''}` },
       ...compRows,
     ])}
-    ${emailP(`Retrouve la fiche complète (identité, document, signature) et le suivi des déclarations dans ton espace.`)}
+    ${emailP(`Identité, document et signature sont dans la fiche du voyageur. Les déclarations obligatoires en tiennent compte.`)}
+    ${emailBtn(`${APP_URL}/dashboard/voyageurs/${opts.voyageurId}`, 'Voir la fiche voyageur')}
   `
 
-  try {
-    await new Resend(process.env.RESEND_API_KEY).emails.send({
-      from: FROM,
-      to: profile.email,
-      subject,
-      html: buildEmail({ title: subject, preview: intro.replace(/<[^>]+>/g, ''), body }),
-    })
-  } catch (e) {
-    console.error('[checkin-notify] send failed', e)
-  }
+  const r = await sendEmail({
+    to: profile.email,
+    subject,
+    html: buildEmail({ etiquette: 'Check-in en ligne', title: escHtml(subject), preview: intro.replace(/<[^>]+>/g, ''), body }),
+    replyTo: null,
+  })
+  if (!r.ok) console.error('[checkin-notify] send failed', r.error)
 }

@@ -1,7 +1,8 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { buildEmail, emailBtn, emailP, emailNote } from '@/lib/email/template'
+import { EMAIL_FROM, htmlToText } from '@/lib/email/template'
+import { resetPasswordEmail } from '@/lib/email/auth-emails'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
@@ -58,20 +59,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
+    const mail = resetPasswordEmail(data.properties.action_link)
     const { error: resendError } = await getResend().emails.send({
-      from: 'Jason Marinho <noreply@jasonmarinho.com>',
+      from: EMAIL_FROM,
       to: normalized,
-      subject: 'Réinitialise ton mot de passe',
-      html: buildEmail({
-        title: 'Réinitialise ton mot de passe',
-        preview: 'Un lien pour choisir un nouveau mot de passe, valable 1 heure.',
-        body: `
-          ${emailP('Nous avons reçu une demande de réinitialisation du mot de passe associé à ce compte.')}
-          ${emailP('Clique sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien est valable <strong style="color:#FFD56B;">1&nbsp;heure</strong>.')}
-          ${emailBtn(data.properties.action_link, 'Choisir un nouveau mot de passe', 'primary')}
-          ${emailNote('Si tu n\'as pas demandé cette réinitialisation, ignore cet email. Ton mot de passe restera inchangé.')}
-        `,
-      }),
+      subject: mail.subject,
+      html: mail.html,
+      text: htmlToText(mail.html),
     })
 
     if (resendError) {

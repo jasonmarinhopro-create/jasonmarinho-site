@@ -121,3 +121,10 @@ Jason : le site est un projet d'appoint au service de Driing, « on peut pousser
 - Retirés : bloc « Erreurs de l'app » (Jason : inutile), « Trafic du site en direct », ancienne carte Provenance, inscriptions sur 12 mois, « Comptes par formule », « Gérer le contenu », « Derniers inscrits » (repris dans Membres).
 - Base injoignable : la Vue d'ensemble n'enregistre plus de zéros (le 16/11 elle affichait « 0 compte » pendant un ralenti) : dernière lecture réussie avec un bandeau, ou message clair.
 - **/chiffres, bloc « La ville sur Google » revu (17/11/2026, Jason : « pas clair »)** : bouton Copier dans la barre de recherche Google (`data-ap-cp`, même gestion `[data-copy]`) ; lignes grises plus basses (le bloc tient sur l'écran) ; « Détail » ouvre le détail dans le bloc, juste sous la carte, à la place des lignes grises (`.serp-res.det`, la boîte `[data-ap-det]` est déplacée dans `[data-ap-res]`) ; « Voir » descend jusqu'aux chiffres de la ville (`searchCity(q, false, true)`, `scroll-margin-top` de `.vr`). Page écrite à la main (`chiffres/index.html`, pas de générateur).
+
+
+## Bilan mensuel des pros : fiabilité et récap (20/11/2026)
+
+- Constat : le 01/11/2026, **aucun** bilan d'octobre n'est parti (4 fiches payées concernées, aucun drapeau `mail:bilan-2026-10`, rien dans Resend ni `app_errors`). Cause exacte introuvable (journaux Vercel trop courts) ; le point faible : un seul jour d'envoi, sans rattrapage ni alerte.
+- Maintenant (`lib/email/pro-monthly.ts`, `lib/visibility/pro-monthly.ts`) : envoi du 1er au 7 du mois (`isMonthlySendDay`), chaque fiche une seule fois (drapeau). Après chaque passage qui envoie, récap à Jason (`buildMonthlyRecapEmail` : bilans envoyés / à envoyer, visiteurs, demandes, meilleures fiches, fiches sans visite, échecs) ; le 7, alerte s'il reste des fiches sans bilan.
+- Contenu du bilan : tuiles avec évolution par rapport au mois d'avant (`metrics.*.pct`, null quand la comparaison n'est pas juste), clics vers les liens, page de la ville (visiteurs, passages vers la fiche), petit mot signé de Jason selon le mois (`monthlyNote`).

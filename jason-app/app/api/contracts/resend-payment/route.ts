@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { logger } from '@/lib/logger'
-import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
-import { lightify } from '@/lib/email/template'
+import { toEmailLang } from '@/lib/email/contract-i18n'
+import { htmlToText } from '@/lib/email/template'
+import { contractFrom, paymentReminderEmail, virementReference } from '@/lib/email/contract-emails'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 const log = logger('api/contracts/resend-payment')
 
@@ -12,7 +13,6 @@ export const dynamic = 'force-dynamic'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-const FROM_EMAIL = 'contrats@jasonmarinho.com'
 
 // POST /api/contracts/resend-payment
 // Body: { contract_id }
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Récupérer le contrat (vérification ownership)
     const { data: contract, error: fetchErr } = await db
       .from('contracts')
-      .select('id, token, user_id, statut, langue, bailleur_prenom, bailleur_nom, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status')
+      .select('id, token, user_id, statut, langue, bailleur_prenom, bailleur_nom, bailleur_email, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status')
       .eq('id', contract_id)
       .eq('user_id', user.id)
       .single()
@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
     }
 
     const emailLang = toEmailLang(contract.langue)
-    const et = CONTRACT_EMAIL_I18N[emailLang]
 
     const guestName = `${contract.locataire_prenom} ${contract.locataire_nom}`
     const propertyLabel = (contract.logement_nom as string | null) ?? contract.logement_adresse
@@ -72,7 +71,7 @@ export async function POST(request: NextRequest) {
     const hasCaution = cautionDue && depositState === 'open'
     const cautionLater = cautionDue && depositState === 'not_yet'
     const depositOpensLabel = new Date(`${depositOpensOn(contract.date_arrivee)}T12:00:00Z`)
-      .toLocaleDateString(emailLang === 'pt' ? 'pt-PT' : 'fr-FR', { day: 'numeric', month: 'long' })
+      .toLocaleDateString(emailLang === 'pt' ? 'pt-PT' : 'fr-FR', { day: 'numeric', month: 'long', timeZone: 'Europe/Paris' })
 
     const isVirement = typeof contract.modalites_paiement === 'string' &&
       contract.modalites_paiement.toLowerCase().includes('virement')
@@ -100,83 +99,31 @@ export async function POST(request: NextRequest) {
 
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
     const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
+    const hostName = `${contract.bailleur_prenom} ${contract.bailleur_nom}`
 
-    // Génère une ligne de coordonnées bancaires "tap-to-select" pour l'email
-    function ibanRow(label: string, value: string, mono = false, highlight = false) {
-      return `
-        <div style="margin-bottom:6px;">
-          <p style="margin:0 0 2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8b84e8;">${label}</p>
-          <div style="background:${highlight ? 'rgba(255,213,107,0.12)' : 'rgba(255,255,255,0.06)'};border:1px solid ${highlight ? 'rgba(255,213,107,0.3)' : 'rgba(255,255,255,0.1)'};border-radius:8px;padding:10px 14px;cursor:text;">
-            <p style="margin:0;font-size:${highlight ? '18px' : '14px'};font-weight:${highlight ? '700' : '400'};color:${highlight ? '#FFD56B' : '#f0ebe1'};font-family:${mono ? 'Courier New,Courier,monospace' : 'inherit'};letter-spacing:${mono ? '0.5px' : 'normal'};word-break:break-all;user-select:all;-webkit-user-select:all;">${value}</p>
-          </div>
-        </div>`
-    }
-    const ibanRef = contract.logement_adresse.slice(0, 30).replace(/[^a-zA-Z0-9 ]/g, '').trim()
-
-    // Bloc virement bancaire
-    const ibanBlock = (isVirement && hostIban) ? `
-        <div style="background:rgba(99,91,255,0.06);border:1px solid rgba(99,91,255,0.3);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
-          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;">${et.bankTransferTitle}</p>
-          <p style="margin:0 0 16px;font-size:13px;color:#a5c4b0;line-height:1.6;">${et.reminderSelectToCopy}</p>
-          ${ibanRow(et.bankTransferLabelIban, hostIban, true)}
-          ${hostBic ? ibanRow(`${et.bankTransferLabelBic} / SWIFT`, hostBic, true) : ''}
-          ${ibanRow(et.bankTransferLabelBeneficiaire, `${contract.bailleur_prenom} ${contract.bailleur_nom}`)}
-          ${Number(contract.montant_loyer) > 0 ? ibanRow(et.bankTransferLabelMontant, `${loyerFormatted} €`, false, true) : ''}
-          ${ibanRow(et.bankTransferLabelReference, ibanRef, true)}
-          <p style="margin:14px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">${et.bankTransferNote}</p>
-        </div>` : ''
-
-    const emailHtml = `
-<!DOCTYPE html>
-<html lang="${emailLang}">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#0d1f1a;font-family:'Helvetica Neue',Arial,sans-serif;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
-    <div style="background:#132b22;border:1px solid #1e3d2f;border-radius:20px;overflow:hidden;">
-      <div style="padding:32px 32px 24px;border-bottom:1px solid #1e3d2f;">
-        <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#FFD56B;font-weight:600;">${et.reminderPreheader}</p>
-        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">${et.reminderTitle}</h1>
-      </div>
-      <div style="padding:28px 32px;">
-        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          ${et.reminderGreeting(guestName)}
-        </p>
-        <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          ${et.reminderBody(propertyLabel)}
-          ${(hasPayment || hasCaution) ? ` ${et.reminderPaymentsIntro(hasPayment && hasCaution)}` : isVirement ? ` ${et.reminderVirementIntro}` : ''}
-        </p>
-        ${(hasPayment || hasCaution) ? `
-        <div style="background:#0a2018;border:1px solid rgba(255,213,107,0.25);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
-          <p style="margin:0 0 18px;font-size:14px;color:#a5c4b0;line-height:1.6;">${et.reminderClickToPay}</p>
-          ${hasPayment ? `
-          <a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:rgba(255,213,107,0.18);border:1px solid rgba(255,213,107,0.4);color:#FFD56B;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
-            ${et.payBookingBtn(loyerFormatted)} →
-          </a>` : ''}
-          ${hasCaution ? `
-          <a href="${depositRedirectUrl}" style="display:block;text-align:center;background:rgba(99,91,255,0.2);border:1px solid rgba(99,91,255,0.4);color:#a29bfe;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
-            ${et.payDepositBtn(cautionFormatted)} →
-          </a>` : ''}
-          ${hasCaution ? `<p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">${et.depositNote}</p>` : ''}
-        </div>` : ''}
-        ${cautionLater ? `<p style="color:#a5c4b0;font-size:13px;line-height:1.6;margin:0 0 20px;">${et.depositLater(depositOpensLabel)}</p>` : ''}
-        ${ibanBlock}
-        <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
-          ${et.viewContractBtn}
-        </a>
-        <p style="color:#6b9a7e;font-size:12px;line-height:1.6;margin:0;">
-          ${et.reminderTroubleNote}
-        </p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>`
+    const mail = paymentReminderEmail({
+      lang: emailLang, hostName, guestName, property: propertyLabel, contractUrl,
+      payments: {
+        payUrl: hasPayment ? paymentRedirectUrl : null,
+        loyer: loyerFormatted,
+        depositUrl: hasCaution ? depositRedirectUrl : null,
+        caution: hasCaution || cautionLater ? cautionFormatted : null,
+        depositLater: cautionLater ? depositOpensLabel : null,
+      },
+      virement: isVirement && hostIban ? {
+        iban: hostIban, bic: hostBic, beneficiaire: hostName,
+        montant: Number(contract.montant_loyer) > 0 ? loyerFormatted : null,
+        reference: virementReference(contract.logement_adresse),
+      } : null,
+    })
 
     const { error: emailErr } = await getResend().emails.send({
-      from: FROM_EMAIL,
+      from: contractFrom(hostName),
+      replyTo: contract.bailleur_email || undefined,
       to: contract.locataire_email,
-      subject: et.reminderSubject(propertyLabel),
-      html: lightify(emailHtml),
+      subject: mail.subject,
+      html: mail.html,
+      text: htmlToText(mail.html),
     })
 
     if (emailErr) {

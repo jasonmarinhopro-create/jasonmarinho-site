@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
-import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
-import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
+import { EMAIL_FROM, EMAIL_REPLY_TO, htmlToText } from '@/lib/email/template'
+import { contractFrom, contractSignedGuestEmail, contractSignedHostEmail, signDateLabel, virementReference } from '@/lib/email/contract-emails'
+import { toEmailLang } from '@/lib/email/contract-i18n'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { logger } from '@/lib/logger'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
@@ -57,7 +58,6 @@ function createServiceClient() {
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-const FROM_EMAIL = 'contrats@jasonmarinho.com'
 
 // POST /api/contracts/sign
 // Body: { token, signature_image }
@@ -287,135 +287,75 @@ export async function POST(request: NextRequest) {
     // Email locataire dans la langue du contrat (contracts.langue) — l'email
     // hôte (Jason / l'hôte) reste toujours en français, cf. hostEmailHtml.
     const emailLang = toEmailLang(contract.langue)
-    const et = CONTRACT_EMAIL_I18N[emailLang]
     const guestLocale = emailLang === 'pt' ? 'pt-PT' : 'fr-FR'
 
     const guestName = `${contract.locataire_prenom} ${contract.locataire_nom}`
     const hostName = `${contract.bailleur_prenom} ${contract.bailleur_nom}`
-    const signDate = new Date().toLocaleDateString('fr-FR', {
-      day: 'numeric', month: 'long', year: 'numeric',
-      hour: '2-digit', minute: '2-digit',
-    })
-    const signDateGuest = new Date().toLocaleDateString(guestLocale, {
-      day: 'numeric', month: 'long', year: 'numeric',
-      hour: '2-digit', minute: '2-digit',
-    })
     const contractUrl = `${APP_URL}/sign/${token}`
-    const paymentRedirectUrl = `${APP_URL}/api/stripe/payment/redirect?token=${token}`
-    const depositRedirectUrl = `${APP_URL}/api/stripe/deposit/redirect?token=${token}`
-    const dashboardUrl = `${APP_URL}/dashboard/voyageurs`
-
     const hasPayment = !!(contract.stripe_payment_enabled)
     const hasCaution = Number(contract.montant_caution) > 0
     // Caution : lien actif seulement de J-2 au départ, sinon il est envoyé
     // automatiquement à J-2 par le cron (lib/stripe/deposit-window.ts)
     const depositOpenNow = depositWindow(contract.date_arrivee, contract.date_depart) === 'open'
     const depositOpensLabel = new Date(`${depositOpensOn(contract.date_arrivee)}T12:00:00Z`)
-      .toLocaleDateString(guestLocale, { day: 'numeric', month: 'long' })
+      .toLocaleDateString(guestLocale, { day: 'numeric', month: 'long', timeZone: 'Europe/Paris' })
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
+    const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
     // Nom du logement : utilise le nom personnalisé si disponible, sinon l'adresse
     const propertyLabel = (contract.logement_nom as string | null) ?? contract.logement_adresse
-    const cautionFormatted = Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
 
-    const ibanRef = contract.logement_adresse.slice(0, 30).replace(/[^a-zA-Z0-9 ]/g, '').trim()
-
-    const ibanEmailBlock = (isVirement && hostIban) ? `
-      <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #a29bfe;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
-        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.bankTransferTitle}</p>
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelIban}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;word-break:break-all;">${escHtml(hostIban)}</td></tr>
-          ${hostBic ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelBic}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(hostBic)}</td></tr>` : ''}
-          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelBeneficiaire}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(`${contract.bailleur_prenom} ${contract.bailleur_nom}`)}</td></tr>
-          ${Number(contract.montant_loyer) > 0 ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelMontant}</td><td style="padding:4px 0;font-size:14px;color:#FFD56B;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${loyerFormatted} €</td></tr>` : ''}
-          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelReference}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(ibanRef)}</td></tr>
-        </table>
-        <p style="margin:12px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.bankTransferNote}</p>
-      </div>` : ''
-
-    const stripeBlock = (hasPayment || hasCaution) ? `
-      <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #FFD56B;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
-        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.finalizeTitle}</p>
-        ${hasPayment ? `<a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0a0f0d;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.payBookingBtn(loyerFormatted)}</a>` : ''}
-        ${hasCaution && depositOpenNow ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.payDepositBtn(cautionFormatted)}</a>` : ''}
-        ${hasCaution ? `<p style="margin:10px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${depositOpenNow ? et.depositNote : et.depositLater(depositOpensLabel)}</p>` : ''}
-      </div>` : ''
-
-    const eidas = 'Ce contrat constitue une signature électronique simple au sens du règlement eIDAS (UE) 910/2014 et de l\'article 1366 du Code civil français.'
-
-    // Email voyageur, dans la langue du contrat
-    const guestEmailHtml = buildEmail({
-      title: et.signedTitle,
-      preview: et.signedPreview(propertyLabel),
-      body: `
-        ${emailP(et.signedGreeting(escHtml(guestName)))}
-        ${emailP(et.signedBody(escHtml(propertyLabel), escHtml(signDateGuest)))}
-        ${emailInfoBlock([
-          { label: et.labelLogement, value: escHtml(propertyLabel) },
-          { label: et.labelSigned, value: escHtml(signDateGuest) },
-          { label: et.labelIp, value: escHtml(ip) },
-        ], 'var(--success-1)')}
-        ${stripeBlock}
-        ${ibanEmailBlock}
-        ${emailBtn(contractUrl, et.viewContractBtn, 'green')}
-        ${emailNote(et.eidasNote)}
-      `,
+    const guestMail = contractSignedGuestEmail({
+      lang: emailLang, hostName, guestName, property: propertyLabel, signedAt: signDateLabel(new Date(now), emailLang), ip, contractUrl,
+      payments: {
+        payUrl: hasPayment ? `${APP_URL}/api/stripe/payment/redirect?token=${token}` : null,
+        loyer: loyerFormatted,
+        depositUrl: hasCaution && depositOpenNow ? `${APP_URL}/api/stripe/deposit/redirect?token=${token}` : null,
+        caution: hasCaution ? cautionFormatted : null,
+        depositLater: hasCaution && !depositOpenNow ? depositOpensLabel : null,
+      },
+      virement: isVirement && hostIban ? {
+        iban: hostIban, bic: hostBic, beneficiaire: hostName,
+        montant: Number(contract.montant_loyer) > 0 ? loyerFormatted : null,
+        reference: virementReference(contract.logement_adresse),
+      } : null,
     })
-
-    // Email hôte
-    const hostPaymentsBlock = (hasPayment || hasCaution) ? emailInfoBlock([
-      ...(hasPayment ? [{ label: 'Réservation', value: `${loyerFormatted} €` }] : []),
-      ...(hasCaution ? [{ label: 'Caution', value: `${cautionFormatted} €` }] : []),
-      { label: 'Locataire', value: escHtml(contract.locataire_prenom) },
-    ]) : ''
 
     // Bloc « déclaration voyageur obligatoire » (SIBA PT, fiche police FR…)
     // affiché à l'hôte uniquement quand une déclaration vient d'être créée.
     const req = declaration.requirement
-    const declarationBlock = (declaration.created && req) ? `
-      <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #f59e0b;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
-        <p style="margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#f59e0b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${req.flag} DÉCLARATION OBLIGATOIRE : ${escHtml(req.label.toUpperCase())}</p>
-        <p style="margin:0 0 10px;font-size:13px;color:#e8ede8;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
-          <strong>${escHtml(guestName)}</strong> doit être déclaré avant le
-          <strong style="color:#FFD56B;">${escHtml(req.deadlineAt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }))}</strong>.
-        </p>
-        <p style="margin:0 0 12px;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(req.note)}</p>
-        ${req.portalUrl ? `<a href="${req.portalUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #f59e0b;color:#f59e0b;padding:11px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Faire la déclaration sur le portail officiel</a>` : ''}
-        <p style="margin:10px 0 0;font-size:11.5px;color:#7a9e8a;line-height:1.5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Retrouve cette déclaration (et le rappel de deadline) sur ton tableau de bord : marque-la « faite » une fois envoyée.</p>
-      </div>` : ''
-
-    const hostEmailHtml = buildEmail({
-      title: 'Contrat signé par le locataire',
-      preview: `${guestName} a signé le contrat pour ${propertyLabel}.`,
-      body: `
-        ${emailP(`Bonjour <strong style="color:#e8ede8;">${escHtml(hostName)}</strong>,`)}
-        ${emailP(`<strong style="color:#e8ede8;">${escHtml(guestName)}</strong> a signé électroniquement le contrat pour <strong style="color:#e8ede8;">${escHtml(propertyLabel)}</strong> le <strong style="color:#e8ede8;">${escHtml(signDate)}</strong>.`)}
-        ${emailInfoBlock([
-          { label: 'Logement', value: escHtml(propertyLabel) },
-          { label: 'Signé le', value: escHtml(signDate) },
-          { label: 'Adresse IP', value: escHtml(ip) },
-        ], 'var(--success-1)')}
-        ${declarationBlock}
-        ${hostPaymentsBlock}
-        ${emailBtn(contractUrl, 'Voir le contrat signé', 'green')}
-        ${emailBtn(dashboardUrl, 'Tableau de bord', 'secondary')}
-        ${emailNote(eidas)}
-      `,
+    const hostMail = contractSignedHostEmail({
+      hostFirstName: contract.bailleur_prenom ?? '', guestName, property: propertyLabel, signedAt: signDateLabel(new Date(now), 'fr'), ip,
+      loyer: Number(contract.montant_loyer) > 0 ? loyerFormatted : null,
+      caution: hasCaution ? cautionFormatted : null,
+      paiementEnLigne: hasPayment,
+      declaration: declaration.created && req ? {
+        label: req.label,
+        deadline: req.deadlineAt.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Paris' }),
+        note: req.note,
+        portalUrl: req.portalUrl ?? null,
+      } : null,
+      contractUrl,
+      dashboardUrl: `${APP_URL}${await sejourHref(db, contract.sejour_id)}`,
     })
 
     if (contract.locataire_email) {
       await getResend().emails.send({
-        from: FROM_EMAIL,
+        from: contractFrom(hostName),
+        replyTo: contract.bailleur_email || undefined,
         to: contract.locataire_email,
-        subject: `Contrat signé, finalisez votre dossier pour ${propertyLabel}`,
-        html: guestEmailHtml,
+        subject: guestMail.subject,
+        html: guestMail.html,
+        text: htmlToText(guestMail.html),
       }).catch(e => log.warn('guestEmail', { err: String(e) }))
     }
 
     await getResend().emails.send({
-      from: FROM_EMAIL,
+      from: EMAIL_FROM,
+      replyTo: EMAIL_REPLY_TO,
       to: contract.bailleur_email,
-      subject: `${guestName} a signé le contrat, ${propertyLabel}`,
-      html: hostEmailHtml,
+      subject: hostMail.subject,
+      html: hostMail.html,
+      text: htmlToText(hostMail.html),
     }).catch(e => log.warn('hostEmail', { err: String(e) }))
 
     return NextResponse.json({ success: true })

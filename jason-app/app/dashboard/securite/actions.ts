@@ -4,14 +4,14 @@ import { revalidatePath } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
-import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
+import { buildEmail, emailCitation, emailInfoBlock, emailBtn, emailNote, emailP, escHtml, EMAIL_FROM } from '@/lib/email/template'
 import { rateLimit } from '@/lib/security/rate-limit'
 import { parseQuery, reportIdentifiers, type QueryKind } from '@/lib/securite/identifiers'
 import { findReports } from '@/lib/securite/lookup'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
-const FROM_EMAIL = 'notifications@jasonmarinho.com'
+const FROM_EMAIL = EMAIL_FROM
 
 export interface SearchHit {
   id: string
@@ -118,6 +118,7 @@ export async function reportGuest(formData: {
     to: NOTIFY_EMAIL,
     subject: `Nouveau signalement, ${incident_type}`,
     html: buildEmail({
+      etiquette: 'Pour toi · Sécurité voyageur',
       title: 'Signalement voyageur à relire',
       body: `
         ${emailInfoBlock([
@@ -127,11 +128,8 @@ export async function reportGuest(formData: {
           ...(phone ? [{ label: 'Téléphone signalé', value: escHtml(phone) }] : []),
           ...(ids.name ? [{ label: 'Nom signalé', value: escHtml(ids.name) }] : []),
           { label: 'Publication anonymisée', value: make_public ? 'Demandée' : 'Non' },
-        ], '#F97583')}
-        <div style="background:#0a1a13;border:1px solid #1a3328;border-radius:10px;padding:16px 18px;margin:0 0 20px;">
-          <p style="margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">DESCRIPTION</p>
-          <p style="margin:0;font-size:14px;line-height:1.7;color:#e8ede8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(description.trim())}</p>
-        </div>
+        ], '#C2344A')}
+        ${emailCitation(description.trim())}
         ${emailBtn('https://app.jasonmarinho.com/dashboard/admin/signalements', 'Relire le signalement', 'primary')}
         ${emailNote('En attente de validation. Une fois validé, il apparaîtra dans les recherches des hôtes.')}
       `,
@@ -203,6 +201,7 @@ async function notifyJason(userId: string, fallbackEmail: string, p: { title: st
     to: NOTIFY_EMAIL,
     subject: p.title,
     html: buildEmail({
+      etiquette: 'Pour toi · Sécurité voyageur',
       title: p.title,
       body: `
         ${emailP(p.intro)}
@@ -210,7 +209,7 @@ async function notifyJason(userId: string, fallbackEmail: string, p: { title: st
           { label: 'Hôte', value: escHtml(`${name} (${email})`) },
           { label: 'ID du signalement', value: escHtml(p.entryId) },
           ...(p.detail ? [{ label: 'Détail', value: escHtml(p.detail) }] : []),
-        ], '#63D683')}
+        ])}
         ${emailBtn('https://app.jasonmarinho.com/dashboard/admin/signalements', 'Ouvrir la modération', 'primary')}
         ${emailNote('Droit à l\'effacement (RGPD, art. 17) : répondre dans un délai raisonnable.')}
       `,

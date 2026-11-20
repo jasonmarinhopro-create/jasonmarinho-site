@@ -3,6 +3,8 @@
 // + notification Jason via Resend. Le retrait effectif est manuel
 // (décision admin) : cet endpoint enregistre seulement la demande.
 
+const { adminEmail } = require('../scripts/lib/pro-contact-email.cjs')
+
 const rateLimitMap = new Map()
 
 function isRateLimited(key, max, windowMs) {
@@ -119,33 +121,28 @@ module.exports = async function handler(req, res) {
   // Notification Jason via Resend (best-effort)
   const RESEND_KEY = process.env.RESEND_API_KEY
   if (RESEND_KEY) {
-    const html = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
-<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 12px">Demande de retrait d'un signalement public</h2>
-<p style="color:#3D5038;margin:0 0 14px;font-size:14px">Une personne demande le retrait d'un signalement publié sur jasonmarinho.com. Délai légal de réponse : 48h.</p>
-<div style="background:#fff;border-left:3px solid #F97583;padding:12px 14px;margin:14px 0;border-radius:6px;font-size:13px;line-height:1.7">
-<div><strong>Slug public :</strong> ${escHtml(slug)}</div>
-<div><strong>Nom déclaré :</strong> ${escHtml(fullName)}</div>
-<div><strong>Email de contact :</strong> ${escHtml(email)}</div>
-<div style="margin-top:8px"><strong>Motif :</strong><br>${escHtml(reason) || '<em>(non renseigné)</em>'}</div>
-</div>
-<div style="background:#fff;padding:12px;border-radius:6px;margin:14px 0;font-size:12.5px;color:#3D5038">
-<strong>Résumé public concerné :</strong><br>${escHtml(report.public_summary || '')}<br>
-<em>Ville :</em> ${escHtml(report.public_city || '—')}
-</div>
-<a href="https://app.jasonmarinho.com/dashboard/admin/qg" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Examiner et décider</a>
-<p style="font-size:12px;color:#5A6B57;margin:18px 0 0">Vérifie l'identité du demandeur (preuve ID si nécessaire) avant retrait. En cas de doute juridique, retire par défaut.</p>
-</div>`
+    const html = adminEmail({
+      etiquette: 'Urgent, 48 h',
+      title: 'Demande de retrait d’un signalement public',
+      intro: 'Une personne demande le retrait d’un signalement publié sur jasonmarinho.com. Délai légal de réponse : 48 h.',
+      rows: [['Page publique', String(slug)], ['Nom déclaré', String(fullName)], ['E-mail de contact', String(email)], ['Ville', String(report.public_city || '')]],
+      citation: [reason ? `Motif : ${reason}` : 'Motif non renseigné', report.public_summary ? `Résumé publié : ${report.public_summary}` : ''].filter(Boolean).join('\n\n'),
+      btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/qg', label: 'Examiner et décider' },
+      note: 'Vérifie l’identité du demandeur (preuve d’identité si nécessaire) avant retrait. En cas de doute juridique, retire par défaut.',
+    })
 
-    fetch('https://api.resend.com/emails', {
+    // Attendu : la fonction Vercel gèle après la réponse, un envoi non attendu peut ne jamais partir
+    await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${RESEND_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'notifications@jasonmarinho.com',
+        from: 'Jason Marinho <notifications@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
-        subject: `⚠️ Demande de retrait signalement public · ${slug}`,
+        reply_to: email,
+        subject: `Demande de retrait d’un signalement public : ${slug}`,
         html,
       }),
     }).catch(() => {})

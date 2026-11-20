@@ -5,12 +5,12 @@ import { revalidatePath } from 'next/cache'
 import { buildEtatDescriptif, cleanCgv, soldeDelai, type ContractDetails, type LogementForContract } from '@/lib/contracts/details'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
-import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
-import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
+import { htmlToText } from '@/lib/email/template'
+import { contractFrom, contractInviteEmail } from '@/lib/email/contract-emails'
+import { toEmailLang } from '@/lib/email/contract-i18n'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-const FROM_EMAIL = 'contrats@jasonmarinho.com'
 
 export type ContractData = {
   sejour_id: string
@@ -152,36 +152,26 @@ export async function createContract(data: ContractData): Promise<{
   // langue du contrat (contracts.langue) — pas systématiquement en français.
   if (data.locataire_email) {
     const emailLang = toEmailLang(data.langue)
-    const et = CONTRACT_EMAIL_I18N[emailLang]
     const locale = emailLang === 'pt' ? 'pt-PT' : 'fr-FR'
     const signUrl = `${APP_URL}/sign/${row.token}`
     const hostName = `${data.bailleur_prenom} ${data.bailleur_nom}`
     const guestName = `${data.locataire_prenom} ${data.locataire_nom}`
-    const dateArr = new Date(data.date_arrivee).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
-    const dateDep = new Date(data.date_depart).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
+    const dateArr = new Date(data.date_arrivee).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+    const dateDep = new Date(data.date_depart).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
 
     const propertyLabel = data.logement_nom ?? data.logement_adresse
+    const mail = contractInviteEmail({
+      lang: emailLang, hostName, guestName, property: propertyLabel,
+      adresse: data.logement_nom ? data.logement_adresse : null,
+      arrivee: dateArr, depart: dateDep, signUrl, cgv: !!details?.cgv,
+    })
     await getResend().emails.send({
-      from: FROM_EMAIL,
+      from: contractFrom(hostName),
+      replyTo: data.bailleur_email || undefined,
       to: data.locataire_email,
-      subject: et.inviteSubject(propertyLabel),
-      html: buildEmail({
-        title: et.inviteTitle,
-        preview: et.invitePreview(hostName, propertyLabel),
-        body: `
-          ${emailP(et.inviteGreeting(escHtml(guestName)))}
-          ${emailP(et.inviteBody(escHtml(hostName)))}
-          ${details?.cgv ? emailP(et.inviteCgv) : ''}
-          ${emailInfoBlock([
-            { label: et.labelLogement, value: escHtml(propertyLabel) },
-            ...(data.logement_nom ? [{ label: et.labelAdresse, value: escHtml(data.logement_adresse) }] : []),
-            { label: et.labelArrivee, value: escHtml(dateArr) },
-            { label: et.labelDepart, value: escHtml(dateDep) },
-          ])}
-          ${emailBtn(signUrl, et.inviteBtn, 'primary')}
-          ${emailNote(et.inviteNote)}
-        `,
-      }),
+      subject: mail.subject,
+      html: mail.html,
+      text: htmlToText(mail.html),
     }).catch(() => null) // Ne pas faire échouer la création si l'email échoue
   }
 
