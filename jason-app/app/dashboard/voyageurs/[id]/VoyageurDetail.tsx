@@ -1528,7 +1528,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddTag(tagInput) } }}
             placeholder="Famille, Business, VIP, À fidéliser…"
             style={{
-              flex: 1, padding: '7px 10px', fontSize: '12px',
+              // minWidth 0 : sans lui le champ gardait sa largeur par défaut et
+              // poussait « + Ajouter » hors de l'écran à 320 px (20/11/2026)
+              flex: 1, minWidth: 0, padding: '7px 10px', fontSize: '12px',
               fontFamily: 'inherit', color: 'var(--text)',
               background: 'var(--surface)',
               border: '1px solid var(--border)', borderRadius: '8px', outline: 'none',
@@ -1538,7 +1540,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             onClick={() => handleAddTag(tagInput)}
             disabled={!tagInput.trim()}
             style={{
-              padding: '7px 12px', fontSize: '12px', fontWeight: 600,
+              padding: '7px 12px', fontSize: '12px', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap',
               background: 'var(--accent-bg)', color: 'var(--accent-text)',
               border: '1px solid var(--accent-border)', borderRadius: '8px',
               cursor: tagInput.trim() ? 'pointer' : 'not-allowed',

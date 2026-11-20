@@ -306,8 +306,9 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
                         : <WhatsappLogo size={18} color="#25D366" />}
                     </div>
 
-                    {/* Info */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    {/* Info : base de 200 px, passe à la ligne sur téléphone au lieu de
+                        se réduire à rien sous les boutons (chevauchement à 320 px, 20/11/2026) */}
+                    <div style={{ flex: '1 1 200px', minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>{g.name}</span>
                         {g.tag && (
@@ -324,11 +325,11 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
                         )}
                       </div>
                       {g.description && (
-                        <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '400px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 'min(400px, 100%)' }}>
                           {g.description}
                         </div>
                       )}
-                      <a href={g.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '11px', color: 'rgba(255,213,107,0.5)', textDecoration: 'none' }}>
+                      <a href={g.url} target="_blank" rel="noopener noreferrer" style={{ display: 'block', fontSize: '11px', color: 'rgba(255,213,107,0.5)', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {g.url.length > 55 ? g.url.slice(0, 55) + '…' : g.url}
                       </a>
                     </div>

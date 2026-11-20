@@ -167,18 +167,24 @@ async function main() {
           if (!/interrupted by another navigation/.test(String(e))) throw e
           await page.waitForLoadState('load', { timeout: 60_000 }); return null
         })
-        // Redirection côté navigateur juste après le chargement : attendre qu'elle se termine
-        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {})
-        const ttfb = await page.evaluate(() => Math.round(performance.getEntriesByType('navigation')[0]?.responseStart ?? 0))
+        const ttfb = await page.evaluate(() => Math.round(performance.getEntriesByType('navigation')[0]?.responseStart ?? 0)).catch(() => 0)
+        let readyMs = 0
         if (MODE === 'app') {
-          // Attendre la fin des squelettes (pages lentes quand la base l'est)
+          // Temps d'affichage réel : jusqu'à la fin des squelettes (pages lentes quand la base l'est)
           const ready = await page.waitForFunction(() => document.body && !document.querySelector('[data-page-skel]') && !document.querySelector('.jm-splash:not(.jm-splash--out)'), null, { timeout: 45_000 }).then(() => true).catch(() => false)
+          readyMs = Date.now() - t0
           if (!ready) stuck.add(pattern(u))
+        }
+        // Redirection côté navigateur juste après le chargement : attendre qu'elle se termine
+        // (non compté dans le temps d'affichage : certaines pages interrogent le serveur en continu)
+        await page.waitForLoadState('networkidle', { timeout: 8_000 }).catch(() => {})
+        if (MODE === 'app') {
+          await page.waitForFunction(() => document.body && !document.querySelector('[data-page-skel]'), null, { timeout: 20_000 }).catch(() => {})
           if (new URL(page.url()).pathname.startsWith('/auth')) throw new Error('session refusée par le dashboard')
         }
         await page.evaluate(() => document.fonts.ready)
         await page.waitForTimeout(500)
-        const loadMs = Date.now() - t0
+        const loadMs = readyMs || (Date.now() - t0)
         // Pages de détail : une seule par modèle d'adresse, prise dans la liste
         if (MODE === 'app' && !dynamicFrom.has(u)) {
           dynamicFrom.add(u)

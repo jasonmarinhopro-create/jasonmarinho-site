@@ -160,7 +160,9 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
-  stepBody: { flex: 1, paddingTop: '4px' },
+  // minWidth 0 + adresse qui peut se couper : l'URL d'exemple, d'un seul
+  // tenant, faisait sortir le texte de l'écran à 320 px (20/11/2026)
+  stepBody: { flex: 1, minWidth: 0, paddingTop: '4px' },
   stepTitle: {
     fontSize: '14px', fontWeight: 600,
     color: 'var(--text)', marginBottom: '4px',
@@ -176,7 +178,7 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'monospace',
     background: 'var(--bg-2, rgba(255,255,255,0.04))',
     padding: '2px 6px', borderRadius: '4px',
-    fontSize: '11.5px',
+    fontSize: '11.5px', overflowWrap: 'anywhere',
   },
 
   privacyNote: {

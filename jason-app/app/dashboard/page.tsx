@@ -1123,10 +1123,12 @@ const s: Record<string, React.CSSProperties> = {
 
   // ── En-tête (HubHero) ─────────────────────────────────────────────────────
   asideTitle: { fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
-  asideStats: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px 14px' },
+  // Deux colonnes quand il y a la place, une seule sur petit téléphone : à
+  // 320 px les montants et l'écart au mois d'avant sortaient de la carte (20/11/2026)
+  asideStats: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '10px 14px' },
   asideStat:  { display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, textDecoration: 'none', color: 'inherit' },
   asideNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: 24, lineHeight: 1.05, fontWeight: 500, color: 'var(--text)' },
-  asideLbl:   { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.35 },
+  asideLbl:   { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.35, overflowWrap: 'anywhere' },
   asideObj:   { display: 'flex', flexDirection: 'column', gap: 6, paddingTop: 10, borderTop: '1px solid var(--border)', textDecoration: 'none', color: 'inherit' },
   heroGhost: {
     display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 16px', borderRadius: 12,

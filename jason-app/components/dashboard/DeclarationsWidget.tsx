@@ -209,13 +209,15 @@ const s: Record<string, React.CSSProperties> = {
     padding: '10px 12px', borderRadius: '10px',
     background: 'var(--bg-2)', border: '1px solid var(--border)',
   },
-  itemMain: { flex: 1, minWidth: '200px' },
+  itemMain: { flex: 1, minWidth: 'min(200px, 100%)' },
   itemTitle: { fontSize: '13.5px', color: 'var(--text)', lineHeight: 1.4 },
   itemNat: { color: 'var(--text-2)', fontWeight: 400 },
   itemNameLink: { color: 'var(--accent-text)', fontWeight: 700, textDecoration: 'none' },
   itemSub: { fontSize: '12px', color: 'var(--text-2)', marginTop: '3px' },
+  // Rétrécissable (20/11/2026) : avec flexShrink 0, la rangée gardait la
+  // largeur de tous ses boutons sur une ligne et « Fait » sortait de l'écran
   itemActions: {
-    display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0,
+    display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0, maxWidth: '100%',
     flexWrap: 'wrap' as const,
   },
   portalBtn: {

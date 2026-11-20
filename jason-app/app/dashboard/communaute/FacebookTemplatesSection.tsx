@@ -519,7 +519,8 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   preview: {
-    whiteSpace: 'pre-wrap', fontSize: '13px', lineHeight: 1.55, color: 'var(--text-2)',
+    // overflowWrap : un lien long dans le post sortait de l'aperçu à 320 px (20/11/2026)
+    whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: '13px', lineHeight: 1.55, color: 'var(--text-2)',
     background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px',
     padding: '12px 14px', maxHeight: '132px', overflow: 'hidden',
     maskImage: 'linear-gradient(180deg, #000 70%, transparent)', WebkitMaskImage: 'linear-gradient(180deg, #000 70%, transparent)',

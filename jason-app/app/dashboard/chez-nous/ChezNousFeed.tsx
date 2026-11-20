@@ -600,7 +600,9 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
           <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postFootLink}>
             <RelativeTime iso={post.last_reply_at ?? post.created_at} />
           </Link>
-          <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          {/* Boutons du bas : passent à la ligne au lieu de sortir de l'écran
+              (« Marquer utile » coupé à 390 et 320 px, audit du 20/11/2026) */}
+          <span style={{ marginLeft: 'auto', display: 'inline-flex', flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center', gap: '8px', maxWidth: '100%' }}>
             {isAuthor && (
               <Link
                 prefetch={false} href={`/dashboard/chez-nous/${post.id}?edit=1`}
@@ -641,7 +643,7 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
             >
               <ArrowFatUp size={12} weight={voted ? 'fill' : 'regular'} />
               {count > 0 && <span>{count}</span>}
-              <span style={s.voteInlineLabel}>{voted ? 'Utile' : 'Marquer utile'}</span>
+              <span style={s.voteInlineLabel} className="txt-long">{voted ? 'Utile' : 'Marquer utile'}</span>
             </button>
           </span>
         </div>

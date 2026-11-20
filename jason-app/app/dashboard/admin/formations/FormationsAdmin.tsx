@@ -243,7 +243,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
                   <p style={{ fontSize: '13px', color: 'var(--text-3)', marginBottom: '8px', lineHeight: 1.4 }}>
                     {f.description}
                   </p>
-                  <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', fontSize: '12px', color: 'var(--text-muted)' }}>
                     <span>{f.duration}</span>
                     <span>{f.modules_count} module{f.modules_count !== 1 ? 's' : ''}</span>
                     <span>{f.lessons_count} leçon{f.lessons_count !== 1 ? 's' : ''}</span>
