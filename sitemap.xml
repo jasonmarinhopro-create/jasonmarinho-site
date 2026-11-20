@@ -2466,7 +2466,7 @@
   <!-- ── Blog ── -->
   <url>
     <loc>https://jasonmarinho.com/blog</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -2484,7 +2484,7 @@
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/experience</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -2502,7 +2502,7 @@
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/reglementation</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-09-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -2520,9 +2520,15 @@
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/driing</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2025-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/decoration-noel-lcd-6-regles-sublimer-logement-sans-alourdir-turnover</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/contrat-entretien-lcd-6-regles-vendre-abonnement-conciergeries-airbnb</loc>
