@@ -24,6 +24,7 @@ import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 import ShellFallback from '@/components/layout/ShellFallback'
 import LaunchSplashOut from '@/components/layout/LaunchSplashOut'
+import LaunchSnapshotRecorder from '@/components/layout/LaunchSnapshotRecorder'
 import { LAUNCH_MESSAGE } from '@/components/layout/launch-message'
 import MenuLivePush from '@/components/layout/MenuLive'
 import PerfReporter from '@/components/perf/PerfReporter'
@@ -53,7 +54,7 @@ const LAUNCH_COOKIE = 'jm-launch'
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const launch = cookies().get(LAUNCH_COOKIE)?.value === '1'
   return (
-    <Suspense fallback={launch ? <ShellFallback variant="instant" message={LAUNCH_MESSAGE} /> : <ShellFallback variant="delayed" />}>
+    <Suspense fallback={launch ? <ShellFallback variant="instant" message={LAUNCH_MESSAGE} snap /> : <ShellFallback variant="delayed" />}>
       <DashboardShell launch={launch}>{children}</DashboardShell>
     </Suspense>
   )
@@ -187,6 +188,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
         <PerfReporter />
         <LastSeenPing />
         {launch && <LaunchSplashOut />}
+        <LaunchSnapshotRecorder userId={profile.userId} launch={launch} />
       </div>
     </ThemeProvider>
   )

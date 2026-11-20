@@ -28,7 +28,7 @@ const FALLBACK = `setTimeout(function(){if(window.__jmGo)return;window.__jmGo=tr
 export default function Ouverture() {
   return (
     <>
-      <ShellFallback message={LAUNCH_MESSAGE} />
+      <ShellFallback message={LAUNCH_MESSAGE} snap />
       <OuvertureGo />
       <script dangerouslySetInnerHTML={{ __html: FALLBACK }} />
     </>

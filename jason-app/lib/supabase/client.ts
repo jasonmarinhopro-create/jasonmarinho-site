@@ -2,6 +2,7 @@
 
 import { createBrowserClient, parse, serialize, type CookieOptions } from '@supabase/ssr'
 import { mayRemoveAuthCookie } from './session-cookies'
+import { clearLaunchSnapshots } from '@/lib/launch-snapshot'
 
 // Déconnexions surprises (07/11/2026, Jason : « en mode admin je clique et ça
 // me déconnecte une fois ») : au retour sur un onglet resté ouvert plus d'une
@@ -38,6 +39,8 @@ export function createClient() {
 /** Déconnexion voulue : seul cas où le navigateur efface les cookies de session */
 export async function signOutHere() {
   signingOut = true
+  // Copies de la page d'arrivée gardées dans l'appareil (lib/launch-snapshot.ts)
+  clearLaunchSnapshots()
   try {
     await createClient().auth.signOut()
   } finally {

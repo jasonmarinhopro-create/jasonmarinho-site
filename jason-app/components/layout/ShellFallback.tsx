@@ -8,10 +8,11 @@
 // Réutilisé par la page statique /ouverture (lancement de l'app installée)
 // et pendant le passage mode admin / mode hôte (Sidebar.tsx).
 import InlineStyle from '@/components/ui/InlineStyle'
+import SnapLayer from './SnapLayer'
 
 const CSS = `
 .jm-splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:#004C3F;color:#fff;padding:24px;text-align:center}
-.jm-splash img{width:88px;height:88px;border-radius:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);animation:jmPulse 1.8s ease-in-out infinite}
+.jm-splash>img{width:88px;height:88px;border-radius:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);animation:jmPulse 1.8s ease-in-out infinite}
 .jm-splash-name{font-family:var(--font-fraunces),Georgia,serif;font-size:24px;letter-spacing:-.02em;margin:0}
 .jm-splash-name em{color:#FFD56B;font-style:italic;font-weight:300}
 .jm-splash-bar{width:180px;height:4px;border-radius:4px;background:rgba(255,255,255,.15);overflow:hidden}
@@ -30,7 +31,10 @@ const CSS = `
 @keyframes jmVanish{to{opacity:0;visibility:hidden}}
 .dash-main:has([data-page-skel]) ~ * .jm-splash--out{animation:jmHold 15s linear forwards}
 @keyframes jmHold{0%,97%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
-@media (prefers-reduced-motion: reduce){.jm-splash img,.jm-splash-bar span{animation:none}}
+.jm-snap{position:absolute;inset:0;z-index:2;overflow:hidden;background:var(--bg);color:var(--text);text-align:start;pointer-events:none}
+.jm-snap:empty{display:none}
+.jm-snap:not(:empty)::after{content:"Mise à jour…";position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;padding:7px 14px;border-radius:999px;background:#004C3F;color:#fff;font-size:13px;font-family:var(--font-outfit),system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+@media (prefers-reduced-motion: reduce){.jm-splash>img,.jm-splash-bar span{animation:none}}
 `
 
 // Variantes (30/09/2026, Jason : « quand ça va vite, l'écran apparaît 0,1 s
@@ -44,17 +48,23 @@ const CSS = `
 //   page montre son squelette (attribut data-page-skel des loading.tsx) et
 //   ne s'efface qu'une fois, sur la page finie (15 s au plus). Sans :has()
 //   (vieux navigateurs), comportement d'avant.
+// snap : à l'ouverture de l'app, la copie de la dernière page d'arrivée
+// (lib/launch-snapshot.ts) recouvre le logo quand elle existe.
 export type SplashVariant = 'instant' | 'delayed' | 'out'
 
 export default function ShellFallback({
   message = 'Ton espace se prépare…',
   later = 'Encore un instant, on rassemble tes réservations et tes chiffres.',
   variant = 'instant',
-}: { message?: string; later?: string; variant?: SplashVariant } = {}) {
+  snap = false,
+}: { message?: string; later?: string; variant?: SplashVariant; snap?: boolean } = {}) {
   const cls = variant === 'delayed' ? ' jm-splash--delayed' : variant === 'out' ? ' jm-splash--out' : ''
   return (
     <div className={`jm-splash${cls}`} role={variant === 'out' ? undefined : 'status'} aria-live={variant === 'out' ? undefined : 'polite'} aria-hidden={variant === 'out' ? true : undefined}>
       <InlineStyle css={CSS} />
+      {/* 20/11/2026 : copie de la dernière page d'arrivée par-dessus le logo
+          (ouverture de l'app seulement, lib/launch-snapshot.ts) */}
+      {snap && <SnapLayer />}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/icon-192.png" alt="" width={88} height={88} />
       <p className="jm-splash-name">Jason <em>Marinho</em></p>

@@ -29,7 +29,7 @@ export default function LaunchSplashOut() {
     <div ref={ref} style={{ display: 'contents' }} onAnimationEnd={e => {
       if (e.animationName === 'jmVanish' || e.animationName === 'jmHold') setGone(true)
     }}>
-      <ShellFallback variant="out" message={LAUNCH_MESSAGE} />
+      <ShellFallback variant="out" message={LAUNCH_MESSAGE} snap />
     </div>
   )
 }
