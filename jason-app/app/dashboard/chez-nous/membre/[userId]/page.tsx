@@ -386,7 +386,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   statsRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
     gap: '8px',
   },
   statPill: {

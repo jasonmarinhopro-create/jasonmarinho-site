@@ -134,7 +134,9 @@ const s: Record<string, React.CSSProperties> = {
   },
   mainCol: {
     flex: 1,
-    minWidth: '300px',
+    // min() : sur un téléphone de 320 px, 300 px ne tenait pas et le texte
+    // était coupé à droite (.dash-main masque ce qui dépasse) (20/11/2026)
+    minWidth: 'min(300px, 100%)',
   },
   sidebar: {
     width: '280px',

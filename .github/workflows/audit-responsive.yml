@@ -1,0 +1,49 @@
+# Audit responsive (20/11/2026, docs/claude/responsive.md) : ouvre les pages
+# dans Chromium à plusieurs largeurs et liste les débordements, textes coupés
+# et chevauchements, plus le temps d'affichage des pages du dashboard.
+# Lancement à la main seulement (Actions > Audit responsive > Run workflow).
+# Mode « app » : session ouverte sans e-mail sur le compte administrateur,
+# LECTURE SEULE (toute requête autre que GET bloquée dans le navigateur),
+# rapport sans aucun texte des pages (sélecteurs et adresses sans identifiant).
+name: Audit responsive
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'app (dashboard connecté) ou site (site vitrine)'
+        required: true
+        default: 'app'
+        type: choice
+        options: [app, site]
+      only:
+        description: 'Facultatif : morceaux d’adresse séparés par des virgules (ex. admin,finances)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-responsive
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Playwright
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
+      - name: Audit
+        env:
+          NODE_PATH: /tmp/pw/node_modules
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --out /tmp/audit.json > /dev/null

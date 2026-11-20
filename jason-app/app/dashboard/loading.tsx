@@ -9,7 +9,7 @@ export default function DashboardLoading() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div style={{ ...styles.bar, width: '120px', height: '13px' }} />
           <div style={{ ...styles.bar, width: '280px', height: '36px' }} />
-          <div style={{ ...styles.bar, width: '380px', height: '14px', opacity: 0.6 }} />
+          <div style={{ ...styles.bar, width: '380px', maxWidth: '100%', height: '14px', opacity: 0.6 }} />
         </div>
       </div>
 

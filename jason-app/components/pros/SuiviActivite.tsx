@@ -117,7 +117,7 @@ const s: Record<string, React.CSSProperties> = {
   bar: { display: 'block', height: '100%', borderRadius: 99 },
   rowN: { fontSize: 12.5, fontWeight: 600, color: 'var(--text)', textAlign: 'right' },
   foot: { fontSize: 12, color: 'var(--text-3)', marginTop: 4 },
-  months: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', alignItems: 'end', gap: 8, height: 110 },
+  months: { display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr))', alignItems: 'end', gap: 8, height: 110 },
   month: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', gap: 5 },
   monthN: { fontSize: 12, fontWeight: 600, color: 'var(--text)' },
   monthBar: { width: '100%', maxWidth: 34, borderRadius: 6, background: 'var(--accent-text)' },

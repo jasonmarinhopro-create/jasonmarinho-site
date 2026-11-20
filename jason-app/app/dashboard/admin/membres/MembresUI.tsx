@@ -1436,7 +1436,7 @@ const ps: Record<string, React.CSSProperties> = {
   section: { padding: '18px 22px' },
   sectionLabel: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '14px' },
 
-  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' },
+  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px' },
   statTile: { display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', border: '1px solid', borderRadius: '10px' },
   statNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, lineHeight: 1 },
   statLabel: { fontSize: '10px', color: 'var(--text-3)', lineHeight: 1.3 },

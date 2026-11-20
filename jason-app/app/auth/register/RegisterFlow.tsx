@@ -34,6 +34,13 @@ const CSS = `
   .rf-choice:hover:not(:disabled) { border-color: rgba(0,76,63,0.45) !important; }
   .rf-input:focus { outline: none; border-color: #004C3F !important; box-shadow: 0 0 0 3px rgba(0,76,63,0.12); }
   .rf-link { color: #004C3F; text-decoration: underline; text-underline-offset: 3px; }
+  .rf-past-t { display: none !important; }
+  /* Petits téléphones (20/11/2026) : la pastille passe à côté du titre, le
+     texte de la carte reprend toute la largeur (il tenait sur 100 px à 320 px) */
+  @media (max-width: 420px) {
+    .rf-past-r { display: none !important; }
+    .rf-past-t { display: inline-block !important; }
+  }
   @media (max-width: 900px) {
     .rf-panel { display: none; }
     .rf-mbar { display: flex; }
@@ -41,6 +48,11 @@ const CSS = `
     .rf-steps-label { display: none; }
   }
 `
+
+const pastille = (gratuit: boolean, bientot: boolean): React.CSSProperties => ({
+  flex: 'none', fontSize: 12, fontWeight: 600, padding: '4px 9px', borderRadius: 99, whiteSpace: 'nowrap', lineHeight: 1.25,
+  background: gratuit ? '#E6F2E8' : bientot ? '#F1F3EF' : '#FFF3CC', color: gratuit ? '#1F5E33' : bientot ? C.discret : '#6B5200',
+})
 
 type Etape = 1 | 2 | 3
 
@@ -216,10 +228,13 @@ export default function RegisterFlow({ google }: { google: boolean }) {
                           <Icon size={20} weight="duotone" color={sel ? C.jaune : C.vert} />
                         </span>
                         <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                          <span style={{ fontSize: 16, fontWeight: 600 }}>{x.titre}</span>
+                          <span style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px 8px' }}>
+                            <span style={{ fontSize: 16, fontWeight: 600 }}>{x.titre}</span>
+                            <span className="rf-past-t" style={pastille(gratuit, !!x.bientot)}>{x.pastille}</span>
+                          </span>
                           <span style={{ fontSize: 13.5, color: C.doux, lineHeight: 1.4 }}>{x.ligne}</span>
                         </span>
-                        <span style={{ flex: 'none', fontSize: 12, fontWeight: 600, padding: '4px 9px', borderRadius: 99, whiteSpace: 'nowrap', background: gratuit ? '#E6F2E8' : x.bientot ? '#F1F3EF' : '#FFF3CC', color: gratuit ? '#1F5E33' : x.bientot ? C.discret : '#6B5200' }}>{x.pastille}</span>
+                        <span className="rf-past-r" style={pastille(gratuit, !!x.bientot)}>{x.pastille}</span>
                         <span aria-hidden="true" style={{ width: 20, height: 20, flex: 'none', borderRadius: '50%', border: `1.5px solid ${sel ? C.vert : '#C9D0C8'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <span style={{ width: 10, height: 10, borderRadius: '50%', background: sel ? C.vert : 'transparent' }} />
                         </span>
