@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-20 00:40 UTC.
+Mis à jour le 2026-11-20 01:45 UTC.
 
 - 2026-11-20 · carrousel · superhost-4-criteres · FB pending · IG pending · stories FB pending IG pending · « Le badge Superhost se joue sur quatre critères, vérifiés tous les trois mois. Il suffit d’en rater un pour le  »
 - 2026-11-19 · stories (4 écrans) · stories-depannage-delai · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Plombier, électricien, serrurier ? / Ce qu’il veut voir tout de suite / Photos avant et après / Tu i »
