@@ -27,6 +27,11 @@ export function detect(withText) {
     }
     return parts.join('>')
   }
+  // Indice sans donnée : styles de l'élément et de ses 2 parents (taille, graisse, flex…)
+  const hint = el => [el, el.parentElement, el.parentElement?.parentElement].filter(Boolean).map(e => {
+    const cs = getComputedStyle(e)
+    return `${e.tagName.toLowerCase()}{${cs.display} fs:${cs.fontSize} fw:${cs.fontWeight}${cs.flex !== '0 1 auto' ? ' flex:' + cs.flex : ''}${cs.minWidth !== 'auto' && cs.minWidth !== '0px' ? ' minw:' + cs.minWidth : ''}${cs.whiteSpace !== 'normal' ? ' ws:' + cs.whiteSpace : ''} w:${Math.round(e.getBoundingClientRect().width)}}`
+  }).join(' < ')
   const visible = el => {
     if (el.closest('details:not([open])') && !el.closest('summary')) return false
     if (el.checkVisibility && !el.checkVisibility({ opacityProperty: true, visibilityProperty: true, contentVisibilityAuto: true })) return false
@@ -74,7 +79,7 @@ export function detect(withText) {
       if (cs.overflowX === 'visible' || scrolls(cs) || cs.textOverflow === 'ellipsis') { if (scrolls(cs)) break; continue }
       const b = anc.getBoundingClientRect()
       const bad = textRects(el).some(r => r.right > b.right + 2 || r.left < b.left - 2)
-      if (bad) { const tr = textRects(el); out.cut.push({ el: path(el), box: path(anc), text: txt(el.textContent), dep: Math.round(Math.max(...tr.map(r => r.right)) - b.right), boxW: Math.round(b.width) }) }
+      if (bad) { const tr = textRects(el); out.cut.push({ el: path(el), box: path(anc), text: txt(el.textContent), hint: hint(el), dep: Math.round(Math.max(...tr.map(r => r.right)) - b.right), boxW: Math.round(b.width) }) }
       break
     }
   }

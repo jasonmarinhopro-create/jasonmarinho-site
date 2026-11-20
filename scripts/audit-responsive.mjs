@@ -65,7 +65,8 @@ function appStaticRoutes() {
     }
   }
   walk(dir)
-  return routes.filter(r => !ONLY.length || ONLY.some(o => r.includes(o)))
+  // --only : morceau d'adresse, ou « =/dashboard » pour une adresse exacte
+  return routes.filter(r => !ONLY.length || ONLY.some(o => (o.startsWith('=') ? r === o.slice(1) : r.includes(o))))
 }
 
 // Mode app : un texte n'est cité que s'il figure déjà dans le code public de
@@ -235,7 +236,7 @@ function report(results, stuck = new Set()) {
       const items = []
       if (r.docOverflow) items.push(['défile de côté', `+${r.docOverflow} px`])
       for (const o of r.overflow.slice(0, 3)) items.push(['hors écran', `${o.el} (bord droit ${o.right} px)`])
-      for (const c of r.cut.slice(0, 3)) items.push(['texte coupé', `${c.el} dans ${c.box} (cadre ${c.boxW} px, dépasse de ${c.dep} px)${c.text ? ` « ${c.text} »` : ''}`])
+      for (const c of r.cut.slice(0, 3)) items.push(['texte coupé', `${c.el} dans ${c.box} (cadre ${c.boxW} px, dépasse de ${c.dep} px)${c.text ? ` « ${c.text} »` : ''}${c.hint ? ` [${c.hint}]` : ''}`])
       for (const c of r.clipped.filter(c => c.how === 'coupé' || c.how === 'coupé-bas').slice(0, 3)) items.push(['texte masqué', `${c.el}${c.text ? ` « ${c.text} »` : ''}`])
       for (const o of r.overlap.slice(0, 3)) items.push(['chevauchement', `${o.a} / ${o.b}${o.ta ? ` « ${o.ta} » / « ${o.tb} »` : ''}`])
       for (const [t, w] of items) lines.push(`| ${r.u} | ${r.w} | ${t} | ${String(w).replace(/\|/g, '/')} |`)

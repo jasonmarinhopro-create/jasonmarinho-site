@@ -142,6 +142,9 @@ export default function PerformancesContent({ data, searchParams }: { data: Fina
                   {canaux.filter(c => c.nuits > 0).length === 0 ? (
                     <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-3)' }}>Pas de séjour avec montant sur la période.</p>
                   ) : (
+                    // Cadre défilant comme le tableau des logements : à 320 px il
+                    // dépassait de 3 px de la page (audit du 20/11/2026)
+                    <div style={{ overflowX: 'auto' }}>
                     <table style={ui.table}>
                       <thead><tr>
                         <th style={ui.th}>Canal</th>
@@ -160,6 +163,7 @@ export default function PerformancesContent({ data, searchParams }: { data: Fina
                         ))}
                       </tbody>
                     </table>
+                    </div>
                   )}
                   <Definition>Net par nuit : ce qui te reste une fois la commission de la plateforme déduite. « ? » : commission non renseignée.</Definition>
                 </Card>
