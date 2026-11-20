@@ -1,0 +1,12 @@
+{
+  "format": "stories",
+  "slug": "stories-deco-noel-dosage",
+  "jour": "2026-11-21",
+  "photo": "pexels:cozy christmas living room minimal",
+  "frames": [
+    { "type": "couverture", "kicker": "Noël en location courte durée", "titre": "Décorer pour Noël, *sans alourdir* tes ménages", "sous_titre": "Les bons réflexes, avant de sortir les cartons." },
+    { "type": "liste", "kicker": "Le dosage", "titre": "Moins, mais *bien placé*", "items": ["Une pièce à vivre décorée, pas toutes", "Une entrée soignée", "Des chambres neutres", "Rien de religieux marqué"] },
+    { "type": "astuce", "kicker": "Sécurité", "titre": "Bougies *LED*, jamais de flamme", "texte": "Guirlandes LED certifiées CE, sapin stable loin du radiateur, détecteur de fumée testé avant la saison." },
+    { "type": "question", "titre": "Tu décores ton logement *pour Noël* ?" }
+  ]
+}
