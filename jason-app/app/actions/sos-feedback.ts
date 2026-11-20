@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailCitation, emailInfoBlock, EMAIL_FROM, escHtml } from '@/lib/email/template'
+import { emailTags } from '@/lib/email/tracking'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -62,7 +63,7 @@ export async function submitSOSFeedback(input: {
   const feedbackType = input.feedbackType as FeedbackType
   const subject = `SOS Hôte · ${TYPE_LABELS[feedbackType]} · ${input.scenario}`
 
-  await getResend().emails.send({
+  await getResend().emails.send({ tags: emailTags('admin'),
     from: EMAIL_FROM,
     to: NOTIFY_EMAIL,
     ...(userEmail.includes('@') ? { replyTo: userEmail } : {}),

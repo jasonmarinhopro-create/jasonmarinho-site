@@ -17,6 +17,8 @@
  * les deux alignés.
  */
 
+import { trackLinks, type EmailCategory } from './tracking'
+
 export const EMAIL_COLORS = {
   bg: '#F3F6F4',
   card: '#FFFFFF',
@@ -68,6 +70,8 @@ export interface EmailOptions {
   signature?: boolean | string
   /** Pied de page (HTML), sinon celui de la marque */
   footer?: string
+  /** Compte les clics des boutons vers nos sites (anonyme, par catégorie) */
+  track?: EmailCategory
 }
 
 /** Couleurs de l'ancien thème sombre → équivalents lisibles sur fond clair */
@@ -98,7 +102,8 @@ export function lightify(html: string): string {
 
 const DEFAULT_FOOTER = `Jason Marinho &middot; Location courte durée<br><a href="https://app.jasonmarinho.com" style="color:${C.green};text-decoration:none;font-weight:600;">app.jasonmarinho.com</a> &nbsp;&middot;&nbsp; <a href="https://jasonmarinho.com" style="color:${C.green};text-decoration:none;font-weight:600;">jasonmarinho.com</a>`
 
-export function buildEmail({ title, body, preview = '', etiquette, lang = 'fr', signature, footer }: EmailOptions): string {
+export function buildEmail({ title, body: rawBody, preview = '', etiquette, lang = 'fr', signature, footer, track }: EmailOptions): string {
+  const body = track ? trackLinks(rawBody, track) : rawBody
   const sig = signature ? emailSignature(typeof signature === 'string' ? signature : DEFAULT_SIGNATURE_NOTE) : ''
   return `<!DOCTYPE html>
 <html lang="${escHtml(lang)}" xmlns="http://www.w3.org/1999/xhtml">

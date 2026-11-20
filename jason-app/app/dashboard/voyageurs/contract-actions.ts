@@ -8,6 +8,7 @@ import { Resend } from 'resend'
 import { htmlToText } from '@/lib/email/template'
 import { contractFrom, contractInviteEmail } from '@/lib/email/contract-emails'
 import { toEmailLang } from '@/lib/email/contract-i18n'
+import { emailTags } from '@/lib/email/tracking'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
@@ -165,7 +166,7 @@ export async function createContract(data: ContractData): Promise<{
       adresse: data.logement_nom ? data.logement_adresse : null,
       arrivee: dateArr, depart: dateDep, signUrl, cgv: !!details?.cgv,
     })
-    await getResend().emails.send({
+    await getResend().emails.send({ tags: emailTags('voyageur'),
       from: contractFrom(hostName),
       replyTo: data.bailleur_email || undefined,
       to: data.locataire_email,

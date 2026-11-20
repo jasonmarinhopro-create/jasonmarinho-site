@@ -22,6 +22,7 @@ import {
 } from './rules'
 import type { ProChoix } from './admin'
 import { cartePro, suiviVue, apercuPhrase, isSuiviToken, type CartePro, type ProPublic, type SuiviRow, type SuiviVue } from './public'
+import { emailTags } from '@/lib/email/tracking'
 
 const log = logger('demandes')
 const FROM = 'Jason Marinho <notifications@jasonmarinho.com>'
@@ -92,7 +93,7 @@ async function emailPro(d: DemandeInput, pro: Pro, metier: DemandeMetier, manuel
     demandesUrl: `${APP}/dashboard/${T[metier].dash}/demandes`,
     priseUrl: contactId && secret ? `${APP}/demande/prise/${priseToken(metier, contactId, secret)}` : null,
   })
-  await r.emails.send({ from: FROM, to: pro.email, replyTo: d.email, subject, html, text })
+  await r.emails.send({ tags: emailTags('demande-pro'), from: FROM, to: pro.email, replyTo: d.email, subject, html, text })
     .catch(e => log.error('e-mail au pro', { err: e instanceof Error ? e.message : String(e) }))
 }
 
@@ -116,7 +117,7 @@ async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], va
     partielNote: partiel(d, metier, pros),
     inscriptionUrl: `${SITE}/annuaires/${T[metier].dir}/inscription`,
   })
-  await r.emails.send({ from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
+  await r.emails.send({ tags: emailTags('demande-hote'), from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
     .catch(e => log.error('e-mail à l’hôte', { err: e instanceof Error ? e.message : String(e) }))
 }
 
@@ -173,7 +174,7 @@ async function emailsRegroupes(d: DemandeInput, villes: Array<{ ville: string } 
   const r = resend()
   if (r) {
     const { subject, html } = hoteMultiEmail(d, villes.map(v => ({ ville: v.ville, pros: v.pros.map(p => proMail(p, d.metier)), suiviUrl: v.token ? suiviUrl(v.token) : null })), { inscriptionUrl: `${SITE}/annuaires/${T[d.metier].dir}/inscription` })
-    await r.emails.send({ from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
+    await r.emails.send({ tags: emailTags('demande-hote'), from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
       .catch(e => log.error('e-mail à l’hôte (plusieurs villes)', { err: e instanceof Error ? e.message : String(e) }))
   }
   const sansPro = villes.filter(v => !v.pros.length)
@@ -305,7 +306,7 @@ export async function listProsChoix(metier: DemandeMetier): Promise<ProChoix[]> 
 async function emailHoteManuel(d: DemandeInput & { suivi_token?: string | null }, metier: DemandeMetier, pro: Pro, premier: boolean) {
   const r = resend(); if (!r) return
   const { subject, html } = hoteManuelEmail(d, proMail(pro, metier), d.suivi_token ? suiviUrl(d.suivi_token) : null, premier)
-  await r.emails.send({ from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
+  await r.emails.send({ tags: emailTags('demande-hote'), from: FROM, to: d.email, replyTo: EMAIL_REPLY_TO, subject, html })
     .catch(e => log.error('e-mail à l’hôte (envoi manuel)', { err: e instanceof Error ? e.message : String(e) }))
 }
 

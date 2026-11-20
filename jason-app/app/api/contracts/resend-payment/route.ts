@@ -7,6 +7,7 @@ import { toEmailLang } from '@/lib/email/contract-i18n'
 import { htmlToText } from '@/lib/email/template'
 import { contractFrom, paymentReminderEmail, virementReference } from '@/lib/email/contract-emails'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
+import { emailTags } from '@/lib/email/tracking'
 const log = logger('api/contracts/resend-payment')
 
 export const dynamic = 'force-dynamic'
@@ -117,7 +118,7 @@ export async function POST(request: NextRequest) {
       } : null,
     })
 
-    const { error: emailErr } = await getResend().emails.send({
+    const { error: emailErr } = await getResend().emails.send({ tags: emailTags('voyageur'),
       from: contractFrom(hostName),
       replyTo: contract.bailleur_email || undefined,
       to: contract.locataire_email,

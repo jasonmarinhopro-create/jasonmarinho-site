@@ -17,6 +17,7 @@ import { buildNewsletter, isPreparationDay, monthKey, monthLabel, parseRss, send
 import { EDITIONS, EDITION_CONFIG, assignEditions, type Edition } from './editions'
 import { NEWSLETTER_NAME } from './template'
 import { isPaidPro } from '@/lib/admin/revenue'
+import { emailTags } from '@/lib/email/tracking'
 
 const BREVO = 'https://api.brevo.com/v3'
 const SENDER = { name: 'Jason Marinho', email: 'contact@jasonmarinho.com' }
@@ -85,7 +86,7 @@ async function sendPreview(n: Newsletter, note: string, label: string) {
   const key = process.env.RESEND_API_KEY
   if (!key) return
   const banner = `<div style="font-family:Helvetica,Arial,sans-serif;background:#FFF6DA;border-bottom:1px solid #F0D58A;padding:14px 18px;font-size:14px;line-height:1.55;color:#3a2f12;">${note}</div>`
-  await new Resend(key).emails.send({
+  await new Resend(key).emails.send({ tags: emailTags('admin'),
     from: 'Jason Marinho <noreply@jasonmarinho.com>',
     to: SENDER.email,
     subject: `[Aperçu · ${label}] ${n.subject}`,
@@ -96,7 +97,7 @@ async function sendPreview(n: Newsletter, note: string, label: string) {
 async function sendPreviewText(text: string) {
   const key = process.env.RESEND_API_KEY
   if (!key) return
-  await new Resend(key).emails.send({ from: 'Jason Marinho <noreply@jasonmarinho.com>', to: SENDER.email, subject: 'Le Check-in', text }).catch(() => undefined)
+  await new Resend(key).emails.send({ tags: emailTags('admin'), from: 'Jason Marinho <noreply@jasonmarinho.com>', to: SENDER.email, subject: 'Le Check-in', text }).catch(() => undefined)
 }
 
 // ── Listes Brevo par édition ──

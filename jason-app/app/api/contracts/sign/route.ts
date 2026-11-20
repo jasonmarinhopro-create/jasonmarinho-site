@@ -11,6 +11,7 @@ import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 import { createDeclarationForSignedContract, type DeclarationCreateResult } from '@/lib/declarations/create'
 import { createNotification, sejourHref } from '@/lib/notifications/create'
 import { stayLabel } from '@/lib/notifications/present'
+import { emailTags } from '@/lib/email/tracking'
 
 export const dynamic = 'force-dynamic'
 
@@ -339,7 +340,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (contract.locataire_email) {
-      await getResend().emails.send({
+      await getResend().emails.send({ tags: emailTags('voyageur'),
         from: contractFrom(hostName),
         replyTo: contract.bailleur_email || undefined,
         to: contract.locataire_email,
@@ -349,7 +350,7 @@ export async function POST(request: NextRequest) {
       }).catch(e => log.warn('guestEmail', { err: String(e) }))
     }
 
-    await getResend().emails.send({
+    await getResend().emails.send({ tags: emailTags('contrat-hote'),
       from: EMAIL_FROM,
       replyTo: EMAIL_REPLY_TO,
       to: contract.bailleur_email,

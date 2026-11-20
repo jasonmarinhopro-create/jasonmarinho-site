@@ -7,6 +7,7 @@ import 'server-only'
 import { Resend } from 'resend'
 import { buildDepositGuestEmail, type DepositGuestEmail } from './deposit-guest-content'
 import { logger } from '@/lib/logger'
+import { emailTags } from '@/lib/email/tracking'
 
 export type { DepositGuestEmail }
 
@@ -20,7 +21,7 @@ export async function sendDepositOutcomeToGuest(e: DepositGuestEmail): Promise<v
   const { subject, html, fromName } = buildDepositGuestEmail(e, APP_URL)
   try {
     const r = new Resend(key)
-    const { error } = await r.emails.send({
+    const { error } = await r.emails.send({ tags: emailTags('voyageur'),
       from: `${fromName} <${FROM}>`,
       to: e.to,
       ...(e.hostEmail ? { replyTo: e.hostEmail } : {}),

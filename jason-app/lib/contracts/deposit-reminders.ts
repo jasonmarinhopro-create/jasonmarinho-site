@@ -16,6 +16,7 @@ import { toEmailLang } from '@/lib/email/contract-i18n'
 import { addDaysIso, parisToday, DEPOSIT_OPEN_DAYS_BEFORE } from '@/lib/stripe/deposit-window'
 import { htmlToText } from '@/lib/email/template'
 import { contractFrom, depositOpenEmailContent } from '@/lib/email/contract-emails'
+import { emailTags } from '@/lib/email/tracking'
 
 export type DepositReminderRow = {
   id: string
@@ -96,7 +97,7 @@ export async function sendDepositOpenEmails(db: SupabaseClient, appUrl: string, 
   let sent = 0
   for (const row of due) {
     const { subject, html } = depositOpenEmail(row, appUrl)
-    const { error: sendErr } = await resend.emails.send({
+    const { error: sendErr } = await resend.emails.send({ tags: emailTags('voyageur'),
       from: contractFrom(`${row.bailleur_prenom ?? ''} ${row.bailleur_nom ?? ''}`),
       ...(row.bailleur_email ? { replyTo: row.bailleur_email } : {}),
       to: row.locataire_email!,

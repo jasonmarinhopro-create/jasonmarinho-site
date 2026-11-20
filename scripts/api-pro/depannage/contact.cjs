@@ -128,8 +128,8 @@ module.exports = async function handler(req, res) {
       contactName, contactEmail, contactPhone, message,
     })
     // Awaités : sans await, la fonction est gelée après la réponse et Resend n'est jamais appelé
-    await sendEmail({ from: 'Jason Marinho <notifications@jasonmarinho.com>', to: pro.email, reply_to: contactEmail, ...mails.pro }, 'pro')
-    await sendEmail({ from: 'Jason Marinho <notifications@jasonmarinho.com>', to: contactEmail, ...mails.hote }, 'accuse-reception')
+    await sendEmail({ from: 'Jason Marinho <notifications@jasonmarinho.com>', to: pro.email, reply_to: contactEmail, tags: [{ name: 'categorie', value: 'demande-pro' }], ...mails.pro }, 'pro')
+    await sendEmail({ from: 'Jason Marinho <notifications@jasonmarinho.com>', to: contactEmail, reply_to: 'contact@jasonmarinho.com', tags: [{ name: 'categorie', value: 'demande-hote' }], ...mails.hote }, 'accuse-reception')
   }
 
   return res.status(200).json({ ok: true })

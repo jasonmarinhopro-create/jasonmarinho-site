@@ -9,6 +9,7 @@ import { buildEmail, emailBtn, emailEtapes, emailP, emailInfoBlock, escHtml, EMA
 import { CACHE_TAGS } from '@/lib/queries/cache'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 import { appErrorKey } from '@/lib/queries/site-traffic'
+import { emailTags } from '@/lib/email/tracking'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM_EMAIL = EMAIL_FROM
@@ -40,12 +41,13 @@ async function getAdminClient() {
 
 async function sendDriingConfirmationEmail(userEmail: string, userName: string | null) {
   const name = userName ?? 'toi'
-  await getResend().emails.send({
+  await getResend().emails.send({ tags: emailTags('acces-membre'),
     from: FROM_EMAIL,
     to: userEmail,
     subject: 'Ton accès Membre Driing est confirmé',
     replyTo: EMAIL_REPLY_TO,
     html: buildEmail({
+      track: 'acces-membre',
       etiquette: 'Membre Driing',
       title: `Bienvenue, ${escHtml(name)}`,
       preview: 'Ton adhésion Membre Driing est validée : tout l’espace Standard est ouvert.',
@@ -401,12 +403,13 @@ export async function adminCreateAccount(input: { email: string; fullName: strin
     if (pwError) return { error: pwError.message }
   }
 
-  await getResend().emails.send({
+  await getResend().emails.send({ tags: emailTags('acces-membre'),
     from: FROM_EMAIL,
     to: email,
     subject: 'Ton accès Jason Marinho est prêt',
     replyTo: EMAIL_REPLY_TO,
     html: buildEmail({
+      track: 'acces-membre',
       etiquette: 'Ton compte',
       title: `Bienvenue${fullName ? `, ${escHtml(fullName)}` : ''}`,
       preview: 'Ton compte a été créé, voici ton mot de passe temporaire.',

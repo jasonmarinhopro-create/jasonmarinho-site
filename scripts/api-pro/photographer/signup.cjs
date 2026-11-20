@@ -421,6 +421,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         from: 'Jason Marinho <notifications@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
+        tags: [{ name: 'categorie', value: 'admin' }],
         subject: `Nouvelle inscription Photographe : ${fullName}`,
         html: adminEmail({
           etiquette: 'Nouveau pro',

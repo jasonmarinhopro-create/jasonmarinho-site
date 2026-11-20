@@ -7,6 +7,7 @@ import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailP, escHtml, EMAIL_REPLY_TO } from './template'
 import { eur, frDate, type ProDocument } from '@/lib/pros/billing'
 import { logger } from '@/lib/logger'
+import { emailTags } from '@/lib/email/tracking'
 
 const log = logger('email/pro-documents')
 const FROM = 'notifications@jasonmarinho.com'
@@ -65,7 +66,7 @@ export async function sendDocumentToClient(opts: {
 
   const { subject, html } = documentEmail({ doc, sellerName, reminder })
   try {
-    const { error } = await r.emails.send({
+    const { error } = await r.emails.send({ tags: emailTags('devis'),
       from: `${fromName(sellerName)} via Jason Marinho <${FROM}>`,
       to: doc.client_email,
       ...(replyTo ? { replyTo } : {}),
@@ -106,7 +107,7 @@ export async function sendQuoteAcceptedToPro(opts: {
   const { doc } = opts
   const html = quoteAcceptedEmail(doc, opts.href)
   try {
-    await r.emails.send({ from: `Jason Marinho <${FROM}>`, replyTo: EMAIL_REPLY_TO, to: opts.to, subject: `Devis ${doc.number} accepté par ${doc.client_name}`, html })
+    await r.emails.send({ tags: emailTags('devis'), from: `Jason Marinho <${FROM}>`, replyTo: EMAIL_REPLY_TO, to: opts.to, subject: `Devis ${doc.number} accepté par ${doc.client_name}`, html })
   } catch (e) {
     log.error('e-mail devis accepté échoué', { err: e instanceof Error ? e.message : String(e) })
   }

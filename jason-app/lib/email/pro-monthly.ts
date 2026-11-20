@@ -94,7 +94,7 @@ export async function sendProMonthlyReports(db: SupabaseClient, opts: { budgetMs
       const line: MonthlyRecapLine = { nom: data.fiche.name, metier, visitors: data.metrics.visitors.value ?? 0, demandes: data.metrics.demandes.value ?? 0, sent: false }
       // Réservé avant l'envoi : deux passages du cron n'envoient jamais deux fois
       if (!(await setFlag(db, f.user_id as string, monthlySentFlag(month.key), true))) { out.skipped++; continue }
-      const r = await sendEmail({ to: f.email as string, subject: email.subject, html: email.html })
+      const r = await sendEmail({ to: f.email as string, subject: email.subject, html: email.html, categorie: 'bilan-pro' })
       if (!r.ok) {
         await setFlag(db, f.user_id as string, monthlySentFlag(month.key), false)
         out.failed++

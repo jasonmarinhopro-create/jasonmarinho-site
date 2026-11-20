@@ -141,6 +141,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         from: 'Jason Marinho <notifications@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
+        tags: [{ name: 'categorie', value: 'admin' }],
         reply_to: email,
         subject: `Demande de retrait d’un signalement public : ${slug}`,
         html,
