@@ -88,7 +88,9 @@ export function detect(withText) {
     const clipsY = /(hidden|clip)/.test(cs.overflowY) || cs.webkitLineClamp !== 'none'
     const cutX = clipsX && el.scrollWidth > el.clientWidth + 2
     const cutY = clipsY && el.scrollHeight > el.clientHeight + 3 && cs.overflowY !== 'visible'
-    if (cutX || cutY) out.clipped.push({ el: path(el), how: cutX ? (cs.textOverflow === 'ellipsis' ? 'ellipsis' : 'coupé') : (cs.webkitLineClamp !== 'none' ? 'line-clamp' : 'coupé-bas'), text: txt(el.textContent) })
+    // Aperçu volontairement coupé avec un fondu (mask-image) : voulu, comme « … »
+    const fondu = (cs.maskImage && cs.maskImage !== 'none') || (cs.webkitMaskImage && cs.webkitMaskImage !== 'none')
+    if (cutX || cutY) out.clipped.push({ el: path(el), how: cutX ? (cs.textOverflow === 'ellipsis' ? 'ellipsis' : 'coupé') : (cs.webkitLineClamp !== 'none' ? 'line-clamp' : fondu ? 'fondu' : 'coupé-bas'), text: txt(el.textContent) })
   }
 
   // 4. Textes qui se chevauchent (partie réellement visible de chaque texte)
