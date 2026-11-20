@@ -240,7 +240,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 h2{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(26px,3.2vw,38px);font-weight:400;line-height:1.15;letter-spacing:-.4px}
 h2 em{color:var(--g);font-style:italic;font-weight:300}
 .sec-head p{font-size:16px;color:var(--tm);line-height:1.7;margin-top:12px}
-.row{display:grid;gap:32px;align-items:center;margin-bottom:clamp(56px,7vw,88px)}
+.row{display:grid;grid-template-columns:minmax(0,1fr);gap:32px;align-items:center;margin-bottom:clamp(56px,7vw,88px)}
 .row:last-child{margin-bottom:0}
 @media(min-width:940px){.row{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:56px}.row.rev .row-txt{order:2}}
 .row-txt p{font-size:15.5px;color:var(--tm);line-height:1.75;margin-top:12px}

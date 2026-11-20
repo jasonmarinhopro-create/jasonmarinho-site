@@ -127,7 +127,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .price-card.featured .price-inc li i{color:var(--y)}
     /* 2-col grid */
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    @media(max-width:768px){.two-col{grid-template-columns:minmax(0,1fr);gap:36px}}
     .rv{animation:rv .6s both} @keyframes rv{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
     @media(max-width:600px){.stats{gap:12px}.stat{min-width:calc(50% - 6px)}}
     

@@ -59,7 +59,7 @@
     .btn-g:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5)}
 
     .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:920px;margin:-34px auto 0;padding:0 16px;position:relative;z-index:2}
-    @media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-card{padding:16px 14px}.stat-card .sc-value{font-size:clamp(19px,6.2vw,26px);overflow-wrap:break-word}}
     .stat-card{background:#fff;border:1px solid var(--bd);border-top:2px solid transparent;border-radius:14px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,76,63,.06);transition:border-color .25s,transform .25s}
     .stat-card:hover{border-top-color:var(--g);transform:translateY(-2px)}
     .stat-card .sc-value{font-family:'Fraunces','Fraunces Fallback',serif;font-size:26px;font-weight:400;color:var(--g);letter-spacing:-.01em}

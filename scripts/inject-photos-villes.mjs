@@ -24,6 +24,11 @@ const CSS = '.hero{position:relative;overflow:hidden;isolation:isolate}.hero-pho
   + '.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}'
   + '.hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(0,26,17,.94) 0%,rgba(0,40,32,.86) 45%,rgba(0,51,41,.55) 100%)}'
   + '.hero-photo figcaption{position:absolute;right:12px;bottom:8px;z-index:1;font-size:10.5px;color:rgba(255,255,255,.55)}.hero-photo figcaption a{color:inherit}'
+  // Crédit photo (licence CC) au-dessus de la carte de chiffres qui chevauche
+  // le bas du bandeau (.facts, margin-top -58px, pages Estimateur de revenus) :
+  // il était caché dessous (audit responsive du 20/11/2026). Le bandeau gagne
+  // 24 px en bas pour que le crédit ait sa propre ligne, sans toucher le texte.
+  + '.hero:has(+.facts){padding-bottom:clamp(108px,11vw,134px)}.hero:has(+.facts) .hero-photo figcaption{bottom:66px;left:12px;text-align:right}'
   + '@media(max-width:720px){.hero-photo:after{background:linear-gradient(180deg,rgba(0,26,17,.9),rgba(0,40,32,.82))}}'
 
 function bloc(slug, alt) {

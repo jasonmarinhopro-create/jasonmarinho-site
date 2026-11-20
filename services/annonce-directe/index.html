@@ -85,7 +85,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .ck-list li{display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5;color:var(--tm)}
     .ck-list li .chk{margin-top:2px}
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
-    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    @media(max-width:768px){.two-col{grid-template-columns:minmax(0,1fr);gap:36px}}
     .cta-ban{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:clamp(36px,5vw,56px);text-align:center}
     .faq{display:flex;flex-direction:column;gap:10px;margin-top:28px}
     .faq-item{border:1px solid rgba(0,76,63,.1);border-radius:12px;overflow:hidden}

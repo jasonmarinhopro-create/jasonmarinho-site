@@ -112,7 +112,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 
     /* Two col */
     .two-col{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start}
-    @media(max-width:768px){.two-col{grid-template-columns:1fr;gap:36px}}
+    @media(max-width:768px){.two-col{grid-template-columns:minmax(0,1fr);gap:36px}}
 
     /* Mock card */
     .mock-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(0,76,63,.06)}

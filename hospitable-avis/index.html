@@ -146,7 +146,7 @@
   /* En-tête : le code tout de suite */
   .hero{background:radial-gradient(1200px 500px at 85% 0%,rgba(255,213,107,.10),transparent 60%),linear-gradient(140deg,var(--gx) 0%,var(--g) 100%);color:#fff;padding:clamp(96px,10vw,128px) 16px clamp(88px,9vw,120px)}
   .hero-in{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(28px,5vw,64px);align-items:center}
-  @media(max-width:900px){.hero-in{grid-template-columns:1fr}}
+  @media(max-width:900px){.hero-in{grid-template-columns:minmax(0,1fr)}}
   .breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.55);margin-bottom:22px}
   .breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none}
   .breadcrumb a:hover{color:#fff}
