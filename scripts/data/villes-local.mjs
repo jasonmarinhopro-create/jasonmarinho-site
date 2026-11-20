@@ -57,7 +57,7 @@ export const VILLES_LOCAL = {
       "<strong>Résidence secondaire ou logement dédié : autorisation de changement d'usage avec compensation obligatoire avant la première nuit.</strong> Sans elle, l'amende civile peut atteindre 100 000 € par logement.",
       "<strong>Numéro d'enregistrement</strong> à afficher sur chaque annonce, via le téléservice national obligatoire au plus tard le 20 mai 2026.",
     ],
-    taxe: "Logement non classé : <strong>5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond. À Paris s'ajoutent une taxe additionnelle départementale et, depuis 2025, une <strong>taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong> : la note grimpe vite pour un logement non classé.",
+    taxe: "Logement non classé : <strong>5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond. À Paris s'ajoutent une taxe additionnelle départementale et, depuis 2024, une <strong>taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong> : la note grimpe vite pour un logement non classé.",
     pics: [
       "Salon de l'Agriculture : du 21 février au 1er mars 2026 (Paris Expo Porte de Versailles)",
       "Fashion Week femme : du 2 au 10 mars, puis du 28 septembre au 6 octobre 2026",
@@ -74,7 +74,7 @@ export const VILLES_LOCAL = {
       "<strong>Timing :</strong> faites les photos avant les pics (printemps, Roland-Garros, Fashion Week) pour que l'annonce soit prête quand la demande monte.",
     ],
     faqPlafond: "À Paris, une résidence principale peut être louée en meublé de tourisme <strong>90 nuits par an maximum</strong>, après déclaration auprès de la Ville. Au-delà, ou pour un logement qui n'est pas votre résidence principale, il faut une autorisation de changement d'usage avec compensation, sous peine d'une amende civile pouvant atteindre 100 000 €.",
-    faqTaxe: "Pour un meublé non classé, la taxe de séjour est de <strong>5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, auxquels s'ajoutent à Paris une taxe additionnelle départementale et une taxe additionnelle de 200 % au profit d'Île-de-France Mobilités depuis 2025. Airbnb la collecte en général pour vous ; en réservation directe, c'est à vous de la collecter et de la reverser.",
+    faqTaxe: "Pour un meublé non classé, la taxe de séjour est de <strong>5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, auxquels s'ajoutent à Paris une taxe additionnelle départementale et une taxe additionnelle de 200 % au profit d'Île-de-France Mobilités depuis 2024. Airbnb la collecte en général pour vous ; en réservation directe, c'est à vous de la collecter et de la reverser.",
     sources: [
       { label: 'Chambre des notaires de Paris : location meublée touristique', url: 'https://paris.notaires.fr/fr/actualites/location-meublee-touristique-de-nouvelles-regles-administratives-et-fiscales-apprehender' },
       { label: 'Service-Public : évolution en 2026 de la taxe de séjour à Paris', url: 'https://entreprendre.service-public.gouv.fr/actualites/A17929' },
@@ -1106,8 +1106,8 @@ export const VILLES_LOCAL = {
 
   versailles: ville({
     ville: 'Versailles',
-    taxe: "Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus la taxe additionnelle départementale et, depuis 2025, une <strong>taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>, comme dans toute l'Île-de-France.",
-    faqTaxe: "Pour un meublé non classé, le taux est voté localement entre 1 % et 5 % du prix HT de la nuitée par personne, dans la limite d'un plafond, auxquels s'ajoutent la taxe additionnelle départementale et, depuis 2025, <strong>une taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à Versailles Grand Parc.",
+    taxe: "Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus la taxe additionnelle départementale et, depuis 2024, une <strong>taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>, comme dans toute l'Île-de-France.",
+    faqTaxe: "Pour un meublé non classé, le taux est voté localement entre 1 % et 5 % du prix HT de la nuitée par personne, dans la limite d'un plafond, auxquels s'ajoutent la taxe additionnelle départementale et, depuis 2024, <strong>une taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à Versailles Grand Parc.",
     pics: [
       "Grandes Eaux musicales du château, d'avril à octobre",
       "Toute l'année : visiteurs du château, à 30 minutes de Paris",
