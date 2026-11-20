@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-21 · plateformes · Airbnb passe à 15,5 % de commission hôte le 13 octobre 2026 · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-09-21 · marche · Été 2026 : le littoral à 77 % d'occupation, les villes à 48 % · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-22 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre : ajuste tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-23 · reglementation · L'UE donne aux communes un droit de plafonner les meublés de tourisme (https://www.journaldunet.com/business/action-publique/1554665-l-union-europeenne-presente-un-plan-visant-a-encadrer-la-location-de-meubles-de-tourisme-pour-contrer-l-essor-d-airbnb-et-lutter-contre-la-penurie-de-logements/)
 - 2026-09-23 · marche · Été 2026 : taux d'occupation en hausse, le littoral en tête des performances · masquée (https://blog.elloha.com/2026/08/29/bilan-ete-2026-lincroyable-resistance-du-tourisme-francais-et-les-cles-pour-reussir-la-rentree/)
@@ -73,3 +71,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-17 · fiscalite · Mise à jour PLF 2027 : le Sénat veut préserver tes amortissements LMNP (https://fiscalonline.com/outils-fiscaux/plf-2027-location-meublee-commission-finances-senat-propose-laisser)
 - 2026-11-17 · entreprise · Dès le 1er janvier 2027, ta plateforme prélèvera tes cotisations Urssaf · pour photographe, menage, depannage (https://www.portail-autoentrepreneur.fr/academie/statut-auto-entrepreneur/prelevement-source-cotisations-plateformes)
 - 2026-11-19 · reglementation · Declaloc s'ouvre ce trimestre : prépare l'enregistrement national de ton meublé (https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation)
+- 2026-11-20 · marche · Booking.com T3 2026 : +7 % de nuitées mais la concurrence grimpe plus vite · pour photographe, menage (https://www.rentalscaleup.com/fr/booking-com-t3-2026-la-demande-dhebergements-alternatifs-est-de-retour-mais-la-concurrence-aussi/)
