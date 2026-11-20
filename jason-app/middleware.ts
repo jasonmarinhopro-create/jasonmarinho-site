@@ -1,6 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { isTransientAuthError } from '@/lib/supabase/session-cookies'
+import { SESSION_CLAIMS_OPTIONS } from '@/lib/supabase/jwks'
 
 // Purge les cookies Supabase quand une session est corrompue (décodable
 // localement mais refusée par le serveur). Sans ça → boucle infinie de
@@ -142,10 +143,10 @@ export async function middleware(request: NextRequest) {
   // de passer, Supabase accepte l'ancien jeton quelques secondes. Un second
   // essai, court, évite la page « Connexion indisponible ».
   const checkClaims = async () => {
-    const first = await supabase.auth.getClaims()
+    const first = await supabase.auth.getClaims(undefined, SESSION_CLAIMS_OPTIONS)
     if (!first.error || !isTransientAuthError(first.error) || Date.now() - authStart > 4_000) return first
     await new Promise(r => setTimeout(r, 300))
-    return supabase.auth.getClaims()
+    return supabase.auth.getClaims(undefined, SESSION_CLAIMS_OPTIONS)
   }
 
   try {

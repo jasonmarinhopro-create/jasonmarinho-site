@@ -61,4 +61,21 @@ describe('préchargement des liens', () => {
     }
     expect(offenders).toEqual([])
   })
+
+  it('aucun <Link> préchargé vers Mes finances depuis l’extérieur de la section', () => {
+    // Le préchargement calcule le layout de Mes finances (loadFinances) : le
+    // lien du menu le faisait recalculer à chaque ouverture sur ordinateur
+    // (20/11/2026). Href calculé : prefetch={prefetchFor(href)} (lib/nav/prefetch).
+    const files = [...walk(path.join(ROOT, 'app'), ['.tsx']), ...walk(path.join(ROOT, 'components'), ['.tsx'])]
+      .filter(f => !rel(f).startsWith(path.join('app', 'dashboard', 'finances')))
+    const offenders: string[] = []
+    for (const f of files) {
+      const s = fs.readFileSync(f, 'utf8')
+      for (const tag of s.match(/<Link\b[^>]*?>/g) ?? []) {
+        const href = tag.match(/href=(\{`[^`]*`\}|"[^"]*"|\{'[^']*'\})/)?.[1] ?? ''
+        if (/^[{`"']*\/dashboard\/finances/.test(href) && !/prefetch=\{(false|prefetchFor\()/.test(tag)) offenders.push(`${rel(f)} : ${href.slice(0, 60)}`)
+      }
+    }
+    expect(offenders).toEqual([])
+  })
 })

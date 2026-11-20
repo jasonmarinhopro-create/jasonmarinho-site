@@ -194,6 +194,9 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // rendu ; le fetch client ci-dessous ne sert qu'à rafraîchir en arrière-plan
   // sans bloquer l'affichage initial.
   const [appNotifUnread, setAppNotifUnread] = useState(initialAppNotifUnread)
+  // Compteurs à jour pour le préchargement différé de la cloche
+  const unreadRef = useRef(0)
+  unreadRef.current = appNotifUnread + chezNousUnread
   useEffect(() => {
     if (!live) return
     setAppNotifUnread(live.appNotifUnread)
@@ -256,8 +259,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     // Pas d'appel au montage (10/11/2026) : le serveur vient de calculer ces
     // compteurs pour ce même affichage, le redemander doublait les lectures
     // de chaque ouverture. Le minuteur et le retour sur l'onglet suffisent.
-    // Cloche instantanée : le fil est préchargé une fois la page affichée
-    const warm = window.setTimeout(prefetchNotificationFeed, 2500)
+    // Cloche instantanée : le fil est préchargé une fois la page affichée,
+    // seulement s'il y a du nouveau (20/11/2026 : avant, à chaque ouverture,
+    // même sans notification). Sinon : au survol, toucher ou focus de la cloche.
+    const warm = window.setTimeout(() => { if (unreadRef.current > 0) prefetchNotificationFeed() }, 2500)
     // Plus de minuteur (18/11/2026, piste 3 de l'audit des appels : avant,
     // chaque minute puis toutes les 5 min, onglet par onglet, même sans
     // personne devant). Retour sur l'onglet : tout de suite, au plus une fois

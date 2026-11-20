@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { prefetchFor } from '@/lib/nav/prefetch'
 import { CheckCircle, Circle, ArrowRight, X } from '@phosphor-icons/react/dist/ssr'
 import { markOnboardingStep } from '@/lib/onboarding/actions'
 
@@ -98,7 +99,7 @@ export default function SetupChecklist({ userId, steps, initiallyDismissed = fal
               <div style={s.stepDesc}>{step.desc}</div>
             </div>
             {!step.done && (
-              <Link href={step.ctaHref} style={s.stepCta}>
+              <Link href={step.ctaHref} prefetch={prefetchFor(step.ctaHref)} style={s.stepCta}>
                 {step.ctaLabel}
                 <ArrowRight size={11} weight="bold" />
               </Link>

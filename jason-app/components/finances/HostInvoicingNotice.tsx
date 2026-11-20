@@ -69,7 +69,7 @@ export default function HostInvoicingNotice({ tone = 'app', proClient = false }:
         Liens affiliés : je touche une commission si tu t’abonnes, sans surcoût pour toi.
       </p>
       {tone === 'app' && (
-        <Link href="/dashboard/finances/fiscalite#facture-electronique" style={{ display: 'inline-block', marginTop: '8px', fontSize: '13px', fontWeight: 700, color: c.accent, textDecoration: 'none' }}>
+        <Link href="/dashboard/finances/fiscalite#facture-electronique" prefetch={false} style={{ display: 'inline-block', marginTop: '8px', fontSize: '13px', fontWeight: 700, color: c.accent, textDecoration: 'none' }}>
           Vérifier ma situation en 3 questions →
         </Link>
       )}

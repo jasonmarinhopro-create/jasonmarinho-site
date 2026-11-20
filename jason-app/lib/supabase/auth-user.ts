@@ -13,6 +13,7 @@
 import { cache } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
+import { SESSION_CLAIMS_OPTIONS } from '@/lib/supabase/jwks'
 
 export interface AuthIdentity {
   id: string
@@ -24,7 +25,7 @@ export interface AuthIdentity {
 // Asymmetric signing keys use cached JWKS; symmetric keys retain server verification.
 export const getAuthIdentity = cache(async (): Promise<AuthIdentity | null> => {
   const supabase = await createClient()
-  const { data, error } = await supabase.auth.getClaims()
+  const { data, error } = await supabase.auth.getClaims(undefined, SESSION_CLAIMS_OPTIONS)
   if (error || !data || typeof data.claims?.sub !== 'string') return null
 
   const claims = data.claims as unknown as Record<string, unknown>

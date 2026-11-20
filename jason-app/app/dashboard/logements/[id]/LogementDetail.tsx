@@ -721,7 +721,7 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
             <Link prefetch={false} href={`/dashboard/gabarits?logement=${l.id}`} style={s.btnGhost}>
               <ChatText size={15} weight="bold" /> Messages
             </Link>
-            <Link href={`/dashboard/finances/logement/${l.id}`} style={s.btnGhost}>
+            <Link href={`/dashboard/finances/logement/${l.id}`} prefetch={false} style={s.btnGhost}>
               <CurrencyEur size={15} weight="bold" /> Finances
             </Link>
           </div>

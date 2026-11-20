@@ -792,7 +792,7 @@ export default async function DashboardPage() {
             <div style={{ ...heroCard, width: '100%' }}>
               <div style={s.asideTitle}>Ce mois-ci</div>
               <div style={s.asideStats}>
-                <Link href="/dashboard/finances/revenus" style={s.asideStat}>
+                <Link href="/dashboard/finances/revenus" prefetch={false} style={s.asideStat}>
                   <span style={s.asideNum}>{fmtEur(revenusThisMois)}</span>
                   <span style={s.asideLbl}>
                     encaissés{ecartMois !== null && prevPeriod && (
@@ -802,13 +802,13 @@ export default async function DashboardPage() {
                     )}
                   </span>
                 </Link>
-                <Link href="/dashboard/finances/revenus" style={s.asideStat}>
+                <Link href="/dashboard/finances/revenus" prefetch={false} style={s.asideStat}>
                   <span style={s.asideNum}>{fmtEur(revenuPrevisionnel)}</span>
                   <span style={s.asideLbl}>déjà réservés à venir</span>
                 </Link>
               </div>
               {objectifAnnuel !== null && objectifAnnuel > 0 ? (
-                <Link href="/dashboard/finances/revenus" style={s.asideObj}>
+                <Link href="/dashboard/finances/revenus" prefetch={false} style={s.asideObj}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 12.5 }}>
                     <span style={{ color: 'var(--text-2)', fontWeight: 600 }}><Trophy size={13} weight="fill" color="var(--accent-text)" style={{ verticalAlign: '-2px' }} /> Objectif {yearPfx}</span>
                     <span style={{ color: (objectifPct ?? 0) >= expectedPct ? 'var(--accent-text)' : '#B7791F', fontWeight: 700 }}>
@@ -822,7 +822,7 @@ export default async function DashboardPage() {
                   <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{fmtEur(revenuYTD)} sur {fmtEur(objectifAnnuel)}</span>
                 </Link>
               ) : (
-                <Link href="/dashboard/finances/revenus" style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)' }}>
+                <Link href="/dashboard/finances/revenus" prefetch={false} style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)' }}>
                   Fixer mon objectif de l&apos;année
                 </Link>
               )}

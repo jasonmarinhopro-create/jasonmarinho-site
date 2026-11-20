@@ -13,7 +13,7 @@ import { readLaunchSnapshot, SNAP_FILL_INLINE } from '@/lib/launch-snapshot'
 
 function readNow(): string {
   if (typeof window === 'undefined') return ''
-  try { return readLaunchSnapshot(document.cookie, window.localStorage, window.innerWidth, Date.now()) } catch { return '' }
+  try { return readLaunchSnapshot(document.cookie, window.localStorage, window.innerWidth, Date.now(), window.location.pathname) } catch { return '' }
 }
 
 export default function SnapLayer() {

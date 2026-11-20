@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useMemo, useTransition } from 'react'
 import { createPortal } from 'react-dom'
 import ShellFallback from '@/components/layout/ShellFallback'
 import Link from 'next/link'
+import { prefetchFor } from '@/lib/nav/prefetch'
 import { usePathname, useSearchParams } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, FileText,
@@ -466,6 +467,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     return (
       <Link
         href={href}
+        prefetch={prefetchFor(href)}
         onClick={onClose}
         className={active ? 'jm-nav-item jm-nav-item--active' : 'jm-nav-item'}
         title={collapsed ? label : undefined}

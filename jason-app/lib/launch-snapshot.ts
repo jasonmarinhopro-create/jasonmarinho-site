@@ -82,8 +82,16 @@ export function sessionUserId(cookie: string): string {
   }
 }
 
-/** HTML de la copie à afficher maintenant, sinon '' */
-export function readLaunchSnapshot(cookie: string, ls: KV, width: number, now: number): string {
+// Pages où la copie peut s'afficher : le lancement, les pages d'arrivée
+// (/dashboard renvoie un pro sur sa fiche) et la page copiée elle-même.
+// Ailleurs (rechargement d'une autre page dans les 20 s du cookie jm-launch),
+// l'écran au logo : jamais l'Accueil par-dessus une autre page.
+export function snapAllowedOn(path: string, snapPath: string): boolean {
+  return path === '/ouverture' || path === '/dashboard' || path === '/dashboard/admin' || path === snapPath
+}
+
+/** HTML de la copie à afficher maintenant sur la page `path`, sinon '' */
+export function readLaunchSnapshot(cookie: string, ls: KV, width: number, now: number, path: string): string {
   try {
     const u = sessionUserId(cookie)
     if (!u) return ''
@@ -91,6 +99,7 @@ export function readLaunchSnapshot(cookie: string, ls: KV, width: number, now: n
     if (!s || s.v !== 1 || s.u !== u || typeof s.h !== 'string') return ''
     if (!(now - s.t < SNAP_MAX_AGE_MS) || s.t > now + 60_000) return ''
     if (Math.abs(s.w - width) > SNAP_WIDTH_TOLERANCE) return ''
+    if (!snapAllowedOn(path, s.p)) return ''
     return s.h
   } catch {
     return ''
@@ -114,8 +123,8 @@ export function buildSnapshot(u: string, p: string, w: number, t: number, h: str
 
 // Même lecture que readLaunchSnapshot, en JavaScript simple pour un script en
 // ligne (pas de module ni de syntaxe récente). Appelée avec
-// (document.cookie, localStorage, innerWidth, Date.now()).
-export const SNAP_READ_JS = `function(c,ls,w,now){try{
+// (document.cookie, localStorage, innerWidth, Date.now(), location.pathname).
+export const SNAP_READ_JS = `function(c,ls,w,now,path){try{
 function b(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return atob(s)}
 var parts={},base='';c.split(/;\\s*/).forEach(function(x){var i=x.indexOf('=');if(i<0)return;var m=/^(sb-.+-auth-token)(?:\\.(\\d+))?$/.exec(x.slice(0,i));if(!m)return;base=m[1];parts[m[2]===undefined?'-1':m[2]]=x.slice(i+1)});
 if(!base)return'';var raw=parts['-1']||'';if(!raw){var n=0;while(parts[String(n)]!==undefined){raw+=parts[String(n)];n++}}
@@ -127,10 +136,11 @@ var sn=JSON.parse(ls.getItem('${SNAP_PREFIX}'+mode)||'null');
 if(!sn||sn.v!==1||sn.u!==u||typeof sn.h!=='string')return'';
 if(!(now-sn.t<${SNAP_MAX_AGE_MS})||sn.t>now+60000)return'';
 if(Math.abs(sn.w-w)>${SNAP_WIDTH_TOLERANCE})return'';
+if(!(path==='/ouverture'||path==='/dashboard'||path==='/dashboard/admin'||path===sn.p))return'';
 return sn.h}catch(e){return''}}`
 
 /** Script en ligne posé juste après le conteneur vide de la copie */
-export const SNAP_FILL_INLINE = `(function(){try{var el=document.currentScript&&document.currentScript.previousElementSibling;if(!el||el.innerHTML)return;var h=(${SNAP_READ_JS})(document.cookie,localStorage,innerWidth,Date.now());if(h)el.innerHTML=h}catch(e){}})()`
+export const SNAP_FILL_INLINE = `(function(){try{var el=document.currentScript&&document.currentScript.previousElementSibling;if(!el||el.innerHTML)return;var h=(${SNAP_READ_JS})(document.cookie,localStorage,innerWidth,Date.now(),location.pathname);if(h)el.innerHTML=h}catch(e){}})()`
 
 /** Efface toutes les copies (déconnexion) */
 export function clearLaunchSnapshots() {

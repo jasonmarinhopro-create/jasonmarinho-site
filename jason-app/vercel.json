@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node ../scripts/sync-counts.mjs && next build",
+  "buildCommand": "node ../scripts/sync-counts.mjs && node scripts/fetch-jwks.mjs && next build",
   "ignoreCommand": "bash scripts/ignore-build.sh",
   "regions": [
     "lhr1"

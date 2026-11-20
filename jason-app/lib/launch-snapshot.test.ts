@@ -24,7 +24,7 @@ const NOW = 1_800_000_000_000
 const snap = (over: Partial<Record<string, unknown>> = {}) => JSON.stringify({ v: 1, u: UID, p: '/dashboard', w: 390, t: NOW - 3600_000, h: '<div class="dash-layout">x</div>', ...over })
 
 // eslint-disable-next-line no-new-func
-const inlineRead = new Function('return ' + SNAP_READ_JS)() as (c: string, ls: unknown, w: number, n: number) => string
+const inlineRead = new Function('return ' + SNAP_READ_JS)() as (c: string, ls: unknown, w: number, n: number, p: string) => string
 
 describe('identifiant du compte dans le cookie de session', () => {
   it('lit le JSON simple, découpé en morceaux ou en base64', () => {
@@ -40,7 +40,7 @@ describe('identifiant du compte dans le cookie de session', () => {
 })
 
 describe('copie de la page d’arrivée', () => {
-  const cases: Array<[string, string, Record<string, string>, number, number, string]> = [
+  const cases: Array<[string, string, Record<string, string>, number, number, string, string?]> = [
     ['même compte', rawCookie(UID), { 'jm-snap:user': snap() }, 390, NOW, '<div class="dash-layout">x</div>'],
     ['autre compte sur l’appareil', rawCookie(OTHER), { 'jm-snap:user': snap() }, 390, NOW, ''],
     ['pas de session', '', { 'jm-snap:user': snap() }, 390, NOW, ''],
@@ -51,11 +51,15 @@ describe('copie de la page d’arrivée', () => {
     ['mode admin sans copie admin', rawCookie(UID) + '; jm-admin-mode=1', { 'jm-snap:user': snap() }, 390, NOW, ''],
     ['donnée abîmée', rawCookie(UID), { 'jm-snap:user': '{oups' }, 390, NOW, ''],
     ['date dans le futur', rawCookie(UID), { 'jm-snap:user': snap({ t: NOW + 3600_000 }) }, 390, NOW, ''],
+    ['lancement', rawCookie(UID), { 'jm-snap:user': snap() }, 390, NOW, '<div class="dash-layout">x</div>', '/ouverture'],
+    ['autre page rechargée', rawCookie(UID), { 'jm-snap:user': snap() }, 390, NOW, '', '/dashboard/reservations'],
+    ['pro : /dashboard puis sa fiche', rawCookie(UID), { 'jm-snap:user': snap({ p: '/dashboard/ma-fiche-photographe' }) }, 390, NOW, '<div class="dash-layout">x</div>', '/dashboard/ma-fiche-photographe'],
+    ['pro : passage par /dashboard', rawCookie(UID), { 'jm-snap:user': snap({ p: '/dashboard/ma-fiche-photographe' }) }, 390, NOW, '<div class="dash-layout">x</div>', '/dashboard'],
   ]
-  it.each(cases)('%s', (_label, cookie, data, w, now, expected) => {
-    expect(readLaunchSnapshot(cookie, store(data), w, now)).toBe(expected)
+  it.each(cases)('%s', (_label, cookie, data, w, now, expected, path = '/dashboard') => {
+    expect(readLaunchSnapshot(cookie, store(data), w, now, path)).toBe(expected)
     // Le script en ligne répond exactement pareil
-    expect(inlineRead(cookie, store(data), w, now)).toBe(expected)
+    expect(inlineRead(cookie, store(data), w, now, path)).toBe(expected)
   })
 
   it('le script de remplissage est du JavaScript valide', () => {
