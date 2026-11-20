@@ -92,7 +92,28 @@ Faux positifs connus (ignorés par l'outil ou sans effet visible) : piège à ro
 
 ### Dashboard
 - Pages publiques (connexion, inscription avec chaque profil, mot de passe oublié, nouveau mot de passe, installation, réveil, assistant de contrat, confirmation) : 0 défaut à 320, 375, 390, 768, 1024, 1280, 1920 px. Inscription améliorée sous 420 px (pastilles à côté du titre).
-- Pages connectées, revue du code : page d'article d'aide (`minWidth: 300px` coupait le texte à 320 px), squelette de chargement (barre de 380 px), grilles `repeat(3, 1fr)` passées en `minmax(0, 1fr)` (fiche membre de la communauté, Membres admin, suivi d'activité des pros). Audit en rendu réel : workflow « Audit responsive » (en attente de l'accord de Jason).
+- Pages connectées, revue du code : page d'article d'aide (`minWidth: 300px` coupait le texte à 320 px), squelette de chargement (barre de 380 px), grilles `repeat(3, 1fr)` passées en `minmax(0, 1fr)` (fiche membre de la communauté, Membres admin, suivi d'activité des pros).
+- **Audit en rendu réel (workflow, accord de Jason le 20/11)** : 117 pages × 5 largeurs (1920, 1280, 768, 390, 320). Défauts trouvés et corrigés :
+
+| Page(s) | Défaut | Correction |
+|---|---|---|
+| Mes finances (revenus, performances, logement) | noms de mois des graphiques sur 12 mois coupés net (colonnes de ~20 px) | `MonthTick` : initiale sous 600 px (`.mt-l` / `.mt-s`) |
+| Statistiques des pros (photo, ménage) | « 30 derniers jours » chevauche « 3 mois » à 320 px | libellé court (`.txt-long` / `.txt-court`, 420 px) |
+| QG admin | dates de la liste des demandes à 200 px hors écran | grilles `.dh-grid`, `.dh-cols`, `.qg-shell` en `minmax(0,1fr)` |
+| Forum Entre hôtes | « Marquer utile » hors écran à 390 et 320 px | boutons du bas qui passent à la ligne, libellé masqué sous 420 px (icône + `aria-label`) |
+| Accueil, Déclarations voyageurs | bouton « Fait » hors écran à 320 px | rangée d'actions rétrécissable (plus de `flexShrink: 0`), `minWidth: min(200px,100%)` |
+| Accueil | carte « Ce mois-ci » qui dépasse à 320 px | `repeat(auto-fit, minmax(120px, 1fr))`, `overflowWrap: anywhere` |
+| Fiche voyageur | « + Ajouter » poussé dehors par le champ | `minWidth: 0` sur le champ (un `<input>` en flex garde sinon sa largeur par défaut) |
+| Audit Google Business (import URL) | URL d'exemple d'un seul tenant | `minWidth: 0` + `overflowWrap: anywhere` |
+| Admin Communauté | adresses de groupes Facebook hors carte, pastilles sous les boutons à 320 px | lien en « … », bloc d'infos `flex: 1 1 200px` |
+| Admin Formations | « inscrits » coupé à 320 px | ligne de chiffres en `flexWrap: wrap` |
+| Aperçu des posts Facebook (Visibilité) | lien long hors de l'aperçu à 320 px | `overflowWrap: anywhere` |
+
+Faux positif appris : aperçu volontairement coupé avec un fondu (`mask-image`) = voulu, comme « … ».
+
+**Temps d'affichage** (mesure du workflow, compte admin, base gratuite) : premier octet 0,2 à 0,6 s partout (le cadre part tout de suite) ; affichage complet de 2 à plus de 20 s selon les pages, surtout l'admin (Indexation, QG, Social, Dépannage, Ventes) : ce sont les lectures de la base gratuite, voir `technique.md`. Le 1er audit comptait aussi l'attente « réseau calme » (jusqu'à 15 s pour les pages qui interrogent le serveur en continu) : corrigé, le temps s'arrête à la fin des squelettes.
+
+**Pièges du `<input>` et des rangées de boutons** : un `<input>` en `flex: 1` sans `minWidth: 0` garde ~150 px ; une rangée `flexShrink: 0` + `flexWrap: wrap` ne passe jamais à la ligne (elle prend la largeur de tous ses boutons). Toujours `minWidth: 0` et laisser rétrécir.
 
 ### Appels réseau
 - Site : 18 à 29 requêtes par page (polices, `nav.js`, `footer.js`, images). Un seul appel à l'app par page : `/api/public/chiffres` (cache Vercel 1 h, la base n'est lue qu'au recalcul) ; un comptage de visite (`/api/track/visit`, sert à Provenance). Rien d'inutile trouvé.
