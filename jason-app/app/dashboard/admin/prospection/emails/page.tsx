@@ -11,6 +11,8 @@ import { isPaidActive, previousMonth } from '@/lib/visibility/pro-monthly'
 import { MONTHLY_OFF_FLAG, monthlySentFlag } from '@/lib/visibility/pro-stats'
 import AdminHero, { adminAsideCard } from '../../_ui/AdminHero'
 import RelativeTime from '@/components/ui/RelativeTime'
+import Link from 'next/link'
+import { emailCatalogue } from '@/lib/email/catalogue'
 
 export const metadata = { title: 'E-mails de la plateforme, Admin' }
 export const dynamic = 'force-dynamic'
@@ -31,7 +33,7 @@ async function bilanDuMois(db: ReturnType<typeof getServiceClient>, today: strin
   return { label: month.label, total: ids.length - desabonnes, envoyes: steps.filter(s => s.includes(monthlySentFlag(month.key))).length, desabonnes }
 }
 
-export default async function EmailsPage() {
+export default async function EmailsPage({ searchParams }: { searchParams?: { apercu?: string } }) {
   await requireAdmin()
   const db = getServiceClient()
   const today = parisToday()
@@ -40,8 +42,14 @@ export default async function EmailsPage() {
     db.rpc('email_stats', { p_jours: JOURS }),
     bilanDuMois(db, today).catch(() => null),
   ])
-  const missing = !!statsRes.error
-  const d: EmailDashboard | null = missing ? null : buildEmailDashboard(statsRes.data as RawEmailStats, { today, jours: JOURS, webhookConfigured })
+  // Fonction absente (migration pas passée) ou autre erreur, affichée telle quelle
+  const missing = !!statsRes.error && /PGRST202|42883|42P01/.test(`${statsRes.error.code ?? ''} ${statsRes.error.message}`)
+  const readError = statsRes.error && !missing ? statsRes.error.message.slice(0, 200) : null
+  const catalogue = emailCatalogue()
+  const choisi = catalogue.find(c => c.id === searchParams?.apercu) ?? catalogue.find(c => c.id === 'bilan') ?? catalogue[0]
+  const apercu = choisi.render()
+  const groupesApercu = [...new Set(catalogue.map(c => c.group))]
+  const d: EmailDashboard | null = statsRes.error ? null : buildEmailDashboard(statsRes.data as RawEmailStats, { today, jours: JOURS, webhookConfigured })
   const dernier = (statsRes.data as RawEmailStats | null)?.dernier_evenement ?? null
 
   return (
@@ -72,6 +80,7 @@ export default async function EmailsPage() {
           <strong>Base pas encore prête.</strong> La migration <code>20261120_196_suivi_emails.sql</code> s&apos;applique au prochain passage du workflow « Migrations Supabase ».
         </div>
       )}
+      {readError && <div style={notice}><strong>Lecture des chiffres impossible.</strong> {readError}</div>}
       {d?.alertes.map(a => <div key={a} style={notice}>{a}</div>)}
 
       {bilan && bilan.total > 0 && (
@@ -142,6 +151,33 @@ export default async function EmailsPage() {
             )}
         </section>
       )}
+
+      <section id="apercu" style={card}>
+        <h2 style={h2}>Les e-mails, tels qu&apos;ils arrivent</h2>
+        <p style={muted}>{catalogue.length} e-mails avec des données fictives. Rien n&apos;est envoyé ni lu en base : seul l&apos;e-mail choisi est préparé.</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', flex: '1 1 260px', maxWidth: '100%', minWidth: 0 }}>
+            {groupesApercu.map(g => (
+              <div key={g} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <span style={{ ...kicker, color: 'var(--text-3)', marginBottom: '4px' }}>{g}</span>
+                {catalogue.filter(c => c.group === g).map(c => {
+                  const on = c.id === choisi.id
+                  return (
+                    <Link key={c.id} href={`?apercu=${c.id}#apercu`} scroll={false} aria-current={on ? 'true' : undefined} style={{ display: 'flex', flexDirection: 'column', padding: '7px 10px', borderRadius: '10px', textDecoration: 'none', background: on ? 'var(--accent-bg)' : 'transparent', border: on ? '1px solid var(--border)' : '1px solid transparent' }}>
+                      <span style={{ fontSize: '13.5px', fontWeight: on ? 600 : 500, color: on ? 'var(--accent-text)' : 'var(--text)' }}>{c.when}</span>
+                      <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Pour : {c.to}</span>
+                    </Link>
+                  )
+                })}
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: '3 1 420px', minWidth: 0, maxWidth: '100%' }}>
+            <div style={{ fontSize: '13px', color: 'var(--text-2)' }}>Objet : <strong style={{ color: 'var(--text)', overflowWrap: 'anywhere' }}>{apercu.subject}</strong></div>
+            <iframe title={`Aperçu : ${apercu.subject}`} srcDoc={apercu.html} sandbox="" style={{ width: '100%', height: '820px', border: '1px solid var(--border)', borderRadius: '14px', background: '#F3F6F4' }} />
+          </div>
+        </div>
+      </section>
 
       <section style={{ ...card, background: 'transparent' }}>
         <h2 style={h2}>Comment c&apos;est mesuré</h2>
