@@ -1839,3 +1839,19 @@ a { color: inherit; }
 @media print {
   .dash-main { margin: 0 !important; border: none !important; border-radius: 0 !important; padding-top: 0 !important; }
 }
+
+/* Libellés de mois des graphiques sur 12 mois (MonthTick, 20/11/2026) :
+   initiale sur téléphone, sinon coupés net dans des colonnes de ~20 px */
+.mt-s { display: none; }
+@media (max-width: 600px) {
+  .mt-l { display: none; }
+  .mt-s { display: inline; }
+}
+
+/* Libellé long / court selon la largeur (20/11/2026, audit responsive) :
+   <span className="txt-long">30 derniers jours</span><span className="txt-court">30 jours</span> */
+.txt-court { display: none; }
+@media (max-width: 420px) {
+  .txt-long { display: none; }
+  .txt-court { display: inline; }
+}

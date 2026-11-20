@@ -78,7 +78,7 @@ interface Props {
 // 18/11/2026 (Jason) : les 4 boîtes passent en ligne au-dessus du contenu
 // (avant : colonne de 232 px à gauche), le contenu prend toute la largeur.
 const QG_CSS = `
-.qg-shell{display:grid;gap:18px;align-items:start}
+.qg-shell{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
 @media(min-width:1000px){.qg-nav{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:999px){.qg-nav{overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:0 4px 2px}.qg-nav::-webkit-scrollbar{display:none}.qg-nav-hint{display:none}.qg-nav-item{width:auto!important}}
 .qg-nav-item:hover{border-color:var(--accent-border)!important}

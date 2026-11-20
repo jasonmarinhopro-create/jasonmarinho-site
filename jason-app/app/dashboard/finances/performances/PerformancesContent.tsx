@@ -8,6 +8,7 @@ import {
 import { findMarketBenchmark } from '@/lib/lcd/market-benchmarks'
 import PeriodPicker from '../_ui/PeriodPicker'
 import { Card, CardHead, Definition, ProgressBar, eur, pct, ui, COLORS } from '../_ui/ui'
+import MonthTick from '@/app/dashboard/finances/_ui/MonthTick'
 
 
 const JOURS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
@@ -81,7 +82,7 @@ export default function PerformancesContent({ data, searchParams }: { data: Fina
                     <div style={s.occZone}>
                       <div style={{ ...s.occBar, height: `${(v ?? 0) * 100}%`, background: m.mois === monthKey(today) ? 'rgba(47,158,91,0.55)' : 'var(--accent-text)' }} />
                     </div>
-                    <span style={{ ...s.occLbl, fontWeight: haute ? 700 : 500, color: haute ? 'var(--text-2)' : 'var(--text-3)' }}>{monthLabel(m.mois, true)}</span>
+                    <span style={{ ...s.occLbl, fontWeight: haute ? 700 : 500, color: haute ? 'var(--text-2)' : 'var(--text-3)' }}><MonthTick ym={m.mois} /></span>
                   </div>
                 )
               })}

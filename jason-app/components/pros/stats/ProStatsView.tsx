@@ -87,7 +87,8 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
                 const on = p.key === d.period.key
                 return (
                   <Link key={p.key} href={href(p.key)} prefetch={false} scroll={false} aria-current={on ? 'page' : undefined} style={{ ...s.periodBtn, ...(on ? s.periodOn : {}) }}>
-                    {p.label}
+                    {/* « 30 derniers jours » débordait sur le bouton voisin à 320 px (audit du 20/11/2026) */}
+                    <span className="txt-long">{p.label}</span><span className="txt-court">{p.short}</span>
                   </Link>
                 )
               })}

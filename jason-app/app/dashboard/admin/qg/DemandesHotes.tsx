@@ -37,10 +37,10 @@ const METIER: Record<DemandeMetier, { label: string; Icon: typeof Camera; dir: s
 }
 
 const CSS = `
-.dh-grid{display:grid;gap:16px;align-items:start}
+.dh-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
 @media(min-width:1100px){.dh-grid{grid-template-columns:minmax(300px,380px) minmax(0,1fr)}.dh-back{display:none!important}}
 @media(max-width:1099px){.dh-grid.open .dh-list{display:none!important}.dh-grid:not(.open) .dh-detail{display:none!important}}
-.dh-cols{display:grid;gap:14px;align-items:start}
+.dh-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:start}
 @media(min-width:1500px){.dh-cols{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}}
 .dh-item:hover{border-color:var(--accent-border)!important}
 `

@@ -6,6 +6,7 @@ import { useState } from 'react'
 import type { MoisPoint } from '@/lib/finances/engine'
 import { monthLabel } from '@/lib/finances/engine'
 import { COLORS, eur } from './ui'
+import MonthTick from '@/app/dashboard/finances/_ui/MonthTick'
 
 export default function RevenueChart({ points, currentMonth }: { points: MoisPoint[]; currentMonth: string }) {
   const [sel, setSel] = useState<string | null>(null)
@@ -34,7 +35,7 @@ export default function RevenueChart({ points, currentMonth }: { points: MoisPoi
                 {h1 > 0 && <div style={{ ...s.bar, height: `${h1}%`, opacity: active ? 1 : 0.78 }} />}
               </div>
               <span style={{ ...s.lbl, color: active ? 'var(--text)' : 'var(--text-3)', fontWeight: active ? 700 : 500 }}>
-                {monthLabel(p.mois, true)}
+                <MonthTick ym={p.mois} />
               </span>
             </button>
           )
