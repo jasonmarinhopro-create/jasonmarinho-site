@@ -10,7 +10,6 @@ import { buildEmailDashboard, type EmailDashboard, type RawEmailStats } from '@/
 import { isPaidActive, previousMonth } from '@/lib/visibility/pro-monthly'
 import { MONTHLY_OFF_FLAG, monthlySentFlag } from '@/lib/visibility/pro-stats'
 import AdminHero, { adminAsideCard } from '../../_ui/AdminHero'
-import EspaceSwitch from '../EspaceSwitch'
 import RelativeTime from '@/components/ui/RelativeTime'
 
 export const metadata = { title: 'E-mails de la plateforme, Admin' }
@@ -47,7 +46,6 @@ export default async function EmailsPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: 'var(--dash-page-px)', width: '100%', boxSizing: 'border-box' }}>
-      <EspaceSwitch current="emails" />
       <AdminHero
         section="Prospection"
         title="Les e-mails de la plateforme,"
