@@ -76,7 +76,9 @@ export function detect(withText) {
     if (own.textOverflow === 'ellipsis') continue
     for (const anc of [el, ...ancestors(el)]) {
       const cs = getComputedStyle(anc)
-      if (cs.overflowX === 'visible' || scrolls(cs) || cs.textOverflow === 'ellipsis') { if (scrolls(cs)) break; continue }
+      // Conteneur qui défile ou qui raccourcit avec « … » : texte pas coupé net (voulu)
+      if (scrolls(cs) || (cs.textOverflow === 'ellipsis' && cs.overflowX !== 'visible')) break
+      if (cs.overflowX === 'visible') continue
       const b = anc.getBoundingClientRect()
       const bad = textRects(el).some(r => r.right > b.right + 2 || r.left < b.left - 2)
       if (bad) { const tr = textRects(el); out.cut.push({ el: path(el), box: path(anc), text: txt(el.textContent), hint: hint(el), dep: Math.round(Math.max(...tr.map(r => r.right)) - b.right), boxW: Math.round(b.width) }) }

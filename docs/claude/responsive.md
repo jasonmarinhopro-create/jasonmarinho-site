@@ -64,7 +64,8 @@ Largeurs par défaut : 320, 375, 768, 1024, 1280, 1920. `--out fichier.json` gar
 L'environnement de Claude ne joint pas Supabase : l'audit du dashboard tourne dans GitHub Actions, **workflow « Audit responsive »** (`.github/workflows/audit-responsive.yml`, lancement à la main, mode `app`, filtre facultatif `only`).
 - Session ouverte sur le compte administrateur sans e-mail (lien magique généré par l'API d'administration puis vérifié), fermée à la fin.
 - **Lecture seule** : toute requête autre que GET est bloquée dans le navigateur (aucun bouton, aucune action serveur, aucun « vu »). Aucune page ni layout du dashboard n'écrit en base à l'affichage (vérifié le 20/11 ; à revérifier si une page se met à écrire au rendu).
-- Rapport public (dépôt public) **sans aucun texte des pages** : sélecteurs, adresses avec identifiants remplacés par `[id]`, largeurs, temps d'affichage (1er octet, page affichée).
+- Rapport public (dépôt public) **sans donnée de compte** : sélecteurs, adresses avec identifiants remplacés par `[id]`, largeurs, temps d'affichage (1er octet, page affichée). Un texte n'est cité que s'il figure déjà dans le code de l'app (libellé d'interface) ; sinon un indice de style (`span{inline fs:13.5px … ws:nowrap w:107} < …`) pour retrouver le composant.
+- `--only` / champ « only » du workflow : morceaux d'adresse séparés par des virgules, ou `=/dashboard` pour une adresse exacte.
 - Pages : toutes les `page.tsx` de `app/dashboard` sans paramètre, puis une page de détail par modèle d'adresse trouvée dans les listes. Chaque page est chargée une fois (1920 px) puis la fenêtre est rétrécie (1280, 768, 390, 320).
 - Accord de Jason requis avant le premier lancement (session sur son compte).
 
@@ -103,13 +104,16 @@ Faux positifs connus (ignorés par l'outil ou sans effet visible) : piège à ro
 | Forum Entre hôtes | « Marquer utile » hors écran à 390 et 320 px | boutons du bas qui passent à la ligne, libellé masqué sous 420 px (icône + `aria-label`) |
 | Accueil, Déclarations voyageurs | bouton « Fait » hors écran à 320 px | rangée d'actions rétrécissable (plus de `flexShrink: 0`), `minWidth: min(200px,100%)` |
 | Accueil | carte « Ce mois-ci » qui dépasse à 320 px | `repeat(auto-fit, minmax(120px, 1fr))`, `overflowWrap: anywhere` |
+| Mes finances > Performances | tableau « Par canal » 3 px trop large à 320 px | cadre `overflowX: auto` comme le tableau des logements |
 | Fiche voyageur | « + Ajouter » poussé dehors par le champ | `minWidth: 0` sur le champ (un `<input>` en flex garde sinon sa largeur par défaut) |
 | Audit Google Business (import URL) | URL d'exemple d'un seul tenant | `minWidth: 0` + `overflowWrap: anywhere` |
 | Admin Communauté | adresses de groupes Facebook hors carte, pastilles sous les boutons à 320 px | lien en « … », bloc d'infos `flex: 1 1 200px` |
 | Admin Formations | « inscrits » coupé à 320 px | ligne de chiffres en `flexWrap: wrap` |
 | Aperçu des posts Facebook (Visibilité) | lien long hors de l'aperçu à 320 px | `overflowWrap: anywhere` |
 
-Faux positif appris : aperçu volontairement coupé avec un fondu (`mask-image`) = voulu, comme « … ».
+Faux positifs appris : aperçu volontairement coupé avec un fondu (`mask-image`) = voulu, comme « … » ; texte dont un **parent** raccourcit avec « … » (ligne d'action du tableau du jour de l'Accueil) = voulu.
+
+**Vérification après corrections** (3e passage, 20/11) : 117 pages, 0 erreur, défauts 47 → 3, puis 0 après le tableau « Par canal » et ce faux positif.
 
 **Temps d'affichage** (mesure du workflow, compte admin, base gratuite) : premier octet 0,2 à 0,6 s partout (le cadre part tout de suite) ; affichage complet de 2 à plus de 20 s selon les pages, surtout l'admin (Indexation, QG, Social, Dépannage, Ventes) : ce sont les lectures de la base gratuite, voir `technique.md`. Le 1er audit comptait aussi l'attente « réseau calme » (jusqu'à 15 s pour les pages qui interrogent le serveur en continu) : corrigé, le temps s'arrête à la fin des squelettes.
 
