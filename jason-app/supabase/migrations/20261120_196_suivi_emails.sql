@@ -66,15 +66,16 @@ as $$
   )
   select jsonb_build_object(
     'par_categorie', coalesce((
-      select jsonb_agg(jsonb_build_object(
-        'categorie', categorie,
-        'envoyes', count(*) filter (where type = 'sent'),
-        'remis', count(*) filter (where type = 'delivered'),
-        'rejetes', count(*) filter (where type in ('bounced', 'failed')),
-        'spam', count(*) filter (where type = 'complained'),
-        'retardes', count(*) filter (where type = 'delivery_delayed')
-      ) order by count(*) filter (where type = 'sent') desc)
-      from ev group by categorie
+      select jsonb_agg(to_jsonb(c) order by c.envoyes desc)
+      from (
+        select categorie,
+          count(*) filter (where type = 'sent') as envoyes,
+          count(*) filter (where type = 'delivered') as remis,
+          count(*) filter (where type in ('bounced', 'failed')) as rejetes,
+          count(*) filter (where type = 'complained') as spam,
+          count(*) filter (where type = 'delivery_delayed') as retardes
+        from ev group by categorie
+      ) c
     ), '[]'::jsonb),
     'par_jour', coalesce((
       select jsonb_agg(jsonb_build_object('jour', jour, 'envoyes', n) order by jour)
