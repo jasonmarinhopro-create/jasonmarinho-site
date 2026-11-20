@@ -3,7 +3,6 @@
 
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import ProspectionView from './ProspectionView'
-import EspaceSwitch from './EspaceSwitch'
 import type { ContactRow, MailConfig, SendRow, SequenceRow, SettingsRow, Stats } from './shared'
 
 export default function ProspectionScreen(props: { sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; stats: Stats; today: string; sends: SendRow[] }) {
@@ -14,7 +13,6 @@ export default function ProspectionScreen(props: { sequences: SequenceRow[]; con
   const rate = stats.contacted30 ? Math.round((stats.replies30 / stats.contacted30) * 100) : null
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: 'var(--dash-page-px)', width: '100%', boxSizing: 'border-box' }}>
-      <EspaceSwitch current="prospection" />
       <AdminHero
         section="Prospection"
         title="Trouve tes pros,"

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { UsersThree, Briefcase, Camera, Sparkle, Wrench, Binoculars, LinkSimple, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr'
+import { UsersThree, Briefcase, Camera, Sparkle, Wrench, Binoculars, LinkSimple, MagnifyingGlass, PaperPlaneTilt, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
 
 /**
  * Onglets des pages admin regroupées (18/11/2026, maquette validée par Jason) :
@@ -32,6 +32,13 @@ const SECTIONS: Array<{ label: string; tabs: Tab[] }> = [
       { href: '/dashboard/admin/visibilite', label: 'Visibilité', Icon: Binoculars },
       { href: '/dashboard/admin/provenance', label: 'Provenance', Icon: LinkSimple },
       { href: '/dashboard/admin/indexation', label: 'Référencement', Icon: MagnifyingGlass },
+    ],
+  },
+  {
+    label: 'Prospection',
+    tabs: [
+      { href: '/dashboard/admin/prospection', label: 'Ma prospection', Icon: PaperPlaneTilt },
+      { href: '/dashboard/admin/prospection/emails', label: 'E-mails de la plateforme', Icon: EnvelopeSimple },
     ],
   },
 ]
