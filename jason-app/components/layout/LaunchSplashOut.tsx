@@ -7,6 +7,7 @@
 // retrait le squelette d'une navigation suivante le ferait réapparaître.
 import { useEffect, useRef, useState } from 'react'
 import ShellFallback from './ShellFallback'
+import { LAUNCH_MESSAGE } from './launch-message'
 
 export default function LaunchSplashOut() {
   const [gone, setGone] = useState(false)
@@ -28,7 +29,7 @@ export default function LaunchSplashOut() {
     <div ref={ref} style={{ display: 'contents' }} onAnimationEnd={e => {
       if (e.animationName === 'jmVanish' || e.animationName === 'jmHold') setGone(true)
     }}>
-      <ShellFallback variant="out" message="Ouverture de ton espace…" />
+      <ShellFallback variant="out" message={LAUNCH_MESSAGE} />
     </div>
   )
 }

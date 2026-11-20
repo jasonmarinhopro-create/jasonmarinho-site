@@ -24,6 +24,7 @@ import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 import ShellFallback from '@/components/layout/ShellFallback'
 import LaunchSplashOut from '@/components/layout/LaunchSplashOut'
+import { LAUNCH_MESSAGE } from '@/components/layout/launch-message'
 import MenuLivePush from '@/components/layout/MenuLive'
 import PerfReporter from '@/components/perf/PerfReporter'
 import LastSeenPing from '@/components/layout/LastSeenPing'
@@ -46,12 +47,13 @@ function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): 
 // /ouverture), l'écran continue celui de /ouverture sans délai puis s'efface
 // en fondu sur la page arrivée. Sinon, il n'apparaît qu'après 0,45 s : une
 // page rapide s'affiche directement, sans flash vert de 0,1 s.
+// Même phrase que /ouverture : l'écran continue sans que le texte change.
 const LAUNCH_COOKIE = 'jm-launch'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const launch = cookies().get(LAUNCH_COOKIE)?.value === '1'
   return (
-    <Suspense fallback={<ShellFallback variant={launch ? 'instant' : 'delayed'} />}>
+    <Suspense fallback={launch ? <ShellFallback variant="instant" message={LAUNCH_MESSAGE} /> : <ShellFallback variant="delayed" />}>
       <DashboardShell launch={launch}>{children}</DashboardShell>
     </Suspense>
   )

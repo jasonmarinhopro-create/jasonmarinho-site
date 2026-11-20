@@ -115,6 +115,18 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
+  // Racine de l'app (20/11/2026) : pas besoin de vérifier la session ici, le
+  // dashboard le fait. Avec un cookie de session : /ouverture (écran au logo
+  // immédiat, statique), qui enchaîne sans page blanche ; sinon la connexion.
+  // Avant : vérification complète puis /dashboard, page vide 0,45 s.
+  if (path === '/') {
+    const url = request.nextUrl.clone()
+    url.pathname = request.cookies.getAll().some(c => c.name.startsWith('sb-') && c.name.includes('auth-token') && c.value)
+      ? '/ouverture'
+      : '/auth/login'
+    return NextResponse.redirect(url)
+  }
+
   // getClaims vérifie le JWT signé et évite l'aller-retour getUser() par route.
   // Si Auth tarde, on échoue vite et on conserve les cookies de session.
   const hasAuthCookie = request.cookies.getAll().some(
@@ -234,14 +246,10 @@ export async function middleware(request: NextRequest) {
     if (path === '/auth/login' && (asParam === 'photographe' || asParam === 'menage')) {
       return supabaseResponse
     }
+    // Déjà connecté : l'écran de lancement, pas une page vide (20/11/2026)
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
-  }
-
-  if (path === '/') {
-    const url = request.nextUrl.clone()
-    url.pathname = isAuthed ? '/dashboard' : '/auth/login'
+    url.pathname = '/ouverture'
+    url.search = ''
     return NextResponse.redirect(url)
   }
 
