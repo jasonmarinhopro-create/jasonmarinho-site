@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml, EMAIL_FROM } from '@/lib/email/template'
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { emailTags } from '@/lib/email/tracking'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -360,7 +361,7 @@ export async function registerRemovalRequest(params: {
     .eq('id', report.id)
 
   // Notif Jason
-  await getResend().emails.send({
+  await getResend().emails.send({ tags: emailTags('admin'),
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
     subject: `Demande de retrait d’un signalement public : ${slug}`,

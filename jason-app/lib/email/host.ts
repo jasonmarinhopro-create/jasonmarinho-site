@@ -38,12 +38,12 @@ export function paiementReceivedEmail(opts: {
       : 'Rien n’est débité : la carte est bloquée environ 7 jours. Libère la caution après l’état des lieux, ou encaisse-la en cas de dégâts.'),
     opts.dashboardUrl ? emailBtn(opts.dashboardUrl, 'Voir la fiche voyageur') : '',
   ].join('')
-  return { subject, html: buildEmail({ etiquette: loyer ? 'Paiement reçu' : 'Caution', title: loyer ? 'Loyer reçu' : 'Caution bloquée', body, preview: `${opts.guestFullName} · ${formatEur(opts.montant)}` }) }
+  return { subject, html: buildEmail({ track: 'paiement-hote', etiquette: loyer ? 'Paiement reçu' : 'Caution', title: loyer ? 'Loyer reçu' : 'Caution bloquée', body, preview: `${opts.guestFullName} · ${formatEur(opts.montant)}` }) }
 }
 
 export async function sendPaiementReceivedEmail(opts: Parameters<typeof paiementReceivedEmail>[0] & { to: string }): Promise<void> {
   const mail = paiementReceivedEmail(opts)
-  const r = await sendEmail({ to: opts.to, ...mail })
+  const r = await sendEmail({ to: opts.to, ...mail, categorie: 'paiement-hote' })
   if (!r.ok) console.error('[host email] paiement received failed', r.error)
 }
 
@@ -71,12 +71,12 @@ export function mentionEmail(opts: {
     emailBtn(opts.postUrl, opts.type === 'accepted' ? 'Voir le sujet' : 'Lire et répondre'),
     emailSmall(`Tu reçois cet e-mail parce que tu participes à Entre Hôtes. ${emailLink(`${APP_URL}/dashboard/profil`, 'Gérer mes notifications')}`),
   ].join('')
-  return { subject: subjects[opts.type] ?? 'Activité Entre Hôtes', html: buildEmail({ etiquette: 'Entre Hôtes', title: subjects[opts.type] ?? 'Activité Entre Hôtes', body, preview: opts.postTitle }) }
+  return { subject: subjects[opts.type] ?? 'Activité Entre Hôtes', html: buildEmail({ track: 'entre-hotes', etiquette: 'Entre Hôtes', title: subjects[opts.type] ?? 'Activité Entre Hôtes', body, preview: opts.postTitle }) }
 }
 
 export async function sendMentionEmail(opts: Parameters<typeof mentionEmail>[0] & { to: string }): Promise<void> {
   const mail = mentionEmail(opts)
-  const r = await sendEmail({ to: opts.to, ...mail, replyTo: null })
+  const r = await sendEmail({ to: opts.to, ...mail, replyTo: null, categorie: 'entre-hotes' })
   if (!r.ok) console.error('[host email] mention failed', r.error)
 }
 

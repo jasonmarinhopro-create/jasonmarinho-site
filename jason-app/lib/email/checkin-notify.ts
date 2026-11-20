@@ -81,8 +81,9 @@ export async function notifyHostCheckinSubmitted(supabase: AnySupabase, opts: {
   const r = await sendEmail({
     to: profile.email,
     subject,
-    html: buildEmail({ etiquette: 'Check-in en ligne', title: escHtml(subject), preview: intro.replace(/<[^>]+>/g, ''), body }),
+    html: buildEmail({ track: 'checkin', etiquette: 'Check-in en ligne', title: escHtml(subject), preview: intro.replace(/<[^>]+>/g, ''), body }),
     replyTo: null,
+    categorie: 'checkin',
   })
   if (!r.ok) console.error('[checkin-notify] send failed', r.error)
 }

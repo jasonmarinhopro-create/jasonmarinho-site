@@ -100,6 +100,13 @@ export async function GET(req: Request) {
     await syncProSubscriptions(supabase)
   } catch { /* best-effort */ }
 
+  // Suivi des e-mails (migration 196) : effacé au bout de 13 mois. Best-effort.
+  try {
+    const limite = new Date(Date.now() - 400 * 86_400_000)
+    await supabase.from('email_events').delete().lt('created_at', limite.toISOString())
+    await supabase.from('email_clicks').delete().lt('jour', limite.toISOString().slice(0, 10))
+  } catch { /* table absente : rien à purger */ }
+
   let proContactsPurged = 0
   try {
     proContactsPurged = await purgeOldProContacts(supabase)

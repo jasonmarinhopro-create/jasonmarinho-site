@@ -116,7 +116,7 @@ export function buildProMonthlyEmail(i: MonthlyInput): { subject: string; previe
       btn,
       emailNote(optOut),
     ].join('')
-    return { subject, preview, html: buildEmail({ etiquette: etiquette(i.metier), title: `Ton mois ${de}`, body, preview, signature: 'Les premières semaines sont les plus calmes. Si tu veux un coup de main pour faire connaître ta fiche, réponds simplement à cet e-mail.' }) }
+    return { subject, preview, html: buildEmail({ track: 'bilan-pro', etiquette: etiquette(i.metier), title: `Ton mois ${de}`, body, preview, signature: 'Les premières semaines sont les plus calmes. Si tu veux un coup de main pour faire connaître ta fiche, réponds simplement à cet e-mail.' }) }
   }
 
   const prevLabel = previousMonth(i.month.start).label.split(' ')[0]
@@ -140,7 +140,7 @@ export function buildProMonthlyEmail(i: MonthlyInput): { subject: string; previe
     btn,
     emailNote(`Google publie ses chiffres avec 2 jours de retard : les derniers jours du mois s’ajoutent dans Mes statistiques. ${optOut}`),
   ].join('')
-  return { subject, preview, html: buildEmail({ etiquette: etiquette(i.metier), title: `Ton mois ${de}`, body, preview, signature: monthlyNote(i) }) }
+  return { subject, preview, html: buildEmail({ track: 'bilan-pro', etiquette: etiquette(i.metier), title: `Ton mois ${de}`, body, preview, signature: monthlyNote(i) }) }
 }
 
 // ─── Récapitulatif pour Jason ─────────────────────────────────────────

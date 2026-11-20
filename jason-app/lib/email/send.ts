@@ -4,6 +4,7 @@
 // au HTML (aide Gmail à bien classer). Ne lève jamais : renvoie l'erreur.
 import { Resend } from 'resend'
 import { EMAIL_FROM, EMAIL_REPLY_TO, htmlToText } from './template'
+import { emailTags, type EmailCategory } from './tracking'
 
 let client: Resend | null = null
 function getResend(): Resend | null {
@@ -23,6 +24,8 @@ export interface SendEmailInput {
   from?: string
   /** Sinon contact@jasonmarinho.com ; null : aucune adresse de réponse */
   replyTo?: string | null
+  /** Catégorie pour la page E-mails de l'admin (tag Resend) */
+  categorie?: EmailCategory
 }
 
 export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; error?: string }> {
@@ -37,6 +40,7 @@ export async function sendEmail(input: SendEmailInput): Promise<{ ok: boolean; e
       html: input.html,
       text: input.text ?? htmlToText(input.html),
       ...(replyTo ? { replyTo } : {}),
+      tags: emailTags(input.categorie ?? 'autre'),
     })
     return error ? { ok: false, error: error.message } : { ok: true }
   } catch (e) {

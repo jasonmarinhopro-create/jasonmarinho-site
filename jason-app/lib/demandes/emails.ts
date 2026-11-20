@@ -42,8 +42,8 @@ const telHref = (t: string) => `tel:${t.replace(/[^\d+]/g, '')}`
 // ── Briques ──────────────────────────────────────────────────────────
 
 /** Gabarit commun (lib/email/template.ts) : même maquette pour tous les e-mails */
-function layout({ preview, etiquette, title, body, footer, signature }: { preview: string; etiquette: string; title: string; body: string; footer: string; signature?: boolean | string }): string {
-  return buildEmail({ preview, etiquette, title: escHtml(title), body, footer, signature })
+function layout({ preview, etiquette, title, body, footer, signature, track }: { preview: string; etiquette: string; title: string; body: string; footer: string; signature?: boolean | string; track?: 'demande-pro' | 'demande-hote' }): string {
+  return buildEmail({ preview, etiquette, title: escHtml(title), body, footer, signature, track })
 }
 
 const p = (html: string, mb = 18) => `<p style="margin:0 0 ${mb}px;font-family:${SANS};font-size:15px;line-height:1.65;color:#2B3A32;">${html}</p>`
@@ -179,7 +179,7 @@ export function proEmail(d: DemandeMail, o: { proPrenom: string; manuel: boolean
     `Tu peux répondre directement à cet e-mail : ta réponse arrive chez ${hote}.`,
     '', 'Jason Marinho, jasonmarinho.com',
   ].join('\n')
-  return { subject: title, text, html: layout({ preview: `${d.logement ? `${d.logement}, ` : ''}${d.quand ? d.quand.toLowerCase() : 'nouvelle demande'} : réponds directement à l’hôte`, etiquette: `Nouvelle demande · ${m.etiquette}`, title, body, footer: FOOTER_PRO }) }
+  return { subject: title, text, html: layout({ preview: `${d.logement ? `${d.logement}, ` : ''}${d.quand ? d.quand.toLowerCase() : 'nouvelle demande'} : réponds directement à l’hôte`, etiquette: `Nouvelle demande · ${m.etiquette}`, title, body, footer: FOOTER_PRO, track: 'demande-pro' }) }
 }
 
 /** À l'hôte : sa demande est partie (ou enregistrée sans pro), qui l'a reçue, la suite */
@@ -202,7 +202,7 @@ export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; s
       `<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>`,
       small(`Tu connais ${d.metier === 'menage' ? 'une équipe' : 'un pro'} dans ton coin ? ${link(o.inscriptionUrl, 'Envoie-lui ce lien')} : dès que sa fiche est en ligne, elle reçoit ta demande.`),
     ].join('')
-    return { subject: `Ta demande à ${d.ville} est enregistrée`, html: layout({ preview: 'On la transmet dès qu’un pro de ta zone rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: 'Ta demande est enregistrée', body, footer: FOOTER_HOTE, signature: 'Je regarde chaque demande sans pro moi-même. Si tu as une précision à ajouter, réponds à cet e-mail.' }) }
+    return { subject: `Ta demande à ${d.ville} est enregistrée`, html: layout({ preview: 'On la transmet dès qu’un pro de ta zone rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: 'Ta demande est enregistrée', body, footer: FOOTER_HOTE, track: 'demande-hote', signature: 'Je regarde chaque demande sans pro moi-même. Si tu as une précision à ajouter, réponds à cet e-mail.' }) }
   }
   const qui = n > 1 ? `${n} ${m.labels}` : m.un
   const body = [
@@ -221,7 +221,7 @@ export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; s
   ].join('')
   return {
     subject: `Ta demande à ${d.ville} est partie chez ${n} pro${n > 1 ? 's' : ''}`,
-    html: layout({ preview: `${n > 1 ? `${n} pros l’ont reçue` : 'Un pro l’a reçue'} : réponse directe par e-mail`, etiquette: `Ta demande · ${m.etiquette}`, title: o.vague === 1 ? 'Ta demande est partie' : 'Ta demande part plus loin', body, footer: FOOTER_HOTE, signature: 'Un souci avec un pro, ou pas de nouvelles ? Réponds à cet e-mail, je m’en occupe.' }),
+    html: layout({ preview: `${n > 1 ? `${n} pros l’ont reçue` : 'Un pro l’a reçue'} : réponse directe par e-mail`, etiquette: `Ta demande · ${m.etiquette}`, title: o.vague === 1 ? 'Ta demande est partie' : 'Ta demande part plus loin', body, footer: FOOTER_HOTE, track: 'demande-hote', signature: 'Un souci avec un pro, ou pas de nouvelles ? Réponds à cet e-mail, je m’en occupe.' }),
   }
 }
 
@@ -260,7 +260,7 @@ export function hoteMultiEmail(d: DemandeMail, villes: Array<{ ville: string; pr
   ].join('')
   return {
     subject: `Ta demande dans ${nv} villes : ${villes.map(v => v.ville).join(', ')}`,
-    html: layout({ preview: n ? `${n} pro${n > 1 ? 's' : ''} l’${n > 1 ? 'ont' : 'a'} déjà reçue` : 'On la transmet dès qu’un pro de ces villes rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: `Ta demande part dans ${nv} villes`, body, footer: FOOTER_HOTE, signature: true }),
+    html: layout({ preview: n ? `${n} pro${n > 1 ? 's' : ''} l’${n > 1 ? 'ont' : 'a'} déjà reçue` : 'On la transmet dès qu’un pro de ces villes rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: `Ta demande part dans ${nv} villes`, body, footer: FOOTER_HOTE, track: 'demande-hote', signature: true }),
   }
 }
 
@@ -285,7 +285,7 @@ export function hoteManuelEmail(d: DemandeMail, pro: ProMail, suiviUrl: string |
     `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid ${LINE};border-bottom:1px solid ${LINE};margin:0 0 22px;">${proLigne(pro, true)}</table>`,
     suiviUrl ? button(suiviUrl, 'Suivre ma demande') : '',
   ].join('')
-  return { subject: premier ? `Ta demande à ${d.ville} : un pro l’a reçue` : `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html: layout({ preview: `${pro.nom} a reçu ta demande`, etiquette: `Ta demande · ${m.etiquette}`, title: premier ? 'Un pro a reçu ta demande' : 'Un pro de plus a reçu ta demande', body, footer: FOOTER_HOTE, signature: true }) }
+  return { subject: premier ? `Ta demande à ${d.ville} : un pro l’a reçue` : `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html: layout({ preview: `${pro.nom} a reçu ta demande`, etiquette: `Ta demande · ${m.etiquette}`, title: premier ? 'Un pro a reçu ta demande' : 'Un pro de plus a reçu ta demande', body, footer: FOOTER_HOTE, track: 'demande-hote', signature: true }) }
 }
 
 /** À Jason : le besoin sans les coordonnées, la suite, le lien vers la fiche du QG */

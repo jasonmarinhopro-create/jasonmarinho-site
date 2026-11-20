@@ -6,6 +6,7 @@ import { resetPasswordEmail } from '@/lib/email/auth-emails'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
+import { emailTags } from '@/lib/email/tracking'
 
 export const dynamic = 'force-dynamic'
 
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
     }
 
     const mail = resetPasswordEmail(data.properties.action_link)
-    const { error: resendError } = await getResend().emails.send({
+    const { error: resendError } = await getResend().emails.send({ tags: emailTags('compte'),
       from: EMAIL_FROM,
       to: normalized,
       subject: mail.subject,

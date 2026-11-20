@@ -60,7 +60,9 @@ describe('bilan mensuel : texte', () => {
     expect(e.html).toContain('photographe airbnb lyon')
     expect(e.html).toContain('6e')
     expect(e.html).toContain('Le conseil du mois : Presque en première page.')
-    expect(e.html).toContain(base.statsUrl)
+    // Bouton compté (clics anonymes) puis redirigé vers la page
+    expect(e.html).toContain(encodeURIComponent(base.statsUrl))
+    expect(e.html).toContain('/api/e/c?c=bilan-pro&amp;b=voir-mes-statistiques')
     expect(e.html).toContain('Recevoir mon bilan chaque mois par e-mail')
     expect(e.html + e.subject + e.preview).not.toMatch(/\u2014/)
     expect(e.html).not.toMatch(/\p{Extended_Pictographic}/u)

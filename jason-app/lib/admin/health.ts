@@ -93,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261120_196_suivi_emails.sql', what: 'Suivi des e-mails de la plateforme (remise, rejets, clics) : Prospection > E-mails de la plateforme', table: 'email_events', column: 'categorie' },
   { file: '20261115_191_analyses_outil.sql', what: 'Audit express public de la fiche Google : suivi par outil dans l’admin', table: 'annonce_analyses', column: 'outil' },
   { file: '20261115_190_analyses_annonce_lien.sql', what: 'Analyses d’annonce : lien de l’annonce et sous-notes dans la carte de l’admin', table: 'annonce_analyses', column: 'annonce_id' },
   { file: '20261115_189_analyses_annonce.sql', what: 'Compteur des analyses d’annonce Airbnb (page Visibilité de l’admin)', table: 'annonce_analyses', column: 'score' },

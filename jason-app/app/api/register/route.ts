@@ -8,6 +8,7 @@ import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
 import { cleanAcquisition } from '@/lib/acquisition/rules'
 import { annoncerInscription, inscrireNewsletter, lienConfirmation } from '@/lib/auth/nouveau-membre'
+import { emailTags } from '@/lib/email/tracking'
 
 export const dynamic = 'force-dynamic'
 
@@ -67,7 +68,7 @@ function looksLikeDottedGmailBot(email: string): boolean {
 // confirmation non envoyé. Sans ça, ces cas restent invisibles pour Jason sauf
 // à fouiller les logs Vercel — ce qu'il n'a pas toujours la possibilité de faire.
 function notifyJasonIssue(reason: string, details: Record<string, unknown>) {
-  void new Resend(process.env.RESEND_API_KEY).emails.send({
+  void new Resend(process.env.RESEND_API_KEY).emails.send({ tags: emailTags('admin'),
     from: EMAIL_FROM,
     to: 'contact@jasonmarinho.com',
     subject: `Incident inscription : ${reason}`,
@@ -189,7 +190,7 @@ export async function POST(req: NextRequest) {
               return NextResponse.json({ success: true, emailSent: false })
             }
             const mail = confirmationEmail({ fullName: fullName || null, link: lienConfirmation(linkData.properties.hashed_token, 'magiclink'), isInvestor: !!isInvestor, renvoi: true })
-            const { error: resendErr } = await getResend().emails.send({
+            const { error: resendErr } = await getResend().emails.send({ tags: emailTags('compte'),
               from: EMAIL_FROM,
               replyTo: EMAIL_REPLY_TO,
               to: normalized,
@@ -263,7 +264,7 @@ export async function POST(req: NextRequest) {
 
     // Send branded confirmation email via Resend
     const mail = confirmationEmail({ fullName: fullName || null, link: lienConfirmation(linkData.properties.hashed_token, 'signup'), isInvestor: !!isInvestor, renvoi: false })
-    const { error: resendError } = await getResend().emails.send({
+    const { error: resendError } = await getResend().emails.send({ tags: emailTags('compte'),
       from: EMAIL_FROM,
       replyTo: EMAIL_REPLY_TO,
       to: normalized,

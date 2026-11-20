@@ -153,7 +153,7 @@ export function contractSignedHostEmail(o: {
   ].join('')
   return {
     subject: `${o.guestName} a signé le contrat, ${o.property}`,
-    html: buildEmail({ etiquette: 'Contrat signé', title: `${escHtml(o.guestName)} a signé son contrat`, preview: `${o.property}, signé le ${o.signedAt}`, body }),
+    html: buildEmail({ track: 'contrat-hote', etiquette: 'Contrat signé', title: `${escHtml(o.guestName)} a signé son contrat`, preview: `${o.property}, signé le ${o.signedAt}`, body }),
   }
 }
 

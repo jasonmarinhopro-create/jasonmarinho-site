@@ -8,6 +8,7 @@ import { buildEmail, emailCitation, emailInfoBlock, emailBtn, emailNote, emailP,
 import { rateLimit } from '@/lib/security/rate-limit'
 import { parseQuery, reportIdentifiers, type QueryKind } from '@/lib/securite/identifiers'
 import { findReports } from '@/lib/securite/lookup'
+import { emailTags } from '@/lib/email/tracking'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -113,7 +114,7 @@ export async function reportGuest(formData: {
   const email = ids.identifier_type === 'email' ? ids.identifier : ''
   const phone = ids.identifier_type === 'phone' ? ids.identifier : ids.extra[0] ?? ''
 
-  await getResend().emails.send({
+  await getResend().emails.send({ tags: emailTags('admin'),
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
     subject: `Nouveau signalement, ${incident_type}`,
@@ -196,7 +197,7 @@ async function notifyJason(userId: string, fallbackEmail: string, p: { title: st
   const { data: profile } = await supabase.from('profiles').select('email, full_name').eq('id', userId).maybeSingle()
   const email = profile?.email ?? fallbackEmail ?? 'inconnu'
   const name = profile?.full_name ?? email
-  await getResend().emails.send({
+  await getResend().emails.send({ tags: emailTags('admin'),
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
     subject: p.title,

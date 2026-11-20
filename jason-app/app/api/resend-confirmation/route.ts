@@ -12,6 +12,7 @@ import { lienConfirmation } from '@/lib/auth/nouveau-membre'
 import { confirmationEmail } from '@/lib/email/auth-emails'
 import { EMAIL_FROM, EMAIL_REPLY_TO, htmlToText } from '@/lib/email/template'
 import { logger } from '@/lib/logger'
+import { emailTags } from '@/lib/email/tracking'
 
 export const dynamic = 'force-dynamic'
 
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
       isInvestor: !!profile.is_investor,
       renvoi: true,
     })
-    const { error } = await new Resend(process.env.RESEND_API_KEY).emails.send({
+    const { error } = await new Resend(process.env.RESEND_API_KEY).emails.send({ tags: emailTags('compte'),
       from: EMAIL_FROM, replyTo: EMAIL_REPLY_TO, to: normalized, subject: mail.subject, html: mail.html, text: htmlToText(mail.html),
     })
     if (error) {

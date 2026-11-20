@@ -5,6 +5,7 @@
 import { METIERS, type ProKind } from '@/lib/pros/metiers'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailEtapes, emailFiche, emailNote, emailP, escHtml, EMAIL_FROM, EMAIL_REPLY_TO, htmlToText } from './template'
+import { emailTags } from '@/lib/email/tracking'
 
 const APP_URL = 'https://app.jasonmarinho.com'
 const SITE_URL = 'https://jasonmarinho.com'
@@ -51,6 +52,7 @@ export function proWelcomeEmail(args: ProWelcomeArgs): { subject: string; html: 
   const subject = `${displayName}, ${fiche} est en ligne`
 
   const html = buildEmail({
+    track: 'bienvenue-pro',
     etiquette: `Ta fiche · ${ETIQUETTES[pro]}`,
     title: 'Bienvenue dans l’annuaire',
     preview: `${fiche} est en ligne. Voici les liens pour la gérer.`,
@@ -85,7 +87,7 @@ export async function sendProWelcomeEmail(args: ProWelcomeArgs): Promise<void> {
   const { subject, html } = proWelcomeEmail(args)
   const { email } = args
   try {
-    await getResend().emails.send({ from: EMAIL_FROM, replyTo: EMAIL_REPLY_TO, to: email, subject, html, text: htmlToText(html) })
+    await getResend().emails.send({ tags: emailTags('bienvenue-pro'), from: EMAIL_FROM, replyTo: EMAIL_REPLY_TO, to: email, subject, html, text: htmlToText(html) })
   } catch (err) {
     console.error('[email/pro-welcome] failed', err)
   }

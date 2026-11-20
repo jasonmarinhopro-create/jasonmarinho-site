@@ -6,6 +6,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { describeAcquisition, type Acquisition } from '@/lib/acquisition/rules'
 import { NEWSLETTER_LISTS } from '@/lib/newsletter/lists'
 import { logger } from '@/lib/logger'
+import { emailTags } from '@/lib/email/tracking'
 
 const log = logger('nouveau-membre')
 
@@ -71,7 +72,7 @@ export function inscriptionEmail(m: InscriptionInfo, compteurs: { mois: number; 
 
 export async function annoncerInscription(m: InscriptionInfo): Promise<void> {
   const mail = inscriptionEmail(m, await compteursInscriptions())
-  await new Resend(process.env.RESEND_API_KEY).emails.send({
+  await new Resend(process.env.RESEND_API_KEY).emails.send({ tags: emailTags('admin'),
     from: EMAIL_FROM,
     to: 'contact@jasonmarinho.com',
     subject: mail.subject,

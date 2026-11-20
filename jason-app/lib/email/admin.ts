@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { buildEmail, emailP, EMAIL_FROM, escHtml } from './template'
+import { emailTags } from '@/lib/email/tracking'
 
 const ADMIN_EMAIL = 'contact@jasonmarinho.com'
 
@@ -29,7 +30,7 @@ export function adminTextToHtml(subject: string, text: string): string {
  */
 export async function sendAdminEmail({ subject, text, html, replyTo }: { subject: string; text: string; html?: string; replyTo?: string }): Promise<void> {
   try {
-    await getResend().emails.send({
+    await getResend().emails.send({ tags: emailTags('admin'),
       from: EMAIL_FROM,
       to: ADMIN_EMAIL,
       subject,
