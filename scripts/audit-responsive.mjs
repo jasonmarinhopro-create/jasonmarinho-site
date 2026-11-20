@@ -68,6 +68,23 @@ function appStaticRoutes() {
   return routes.filter(r => !ONLY.length || ONLY.some(o => r.includes(o)))
 }
 
+// Mode app : un texte n'est cité que s'il figure déjà dans le code public de
+// l'app (libellé d'interface). Un nom, un montant ou une adresse d'un compte
+// n'y figure jamais : il n'apparaît pas dans le rapport.
+let APP_SOURCE = null
+function publicText(t) {
+  if (!t) return ''
+  if (MODE === 'site') return t
+  if (APP_SOURCE === null) {
+    const parts = []
+    const walk = d => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) { if (e.name !== 'node_modules' && e.name !== '.next') walk(p) } else if (/\.(tsx?|md)$/.test(e.name)) parts.push(fs.readFileSync(p, 'utf8')) } }
+    for (const d of ['jason-app/app', 'jason-app/components', 'jason-app/lib', 'jason-app/content']) if (fs.existsSync(path.join(ROOT, d))) walk(path.join(ROOT, d))
+    APP_SOURCE = parts.join('\n')
+  }
+  const probe = t.slice(0, 24).trim()
+  return probe.length >= 4 && APP_SOURCE.includes(probe) ? t : ''
+}
+
 // Adresse sans identifiant (rien de personnel dans le rapport)
 const pattern = u => new URL(u).pathname.replace(/\/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, '/[id]').replace(/\/\d{2,}(?=\/|$)/g, '/[n]')
 
@@ -138,17 +155,25 @@ async function main() {
       // Lecture seule : rien d'autre que des lectures ne part du navigateur
       await ctx.route('**/*', route => (route.request().method() === 'GET' ? route.continue() : route.abort()))
     }
-    const page = await ctx.newPage()
     while (jobs.length) {
       const u = jobs.shift()
       const t0 = Date.now()
+      // Page neuve à chaque adresse : une redirection côté navigateur de la
+      // page précédente ne peut plus interrompre la suivante (1er audit du 20/11)
+      const page = await ctx.newPage()
       try {
         await page.setViewportSize({ width: WIDTHS[0], height: 900 })
-        const resp = await page.goto(u, { waitUntil: 'load', timeout: 60_000 })
+        let resp = await page.goto(u, { waitUntil: 'load', timeout: 60_000 }).catch(async e => {
+          if (!/interrupted by another navigation/.test(String(e))) throw e
+          await page.waitForLoadState('load', { timeout: 60_000 }); return null
+        })
+        // Redirection côté navigateur juste après le chargement : attendre qu'elle se termine
+        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {})
         const ttfb = await page.evaluate(() => Math.round(performance.getEntriesByType('navigation')[0]?.responseStart ?? 0))
         if (MODE === 'app') {
           // Attendre la fin des squelettes (pages lentes quand la base l'est)
-          await page.waitForFunction(() => !document.querySelector('[data-page-skel]') && !document.querySelector('.jm-splash:not(.jm-splash--out)'), null, { timeout: 45_000 }).catch(() => {})
+          const ready = await page.waitForFunction(() => document.body && !document.querySelector('[data-page-skel]') && !document.querySelector('.jm-splash:not(.jm-splash--out)'), null, { timeout: 45_000 }).then(() => true).catch(() => false)
+          if (!ready) stuck.add(pattern(u))
           if (new URL(page.url()).pathname.startsWith('/auth')) throw new Error('session refusée par le dashboard')
         }
         await page.evaluate(() => document.fonts.ready)
@@ -162,25 +187,29 @@ async function main() {
         }
         for (const w of WIDTHS) {
           if (w !== WIDTHS[0]) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(450) }
-          const r = await page.evaluate(`(${detect.toString()})(${MODE === 'site'})`)
+          const r = await page.evaluate(`(${detect.toString()})(true)`)
+          for (const c of [...r.cut, ...r.clipped]) c.text = publicText(c.text)
+          for (const o of r.overlap) { o.ta = publicText(o.ta); o.tb = publicText(o.tb) }
           r.overflow = r.overflow.filter(o => !IGNORE.some(re => re.test(o.el)))
-          results.push({ u: MODE === 'app' ? pattern(u) : u, w, status: resp?.status(), ttfb, loadMs, ...r })
+          results.push({ u: MODE === 'app' ? pattern(page.url()) : page.url(), w, status: resp?.status(), ttfb, loadMs, ...r })
         }
       } catch (e) {
-        results.push({ u: MODE === 'app' ? pattern(u) : u, w: 0, error: String(e.message || e).slice(0, 140) })
+        results.push({ u: MODE === 'app' ? pattern(u) : u, w: 0, error: String(e.message || e).split('\n')[0].slice(0, 140) })
         if (String(e).includes('session refusée')) { jobs.length = 0 }
       }
+      await page.close().catch(() => {})
       if (results.length % 60 === 0) process.stderr.write(`${results.length} contrôles\n`)
     }
     await ctx.close()
   }
+  const stuck = new Set()
   await Promise.all(Array.from({ length: CONC }, worker))
   await browser.close()
   await closeSession()
-  report(results)
+  report(results, stuck)
 }
 
-function report(results) {
+function report(results, stuck = new Set()) {
   if (OUT) fs.writeFileSync(OUT, JSON.stringify(results, null, 1))
   const lines = []
   const ok = results.filter(r => !r.error)
@@ -192,6 +221,7 @@ function report(results) {
     lines.push('### Pages les plus lentes à s’afficher (chargement complet)', '', '| Page | 1er octet | Affichée |', '|---|---|---|')
     for (const r of times.slice(0, 12)) lines.push(`| ${r.u} | ${(r.ttfb / 1000).toFixed(1)} s | ${(r.loadMs / 1000).toFixed(1)} s |`)
     lines.push('')
+    if (stuck.size) lines.push(`Squelette encore affiché après 45 s (page bloquée ou squelette jamais retiré) : ${[...stuck].join(', ')}`, '')
   }
   if (bad.length) {
     lines.push('### Défauts', '', '| Page | Largeur | Type | Où |', '|---|---|---|---|')
@@ -199,7 +229,7 @@ function report(results) {
       const items = []
       if (r.docOverflow) items.push(['défile de côté', `+${r.docOverflow} px`])
       for (const o of r.overflow.slice(0, 3)) items.push(['hors écran', `${o.el} (bord droit ${o.right} px)`])
-      for (const c of r.cut.slice(0, 3)) items.push(['texte coupé', `${c.el} dans ${c.box}${c.text ? ` « ${c.text} »` : ''}`])
+      for (const c of r.cut.slice(0, 3)) items.push(['texte coupé', `${c.el} dans ${c.box} (cadre ${c.boxW} px, dépasse de ${c.dep} px)${c.text ? ` « ${c.text} »` : ''}`])
       for (const c of r.clipped.filter(c => c.how === 'coupé' || c.how === 'coupé-bas').slice(0, 3)) items.push(['texte masqué', `${c.el}${c.text ? ` « ${c.text} »` : ''}`])
       for (const o of r.overlap.slice(0, 3)) items.push(['chevauchement', `${o.a} / ${o.b}${o.ta ? ` « ${o.ta} » / « ${o.tb} »` : ''}`])
       for (const [t, w] of items) lines.push(`| ${r.u} | ${r.w} | ${t} | ${String(w).replace(/\|/g, '/')} |`)

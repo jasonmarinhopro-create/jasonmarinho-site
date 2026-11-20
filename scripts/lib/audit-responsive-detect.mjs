@@ -74,7 +74,7 @@ export function detect(withText) {
       if (cs.overflowX === 'visible' || scrolls(cs) || cs.textOverflow === 'ellipsis') { if (scrolls(cs)) break; continue }
       const b = anc.getBoundingClientRect()
       const bad = textRects(el).some(r => r.right > b.right + 2 || r.left < b.left - 2)
-      if (bad) out.cut.push({ el: path(el), box: path(anc), text: txt(el.textContent) })
+      if (bad) { const tr = textRects(el); out.cut.push({ el: path(el), box: path(anc), text: txt(el.textContent), dep: Math.round(Math.max(...tr.map(r => r.right)) - b.right), boxW: Math.round(b.width) }) }
       break
     }
   }
