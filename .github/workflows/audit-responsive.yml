@@ -46,4 +46,4 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ONLY: ${{ inputs.only }}
         run: |
-          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --out /tmp/audit.json > /dev/null
+          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --out /tmp/audit.json
