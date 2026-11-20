@@ -69,6 +69,12 @@ for (const [slug, c] of Object.entries(covers)) {
   out = out.replace(/<meta name="robots" content="index, follow">/, '<meta name="robots" content="index, follow, max-image-preview:large">')
   // Données structurées : image du BlogPosting
   out = out.replace(/("@type":\s*"BlogPosting",)(\s*)(?:"image":\s*"[^"]*",\s*)?/, (m, a, sp) => `${a}${sp}"image": "${url}",${sp}`)
+  // Une seule clé "image" : un second "image" (ancienne image par défaut plus loin dans
+  // l'objet) donne « Propriété en double » dans Search Console (20/11/2026)
+  out = out.replace(/<script type="application\/ld\+json">[^<]*"BlogPosting"[^<]*<\/script>/, block => {
+    let first = true
+    return block.replace(/,?\s*"image":\s*"[^"]*"/g, m => (first ? (first = false, m) : ''))
+  })
   if (out !== src) {
     n++
     if (!check) fs.writeFileSync(file, out)

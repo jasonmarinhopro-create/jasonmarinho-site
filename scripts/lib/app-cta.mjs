@@ -139,14 +139,29 @@ export function appCtaBlock(slug, title) {
 `
 }
 
-/** Ajoute (ou remplace) l'encadré juste avant les articles similaires. null si l'emplacement manque. */
+/** Fin du corps de l'article : index du </div> qui ferme <div class="art-body">, -1 si absent. */
+export function artBodyEnd(html) {
+  const start = html.indexOf('<div class="art-body"')
+  if (start < 0) return -1
+  const re = /<div\b|<\/div>/g
+  re.lastIndex = start
+  let depth = 0, m
+  while ((m = re.exec(html))) {
+    depth += m[0] === '</div>' ? -1 : 1
+    if (depth === 0) return m.index
+  }
+  return -1
+}
+
+/**
+ * Ajoute (ou remplace) l'encadré à la fin du corps de l'article (dans <div class="art-body">,
+ * donc à la largeur du texte). Ancienne règle « le </div> avant les articles similaires » :
+ * selon la page, l'encadré tombait dans l'encadré vert foncé de l'annuaire ou en pleine
+ * largeur (20/11/2026). null si l'emplacement manque.
+ */
 export function injectAppCta(html, slug, title) {
   const clean = html.replace(/<!-- APPCTA:START -->[\s\S]*?<!-- APPCTA:END -->\n?/, '')
-  const anchor = '<section class="related-sec">'
-  const i = clean.indexOf(anchor)
-  if (i < 0) return null
-  // Juste avant la fermeture du corps de l'article (le </div> qui précède la section)
-  const bodyEnd = clean.lastIndexOf('</div>', i)
-  const at = bodyEnd > 0 && clean.slice(bodyEnd, i).trim() === '</div>' ? bodyEnd : i
+  const at = artBodyEnd(clean)
+  if (at < 0) return null
   return clean.slice(0, at) + appCtaBlock(slug, title) + clean.slice(at)
 }
