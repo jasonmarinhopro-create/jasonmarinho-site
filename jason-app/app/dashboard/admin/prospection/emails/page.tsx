@@ -163,7 +163,7 @@ export default async function EmailsPage({ searchParams }: { searchParams?: { ap
                 {catalogue.filter(c => c.group === g).map(c => {
                   const on = c.id === choisi.id
                   return (
-                    <Link key={c.id} href={`?apercu=${c.id}#apercu`} scroll={false} aria-current={on ? 'true' : undefined} style={{ display: 'flex', flexDirection: 'column', padding: '7px 10px', borderRadius: '10px', textDecoration: 'none', background: on ? 'var(--accent-bg)' : 'transparent', border: on ? '1px solid var(--border)' : '1px solid transparent' }}>
+                    <Link key={c.id} href={`?apercu=${c.id}#apercu`} prefetch={false} scroll={false} aria-current={on ? 'true' : undefined} style={{ display: 'flex', flexDirection: 'column', padding: '7px 10px', borderRadius: '10px', textDecoration: 'none', background: on ? 'var(--accent-bg)' : 'transparent', border: on ? '1px solid var(--border)' : '1px solid transparent' }}>
                       <span style={{ fontSize: '13.5px', fontWeight: on ? 600 : 500, color: on ? 'var(--accent-text)' : 'var(--text)' }}>{c.when}</span>
                       <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Pour : {c.to}</span>
                     </Link>
