@@ -5,12 +5,12 @@ import { triggerSiteRebuild, forceSiteRebuild } from '@/lib/pros/site-rebuild'
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
-import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
+import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml, EMAIL_FROM } from '@/lib/email/template'
 import { revalidatePath, revalidateTag } from 'next/cache'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
-const FROM_EMAIL = 'notifications@jasonmarinho.com'
+const FROM_EMAIL = EMAIL_FROM
 
 async function requireAdmin(): Promise<{ userId: string } | { error: string }> {
   const supabase = await createClient()
@@ -363,8 +363,9 @@ export async function registerRemovalRequest(params: {
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: NOTIFY_EMAIL,
-    subject: `⚠️ Demande de retrait signalement public · ${slug}`,
+    subject: `Demande de retrait d’un signalement public : ${slug}`,
     html: buildEmail({
+      etiquette: 'Pour toi · Urgent, 48 h',
       title: 'Demande de retrait d\'un signalement public',
       body: `
         ${emailP('Une personne demande le retrait d\'un signalement publié sur jasonmarinho.com. Délai légal de réponse : 48h.')}
@@ -373,7 +374,7 @@ export async function registerRemovalRequest(params: {
           { label: 'Nom déclaré', value: escHtml(fullName) },
           { label: 'Email de contact', value: escHtml(email) },
           { label: 'Motif', value: escHtml(reason || '(non renseigné)') },
-        ], '#F97583')}
+        ], '#C2344A')}
         ${emailBtn('https://app.jasonmarinho.com/dashboard/admin/qg', 'Examiner et décider', 'primary')}
         ${emailNote('Vérifie l\'identité du demandeur (preuve ID si nécessaire) avant retrait. En cas de doute juridique, retire par défaut.')}
       `,

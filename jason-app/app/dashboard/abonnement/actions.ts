@@ -4,12 +4,12 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { revalidatePath } from 'next/cache'
-import { buildEmail, emailInfoBlock, emailBtn, emailP, escHtml } from '@/lib/email/template'
+import { buildEmail, emailInfoBlock, emailBtn, emailP, escHtml, EMAIL_FROM } from '@/lib/email/template'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
-const FROM_EMAIL = 'notifications@jasonmarinho.com'
+const FROM_EMAIL = EMAIL_FROM
 
 export async function requestDriingUpgrade(driingEmail: string): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
@@ -67,6 +67,7 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
     to: NOTIFY_EMAIL,
     subject: `Nouvelle demande Membre Driing, ${userName}`,
     html: buildEmail({
+      etiquette: 'Pour toi · Driing',
       title: 'Nouvelle demande Membre Driing',
       body: `
         ${emailP('Un utilisateur a soumis une demande d\'adhésion Membre Driing.')}

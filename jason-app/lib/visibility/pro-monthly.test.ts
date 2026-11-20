@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildProMonthlyEmail, deMonth, isMonthlySendDay, isPaidActive, monthPeriod, previousMonth, shouldSendMonthly, type MonthlyInput } from './pro-monthly'
+import { buildMonthlyRecapEmail, buildProMonthlyEmail, deMonth, isLastCatchupDay, isMonthlySendDay, isPaidActive, monthPeriod, previousMonth, shouldSendMonthly, type MonthlyInput } from './pro-monthly'
 
 const base: MonthlyInput = {
   metier: 'photographe',
@@ -21,9 +21,13 @@ describe('bilan mensuel : quand et à qui', () => {
     expect(previousMonth('2027-01-01')).toMatchObject({ key: '2026-12', end: '2026-12-31', label: 'décembre 2026' })
     expect(previousMonth('2028-03-01').end).toBe('2028-02-29')
   })
-  it('seulement le 1er', () => {
+  it('du 1er au 7 (rattrapage), dernier jour signalé', () => {
     expect(isMonthlySendDay('2026-11-01')).toBe(true)
-    expect(isMonthlySendDay('2026-11-02')).toBe(false)
+    expect(isMonthlySendDay('2026-11-07')).toBe(true)
+    expect(isMonthlySendDay('2026-11-08')).toBe(false)
+    expect(isMonthlySendDay('2026-11-20')).toBe(false)
+    expect(isLastCatchupDay('2026-11-07')).toBe(true)
+    expect(isLastCatchupDay('2026-11-06')).toBe(false)
   })
   it('fiches actives et payées', () => {
     expect(isPaidActive({ status: 'active', stripe_subscription_status: 'trialing' })).toBe(true)
@@ -83,5 +87,38 @@ describe('bilan mensuel du dépannage (31/10/2026)', () => {
     const m = buildProMonthlyEmail({ ...base, metier: 'depannage' })
     expect(m.html).toContain('ta fiche dépannage')
     expect(m.html).not.toContain('équipe de ménage')
+  })
+})
+
+describe('bilan mensuel : évolution, signature et récap', () => {
+  it('évolutions affichées, signature de Jason avec sa photo', () => {
+    const e = buildProMonthlyEmail({ ...base, pct: { visitors: 25, views: -10, demandes: null, google: 0 }, clicks: 4, city: { label: 'Photographes à Lyon', visitors: 80, toFiche: 12 } })
+    expect(e.html).toContain('+25 %')
+    expect(e.html).toContain('-10 %')
+    expect(e.html).toContain('comparent avec le mois d’août')
+    expect(e.html).toContain('Clics vers tes liens')
+    expect(e.html).toContain('dont 12 qui sont passés sur ta fiche')
+    expect(e.html).toContain('signature-jason.jpg')
+    expect(e.html).toContain('Ton bilan')
+  })
+  it('pas de pourcentage sans comparaison', () => {
+    expect(buildProMonthlyEmail(base).html).not.toContain('comparent avec')
+  })
+  it('récap pour Jason : envoyés, totaux, meilleures fiches, retard', () => {
+    const r = buildMonthlyRecapEmail({
+      month: previousMonth('2026-12-01'), served: 3, total: 4, failed: 1, lastDay: true, adminUrl: 'https://app.jasonmarinho.com/dashboard/admin/qg',
+      lines: [
+        { nom: 'Clara Photo', metier: 'photographe', visitors: 120, demandes: 2, sent: true },
+        { nom: 'Net & Clean', metier: 'menage', visitors: 0, demandes: 0, sent: true },
+        { nom: 'Fix Pro', metier: 'depannage', visitors: 30, demandes: 0, sent: false },
+      ],
+    })
+    expect(r.subject).toBe('Bilans des pros de novembre 2026 : 3/4 envoyés, 2 demandes')
+    expect(r.html).toContain('Clara Photo')
+    expect(r.html).toContain('150')
+    expect(r.html).toContain('1 envoi a échoué')
+    expect(r.html).toContain('Dernier jour du rattrapage')
+    expect(r.html).toContain('&amp; Clean')
+    expect(r.html + r.subject).not.toMatch(/\u2014/)
   })
 })

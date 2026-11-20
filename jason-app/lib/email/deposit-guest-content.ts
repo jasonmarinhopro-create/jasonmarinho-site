@@ -1,7 +1,7 @@
 // Contenu de l'e-mail au voyageur quand l'hôte décide de la caution
 // (05/10/2026). Pur (pas d'envoi), testé : lib/email/deposit-guest-content.test.ts.
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from './template'
-import { toEmailLang } from './contract-i18n'
+import { CONTRACT_EMAIL_I18N, toEmailLang } from './contract-i18n'
 
 const money = (n: number) => `${n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
 
@@ -68,7 +68,12 @@ export function buildDepositGuestEmail(e: DepositGuestEmail, appUrl: string): { 
         ...(e.reason ? [{ label: t.reason, value: escHtml(e.reason) }] : []),
       ]
     : [{ label: t.released, value: money(e.deposit) }]
+  const lang = toEmailLang(e.langue)
+  const et = CONTRACT_EMAIL_I18N[lang]
   const html = buildEmail({
+    lang,
+    etiquette: et.tagDeposit,
+    footer: et.sentOnBehalf(escHtml(e.hostName)),
     title: isCapture ? t.capturedTitle : t.releasedTitle,
     preview: isCapture ? t.capturedBody(money(kept), money(e.deposit)) : t.releasedBody(money(e.deposit)),
     body: `

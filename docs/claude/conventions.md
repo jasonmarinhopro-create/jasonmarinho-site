@@ -147,13 +147,16 @@ function toggle(id: string) {
 
 ## Emails (Resend)
 
-Templates dans `lib/email/template.ts` avec helpers :
-- **DA claire depuis le 29/09/2026** (avant : thème sombre peu lisible en mode clair) : fond #ECF5EF, carte blanche, vert #004C3F, filet jaune, titre Georgia. `lightify()` convertit à l'envoi les couleurs de l'ancien thème encore écrites en dur (contrat signé, inscription, rappel de paiement `resend-payment`, lien de caution `deposit-reminders`, qui ont leur propre HTML) : ne plus écrire de #e8ede8 / #FFD56B en texte, utiliser les helpers. Sujets et textes sans tiret cadratin ni emoji.
-- `buildEmail({ title, body })` — wrapper principal
-- `emailInfoBlock([{ label, value }], color)` — tableau infos
-- `emailBtn(href, label, type)` — bouton CTA
-- `emailP(text)` — paragraphe
-- `escHtml(s)` — échapper HTML dans les emails
+**Gabarit unique depuis le 20/11/2026** (Jason : « que tout soit sur la même DA, la touche humaine avec ma tête et un petit texte ») : `lib/email/template.ts`, maquette des e-mails « Trouver un pro » qu'il avait validée (fond #F3F6F4, carte blanche arrondie, étiquette en pastille, titre Georgia, filet jaune, un bouton principal). Avant : 6 styles (thème sombre converti, première version claire, gabarit des demandes, gris générique, beige des inscriptions pros, texte brut des alertes).
+- `buildEmail({ title, body, preview, etiquette, lang, signature, footer })`. `signature: true | '<petit mot>'` ajoute la photo de Jason (`signature-jason.jpg`, JPEG sur notre domaine) et un mot à la 1re personne : seulement quand Jason parle (bienvenue, bilan des pros, demandes d'hôtes, Driing). Jamais dans un e-mail voyageur ni de sécurité.
+- Briques : `emailP`, `emailBtn` (cellule « bulletproof », `secondary` = contour), `emailFiche` (deux colonnes), `emailStats` (tuiles avec évolution `formatPct`), `emailEtapes`, `emailCitation`, `emailAlert`, `emailInfoBlock`, `emailNote`, `emailSmall`, `emailLink`, `htmlToText` (version texte jointe), `escHtml`. Jamais de `var(--…)` (ignoré par les messageries) ni de couleur de l'ancien thème : `lightify()` ne reste qu'en garde-fou.
+- Expéditeur : `EMAIL_FROM` (« Jason Marinho <notifications@> », jamais l'adresse seule). Tout e-mail qui dit « réponds à cet e-mail » met `replyTo` : `EMAIL_REPLY_TO` (contact@) ou l'adresse de la personne concernée. Envoi simple : `sendEmail()` (`lib/email/send.ts`, texte calculé, ne lève jamais).
+- Contrats (`lib/email/contract-emails.ts`, testé) : invitation, signé (voyageur / hôte), rappel de paiement, caution à J-2. Côté voyageur : expéditeur `contractFrom(hôte)` (« Sophie Bernard via Jason Marinho »), réponse à l'hôte, pied « envoyé pour le compte de » (`sentOnBehalf`, fr/pt), heure de signature `signDateLabel` en Europe/Paris.
+- Compte : `lib/email/auth-emails.ts`. Le bouton « Renvoyer l'e-mail de confirmation » de la connexion passe par `/api/resend-confirmation` (avant : `auth.resend()` envoyait le modèle anglais de Supabase, « Confirm Your Signup », vu le 09/11/2026). Les modèles e-mail du tableau de bord Supabase restent en anglais : à traduire par Jason si un autre flux les utilise.
+- Alertes à Jason : étiquette « Pour toi · … ». `sendAdminEmail` sans `html` met le texte au gabarit (`adminTextToHtml`). L'alerte d'inscription affiche les inscrits du mois et le total. Site statique : `adminEmail()` et signature dans `scripts/lib/pro-contact-email.cjs` (même maquette, à garder alignée) ; tout `fetch` vers Resend y est attendu (la fonction gèle après la réponse).
+- Galerie de tous les e-mails (données fictives) publiée le 20/11/2026 ; pour la refaire, un test Vitest temporaire qui appelle chaque fonction pure (`proWelcomeEmail`, `inscriptionEmail`, `documentEmail`, `quoteAcceptedEmail`, `paiementReceivedEmail`, `mentionEmail`, `buildProMonthlyEmail`, `buildMonthlyRecapEmail`…) en mockant `server-only`, `@/lib/supabase/service` et `@/lib/logger`.
+- Bilan mensuel des pros : voir `docs/claude/visibilite-acquisition.md` (envoi du 1er au 7, récap à Jason).
+- Garde-fous : `lib/email/emails.test.ts` (pas de tiret cadratin, d'emoji, de couleur sombre ni de `var(--`).
 
 ---
 

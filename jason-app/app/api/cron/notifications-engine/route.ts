@@ -60,8 +60,8 @@ export async function GET(req: Request) {
     depositEmails = await sendDepositOpenEmails(supabase, process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com')
   } catch (e) { console.warn('[cron] deposit reminders failed', e) }
 
-  // Bilan mensuel des pros (photographes, ménage) : seulement le 1er du mois
-  // (heure de Paris), sinon ne fait rien. Budget de 12 s, retiré ce jour-là
+  // Bilan mensuel des pros : du 1er au 7 du mois (heure de Paris, rattrapage
+  // de ce qui n'est pas parti), sinon ne fait rien. Récap à Jason ensuite. Budget de 12 s, retiré ce jour-là
   // de celui de la synchro iCal pour rester sous les 60 s.
   let proMonthly = { sent: 0, skipped: 0, failed: 0 }
   const tMonthly = Date.now()

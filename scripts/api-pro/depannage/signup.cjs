@@ -4,6 +4,7 @@
 // SIRET ni assurance (décision de Jason). Fermé tant que le métier n'est pas
 // ouvert (METIERS.depannage.ouvert dans les deux registres) : 403.
 
+const { adminEmail } = require('../../lib/pro-contact-email.cjs')
 const { findOrCreateCustomer } = require('../../lib/stripe-customer.cjs')
 const extras = require('../../lib/pro-signup-extras.cjs')
 // Mêmes clés que scripts/lib/pro-clienteles.mjs et jason-app/lib/pros/clienteles.ts
@@ -423,21 +424,16 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Jason Marinho <noreply@jasonmarinho.com>',
+        from: 'Jason Marinho <notifications@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
-        subject: `Nouvelle inscription Dépannage : ${esc(fullName)}`,
-        html: `<div style="font-family:-apple-system,Segoe UI,Helvetica,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
-<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">Nouvelle inscription Dépannage</h2>
-<div style="background:#fff;padding:16px;border-radius:8px;font-size:13.5px;line-height:1.9;color:#3D5038;border-left:3px solid #63D683">
-<strong>Profil :</strong> Dépannage et maintenance (annuaire)<br>
-<strong>Nom :</strong> ${esc(fullName)}<br>
-<strong>Email :</strong> ${esc(email)}<br>
-<strong>Ville :</strong> ${esc(ville)}<br>
-<strong>Tier :</strong> ${esc(tier)}<br>
-<strong>Statut :</strong> paiement Stripe en cours (fiche activée au paiement)
-</div>
-<p style="margin:18px 0 0"><a href="https://app.jasonmarinho.com/dashboard/admin/depannage" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Voir les pros du dépannage</a></p>
-</div>`,
+        subject: `Nouvelle inscription Dépannage : ${fullName}`,
+        html: adminEmail({
+          etiquette: 'Nouveau pro',
+          title: `${fullName} rejoint l’annuaire`,
+          intro: 'Inscription dépannage reçue. Le paiement Stripe est en cours : la fiche s’active au paiement.',
+          rows: [['Métier', 'Dépannage et maintenance'], ['Ville', String(ville || '')], ['E-mail', String(email || '')], ['Formule', String(tier || '')]],
+          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/depannage', label: 'Voir les pros du dépannage' },
+        }),
       }),
     }).catch(err => console.warn('[depannage/signup] notify email failed', err))
   }

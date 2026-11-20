@@ -1,7 +1,8 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { buildEmail, emailBtn, emailP, emailNote, emailInfoBlock, emailAnnuairesPromo, escHtml } from '@/lib/email/template'
+import { buildEmail, emailP, emailInfoBlock, escHtml, EMAIL_FROM, EMAIL_REPLY_TO, htmlToText } from '@/lib/email/template'
+import { confirmationEmail } from '@/lib/email/auth-emails'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
@@ -67,14 +68,15 @@ function looksLikeDottedGmailBot(email: string): boolean {
 // à fouiller les logs Vercel — ce qu'il n'a pas toujours la possibilité de faire.
 function notifyJasonIssue(reason: string, details: Record<string, unknown>) {
   void new Resend(process.env.RESEND_API_KEY).emails.send({
-    from: 'Jason Marinho <noreply@jasonmarinho.com>',
+    from: EMAIL_FROM,
     to: 'contact@jasonmarinho.com',
     subject: `Incident inscription : ${reason}`,
     html: buildEmail({
+      etiquette: 'Pour toi · Inscription',
       title: 'Un incident a eu lieu sur une inscription',
       preview: `${reason}. Si c'est une vraie personne, tu peux l'aider manuellement.`,
       body: `
-        ${emailP(`Détail : <strong style="color:#e8ede8;">${escHtml(reason)}</strong>. Si tu penses que c'est une vraie personne (pas un bot) ou que son compte est créé mais bloqué sans email, tu peux l'aider manuellement depuis l'admin, ou lui répondre pour vérifier.`)}
+        ${emailP(`Détail : <strong>${escHtml(reason)}</strong>. Si tu penses que c'est une vraie personne (pas un bot) ou que son compte est créé mais bloqué sans email, tu peux l'aider manuellement depuis l'admin, ou lui répondre pour vérifier.`)}
         ${emailInfoBlock(Object.entries(details).map(([label, value]) => ({ label, value: escHtml(String(value ?? '-')) })))}
       `,
     }),
@@ -186,21 +188,14 @@ export async function POST(req: NextRequest) {
               notifyJasonIssue('lien de renvoi non généré (Supabase)', { Email: normalized, 'Nom saisi': fullName, Erreur: linkError?.message })
               return NextResponse.json({ success: true, emailSent: false })
             }
+            const mail = confirmationEmail({ fullName: fullName || null, link: lienConfirmation(linkData.properties.hashed_token, 'magiclink'), isInvestor: !!isInvestor, renvoi: true })
             const { error: resendErr } = await getResend().emails.send({
-              from: 'Jason Marinho <noreply@jasonmarinho.com>',
+              from: EMAIL_FROM,
+              replyTo: EMAIL_REPLY_TO,
               to: normalized,
-              subject: 'Confirme ton adresse email',
-              html: buildEmail({
-                title: 'Confirme ton adresse email',
-                preview: 'Une dernière étape pour accéder à ton espace Jason Marinho.',
-                body: `
-                  ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Voici un nouveau lien : un clic et tu arrives dans ton espace, déjà connecté.`)}
-                  ${emailP(`Ce lien est valable <strong style="color:#FFD56B;">24&nbsp;heures</strong>.`)}
-                  ${emailBtn(lienConfirmation(linkData.properties.hashed_token, 'magiclink'), 'Accéder à mon espace', 'primary')}
-                  ${isInvestor ? '' : emailAnnuairesPromo()}
-                  ${emailNote('Si tu n\'as pas créé de compte sur Jason Marinho, ignore simplement cet email. Aucune action n\'est requise.')}
-                `,
-              }),
+              subject: mail.subject,
+              html: mail.html,
+              text: htmlToText(mail.html),
             })
             if (resendErr) {
               log.error('resend(resend)', resendErr)
@@ -267,21 +262,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Send branded confirmation email via Resend
+    const mail = confirmationEmail({ fullName: fullName || null, link: lienConfirmation(linkData.properties.hashed_token, 'signup'), isInvestor: !!isInvestor, renvoi: false })
     const { error: resendError } = await getResend().emails.send({
-      from: 'Jason Marinho <noreply@jasonmarinho.com>',
+      from: EMAIL_FROM,
+      replyTo: EMAIL_REPLY_TO,
       to: normalized,
-      subject: 'Confirme ton adresse email',
-      html: buildEmail({
-        title: 'Confirme ton adresse email',
-        preview: 'Une dernière étape pour accéder à ton espace Jason Marinho.',
-        body: `
-          ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Ton compte est prêt. Un clic sur le bouton ci-dessous confirme ton adresse et t'ouvre ton espace, déjà connecté.`)}
-          ${emailP(`Ce lien est valable <strong style="color:#FFD56B;">24&nbsp;heures</strong>.`)}
-          ${emailBtn(lienConfirmation(linkData.properties.hashed_token, 'signup'), 'Accéder à mon espace', 'primary')}
-          ${isInvestor ? '' : emailAnnuairesPromo()}
-          ${emailNote('Si tu n\'as pas créé de compte sur Jason Marinho, ignore simplement cet email. Aucune action n\'est requise.')}
-        `,
-      }),
+      subject: mail.subject,
+      html: mail.html,
+      text: htmlToText(mail.html),
     })
 
     if (resendError) {

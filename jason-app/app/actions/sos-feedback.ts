@@ -2,10 +2,10 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
+import { buildEmail, emailBtn, emailCitation, emailInfoBlock, EMAIL_FROM, escHtml } from '@/lib/email/template'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
-const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
 const VALID_CHANNELS = ['airbnb', 'booking', 'vrbo', 'direct'] as const
 const VALID_TYPES = ['error', 'testimony', 'suggestion'] as const
@@ -19,15 +19,6 @@ const TYPE_LABELS: Record<FeedbackType, string> = {
   suggestion: 'Suggestion d\'amélioration',
 }
 
-const TYPE_EMOJI: Record<FeedbackType, string> = {
-  error: '⚠️',
-  testimony: '💬',
-  suggestion: '💡',
-}
-
-function escHtml(s: string) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-}
 
 export async function submitSOSFeedback(input: {
   scenario: string
@@ -69,27 +60,27 @@ export async function submitSOSFeedback(input: {
   if (error) return { error: `Erreur: ${error.message}` }
 
   const feedbackType = input.feedbackType as FeedbackType
-  const subject = `${TYPE_EMOJI[feedbackType]} SOS Hôte · ${TYPE_LABELS[feedbackType]} · ${input.scenario}`
+  const subject = `SOS Hôte · ${TYPE_LABELS[feedbackType]} · ${input.scenario}`
 
   await getResend().emails.send({
-    from: FROM_EMAIL,
+    from: EMAIL_FROM,
     to: NOTIFY_EMAIL,
+    ...(userEmail.includes('@') ? { replyTo: userEmail } : {}),
     subject,
-    html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #1a1a2e; margin: 0 0 16px;">${escHtml(subject)}</h2>
-        <table style="font-size: 13px; color: #555; margin: 0 0 16px;">
-          <tr><td style="padding: 2px 12px 2px 0;"><strong>Scénario</strong></td><td>${escHtml(input.scenario)}</td></tr>
-          <tr><td style="padding: 2px 12px 2px 0;"><strong>Canal</strong></td><td>${escHtml(input.channel)}</td></tr>
-          <tr><td style="padding: 2px 12px 2px 0;"><strong>Type</strong></td><td>${TYPE_LABELS[feedbackType]}</td></tr>
-          <tr><td style="padding: 2px 12px 2px 0;"><strong>De</strong></td><td>${escHtml(userName)} (${escHtml(userEmail)})</td></tr>
-        </table>
-        <div style="background: #f5f5f5; border-radius: 8px; padding: 16px; margin: 0 0 16px; white-space: pre-wrap; font-size: 14px; line-height: 1.6; color: #333;">${escHtml(message)}</div>
-        <p style="color: #999; font-size: 12px; border-top: 1px solid #eee; padding-top: 12px; margin: 0;">
-          À modérer sur <a href="https://app.jasonmarinho.com/dashboard/admin/sos-feedback" style="color: #004C3F;">l'admin SOS</a>.
-        </p>
-      </div>
-    `,
+    html: buildEmail({
+      etiquette: `Pour toi · SOS Hôte`,
+      title: escHtml(TYPE_LABELS[feedbackType]),
+      preview: message.slice(0, 120),
+      body: [
+        emailCitation(message),
+        emailInfoBlock([
+          { label: 'Scénario', value: escHtml(input.scenario) },
+          { label: 'Canal', value: escHtml(input.channel) },
+          { label: 'De', value: escHtml(`${userName} (${userEmail})`) },
+        ]),
+        emailBtn('https://app.jasonmarinho.com/dashboard/admin/sos-feedback', 'Modérer dans l’admin SOS'),
+      ].join(''),
+    }),
   }).catch(() => {})
 
   return { success: true }

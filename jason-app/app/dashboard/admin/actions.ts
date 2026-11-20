@@ -5,13 +5,13 @@ import { loadMemberProfile } from '@/lib/admin/member-profile'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
-import { buildEmail, emailBtn, emailP, emailInfoBlock } from '@/lib/email/template'
+import { buildEmail, emailBtn, emailEtapes, emailP, emailInfoBlock, escHtml, EMAIL_FROM, EMAIL_REPLY_TO } from '@/lib/email/template'
 import { CACHE_TAGS } from '@/lib/queries/cache'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 import { appErrorKey } from '@/lib/queries/site-traffic'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
-const FROM_EMAIL = 'notifications@jasonmarinho.com'
+const FROM_EMAIL = EMAIL_FROM
 
 // getAdminClient : vérifie le rôle admin via le client SSR (cookies),
 // puis retourne le SERVICE ROLE client pour bypasser la RLS sur les
@@ -44,23 +44,20 @@ async function sendDriingConfirmationEmail(userEmail: string, userName: string |
     from: FROM_EMAIL,
     to: userEmail,
     subject: 'Ton accès Membre Driing est confirmé',
+    replyTo: EMAIL_REPLY_TO,
     html: buildEmail({
-      title: `Bienvenue, ${name}`,
-      preview: 'Ton adhésion Membre Driing est validée. Toutes les formations sont maintenant accessibles.',
+      etiquette: 'Membre Driing',
+      title: `Bienvenue, ${escHtml(name)}`,
+      preview: 'Ton adhésion Membre Driing est validée : tout l’espace Standard est ouvert.',
       body: `
-        ${emailP('Ton adhésion en tant que <strong style="color:#FFD56B;">Membre Driing</strong> vient d\'être confirmée. Tu as maintenant accès à l\'ensemble des ressources de la plateforme.')}
-        <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #FFD56B;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
-          <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:#FFD56B;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:0.3px;">INCLUS DANS TON ABONNEMENT</p>
-          <p style="margin:0;font-size:14px;color:#7a9e8a;line-height:2;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
-            Toutes les formations en accès illimité<br/>
-            Communauté privée Driing<br/>
-            Nouveaux contenus en accès prioritaire<br/>
-            Offres partenaires exclusives<br/>
-            Support dédié
-          </p>
-        </div>
+        ${emailP('Ton adhésion <strong>Membre Driing</strong> vient d’être confirmée. Tout ce qui est réservé à l’offre Standard est maintenant ouvert dans ton espace :')}
+        ${emailEtapes([
+          'Toutes les formations.',
+          'Les contrats signés en ligne, avec le loyer payé par carte et la caution par empreinte bancaire.',
+        ])}
         ${emailBtn('https://app.jasonmarinho.com/dashboard', 'Accéder à mon espace', 'primary')}
       `,
+      signature: 'Merci de faire partie de l’aventure Driing. Si quelque chose bloque dans ton espace, réponds-moi ici.',
     }),
   }).catch(() => {})
 }
@@ -408,12 +405,15 @@ export async function adminCreateAccount(input: { email: string; fullName: strin
     from: FROM_EMAIL,
     to: email,
     subject: 'Ton accès Jason Marinho est prêt',
+    replyTo: EMAIL_REPLY_TO,
     html: buildEmail({
-      title: `Bienvenue${fullName ? `, ${fullName}` : ''}`,
+      etiquette: 'Ton compte',
+      title: `Bienvenue${fullName ? `, ${escHtml(fullName)}` : ''}`,
       preview: 'Ton compte a été créé, voici ton mot de passe temporaire.',
+      signature: true,
       body: `
         ${emailP('Ton compte vient d\'être créé sur la plateforme. Voici tes identifiants de connexion :')}
-        ${emailInfoBlock([{ label: 'Email', value: email }, { label: 'Mot de passe temporaire', value: tempPassword }])}
+        ${emailInfoBlock([{ label: 'E-mail', value: escHtml(email) }, { label: 'Mot de passe temporaire', value: `<span style="font-family:'Courier New',Courier,monospace;">${escHtml(tempPassword)}</span>` }])}
         ${emailP('Connecte-toi avec ces identifiants, puis pense à changer ce mot de passe depuis ton profil.')}
         ${emailBtn(`${process.env.NEXT_PUBLIC_APP_URL}/auth/login`, 'Me connecter', 'primary')}
       `,

@@ -6,6 +6,7 @@
 // Après paiement, le pro se connecte sur app.jasonmarinho.com et gère
 // sa fiche depuis /dashboard/ma-fiche-photographe.
 
+const { adminEmail } = require('../../lib/pro-contact-email.cjs')
 const { findOrCreateCustomer } = require('../../lib/stripe-customer.cjs')
 const extras = require('../../lib/pro-signup-extras.cjs')
 // Mêmes clés que scripts/lib/pro-clienteles.mjs et jason-app/lib/pros/clienteles.ts
@@ -418,21 +419,16 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Jason Marinho <noreply@jasonmarinho.com>',
+        from: 'Jason Marinho <notifications@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
-        subject: `Nouvelle inscription Photographe : ${esc(fullName)}`,
-        html: `<div style="font-family:-apple-system,Segoe UI,Helvetica,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
-<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">📸 Nouvelle inscription Photographe</h2>
-<div style="background:#fff;padding:16px;border-radius:8px;font-size:13.5px;line-height:1.9;color:#3D5038;border-left:3px solid #63D683">
-<strong>Profil :</strong> Photographe LCD (annuaire)<br>
-<strong>Nom :</strong> ${esc(fullName)}<br>
-<strong>Email :</strong> ${esc(email)}<br>
-<strong>Ville :</strong> ${esc(ville)}<br>
-<strong>Tier :</strong> ${esc(tier)}<br>
-<strong>Statut :</strong> paiement Stripe en cours (fiche activée au paiement)
-</div>
-<p style="margin:18px 0 0"><a href="https://app.jasonmarinho.com/dashboard/admin/photographes" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Voir les photographes →</a></p>
-</div>`,
+        subject: `Nouvelle inscription Photographe : ${fullName}`,
+        html: adminEmail({
+          etiquette: 'Nouveau pro',
+          title: `${fullName} rejoint l’annuaire`,
+          intro: 'Inscription photographe reçue. Le paiement Stripe est en cours : la fiche s’active au paiement.',
+          rows: [['Métier', 'Photographe LCD'], ['Ville', String(ville || '')], ['E-mail', String(email || '')], ['Formule', String(tier || '')]],
+          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/photographes', label: 'Voir les photographes' },
+        }),
       }),
     }).catch(err => console.warn('[photographer/signup] notify email failed', err))
   }
