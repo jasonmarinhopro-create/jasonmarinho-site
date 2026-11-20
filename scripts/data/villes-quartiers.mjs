@@ -258,6 +258,16 @@ export const QUARTIERS = {
     photo: "À Ajaccio, la mer fait la couverture : vue sur le golfe ou sur les îles Sanguinaires au coucher du soleil. En vieille ville, le cachet des façades et la proximité du port se mettent en légende.",
     menage: "À Ajaccio, la saison est courte et dense, avec des arrivées qui suivent les bateaux et les avions. La route des Sanguinaires est longue et chargée l'été : regrouper les logements par secteur.",
   },
+  meaux: {
+    quartiers: [
+      ['La cité épiscopale et le centre', "Autour de la cathédrale Saint-Étienne et des remparts : appartements anciens, rues commerçantes, tout à pied."],
+      ['Les bords de Marne et le Marché', "De part et d'autre de la Marne : immeubles et maisons de ville près des quais et du marché."],
+      ['La gare', "Appartements récents et anciens autour de la gare, pratiques pour la clientèle qui travaille à Paris."],
+      ['Les quartiers résidentiels', "Maisons avec jardin et parking sur les hauteurs et en périphérie, recherchées par les familles en route vers Disneyland Paris."],
+    ],
+    photo: "À Meaux, la cathédrale et la cité épiscopale font les plus belles couvertures. Pour une maison familiale, le jardin, les couchages et la route vers Disneyland Paris se mettent en avant.",
+    menage: "À Meaux, les familles de Disneyland Paris remplissent les vacances scolaires et les week-ends, la clientèle pro la semaine. Les maisons de périphérie demandent plus de linge et l'entretien des extérieurs.",
+  },
   amiens: {
     quartiers: [
       ['Saint-Leu', "Ancien quartier des teinturiers au bord de la Somme : maisons colorées, canaux, ambiance vivante."],

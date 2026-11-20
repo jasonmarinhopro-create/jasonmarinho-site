@@ -1435,6 +1435,43 @@ export const VILLES_LOCAL = {
     },
   },
 
+  meaux: {
+    ...ville({
+      ville: 'Meaux',
+      taxe: "Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus une éventuelle taxe additionnelle départementale et, depuis 2024, une <strong>taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>, comme dans toute l'Île-de-France.",
+      faqTaxe: "Pour un meublé non classé, le taux est voté localement entre 1 % et 5 % du prix HT de la nuitée par personne, dans la limite d'un plafond, auxquels s'ajoutent une éventuelle taxe additionnelle départementale et, depuis 2024, <strong>une taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à la collectivité de Meaux.",
+      pics: [
+        "Toute l'année : Disneyland Paris à une vingtaine de kilomètres, des familles qui cherchent un logement autour du parc, surtout pendant les vacances scolaires",
+        "De fin mai à début juillet : « Meaux remonte le temps », des week-ends d'animations historiques dans la ville (du 30 mai au 4 juillet en 2026)",
+        "Décembre : Meaux & Merveilles, les animations de Noël et le marché de Noël du centre-ville",
+        "Toute l'année : le Musée de la Grande Guerre, et en semaine les déplacements professionnels vers Paris et Marne-la-Vallée",
+      ],
+      menage: [
+        "<strong>Familles de Disneyland Paris :</strong> séjours de deux à quatre nuits, plusieurs lits, beaucoup de linge. Prévoyez un double jeu de draps et de serviettes par logement.",
+        "<strong>Vacances scolaires chargées :</strong> les arrivées suivent le calendrier des vacances, de la France et des pays voisins. Calez vos créneaux plusieurs semaines avant.",
+        "<strong>Clientèle pro en semaine :</strong> séjours courts du lundi au vendredi, rotations tôt le matin ou le soir.",
+      ],
+      photo: [
+        "<strong>Ce qui fait cliquer :</strong> la cathédrale Saint-Étienne et la cité épiscopale, les bords de la Marne, un jardin pour les familles.",
+        "<strong>Familles :</strong> montrez clairement le nombre de couchages, les lits d'enfant, le parking et la distance jusqu'au parc en légende.",
+        "<strong>Accès :</strong> la gare et le train vers Paris-Est en légende de la photo de couverture.",
+      ],
+      evSources: [
+        { label: 'Festival en France : Meaux remonte le temps, dates 2026', url: 'https://www.festivalenfrance.com/festival/spectacle-historique-de-meaux' },
+        { label: 'Sortir à Paris : marchés de Noël en Seine-et-Marne (Meaux & Merveilles)', url: 'https://www.sortiraparis.com/actualites/noel-et-fetes/guides/321108-les-marches-de-noel-2025-en-seine-et-marne-77-dates-et-programme' },
+        { label: 'Service-Public : taxe additionnelle de 200 % en Île-de-France depuis 2024', url: 'https://www.service-public.fr/particuliers/actualites/A17102' },
+      ],
+    }),
+    verifie: 'novembre 2026',
+    marche: {
+      releve: 'novembre 2026',
+      sources: [
+        { label: 'AirDNA : marché de la location courte durée à Meaux (annonces, occupation, prix moyen)', url: 'https://www.airdna.co/vacation-rental-data/app/fr/ile-de-france/meaux/overview' },
+        { label: 'GuestFavorites : taux d’occupation Airbnb à Meaux', url: 'https://www.guestfavorites.com/airbnb-occupancy-rates-in-meaux-france' },
+      ],
+    },
+  },
+
   roanne: {
     ...ville({
       ville: 'Roanne',

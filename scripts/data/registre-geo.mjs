@@ -72,6 +72,7 @@ export const VILLES = [
   { slug: 'lille', nom: 'Lille', insee: '59350', pages: LES_4 },
   { slug: 'lyon', nom: 'Lyon', insee: '69123', pages: LES_4, revenus: 'lyon' },
   { slug: 'marseille', nom: 'Marseille', insee: '13055', pages: LES_4, revenus: 'marseille' },
+  { slug: 'meaux', nom: 'Meaux', insee: '77284', pages: LES_4 },
   { slug: 'megeve', nom: 'Megève', insee: '74173', pages: LES_4, revenus: 'megeve' },
   { slug: 'menton', nom: 'Menton', insee: '06083', pages: LES_4 },
   { slug: 'metz', nom: 'Metz', insee: '57463', pages: LES_4 },

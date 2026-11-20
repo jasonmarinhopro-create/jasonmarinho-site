@@ -34,6 +34,7 @@ export const COMMUNES = {
   'les-sables-d-olonne': ['Les Sables|85', "LES SABLES-D'OLONNE"],
   // Versailles : la base ne porte que la part départementale, pas les taxes
   // d'Île-de-France (15 % et 200 %) : grille non affichée, texte local gardé.
+  // Meaux (20/11/2026) : même cas (Île-de-France), texte local de villes-local.mjs.
 }
 
 const LIGNES = [

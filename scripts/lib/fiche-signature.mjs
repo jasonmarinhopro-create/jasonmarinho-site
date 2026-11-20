@@ -59,6 +59,7 @@ export const VILLE_COORDS = {
   epernay: [49.04, 3.96], etretat: [49.71, 0.20], menton: [43.78, 7.50], dinard: [48.63, -2.06], quimper: [48.00, -4.10],
   nancy: [48.69, 6.18], troyes: [48.30, 4.08], bastia: [42.70, 9.45], 'clermont-ferrand': [45.78, 3.09], poitiers: [46.58, 0.34],
   'les-sables-d-olonne': [46.50, -1.78], roanne: [46.04, 4.07], amiens: [49.89, 2.30],
+  meaux: [48.96, 2.88],
 }
 
 // Contour simplifié de la France métropolitaine et de la Corse (longitude, latitude)
