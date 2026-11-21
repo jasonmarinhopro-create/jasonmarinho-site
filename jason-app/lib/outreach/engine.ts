@@ -164,30 +164,41 @@ export function replySubject(subject: string): string {
 
 // ─── Information CNIL + désinscription ──────────────────────────────────────
 
-const SOURCE_PHRASE: Partial<Record<Source, string>> = {
-  google: 'ta fiche Google Maps',
-  sirene: "l'annuaire public des entreprises (INSEE)",
-  datatourisme: 'DATAtourisme, la base publique des offices de tourisme',
-  site: 'ton site internet',
+const SOURCE_PHRASE: Partial<Record<Source, { tu: string; vous: string }>> = {
+  google: { tu: 'ta fiche Google Maps', vous: 'votre fiche Google Maps' },
+  sirene: { tu: "l'annuaire public des entreprises (INSEE)", vous: "l'annuaire public des entreprises (INSEE)" },
+  datatourisme: { tu: 'DATAtourisme, la base publique des offices de tourisme', vous: 'DATAtourisme, la base publique des offices de tourisme' },
+  site: { tu: 'ton site internet', vous: 'votre site internet' },
+}
+
+/** Audiences écrites au vouvoiement (test validé par Jason le 20/11/2026) */
+export const FORMAL_AUDIENCES: Audience[] = ['menage']
+
+/** Texte écrit au vouvoiement (aperçu et e-mail d'essai d'une étape) */
+export function isFormalText(text: string): boolean {
+  // Limites de mot qui tiennent compte des accents (« hôtes » ne contient pas « tes »)
+  return /(?<!\p{L})(vous|votre|vos)(?!\p{L})/iu.test(text) && !/(?<!\p{L})(tu|ton|ta|tes|toi)(?!\p{L})|(?<!\p{L})t'/iu.test(text)
 }
 
 /**
- * Pied de message : identité de l'expéditeur, origine de l'adresse (premier
- * message) et désinscription en un clic. Prospection B2B : pas de
- * consentement préalable, mais information et opposition simple obligatoires.
+ * Pied de message : origine de l'adresse (premier message) et désinscription.
+ * Prospection B2B : pas de consentement préalable, mais information et
+ * opposition simple obligatoires (CNIL). L'expéditeur est dans la signature.
+ * Court depuis le 20/11/2026 : trois lignes juridiques avant la signature
+ * faisaient « e-mail de masse ». Plus de mention du taux d'ouverture : la
+ * mesure est retirée (elle faisait baisser les réponses et comptait surtout
+ * des robots).
  */
-export function complianceFooter(opts: { source: Source; firstMessage: boolean; unsubscribeUrl: string }): string {
+export function complianceFooter(opts: { source: Source; firstMessage: boolean; unsubscribeUrl: string; formal?: boolean }): string {
+  const f = !!opts.formal
   const lines: string[] = []
   if (opts.firstMessage) {
-    const where = SOURCE_PHRASE[opts.source]
-    lines.push(
-      where
-        ? `Je t'écris parce que ton activité est présentée publiquement sur ${where}. Ton adresse sert uniquement à ces quelques messages de Jason Marinho (jasonmarinho.com).`
-        : `Ton adresse sert uniquement à ces quelques messages de Jason Marinho (jasonmarinho.com).`,
-    )
+    const where = SOURCE_PHRASE[opts.source]?.[f ? 'vous' : 'tu']
+    if (where) lines.push(f ? `Je vous écris car votre activité est présentée publiquement sur ${where}.` : `Je t'écris car ton activité est présentée publiquement sur ${where}.`)
   }
-  lines.push(`Pour ne plus recevoir de message de ma part : ${opts.unsubscribeUrl}`)
-  if (opts.firstMessage) lines.push(`Seul un taux d'ouverture global et anonyme de mes messages est mesuré, sans suivi individuel.`)
+  lines.push(f
+    ? `Pas intéressé ? Répondez « stop » ou cliquez ici : ${opts.unsubscribeUrl}`
+    : `Pas intéressé ? Réponds « stop » ou clique ici : ${opts.unsubscribeUrl}`)
   return lines.join('\n')
 }
 
@@ -343,6 +354,32 @@ const WEBMAILS = new Set([
   'yahoo.com', 'yahoo.fr', 'icloud.com', 'me.com', 'mac.com', 'orange.fr', 'wanadoo.fr', 'free.fr', 'sfr.fr', 'neuf.fr',
   'laposte.net', 'bbox.fr', 'gmx.fr', 'gmx.com', 'aol.com', 'protonmail.com', 'proton.me', 'numericable.fr',
 ])
+
+/** Domaine d'un site (« https://www.studio-x.fr/contact » → « studio-x.fr ») */
+export function siteDomain(site: string | null | undefined): string | null {
+  const raw = String(site ?? '').trim()
+  if (!raw) return null
+  try {
+    return new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`).hostname.toLowerCase().replace(/^www\./, '') || null
+  } catch { return null }
+}
+
+/**
+ * Lien entre l'adresse et le site où elle a été trouvée (20/11/2026) :
+ * « site » (même domaine, ou sous-domaine), « webmail » (Gmail, Orange…),
+ * « autre » (souvent le webmaster, l'hébergeur ou un ancien domaine). Mesuré
+ * sur les envois : 23 % de rebonds pour « autre » (13 sur 57, aucune
+ * réponse), 3 % pour les deux autres. « autre » n'entre plus tout seul dans
+ * les séquences ; sans site connu, on ne peut pas juger : « inconnu ».
+ */
+export function emailSiteMatch(email: string, site: string | null | undefined): 'site' | 'webmail' | 'autre' | 'inconnu' {
+  const ed = String(email).toLowerCase().split('@')[1] ?? ''
+  if (!ed) return 'autre'
+  if (WEBMAILS.has(ed) || /^(gmail|hotmail|outlook|yahoo|live|icloud|gmx|aol|proton(mail)?)\./.test(ed)) return 'webmail'
+  const sd = siteDomain(site)
+  if (!sd) return 'inconnu'
+  return ed === sd || sd.endsWith(`.${ed}`) || ed.endsWith(`.${sd}`) ? 'site' : 'autre'
+}
 
 /** Identifiants de message d'un en-tête (« <a@b> <c@d> ») → minuscules sans chevrons */
 export function messageIdsOf(header: string | null | undefined): string[] {
