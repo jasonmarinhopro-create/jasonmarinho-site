@@ -389,6 +389,19 @@ a.dm-city:hover{border-color:var(--g)}
 .hx-m{position:absolute;bottom:0;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.55)}
 .hx-v small{font-family:Outfit,sans-serif;font-size:11px;font-weight:500;color:rgba(255,255,255,.55)}
 @media(max-width:640px){.hx-v:not(.last):not(.part){display:none}}
+.hx-hit{position:absolute;top:0;bottom:28px;transform:translateX(-50%);z-index:2;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.hx-hit::before{content:'';position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed rgba(255,213,107,.45);opacity:0;transition:opacity .15s}
+.hx-hit.on::before{opacity:1}
+.hx-pt{transition:transform .15s}.hx-pt.on{transform:translate(-50%,-50%) scale(1.5)}
+.hx-b{position:absolute;left:50%;transform:translate(-50%,calc(-100% - 14px));padding:9px 12px;border-radius:12px;background:#0F1A0D;color:rgba(255,255,255,.7);font-size:12.5px;line-height:1.45;white-space:nowrap;box-shadow:0 14px 34px rgba(0,0,0,.35);pointer-events:none;opacity:0;visibility:hidden;transition:opacity .15s}
+.hx-b.dn{transform:translate(-50%,14px)}
+.hx-b strong{display:block;color:#fff;font-size:14px;font-weight:600}
+.hx-hit.l .hx-b{transform:translate(-12px,calc(-100% - 14px))}.hx-hit.l .hx-b.dn{transform:translate(-12px,14px)}
+.hx-hit.r .hx-b{left:auto;right:50%;transform:translate(12px,calc(-100% - 14px))}.hx-hit.r .hx-b.dn{transform:translate(12px,14px)}
+.hx-hit.on .hx-b{opacity:1;visibility:visible}
+.hx-fl{display:flex;flex-direction:column;gap:4px}
+.hx-hint .t{display:none}
+@media(hover:none){.hx-hint .t{display:inline}.hx-hint .s{display:none}}
 .k4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:clamp(22px,3vw,34px);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:visible}
 .k{position:relative;display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:#022f25;color:#fff;text-decoration:none;min-width:0}
 .k:first-child{border-radius:19px 0 0 19px}.k:last-child{border-radius:0 19px 19px 0}
@@ -459,7 +472,7 @@ a.dm-city:hover{border-color:var(--g)}
       <div class="k"><span class="k-l">Visiteurs du site&nbsp;·&nbsp;30&nbsp;j <span class="tip" tabindex="0" role="button" aria-label="Ce que veut dire ce chiffre">?<span class="tip-b" role="tooltip">Une visite du site, comptée par notre propre mesure, sans cookie publicitaire ni adresse IP gardée.</span></span></span><b data-k="vis"><span class="sk"></span></b><small data-d="vis" hidden></small></div>
       <a class="k k-dm" href="#demandes"><span class="k-l" data-k-dm-l>Demandes d’hôtes</span><b data-k="dm"><span class="sk"></span></b><em class="k-s" data-dm-last hidden></em><i class="ph-bold ph-arrow-down k-go" aria-hidden="true"></i></a>
     </div>
-    <div class="hx-foot"><span data-chart-cur hidden></span><div class="upd" data-upd>Chargement des chiffres…</div></div>
+    <div class="hx-foot"><div class="hx-fl"><span data-chart-cur hidden></span><span class="hx-hint" data-chart-hint hidden><span class="s">Passe la souris sur un mois pour voir ses chiffres.</span><span class="t">Touche un mois pour voir ses chiffres.</span></span></div><div class="upd" data-upd>Chargement des chiffres…</div></div>
     <div class="err" data-err>Les chiffres ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</div>
   </div>
 </header>
@@ -632,11 +645,28 @@ a.dm-city:hover{border-color:var(--g)}
     months.forEach(function(m, i){
       var p = m.month.split('-'), last = i === full - 1, part = !!m.partial;
       var top = 'calc(' + H2 + ' * ' + (Y(m.impressions) / 100) + ')';
-      html += '<span class="hx-pt' + (last ? ' last' : '') + (part ? ' part' : '') + '" style="left:' + X(i) + '%;top:' + top + '" title="' + MOIS[+p[1]-1] + ' ' + p[0] + ' : ' + n(m.impressions) + ' affichages, ' + n(m.clicks) + ' clics' + (part ? ' (mois en cours)' : '') + '"></span>';
+      html += '<span class="hx-pt' + (last ? ' last' : '') + (part ? ' part' : '') + '" style="left:' + X(i) + '%;top:' + top + '"></span>';
       html += '<span class="hx-v' + (last ? ' last' : '') + (part ? ' part' : '') + '" style="left:' + X(i) + '%;top:' + top + '">' + n(m.impressions) + (part ? ' <small>en cours</small>' : '') + '</span>';
       html += '<span class="hx-m" style="left:' + X(i) + '%">' + MOIS[+p[1]-1] + '</span>';
+      // Zone de survol / toucher sur toute la hauteur du mois (le point seul est trop petit au doigt)
+      var lab = MOIS_L[+p[1]-1] + ' ' + p[0] + (part ? ' (en cours)' : ''), ctr = m.impressions ? pf.format(m.clicks / m.impressions * 100) + ' %' : '';
+      html += '<span class="hx-hit' + (i < 1 && N > 2 ? ' l' : '') + (i === N - 1 && N > 2 ? ' r' : '') + '" tabindex="0" role="button" aria-label="' + lab + ' : ' + n(m.impressions) + ' affichages, ' + n(m.clicks) + ' clics" style="left:' + X(i) + '%;width:' + (N > 1 ? 92 / (N - 1) : 30) + '%">' +
+        '<span class="hx-b' + (Y(m.impressions) < 45 ? ' dn' : '') + '" style="top:' + Y(m.impressions) + '%"><strong>' + n(m.impressions) + ' affichages</strong>' + n(m.clicks) + ' clics' + (ctr ? ' (' + ctr + ')' : '') + '<br>' + lab + '</span></span>';
     });
     box.innerHTML = html;
+    var hint = $('[data-chart-hint]'); if (hint) hint.hidden = false;
+    var hits = box.querySelectorAll('.hx-hit'), pts2 = box.querySelectorAll('.hx-pt'), fine = window.matchMedia && matchMedia('(hover:hover)').matches;
+    var show = function(el){ for (var k = 0; k < hits.length; k++) { var on = hits[k] === el; hits[k].classList.toggle('on', on); if (pts2[k]) pts2[k].classList.toggle('on', on); } };
+    Array.prototype.forEach.call(hits, function(h){
+      if (fine) h.addEventListener('mouseenter', function(){ show(h); });
+      // Au toucher, le focus arrive juste avant le clic : seul un second toucher ferme
+      h.addEventListener('click', function(e){ e.stopPropagation(); show(!fine && h.classList.contains('on') && Date.now() - (h._f || 0) > 400 ? null : h); });
+      h.addEventListener('focus', function(){ h._f = Date.now(); show(h); });
+      h.addEventListener('keydown', function(e){ if (e.key === 'Escape') { show(null); h.blur(); } });
+    });
+    if (fine) box.addEventListener('mouseleave', function(){ show(null); });
+    box.addEventListener('focusout', function(e){ if (!box.contains(e.relatedTarget)) show(null); });
+    if (!box._doc) { box._doc = 1; document.addEventListener('click', function(){ box.querySelectorAll('.on').forEach(function(o){ o.classList.remove('on'); }); }); }
     box.setAttribute('aria-label', 'Affichages dans Google par mois : ' + months.map(function(m){ return MOIS[+m.month.split('-')[1]-1] + ' ' + n(m.impressions); }).join(', '));
     // Croissance : dernier mois complet face au premier mois mesuré
     var f = months[0], l = months[full - 1], g = $('[data-grow]');
