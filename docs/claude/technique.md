@@ -476,3 +476,11 @@ Jason : « regarde si les optimisations sont irréprochables et maximisées ».
 - **Mes finances recalculé à chaque ouverture sur ordinateur** : un `<Link>` visible est préchargé par Next 14 jusqu'au premier `loading.tsx`, donc le layout de Mes finances (`loadFinances`) tournait dès que le lien du menu était à l'écran (et depuis les cartes de l'Accueil, la fiche Logement). `prefetchFor(href)` (`lib/nav/prefetch.ts`, testé) dans le menu et la checklist, `prefetch={false}` sur les liens écrits en dur ; garde-fou dans `lib/perf/request-guards.test.ts`. Toute nouvelle section dont le layout lit la base va dans `HEAVY_LAYOUTS`.
 - **Cloche** : le fil n'est plus préchargé à chaque ouverture, seulement s'il y a des notifications non lues (sinon au survol, toucher ou focus de la cloche).
 - **Copie de la page d'arrivée** : affichée seulement sur `/ouverture`, `/dashboard`, `/dashboard/admin` ou la page copiée (`snapAllowedOn`) ; avant, un rechargement d'une autre page dans les 20 s du cookie `jm-launch` montrait l'Accueil par-dessus.
+
+## Ouverture en mode admin : « 3 chargements » (21/11/2026)
+
+Jason : « quand je me connecte et que je suis directement en admin, il y a 3 chargements, avant ça ne faisait pas ça ». Cause : la copie de la page d'arrivée (20/11) s'effaçait dès la fin du squelette de page, alors que la Vue d'ensemble charge ensuite 4 cartes chacune dans son `Suspense` (Affilae, en direct, audience, activation) ; et la copie elle-même était prise 2,5 s après l'affichage, souvent avant ces cartes, donc avec des cases vides. On voyait : logo, copie (avec cases vides), page qui se remplit.
+- **Repère commun des squelettes** : `aria-busy="true"` (déjà posé par tous les squelettes de carte et de page, rien d'autre ne l'utilise). Toute nouvelle carte chargée à part sur une page d'arrivée doit le porter dans son `fallback`.
+- La copie reste affichée tant que `.dash-main` contient `[data-page-skel]` **ou** `[aria-busy=true]` (15 s au plus, `ShellFallback`), puis un seul fondu vers la page complète.
+- `LaunchSnapshotRecorder` ne prend la copie que sur une page sans squelette : essai à 2,5 s puis toutes les 2 s pendant 30 s.
+- L'audit responsive mesure aussi le temps d'affichage jusqu'à la fin de ces cartes.

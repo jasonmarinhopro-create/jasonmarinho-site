@@ -29,7 +29,7 @@ const CSS = `
 .jm-splash--out{pointer-events:none;animation:jmVanish .35s ease .05s forwards}
 @keyframes jmAppear{from{opacity:0}to{opacity:1}}
 @keyframes jmVanish{to{opacity:0;visibility:hidden}}
-.dash-main:has([data-page-skel]) ~ * .jm-splash--out{animation:jmHold 15s linear forwards}
+.dash-main:has([data-page-skel],[aria-busy=true]) ~ * .jm-splash--out{animation:jmHold 15s linear forwards}
 @keyframes jmHold{0%,97%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
 .jm-snap{position:absolute;inset:0;z-index:2;overflow:hidden;background:var(--bg);color:var(--text);text-align:start;pointer-events:none}
 .jm-snap:empty{display:none}

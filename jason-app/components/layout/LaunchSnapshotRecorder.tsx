@@ -9,6 +9,8 @@ import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { buildSnapshot, snapHome, snapMode, SNAP_HOME_PREFIX, SNAP_PREFIX } from '@/lib/launch-snapshot'
 
+// Squelettes encore à l'écran (page entière ou carte d'une section)
+const BUSY = '[data-page-skel], [aria-busy="true"]'
 // Rien d'interactif ni de passager dans la copie
 const STRIP = '.jm-splash, script, noscript, iframe, video, audio, [data-snap-skip], [role="dialog"], [aria-modal="true"]'
 
@@ -28,19 +30,28 @@ export default function LaunchSnapshotRecorder({ userId, launch }: { userId: str
 
     let last = 0
     const take = () => {
-      if (Date.now() - last < 20_000) return
-      if (snapMode(document.cookie) !== mode) return
+      if (Date.now() - last < 20_000) return true
+      if (snapMode(document.cookie) !== mode) return true
       const root = document.querySelector('.dash-layout')
       const main = root?.querySelector('.dash-main')
-      if (!root || !main || main.querySelector('[data-page-skel]')) return
+      // Page pas encore remplie (squelette de page ou carte encore en
+      // chargement, aria-busy) : pas de copie, sinon elle garde des cases
+      // vides (Vue d'ensemble admin, 21/11/2026)
+      if (!root || !main || main.querySelector(BUSY)) return false
       const clone = root.cloneNode(true) as HTMLElement
       clone.querySelectorAll(STRIP).forEach(n => n.remove())
       clone.querySelectorAll('.dash-sidebar.open').forEach(n => n.classList.remove('open'))
       const snap = buildSnapshot(userId, pathname, window.innerWidth, Date.now(), clone.outerHTML)
-      if (!snap) return
+      if (!snap) return true
       try { ls.setItem(SNAP_PREFIX + mode, JSON.stringify(snap)); last = Date.now() } catch { /* stockage plein ou bloqué */ }
+      return true
     }
-    const timer = window.setTimeout(take, 2500)
+    // Première copie dès que la page est complète : essai à 2,5 s puis toutes
+    // les 2 s pendant 30 s au plus (les cartes arrivent les unes après les autres)
+    let tries = 0
+    let timer = 0
+    const attempt = () => { if (take() === false && ++tries < 15) timer = window.setTimeout(attempt, 2000) }
+    timer = window.setTimeout(attempt, 2500)
     const onHide = () => { if (document.visibilityState === 'hidden') take() }
     document.addEventListener('visibilitychange', onHide)
     window.addEventListener('pagehide', take)
