@@ -4,11 +4,11 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-21 16:55 UTC.
+Mis à jour le 2026-11-21 17:20 UTC.
 
 - 2026-11-22 · reel · depannage-demandes-viennent-a-toi · FB pending · IG pending · stories FB pending IG pending · « Une fuite à 15 h, des voyageurs à 17 h : l’hôte n’a pas le temps de chercher un annuaire. »
 - 2026-11-21 · stories (4 écrans) · stories-deco-noel-dosage · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Décorer pour Noël, sans alourdir tes ménages / Moins, mais bien placé / Bougies LED, jamais de flamm »
-- 2026-11-20 · carrousel · superhost-4-criteres · FB published 0 j'aime 0 comm. · IG published 1 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Le badge Superhost se joue sur quatre critères, vérifiés tous les trois mois. Il suffit d’en rater un pour le  »
+- 2026-11-20 · carrousel · superhost-4-criteres · FB published 0 j'aime 0 comm. · IG published 2 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Le badge Superhost se joue sur quatre critères, vérifiés tous les trois mois. Il suffit d’en rater un pour le  »
 - 2026-11-19 · stories (4 écrans) · stories-depannage-delai · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Plombier, électricien, serrurier ? / Ce qu’il veut voir tout de suite / Photos avant et après / Tu i »
 - 2026-11-18 · reel · annecy-hiver-lac-ski · FB published 0 j'aime 0 comm. · IG published 2 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton logement est à Annecy ? Entre le lac et les stations, l’hiver se prépare maintenant. »
 - 2026-11-17 · stories (4 écrans) · stories-degats-photos-avant · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Le voyageur est parti, un meuble est cassé / Photographie avant de nettoyer / 14 jours / Tu as déjà  »
