@@ -172,7 +172,7 @@ async function main() {
         let readyMs = 0
         if (MODE === 'app') {
           // Temps d'affichage réel : jusqu'à la fin des squelettes (pages lentes quand la base l'est)
-          const ready = await page.waitForFunction(() => document.body && !document.querySelector('[data-page-skel]') && !document.querySelector('.jm-splash:not(.jm-splash--out)'), null, { timeout: 45_000 }).then(() => true).catch(() => false)
+          const ready = await page.waitForFunction(() => document.body && !document.querySelector('[data-page-skel], [aria-busy="true"]') && !document.querySelector('.jm-splash:not(.jm-splash--out)'), null, { timeout: 45_000 }).then(() => true).catch(() => false)
           readyMs = Date.now() - t0
           if (!ready) stuck.add(pattern(u))
         }
@@ -180,7 +180,7 @@ async function main() {
         // (non compté dans le temps d'affichage : certaines pages interrogent le serveur en continu)
         await page.waitForLoadState('networkidle', { timeout: 8_000 }).catch(() => {})
         if (MODE === 'app') {
-          await page.waitForFunction(() => document.body && !document.querySelector('[data-page-skel]'), null, { timeout: 20_000 }).catch(() => {})
+          await page.waitForFunction(() => document.body && !document.querySelector('[data-page-skel], [aria-busy="true"]'), null, { timeout: 20_000 }).catch(() => {})
           if (new URL(page.url()).pathname.startsWith('/auth')) throw new Error('session refusée par le dashboard')
         }
         await page.evaluate(() => document.fonts.ready)
