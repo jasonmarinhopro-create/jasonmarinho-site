@@ -2,7 +2,7 @@
 // progressivement l'envoi si tout se passe bien, pour éviter la zone spam »).
 // Une fois par jour d'envoi, avant les envois, l'app regarde les 7 derniers
 // jours : rebonds, refus du serveur, désinscriptions, plaintes. Tout va bien
-// et le plafond est vraiment utilisé : +5 à chaque jour d'envoi (tous les 2 jours avant le 01/11/2026),
+// et le plafond est vraiment utilisé : +25 % (5 au moins) à chaque jour d'envoi (+5 tous les 2 jours avant le 01/11/2026, +5 par jour avant le 21/11/2026),
 // jusqu'au plafond maximum. Signaux moyens : on garde. Mauvais signaux : on
 // baisse nettement et on attend 7 jours avant de remonter.
 // Règles pures (testées) ; lecture et écriture en base : service.ts.
@@ -10,10 +10,22 @@
 export const WARMUP = {
   /** Jamais sous ce plafond, même après une baisse */
   floor: 10,
-  /** Hostinger gratuit : 100 e-mails par jour, tes propres messages compris */
-  defaultCeiling: 70,
+  /**
+   * Hostinger gratuit : 100 e-mails par jour et par boîte, tes propres messages
+   * compris. 50 depuis le 21/11/2026 (avant : 70) : 25 à 50 e-mails de
+   * prospection par boîte et par jour est la limite sûre citée partout ; au-delà,
+   * on ajoute des boîtes plutôt que de pousser celle-ci.
+   */
+  defaultCeiling: 50,
   maxCeiling: 90,
+  /** Hausse minimale */
   step: 5,
+  /**
+   * Hausse proportionnelle (21/11/2026) : +25 % du plafond, 5 au moins. Google
+   * conseille d'augmenter le volume de 25 à 100 % par jour selon les signaux
+   * (« Top 10 Gmail sender issues ») ; +5 fixe était plus lent que nécessaire.
+   */
+  stepRatio: 0.25,
   /** Jours entre deux hausses (1 depuis le 01/11/2026 : +5 chaque jour d'envoi quand tout va bien) */
   minDaysBetweenRaises: 1,
   /** Jours de prudence après une baisse */
@@ -144,8 +156,13 @@ export function decideWarmup(input: WarmupInput): WarmupDecision {
   if (input.lastChange && daysBetween(input.lastChange, today) < WARMUP.minDaysBetweenRaises) {
     return { level: 'vert', action: 'garder', cap, reasons: [good, 'plafond déjà changé aujourd’hui, prochaine hausse possible au prochain jour d’envoi'] }
   }
-  const higher = Math.min(ceiling, cap + WARMUP.step)
+  const higher = Math.min(ceiling, cap + raiseStep(cap))
   return { level: 'vert', action: 'monter', cap: higher, reasons: [good, `plafond monté de ${cap} à ${higher}`] }
+}
+
+/** Hausse d'un jour où tout va bien : +25 %, 5 au moins */
+export function raiseStep(cap: number): number {
+  return Math.max(WARMUP.step, Math.round(cap * WARMUP.stepRatio))
 }
 
 function frDate(iso: string): string {

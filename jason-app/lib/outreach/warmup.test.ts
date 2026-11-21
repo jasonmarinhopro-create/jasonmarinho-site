@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { classifyError, decideWarmup, pushLog, clampCeiling, type WarmupStats } from './warmup'
+import { classifyError, decideWarmup, pushLog, clampCeiling, raiseStep, type WarmupStats } from './warmup'
 
 const base: WarmupStats = { sent: 120, bounces: 1, unsubscribes: 0, complaints: 0, blocks: 0, otherErrors: 0, replies: 3, busiestDay: 25 }
 const input = (over: Partial<WarmupStats> = {}, rest: Partial<Parameters<typeof decideWarmup>[0]> = {}) =>
@@ -19,9 +19,11 @@ describe('erreurs SMTP', () => {
 })
 
 describe('montée en charge', () => {
-  it('monte de 5 quand tout va bien et que le plafond est utilisé', () => {
-    const d = input()
-    expect(d).toMatchObject({ level: 'vert', action: 'monter', cap: 30 })
+  it('monte de 25 % (5 au moins) quand tout va bien et que le plafond est utilisé', () => {
+    expect(input()).toMatchObject({ level: 'vert', action: 'monter', cap: 31 })
+    expect(input({ busiestDay: 10 }, { cap: 10 }).cap).toBe(15)
+    expect(input({ busiestDay: 40 }, { cap: 40 }).cap).toBe(50)
+    expect(raiseStep(12)).toBe(5)
   })
 
   it('ne monte pas si le plafond n\'est pas utilisé', () => {
@@ -73,6 +75,6 @@ describe('journal et plafond maximum', () => {
   it('borne le plafond maximum', () => {
     expect(clampCeiling(500)).toBe(90)
     expect(clampCeiling(3)).toBe(10)
-    expect(clampCeiling(null)).toBe(70)
+    expect(clampCeiling(null)).toBe(50)
   })
 })

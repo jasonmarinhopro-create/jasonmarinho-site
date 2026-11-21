@@ -19,8 +19,8 @@
 
 import 'server-only'
 import nodemailer, { type Transporter } from 'nodemailer'
-import { ImapFlow } from 'imapflow'
-import { bouncedAddresses, isBounceSender, matchReply, messageIdsOf } from './engine'
+import { ImapFlow, type MessageStructureObject } from 'imapflow'
+import { bouncedAddresses, classifyReply, isBounceSender, matchReply, messageIdsOf } from './engine'
 
 export interface OutreachConfig {
   smtpHost: string
@@ -111,6 +111,41 @@ export interface InboxScan {
   unmatched: number
   /** Dossiers lus (boîte de réception, indésirables) */
   folders: string[]
+  /** Nature des réponses courtes (« stop » = opposition, « non » = pas intéressé), par adresse du contact */
+  kinds: Map<string, 'stop' | 'non' | 'reponse'>
+}
+
+/** Première partie texte d'un message (texte brut de préférence, sinon HTML). */
+function findTextPart(node: MessageStructureObject | undefined, type: string): string | null {
+  if (!node) return null
+  if (node.type?.toLowerCase() === type && node.disposition?.toLowerCase() !== 'attachment') return node.part ?? '1'
+  for (const child of node.childNodes ?? []) {
+    const found = findTextPart(child, type)
+    if (found) return found
+  }
+  return null
+}
+
+/** Texte d'une réponse (6 Ko au plus), pour reconnaître « stop » ou « non merci ». Vide si illisible. */
+async function replyText(client: ImapFlow, uid: number): Promise<string> {
+  try {
+    const msg = await client.fetchOne(String(uid), { bodyStructure: true }, { uid: true })
+    if (!msg || !msg.bodyStructure) return ''
+    const plain = findTextPart(msg.bodyStructure, 'text/plain')
+    const html = plain ? null : findTextPart(msg.bodyStructure, 'text/html')
+    const part = plain ?? html
+    if (!part) return ''
+    const dl = await client.download(String(uid), part, { uid: true, maxBytes: 6_000 })
+    if (!dl.content) return ''
+    const chunks: Buffer[] = []
+    for await (const c of dl.content) chunks.push(Buffer.from(c))
+    const text = Buffer.concat(chunks).toString('utf8')
+    return html
+      ? text.replace(/<blockquote[\s\S]*$/i, '').replace(/<br\s*\/?>|<\/(p|div)>/gi, '\n').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&#39;|&rsquo;/g, "'")
+      : text
+  } catch {
+    return ''
+  }
 }
 
 /**
@@ -134,6 +169,7 @@ export async function scanInbox(
     logger: false,
   })
   const replies = new Map<string, Date>()
+  const kinds = new Map<string, 'stop' | 'non' | 'reponse'>()
   const bounces = new Set<string>()
   const matchedBy = { adresse: 0, fil: 0, domaine: 0 }
   let unmatched = 0
@@ -151,6 +187,7 @@ export async function scanInbox(
       const lock = await client.getMailboxLock(folder)
       try {
         const bounceUids: number[] = []
+        const replyUids: Array<{ uid: number; email: string }> = []
         for await (const msg of client.fetch({ since }, { uid: true, envelope: true, internalDate: true, headers: ['auto-submitted', 'x-autoreply', 'x-autorespond', 'precedence', 'in-reply-to', 'references'] })) {
           if (++scanned > max) break
           const fromObj = msg.envelope?.from?.[0]
@@ -174,6 +211,15 @@ export async function scanInbox(
           }
           const when = msg.internalDate instanceof Date ? msg.internalDate : new Date()
           if (!replies.has(match.email)) { replies.set(match.email, when); matchedBy[match.how]++ }
+          replyUids.push({ uid: msg.uid, email: match.email })
+        }
+        // Texte des réponses (30 au plus par dossier) : « stop » l'emporte sur tout le reste
+        for (const r of replyUids.slice(0, 30)) {
+          if (kinds.get(r.email) === 'stop') continue
+          // Plusieurs messages du même contact : « stop » l'emporte, puis une vraie réponse, puis « non »
+          const kind = classifyReply(await replyText(client, r.uid))
+          const prev = kinds.get(r.email)
+          if (kind === 'stop' || !prev || (prev === 'non' && kind === 'reponse')) kinds.set(r.email, kind)
         }
         for (const uid of bounceUids.slice(0, 50)) {
           const one = await client.fetchOne(String(uid), { source: { maxLength: 60_000 } }, { uid: true })
@@ -188,5 +234,5 @@ export async function scanInbox(
   } finally {
     await client.logout().catch(() => null)
   }
-  return { replies, bounces: Array.from(bounces), scanned, matchedBy, unmatched, folders }
+  return { replies, bounces: Array.from(bounces), scanned, matchedBy, unmatched, folders, kinds }
 }

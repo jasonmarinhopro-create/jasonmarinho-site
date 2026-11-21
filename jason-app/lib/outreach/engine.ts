@@ -421,3 +421,37 @@ export function uniqueProDomains(emails: Iterable<string>): Map<string, string> 
   }
   return new Map(Array.from(count.entries()).filter(([, l]) => l.length === 1).map(([d, l]) => [d, l[0]]))
 }
+
+// ─── Réponses « stop » et « non merci » (21/11/2026) ────────────────────────
+
+/** Texte nouveau d'une réponse : avant la citation de notre message. */
+export function replyNewText(text: string): string {
+  const lines = String(text ?? '').replace(/\r/g, '').split('\n')
+  const out: string[] = []
+  for (const l of lines) {
+    const t = l.trim()
+    if (/^>/.test(t)) break
+    if (/^(le|on)\s.{3,200}(a écrit|wrote)\s*:?\s*$/i.test(t)) break
+    if (/^-{2,}\s*(original|message d'origine|forwarded|message transféré)/i.test(t)) break
+    if (/^(de|from)\s*:\s*.+@/i.test(t)) break
+    if (/^envoyé de mon|^sent from my/i.test(t)) break
+    out.push(l)
+  }
+  return out.join('\n').trim()
+}
+
+const fold = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’]/g, "'")
+
+/**
+ * Nature d'une réponse courte : « stop » (opposition : plus aucun e-mail,
+ * liste d'opposition), « non » (pas intéressé), sinon « reponse » (à traiter
+ * par Jason). Seules les réponses courtes sont classées : un message long qui
+ * contient « stop » au milieu reste une vraie réponse.
+ */
+export function classifyReply(text: string): 'stop' | 'non' | 'reponse' {
+  const t = fold(replyNewText(text)).replace(/\s+/g, ' ').trim()
+  if (!t || t.length > 280) return 'reponse'
+  if (/(^|[^a-z])(stop|stopp?ez|unsubscribe|desinscri\w*|desabonn\w*|retire[rz]?[- ]moi|supprime[rz]?[- ]moi|enleve[rz]?[- ]moi|ne (plus )?(me |m')?(contacte[rz]?|ecri\w*|relance[rz]?)|ne plus (me )?(contacter|recevoir|ecrire)|ne me (re)?contacte[rz]? plus|arrete[rz]? (de m'ecrire|les (mails|e-mails|messages)))([^a-z]|$)/.test(t)) return 'stop'
+  if (t.length <= 160 && /(^|[^a-z])(non merci|pas interesse\w*|ca ne m'interesse pas|cela ne m'interesse pas|ne m'interesse pas|pas pour moi|pas concerne\w*|no thanks|not interested)([^a-z]|$)/.test(t)) return 'non'
+  return 'reponse'
+}

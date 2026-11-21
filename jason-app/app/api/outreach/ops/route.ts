@@ -62,7 +62,7 @@ export async function POST(req: Request) {
         // nombres seulement (journaux publics).
         const jours = Math.max(1, Math.min(30, Number(body.jours) || 14))
         const r = await handleInbox(db, await loadSettings(db), { sinceDays: jours })
-        return NextResponse.json({ ok: true, jours, messages_lus: r.scanned, dossiers: r.folders.length, reponses_passees_en_ont_repondu: r.replies, reconnues_par: r.matchedBy, reponses_sans_contact_retrouve: r.unmatched, rebonds: r.bounces })
+        return NextResponse.json({ ok: true, jours, messages_lus: r.scanned, dossiers: r.folders.length, reponses_passees_en_ont_repondu: r.replies, stop_desinscrits: r.optOuts, non_merci_pas_interesses: r.notInterested, reconnues_par: r.matchedBy, reponses_sans_contact_retrouve: r.unmatched, rebonds: r.bounces })
       }
       case 'run': {
         // Le workflow programmé « Prospection : envois » rappelle cette route
