@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { PLAYBOOK, PLAYBOOK_TEXT_FIXES, applyPlaybookFixes } from './playbook'
-import { renderTemplate, STAGES } from './engine'
+import { PLAYBOOK, PLAYBOOK_TEXT_FIXES, applyPlaybookFixes, OUTREACH_PHONE } from './playbook'
+import { renderTemplate, STAGES, isFormalText, FORMAL_AUDIENCES } from './engine'
 
 describe('séquences proposées', () => {
   it('clés uniques et enchaînements valides', () => {
@@ -56,4 +56,30 @@ describe('séquences proposées', () => {
     expect(applyPlaybookFixes(t, 62)).toBe(t)
     expect(applyPlaybookFixes('120 nuits dans 60 villes', 62)).toBe('120 nuits dans 60 villes')
   })
+
+  // Règles de rédaction du 20/11/2026 (voir docs/claude/prospection.md)
+  const coldOpeners = PLAYBOOK.filter(p => p.trigger === 'nouveau_contact' || p.key === 'photo_hotellerie' || p.key === 'hote_premier_contact')
+  it('premier contact : 3 e-mails au plus, premier e-mail sans lien, court, qui parle du destinataire', () => {
+    for (const p of coldOpeners) {
+      expect(p.steps.length).toBeLessThanOrEqual(3)
+      const first = p.steps[0].body
+      expect(first).not.toMatch(/https?:\/\//)
+      expect(first).not.toMatch(/Je m'appelle/)
+      expect(first.split(/\s+/).length).toBeLessThan(110)
+      expect(first.trim().endsWith('?')).toBe(true)
+      expect(p.steps.slice(1).every(st => st.delay_days >= 3)).toBe(true)
+    }
+  })
+  it('le deuxième e-mail donne le téléphone de Jason', () => {
+    for (const p of coldOpeners) expect(p.steps[1].body).toContain(OUTREACH_PHONE)
+  })
+  it('jamais de demande d\'hôtes inventée', () => {
+    for (const p of PLAYBOOK) for (const st of p.steps) expect(`${st.subject} ${st.body}`).not.toMatch(/continuent de|te cherchent|vous cherchent/)
+  })
+  it('vouvoiement pour le ménage, tutoiement ailleurs', () => {
+    for (const p of PLAYBOOK) for (const st of p.steps) {
+      expect(isFormalText(st.body)).toBe(FORMAL_AUDIENCES.includes(p.audience))
+    }
+  })
 })
+

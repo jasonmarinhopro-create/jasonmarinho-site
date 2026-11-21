@@ -110,7 +110,10 @@ export function decideWarmup(input: WarmupInput): WarmupDecision {
   if (s.complaints > 0) red.push(`${plural(s.complaints, 'signalement')} comme indésirable`)
   if (s.blocks >= 2) red.push(`${plural(s.blocks, 'refus')} du serveur (spam, réputation ou débit)`)
   if (enough ? (s.bounces >= 3 && bounceRate > 0.05) : s.bounces >= 4) red.push(`${plural(s.bounces, 'rebond')} sur ${s.sent} envois${enough ? ` (${fmtPct(bounceRate)})` : ''}`)
-  if (enough && s.unsubscribes >= 3 && unsubRate > 0.03) red.push(`${plural(s.unsubscribes, 'désinscription')} sur ${s.sent} envois (${fmtPct(unsubRate)})`)
+  // Désinscriptions : plus de baisse depuis le 20/11/2026. Se désinscrire est le
+  // geste qu'on veut (plutôt qu'un signalement en indésirable) et ne nuit pas à
+  // la réputation de la boîte ; seule la hausse est bloquée (signaux moyens).
+  // Le 13/11, 7 désinscriptions sur 219 envois avaient fait passer le plafond de 45 à 27.
   if (red.length) {
     const lower = Math.max(WARMUP.floor, Math.round(cap * WARMUP.cutFactor))
     return lower < cap
@@ -123,7 +126,7 @@ export function decideWarmup(input: WarmupInput): WarmupDecision {
   if (s.blocks === 1) amber.push('1 refus du serveur')
   if (enough && bounceRate > 0.02) amber.push(`rebonds à ${fmtPct(bounceRate)} (au-delà de 2 %)`)
   if (!enough && s.bounces >= 2) amber.push(`${plural(s.bounces, 'rebond')} sur seulement ${s.sent} envois`)
-  if (enough && unsubRate > 0.015) amber.push(`désinscriptions à ${fmtPct(unsubRate)}`)
+  if (enough ? unsubRate > 0.015 : s.unsubscribes >= 3) amber.push(enough ? `désinscriptions à ${fmtPct(unsubRate)}` : `${plural(s.unsubscribes, 'désinscription')} sur seulement ${s.sent} envois`)
   if (s.sent + s.otherErrors >= WARMUP.minSample && errRate > 0.05) amber.push(`${plural(s.otherErrors, 'erreur')} d'envoi`)
   if (amber.length) return { level: 'orange', action: 'garder', cap, reasons: [...amber, 'plafond gardé tant que ça ne s\'améliore pas'] }
 

@@ -10,7 +10,7 @@ import { fixInstalledTexts } from '@/lib/outreach/playbook'
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
-import { handleInbox, installPlaybookSequences, loadSettings, runOutreach, sendTest, warmupStats } from '@/lib/outreach/service'
+import { handleInbox, installPlaybookSequences, loadSettings, runOutreach, sendTest, syncPlaybookSequences, warmupStats } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { checkSpf } from '@/lib/outreach/spf'
 import { searchGooglePlaces, findEmailOnSite } from '@/lib/outreach/sources'
@@ -79,7 +79,11 @@ export async function POST(req: Request) {
         const { lus, corriges } = await fixInstalledTexts(db)
         return NextResponse.json({ ok: true, emails_lus: lus, emails_corriges: corriges })
       }
-      default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, import_candidats, activate, test, run, fix_texts)' }, { status: 400 })
+      case 'sync_playbook': {
+        // Textes du playbook recopiés dans les séquences installées (nombres seulement)
+        return NextResponse.json({ ok: true, ...(await syncPlaybookSequences(db)) })
+      }
+      default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, import_candidats, activate, test, run, fix_texts, sync_playbook)' }, { status: 400 })
     }
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message.slice(0, 300) : 'erreur' }, { status: 500 })

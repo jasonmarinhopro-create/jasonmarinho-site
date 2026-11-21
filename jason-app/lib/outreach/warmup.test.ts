@@ -44,6 +44,8 @@ describe('montée en charge', () => {
     expect(input({ bounces: 4 })).toMatchObject({ level: 'orange', action: 'garder', cap: 25 }) // 3,3 %
     expect(input({ blocks: 1 })).toMatchObject({ level: 'orange', action: 'garder' })
     expect(input({ unsubscribes: 2 })).toMatchObject({ level: 'orange' })
+    // 13/11/2026 : 7 désinscriptions sur 219 envois faisaient baisser de 45 à 27 ; désormais on garde
+    expect(input({ sent: 219, unsubscribes: 7, busiestDay: 45 }, { cap: 45 })).toMatchObject({ level: 'orange', action: 'garder', cap: 45 })
   })
 
   it('baisse nettement sur de mauvais signaux, jamais sous 10', () => {

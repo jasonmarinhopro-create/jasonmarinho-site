@@ -3,18 +3,18 @@
 // règles pures et mailer.ts pour l'envoi.
 
 import 'server-only'
-import { randomUUID } from 'node:crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { logger } from '@/lib/logger'
 import { allRows } from '@/lib/supabase/all-rows'
 import {
   afterSend, complianceFooter, guessFirstName, isoWeekday, renderTemplate, replySubject, scheduleStep,
-  textToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, normalizeTag, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, normalizeMessageId, uniqueProDomains, type Audience, type Source, type Stage,
+  textToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, normalizeTag, emailSiteMatch, FORMAL_AUDIENCES, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, normalizeMessageId, uniqueProDomains, isFormalText, type Audience, type Source, type Stage,
 } from './engine'
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
 import { PLAYBOOK } from './playbook'
 import { checkSpf } from './spf'
+import { checkMx, type MxVerdict } from './mx'
 import { classifyError, clampCeiling, decideWarmup, pushLog, WARMUP, type WarmupDecision, type WarmupLogEntry, type WarmupStats } from './warmup'
 import { shortenProspectionLinks } from '@/lib/acquisition/rules'
 
@@ -145,9 +145,11 @@ export async function applyWarmup(db: Db, settings: Settings, today: string): Pr
 
 
 /**
- * Adresse de la photo de signature d'un envoi : elle passe par l'app, qui
- * compte une ouverture puis redirige vers la vraie photo. Seul un compteur
- * anonyme par e-mail de séquence est tenu (CNIL, recommandation du 12/03/2026).
+ * Ancienne adresse de la photo de signature (compteur d'ouvertures anonyme).
+ * Plus utilisée pour les nouveaux envois depuis le 20/11/2026 : la mesure
+ * d'ouverture fait baisser les réponses (Hunter : 4,4 % contre 7,4 % sans) et
+ * comptait surtout des robots (166 « ouvertures » pour 159 e-mails ménage).
+ * La route /api/outreach/o reste pour les e-mails déjà partis.
  */
 export function openTrackingUrl(sendId: string): string {
   return `${APP_URL}/api/outreach/o/${sendId}`
@@ -331,8 +333,11 @@ async function autoEnroll(db: Db, today: string, dailyCap: number): Promise<numb
   let n = 0
   for (const s of seqs) {
     if (room <= 0) break
-    const { data: contacts } = await db.from('outreach_contacts').select('id').eq('audience', s.audience).eq('stage', 'a_contacter').is('last_contacted_at', null).not('email_norm', 'is', null).order('created_at').limit(300)
-    const ids = (contacts ?? []).map(c => c.id)
+    const { data: contacts } = await db.from('outreach_contacts').select('id, email_norm, site_web').eq('audience', s.audience).eq('stage', 'a_contacter').is('last_contacted_at', null).not('email_norm', 'is', null).order('created_at').limit(300)
+    // Adresse sur un autre domaine que le site du pro (webmaster, ancien domaine) :
+    // 23 % de rebonds mesurés, jamais de réponse. Elle reste dans la liste, sans
+    // entrer toute seule dans une séquence (Jason peut l'y mettre à la main).
+    const ids = (contacts ?? []).filter(c => emailSiteMatch(c.email_norm as string, c.site_web) !== 'autre').map(c => c.id)
     if (!ids.length) continue
     const { data: busy } = await db.from('outreach_enrollments').select('contact_id').in('contact_id', ids)
     const busySet = new Set((busy ?? []).map(b => b.contact_id))
@@ -478,7 +483,7 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
 
   const stepsCache = new Map<string, Array<{ position: number; delay_days: number; subject: string; body: string; same_thread: boolean }>>()
   const contactIds = Array.from(new Set(due.map(d => d.contact_id)))
-  const { data: contacts } = await db.from('outreach_contacts').select('id, email, email_norm, prenom, nom, entreprise, ville, source, stage, unsubscribe_token').in('id', contactIds)
+  const { data: contacts } = await db.from('outreach_contacts').select('id, email, email_norm, prenom, nom, entreprise, ville, source, stage, audience, unsubscribe_token').in('id', contactIds)
   const contactMap = new Map((contacts ?? []).map(c => [c.id, c]))
   const emails = (contacts ?? []).map(c => c.email_norm).filter(Boolean) as string[]
   const { data: supp } = emails.length ? await db.from('outreach_suppressions').select('email_norm').in('email_norm', emails) : { data: [] }
@@ -487,6 +492,7 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
   const alreadyWritten = new Set((prior ?? []).map(p => p.contact_id))
   const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
   const photo = settings.signature_photo ? SIGNATURE_PHOTO_URL : null
+  const mxCache = new Map<string, MxVerdict>()
 
   let attempts = 0
   for (const e of due as DueRow[]) {
@@ -505,6 +511,18 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const seq = seqMap.get(e.sequence_id)
     if (!step || !seq) {
       await db.from('outreach_enrollments').update({ status: 'terminee', updated_at: new Date().toISOString() }).eq('id', e.id)
+      // Séquence raccourcie après coup (20/11/2026 : 4 e-mails → 3) : fin normale,
+      // avec l'enchaînement (relance de saison) et l'étape de fin
+      if (seq && !step && e.next_step >= steps.length && steps.length) {
+        if (seq.then_sequence_id) await enroll(db, seq.then_sequence_id, [c.id], { today })
+        if (seq.end_stage && ['a_contacter', 'contacte'].includes(c.stage)) await setStage(db, [c.id], seq.end_stage as Stage)
+      }
+      continue
+    }
+    // Premier e-mail à ce contact : le domaine doit recevoir du courrier (MX).
+    // Sinon l'adresse est marquée invalide sans rien envoyer (pas compté en rebond).
+    if (!alreadyWritten.has(c.id) && (await checkMx(c.email, mxCache)) === 'sans_mx') {
+      await setStage(db, [c.id], 'invalide')
       continue
     }
 
@@ -513,7 +531,7 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const baseSubject = renderTemplate(step.subject, vars)
     const subject = inThread ? replySubject(e.thread_subject || baseSubject) : baseSubject
     const urls = unsubscribeUrls(c.unsubscribe_token)
-    const footer = complianceFooter({ source: c.source as Source, firstMessage: !alreadyWritten.has(c.id), unsubscribeUrl: urls.page })
+    const footer = complianceFooter({ source: c.source as Source, firstMessage: !alreadyWritten.has(c.id), unsubscribeUrl: urls.page, formal: FORMAL_AUDIENCES.includes(c.audience as Audience) })
     const bodyText = shortenProspectionLinks(renderTemplate(step.body, vars).trim())
     const text = `${bodyText}\n\n${signature}`
     if (Date.now() - started + 5_000 > budget) { summary.more = true; break }
@@ -539,15 +557,12 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     }
     if (gap) await new Promise(r => setTimeout(r, gap))
     attempts++
-    // Identifiant de l'envoi connu avant l'envoi : la photo de la signature
-    // passe par /api/outreach/o/<id> (taux d'ouverture anonyme, voir openTrackingUrl)
-    const sendId = randomUUID()
     try {
       const { messageId } = await sendOutreachMail(cfg, {
-        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature, photo ? openTrackingUrl(sendId) : null),
+        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature, photo),
         inReplyTo: inThread ? e.thread_message_id : null, unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
       })
-      await db.from('outreach_sends').insert({ id: sendId, enrollment_id: e.id, contact_id: c.id, sequence_id: e.sequence_id, step_position: e.next_step, email: c.email, subject, message_id: messageId, status: 'envoye' })
+      await db.from('outreach_sends').insert({ enrollment_id: e.id, contact_id: c.id, sequence_id: e.sequence_id, step_position: e.next_step, email: c.email, subject, message_id: messageId, status: 'envoye' })
       alreadyWritten.add(c.id)
       summary.sent++
       remaining--
@@ -584,11 +599,12 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
 
 /** Envoi d'essai d'une étape à la boîte de Jason (variables d'exemple). */
 export async function sendTest(stepSubject: string, stepBody: string, settings: Settings): Promise<{ ok: boolean; error?: string; to?: string }> {
+  const formal = isFormalText(stepBody)
   const cfg = outreachConfig()
   if (!cfg) return { ok: false, error: 'Boîte d\'envoi non configurée (variables OUTREACH_SMTP_*).' }
   const vars = { prenom: 'Marie', nom: 'Dupont', entreprise: 'Studio Lumière', ville: 'Lyon' }
   const urls = unsubscribeUrls('00000000-0000-0000-0000-000000000000')
-  const footer = complianceFooter({ source: 'google', firstMessage: true, unsubscribeUrl: urls.page })
+  const footer = complianceFooter({ source: 'google', firstMessage: true, unsubscribeUrl: urls.page, formal })
   const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
   const bodyText = shortenProspectionLinks(renderTemplate(stepBody, vars).trim())
   const text = `${bodyText}\n\n${signature}`
@@ -612,7 +628,7 @@ export async function renderSentEmail(db: Db, sendId: string): Promise<{ to: str
   const { data: send } = await db.from('outreach_sends').select('id, contact_id, sequence_id, step_position, email, subject, sent_at').eq('id', sendId).maybeSingle()
   if (!send) return null
   const [{ data: c }, { data: step }, settings] = await Promise.all([
-    db.from('outreach_contacts').select('prenom, nom, entreprise, ville, source, unsubscribe_token').eq('id', send.contact_id).maybeSingle(),
+    db.from('outreach_contacts').select('prenom, nom, entreprise, ville, source, audience, unsubscribe_token').eq('id', send.contact_id).maybeSingle(),
     db.from('outreach_steps').select('body, updated_at').eq('sequence_id', send.sequence_id).eq('position', send.step_position).maybeSingle(),
     loadSettings(db),
   ])
@@ -620,7 +636,7 @@ export async function renderSentEmail(db: Db, sendId: string): Promise<{ to: str
   const { count: before } = await db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('contact_id', send.contact_id).eq('status', 'envoye').lt('sent_at', send.sent_at)
   const vars = { prenom: guessFirstName(c?.prenom ?? null, c?.nom ?? null), nom: c?.nom ?? null, entreprise: c?.entreprise ?? null, ville: c?.ville ?? null }
   const urls = unsubscribeUrls(c?.unsubscribe_token ?? '00000000-0000-0000-0000-000000000000')
-  const footer = complianceFooter({ source: (c?.source ?? 'manuel') as Source, firstMessage: !before, unsubscribeUrl: urls.page })
+  const footer = complianceFooter({ source: (c?.source ?? 'manuel') as Source, firstMessage: !before, unsubscribeUrl: urls.page, formal: FORMAL_AUDIENCES.includes(c?.audience as Audience) })
   const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
   const rendered = renderTemplate(step.body, vars).trim()
   const bodyText = send.sent_at >= SHORT_LINKS_SINCE ? shortenProspectionLinks(rendered) : rendered
@@ -659,4 +675,42 @@ export async function installPlaybookSequences(db: Db): Promise<number> {
     }
   }
   return added
+}
+
+/**
+ * Recopie les textes du playbook dans les séquences déjà installées (même
+ * `playbook_key`) : objet, texte, délai et « même fil » de chaque e-mail,
+ * e-mails en trop supprimés (un parcours arrivé au-delà se termine
+ * normalement, avec son enchaînement : voir sendDue). Ne touche ni au nom, ni
+ * au déclencheur, ni à l'état actif / en pause. Op `sync_playbook`.
+ */
+export async function syncPlaybookSequences(db: Db): Promise<{ sequences: number; emails_modifies: number; emails_ajoutes: number; emails_retires: number }> {
+  const { data: seqs, error } = await db.from('outreach_sequences').select('id, playbook_key').not('playbook_key', 'is', null)
+  if (error) throw new Error(error.message)
+  const out = { sequences: 0, emails_modifies: 0, emails_ajoutes: 0, emails_retires: 0 }
+  for (const seq of seqs ?? []) {
+    const p = PLAYBOOK.find(x => x.key === seq.playbook_key)
+    if (!p) continue
+    out.sequences++
+    await db.from('outreach_sequences').update({ description: p.description, updated_at: new Date().toISOString() }).eq('id', seq.id)
+    const { data: steps } = await db.from('outreach_steps').select('id, position, delay_days, subject, body, same_thread').eq('sequence_id', seq.id).order('position')
+    const byPos = new Map((steps ?? []).map(st => [st.position as number, st]))
+    for (const [j, st] of p.steps.entries()) {
+      const row = { delay_days: st.delay_days, subject: st.subject, body: st.body, same_thread: st.same_thread ?? j > 0 }
+      const cur = byPos.get(j)
+      if (!cur) {
+        const { error: e } = await db.from('outreach_steps').insert({ sequence_id: seq.id, position: j, ...row })
+        if (!e) out.emails_ajoutes++
+      } else if (cur.delay_days !== row.delay_days || cur.subject !== row.subject || cur.body !== row.body || cur.same_thread !== row.same_thread) {
+        const { error: e } = await db.from('outreach_steps').update({ ...row, updated_at: new Date().toISOString() }).eq('id', cur.id)
+        if (!e) out.emails_modifies++
+      }
+    }
+    const extra = (steps ?? []).filter(st => (st.position as number) >= p.steps.length).map(st => st.id)
+    if (extra.length) {
+      const { error: e } = await db.from('outreach_steps').delete().in('id', extra)
+      if (!e) out.emails_retires += extra.length
+    }
+  }
+  return out
 }

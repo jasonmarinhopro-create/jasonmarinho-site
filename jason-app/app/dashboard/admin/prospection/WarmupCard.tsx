@@ -95,7 +95,7 @@ export default function WarmupCard({ warmup, cap, enabled, setEnabled, ceiling, 
       </label>
       <p style={ui.sub}>
         Monte de {WARMUP.step} au plus tous les {WARMUP.minDaysBetweenRaises} jours si le plafond est vraiment utilisé, avec moins de 2 % de rebonds, aucun refus du serveur et peu de désinscriptions.
-        Reste en place entre 2 et 5 % de rebonds ou après 1 refus. Baisse de 40 % (jamais sous {WARMUP.floor}) au-delà de 5 % de rebonds, à partir de 2 refus ou sur un signalement, puis {WARMUP.coolDownAfterCut} jours de prudence.
+        Reste en place entre 2 et 5 % de rebonds, après 1 refus ou avec beaucoup de désinscriptions (elles ne font jamais baisser : se désinscrire vaut mieux qu&apos;un signalement en indésirable). Baisse de 40 % (jamais sous {WARMUP.floor}) au-delà de 5 % de rebonds, à partir de 2 refus ou sur un signalement, puis {WARMUP.coolDownAfterCut} jours de prudence.
         Hostinger gratuit : 100 e-mails par jour, les tiens compris, d&apos;où un maximum de {WARMUP.defaultCeiling} par défaut.
       </p>
       <p style={ui.sub}>Ce que l&apos;app ne peut pas voir : un e-mail rangé dans les indésirables sans rebond. Si les réponses chutent alors que les envois montent, baisse le maximum.</p>

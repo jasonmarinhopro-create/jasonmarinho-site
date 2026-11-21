@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   addDaysIso, isoWeekday, nextAllowedDay, scheduleStep, afterSend, renderTemplate, guessFirstName,
-  replySubject, complianceFooter, textToHtml, signatureToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, cleanTag, normalizeTag, mergeTags, daysWithoutNews, extractEmails, bestEmail, bouncedAddresses, isBounceSender,
+  replySubject, complianceFooter, textToHtml, signatureToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, cleanTag, normalizeTag, mergeTags, daysWithoutNews, extractEmails, bestEmail, bouncedAddresses, isBounceSender, isFormalText, emailSiteMatch, siteDomain,
 } from './engine'
 
 const WEEK = [1, 2, 3, 4, 5]
@@ -79,6 +79,18 @@ describe('information et désinscription', () => {
     const f = complianceFooter({ source: 'google', firstMessage: false, unsubscribeUrl: 'https://x/d/1' })
     expect(f).not.toContain('Google')
     expect(f).toContain('https://x/d/1')
+  })
+  it('vouvoiement pour le ménage, pied de page court', () => {
+    const f = complianceFooter({ source: 'site', firstMessage: true, unsubscribeUrl: 'https://x/d/1', formal: true })
+    expect(f).toContain('votre site internet')
+    expect(f).toContain('Répondez « stop »')
+    expect(f).not.toMatch(/\bton\b|\bta\b|ouverture/)
+    expect(f.split('\n').length).toBe(2)
+    expect(complianceFooter({ source: 'site', firstMessage: true, unsubscribeUrl: 'u' })).toContain('ton site internet')
+  })
+  it('texte au vouvoiement reconnu', () => {
+    expect(isFormalText('Faites-vous le ménage ? Je vous envoie votre lien.')).toBe(true)
+    expect(isFormalText("Est-ce que tu photographies ? Je t'envoie le lien.")).toBe(false)
   })
   it('HTML échappé avec liens cliquables', () => {
     const h = textToHtml('Salut <b>\n\nVoir https://jasonmarinho.com/tarifs.', 'Stop : https://x/d/1')
@@ -170,5 +182,17 @@ describe('isPlaceholderEmail', () => {
     for (const e of ['contact@domaine.com', 'info@domaine.fr', 'vous@yourcompany.example.com', 'a@example.org', 'b@site.test', 'c@x.invalid']) expect(isPlaceholderEmail(e)).toBe(true)
     for (const e of ['contact@plomberie-dupont.fr', 'jean@gmail.com', 'hello@domainedesvignes.fr', 'info@email-pro.fr']) expect(isPlaceholderEmail(e)).toBe(false)
     expect(extractEmails('<a href="mailto:contact@domaine.com">x</a> contact@plomberie-dupont.fr')).toEqual(['contact@plomberie-dupont.fr'])
+  })
+})
+
+describe('adresse et site du pro', () => {
+  it('même domaine, sous-domaine, webmail, autre', () => {
+    expect(emailSiteMatch('contact@studio-x.fr', 'https://www.studio-x.fr/contact')).toBe('site')
+    expect(emailSiteMatch('hello@studio-x.fr', 'boutique.studio-x.fr')).toBe('site')
+    expect(emailSiteMatch('marie.photo@gmail.com', 'https://studio-x.fr')).toBe('webmail')
+    expect(emailSiteMatch('jean@orange.fr', null)).toBe('webmail')
+    expect(emailSiteMatch('webmaster@agence-web.com', 'https://studio-x.fr')).toBe('autre')
+    expect(emailSiteMatch('contact@studio-x.fr', '')).toBe('inconnu')
+    expect(siteDomain('studio-x.fr/page')).toBe('studio-x.fr')
   })
 })
