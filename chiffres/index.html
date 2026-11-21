@@ -320,14 +320,13 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .dm-mlab{display:flex;gap:8px;font-size:11.5px;color:var(--tl)}.dm-mlab span{flex:1;text-align:center}
 .dm-mo{margin-top:26px;max-width:720px}
 .dm-mo .dm-months{margin-top:12px}
+.dm-mo .dm-months div,.dm-mo .dm-mlab span{flex:1 1 0;max-width:96px}
 .dm-months div{position:relative;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;transition:color .15s}
 .dm-months div i{transition:opacity .15s}
 .dm-months:has(.on) div:not(.on) i{opacity:.45}
 .dm-months div.on{color:var(--g)}
 .dm-months em{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:5;padding:9px 12px;border-radius:12px;background:#0F1A0D;color:rgba(255,255,255,.72);font-style:normal;font-size:12.5px;font-weight:400;line-height:1.45;white-space:nowrap;text-align:left;box-shadow:0 14px 34px rgba(0,0,0,.25);pointer-events:none;opacity:0;visibility:hidden;transition:opacity .15s}
 .dm-months em strong{display:block;color:#fff;font-size:14px;font-weight:600}
-.dm-months div:first-child em{left:0;transform:none}
-.dm-months div:last-child em{left:auto;right:0;transform:none}
 .dm-months div.on em{opacity:1;visibility:visible}
 .dm-mh{font-size:12px;color:var(--tl);margin-top:8px}
 .dm-mh .ht{display:none}
@@ -861,7 +860,10 @@ a.dm-city:hover{border-color:var(--g)}
     if (mb && ml && D.months && D.months.length) {
       // Détail par métier seulement si le fil contient toutes les demandes (il est limité côté API)
       var fullFil = (D.fil || []).length === D.total, DMS = { photographe: 'photo et vidéo', menage: 'ménage', depannage: 'dépannage' };
-      var rows = D.months.map(function(m){
+      // Pas de mois vides avant la toute première demande (21/11/2026, Jason)
+      var MS = D.since ? D.months.filter(function(m){ return m.month >= D.since; }) : D.months;
+      if (!MS.length) MS = D.months.slice(-1);
+      var rows = MS.map(function(m){
         var by = {};
         if (fullFil) D.fil.forEach(function(f){ if (f.month === m.month) by[f.metier] = (by[f.metier] || 0) + 1; });
         return { m: m, c: DMF && fullFil ? (by[DMF] || 0) : m.count, by: by };
@@ -874,10 +876,17 @@ a.dm-city:hover{border-color:var(--g)}
         var txt = r.c ? n(r.c) + ' demande' + (r.c > 1 ? 's' : '') : 'Aucune demande';
         return '<div class="' + (r.c ? '' : 'z ') + (m.current ? 'cur' : '') + '" tabindex="0" role="button" aria-label="' + esc(lab + ' : ' + txt + (det ? ', ' + det : '')) + '">' + r.c + '<i style="height:' + h + 'px"></i><em><strong>' + txt + '</strong>' + (det ? esc(det) + '<br>' : '') + esc(lab) + '</em></div>';
       }).join('');
-      ml.innerHTML = D.months.map(function(m){ return '<span>' + MOIS[+m.month.split('-')[1]-1] + '</span>'; }).join('');
+      ml.innerHTML = MS.map(function(m){ return '<span>' + MOIS[+m.month.split('-')[1]-1] + '</span>'; }).join('');
       if (mo) mo.hidden = false;
       var bars = mb.children, fine = window.matchMedia && matchMedia('(hover:hover)').matches;
-      var show = function(el){ for (var k = 0; k < bars.length; k++) bars[k].classList.toggle('on', bars[k] === el); };
+      var show = function(el){
+        for (var k = 0; k < bars.length; k++) bars[k].classList.toggle('on', bars[k] === el);
+        // Bulle toujours dans l'écran, même sur un petit téléphone
+        var em = el && el.querySelector('em'); if (!em) return;
+        em.style.translate = '0px';
+        var r = em.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+        em.style.translate = (r.left < 8 ? 8 - r.left : r.right > vw - 8 ? vw - 8 - r.right : 0) + 'px';
+      };
       Array.prototype.forEach.call(bars, function(b){
         if (fine) b.addEventListener('mouseenter', function(){ show(b); });
         // Au toucher, le focus arrive juste avant le clic : seul un second toucher ferme
