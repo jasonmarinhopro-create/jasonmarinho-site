@@ -81,3 +81,38 @@ export function emailCatalogue(): CatalogueItem[] {
   cache = items
   return items
 }
+
+/**
+ * Ordre du parcours (21/11/2026, Jason : « du premier jusqu'au dernier ») :
+ * par public, les e-mails dans l'ordre où une personne les reçoit, regroupés
+ * par étape. Tout e-mail du catalogue doit y figurer (catalogue.test.ts).
+ */
+export const PARCOURS: Array<{ public: 'hote' | 'voyageur' | 'pro' | 'toi'; label: string; etapes: Array<{ etape: string; ids: string[] }> }> = [
+  {
+    public: 'hote', label: 'Hôte', etapes: [
+      { etape: 'Arrivée', ids: ['confirmation', 'compte-admin', 'driing'] },
+      { etape: 'Trouver un pro', ids: ['demande-partie', 'demande-sans-pro', 'demande-manuel'] },
+      { etape: 'Réservation en direct', ids: ['signe-hote', 'loyer', 'caution-bloquee', 'checkin'] },
+      { etape: 'Au fil du temps', ids: ['entre-hotes', 'reset'] },
+    ],
+  },
+  {
+    public: 'voyageur', label: 'Voyageur', etapes: [
+      { etape: 'Avant le séjour', ids: ['invite', 'signe-voyageur', 'signe-voyageur-pt', 'rappel'] },
+      { etape: 'Autour du séjour', ids: ['caution-j2', 'caution-liberee'] },
+    ],
+  },
+  {
+    public: 'pro', label: 'Pro', etapes: [
+      { etape: 'Arrivée', ids: ['bienvenue-pro'] },
+      { etape: 'Une mission', ids: ['demande-pro', 'devis', 'devis-accepte'] },
+      { etape: 'Chaque mois', ids: ['bilan-debut', 'bilan'] },
+    ],
+  },
+  {
+    public: 'toi', label: 'Toi', etapes: [
+      { etape: 'Au quotidien', ids: ['inscription', 'demande-admin', 'feedback', 'alerte-texte'] },
+      { etape: 'Chaque mois', ids: ['recap-bilans'] },
+    ],
+  },
+]

@@ -12,7 +12,7 @@ import { MONTHLY_OFF_FLAG, monthlySentFlag } from '@/lib/visibility/pro-stats'
 import AdminHero, { adminAsideCard } from '../../_ui/AdminHero'
 import RelativeTime from '@/components/ui/RelativeTime'
 import EmailPreview from './EmailPreview'
-import { emailCatalogue } from '@/lib/email/catalogue'
+import { emailCatalogue, PARCOURS } from '@/lib/email/catalogue'
 
 export const metadata = { title: 'E-mails de la plateforme, Admin' }
 export const dynamic = 'force-dynamic'
@@ -49,7 +49,7 @@ export default async function EmailsPage({ searchParams }: { searchParams?: { ap
   const missing = !!statsRes.error && /PGRST202|42883|42P01/.test(`${statsRes.error.code ?? ''} ${statsRes.error.message}`)
   const readError = statsRes.error && !missing ? statsRes.error.message.slice(0, 200) : null
   const catalogue = emailCatalogue()
-  const choisi = catalogue.find(c => c.id === searchParams?.apercu) ?? catalogue.find(c => c.id === 'bilan') ?? catalogue[0]
+  const choisi = catalogue.find(c => c.id === searchParams?.apercu) ?? catalogue.find(c => c.id === 'confirmation') ?? catalogue[0]
   const apercu = choisi.render()
   const d: EmailDashboard | null = statsRes.error ? null : buildEmailDashboard(statsRes.data as RawEmailStats, { today, jours: JOURS, webhookConfigured })
   const dernier = (statsRes.data as RawEmailStats | null)?.dernier_evenement ?? null
@@ -155,7 +155,11 @@ export default async function EmailsPage({ searchParams }: { searchParams?: { ap
       )}
 
       <EmailPreview
-        options={catalogue.map(c => ({ id: c.id, group: c.group, label: c.when, to: c.to }))}
+        journeys={PARCOURS.map(p => ({
+          key: p.public,
+          label: p.label,
+          etapes: p.etapes.map(e => ({ etape: e.etape, items: e.ids.map(id => catalogue.find(c => c.id === id)).filter(c => !!c).map(c => ({ id: c!.id, label: c!.when, to: c!.to })) })),
+        }))}
         current={choisi.id}
         subject={apercu.subject}
         preview={previewText(apercu.html)}
