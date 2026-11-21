@@ -263,6 +263,19 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .pub-bars i{display:block;width:70%;max-width:34px;border-radius:6px 6px 2px 2px;background:var(--g)}
 .pub-bars div:last-child i{background:repeating-linear-gradient(135deg,var(--g) 0 5px,#2a7a69 5px 10px)}
 .pub-bars span{font-size:11.5px;color:var(--tf)}
+.pub-bars div{position:relative;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.pub-bars i{position:relative;transition:opacity .15s}
+.pub-bars:has(.on) div:not(.on) i{opacity:.45}
+.pub-bars em{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%,4px);z-index:3;padding:7px 10px;border-radius:10px;background:#0F1A0D;color:#fff;font-style:normal;font-size:12px;line-height:1.35;white-space:nowrap;text-align:left;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .15s,transform .15s;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.pub-bars em strong{display:block;font-size:14px;font-weight:600}
+.pub-bars div:nth-child(-n+2) em{left:0;transform:translate(0,4px)}
+.pub-bars div:nth-last-child(-n+2) em{left:auto;right:0;transform:translate(0,4px)}
+.pub-bars div.on em{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.pub-bars div.on:nth-child(-n+2) em,.pub-bars div.on:nth-last-child(-n+2) em{transform:none}
+.pub-bars div.on span{color:var(--td);font-weight:600}
+.pub-hint{font-size:12px;color:var(--tf)}
+.pub-hint .t{display:none}
+@media(hover:none){.pub-hint .t{display:inline}.pub-hint .s{display:none}}
 .pub-fil ul{list-style:none;display:flex;flex-direction:column;gap:8px}
 .pub-fil li{display:flex;align-items:center;gap:10px;font-size:14px}
 .pub-fil li b{flex:none;padding:4px 9px;border-radius:99px;font-size:12px;font-weight:600;background:#E8F1EC;color:var(--g)}
@@ -727,7 +740,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 <div class="pub-x" data-pubbox>
 <div class="pub-fil"><span class="pub-l">Les dernières demandes d’hôtes</span><ul data-pubfil></ul><small>Le métier, la ville et le mois, jamais rien sur l’hôte.</small></div>
-<div class="pub-chart"><span class="pub-l">Apparitions dans Google, mois par mois</span><div class="pub-bars" data-pubchart></div></div>
+<div class="pub-chart"><span class="pub-l">Apparitions dans Google, mois par mois</span><div class="pub-bars" data-pubchart></div><small class="pub-hint"><span class="s">Passe la souris sur une barre pour voir le chiffre du mois.</span><span class="t">Touche une barre pour voir le chiffre du mois.</span></small></div>
 </div>
 </div>
 </section>
@@ -1109,7 +1122,21 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
       set('dem',dm?dm.total:null);
       var ch=document.querySelector('[data-pubchart]');
       if(ch&&g&&g.months&&g.months.length){var mx=Math.max.apply(null,g.months.map(function(m){return m.impressions}))||1;
-        ch.innerHTML=g.months.slice(-8).map(function(m){var h=Math.max(4,Math.round(m.impressions/mx*100));return '<div title="'+nf.format(m.impressions)+'"><i style="height:'+h+'%"></i><span>'+esc(mois(m.month).split(' ')[0])+'</span></div>'}).join('')}
+        var ms=g.months.slice(-8);
+        ch.innerHTML=ms.map(function(m,i){var h=Math.max(4,Math.round(m.impressions/mx*100)),n=nf.format(m.impressions).replace(/\s/g,'\u00a0'),mm=esc(mois(m.month)),cur=i===ms.length-1?' (en cours)':'';return '<div tabindex="0" role="button" aria-label="'+mm+cur+' : '+n+' apparitions dans Google"><i style="height:'+h+'%"></i><em><strong>'+n+' apparitions</strong>'+mm+cur+'</em><span>'+esc(mois(m.month).split(' ')[0])+'</span></div>'}).join('');
+        // Infobulle : survol à la souris, toucher sur téléphone (toucher ailleurs ferme), clavier
+        var bars=ch.children, show=function(el){for(var k=0;k<bars.length;k++)bars[k].classList.toggle('on',bars[k]===el)};
+        var fine=window.matchMedia&&matchMedia('(hover:hover)').matches;
+        Array.prototype.forEach.call(bars,function(b){
+          if(fine){b.addEventListener('mouseenter',function(){show(b)})}
+          // Au toucher, le focus arrive juste avant le clic : un second toucher (pas ce clic-là) ferme
+          b.addEventListener('click',function(e){e.stopPropagation();show(!fine&&b.classList.contains('on')&&Date.now()-(b._f||0)>400?null:b)});
+          b.addEventListener('focus',function(){b._f=Date.now();show(b)});
+          b.addEventListener('keydown',function(e){if(e.key==='Escape'){show(null);b.blur()}});
+        });
+        if(fine)ch.addEventListener('mouseleave',function(){show(null)});
+        ch.addEventListener('focusout',function(e){if(!ch.contains(e.relatedTarget))show(null)});
+        document.addEventListener('click',function(){show(null)});}
       else if(ch)ch.parentNode.hidden=true;
       var fl=document.querySelector('[data-pubfil]'), NOM={photographe:'Photo, vidéo',menage:'Ménage',depannage:'Dépannage'};
       if(fl&&dm&&dm.fil&&dm.fil.length){fl.innerHTML=dm.fil.slice(0,4).map(function(f){return '<li><b class="m-'+esc(f.metier)+'">'+esc(NOM[f.metier]||f.metier)+'</b><span>'+esc(f.label||'Autre ville')+'</span><small>'+esc(mois(f.month))+'</small></li>'}).join('')}
