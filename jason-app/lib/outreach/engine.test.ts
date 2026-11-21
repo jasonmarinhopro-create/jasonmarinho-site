@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   addDaysIso, isoWeekday, nextAllowedDay, scheduleStep, afterSend, renderTemplate, guessFirstName,
-  replySubject, complianceFooter, textToHtml, signatureToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, cleanTag, normalizeTag, mergeTags, daysWithoutNews, extractEmails, bestEmail, bouncedAddresses, isBounceSender, isFormalText, emailSiteMatch, siteDomain,
+  replySubject, complianceFooter, textToHtml, signatureToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, cleanTag, normalizeTag, mergeTags, daysWithoutNews, extractEmails, bestEmail, bouncedAddresses, isBounceSender, isFormalText, emailSiteMatch, siteDomain, classifyReply, replyNewText,
 } from './engine'
 
 const WEEK = [1, 2, 3, 4, 5]
@@ -194,5 +194,26 @@ describe('adresse et site du pro', () => {
     expect(emailSiteMatch('webmaster@agence-web.com', 'https://studio-x.fr')).toBe('autre')
     expect(emailSiteMatch('contact@studio-x.fr', '')).toBe('inconnu')
     expect(siteDomain('studio-x.fr/page')).toBe('studio-x.fr')
+  })
+})
+
+describe('réponses « stop » et « non merci »', () => {
+  const quoted = '\n\nLe ven. 20 nov. 2026 à 10:02, Jason Marinho <contact@jasonmarinho.com> a écrit :\n> Est-ce que tu photographies des locations ? Ça t\'intéresse ?\n> Pas intéressé ? Réponds « stop »'
+  it('opposition', () => {
+    expect(classifyReply('STOP')).toBe('stop')
+    expect(classifyReply('Stop merci' + quoted)).toBe('stop')
+    expect(classifyReply('Merci de ne plus me contacter.')).toBe('stop')
+    expect(classifyReply('Désinscrivez-moi svp')).toBe('stop')
+    expect(classifyReply('Retirez-moi de votre liste')).toBe('stop')
+  })
+  it('pas intéressé', () => {
+    expect(classifyReply('Non merci' + quoted)).toBe('non')
+    expect(classifyReply('Bonjour, pas intéressée, bonne journée')).toBe('non')
+  })
+  it('vraie réponse, même si notre message cité contient « stop »', () => {
+    expect(classifyReply('Oui ça m\'intéresse, envoyez-moi le lien' + quoted)).toBe('reponse')
+    expect(classifyReply('Oui' + quoted)).toBe('reponse')
+    expect(classifyReply('Bonjour, je fais surtout de l\'immobilier mais aussi des gîtes. Quel est le prix exact et comment ça marche pour les demandes ? Est-ce que je peux mettre plusieurs villes ? Je ne veux pas de stop ni de pause sur ma fiche, je travaille toute l\'année, et j\'aimerais aussi savoir si la vidéo par drone est acceptée dans le portfolio.')).toBe('reponse')
+    expect(replyNewText('Ok\n> cité')).toBe('Ok')
   })
 })

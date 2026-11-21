@@ -349,14 +349,14 @@ async function autoEnroll(db: Db, today: string, dailyCap: number): Promise<numb
   return n
 }
 
-export interface InboxResult { replies: number; bounces: number; scanned: number; matchedBy: Record<'adresse' | 'fil' | 'domaine', number>; unmatched: number; folders: string[] }
+export interface InboxResult { replies: number; optOuts: number; notInterested: number; bounces: number; scanned: number; matchedBy: Record<'adresse' | 'fil' | 'domaine', number>; unmatched: number; folders: string[] }
 
 /**
  * Réponses et rebonds. `sinceDays` relit une fenêtre plus large (workflow
  * Prospection, op « boite ») ; sinon depuis la dernière lecture moins 36 h.
  */
 export async function handleInbox(db: Db, settings: Settings, opts: { sinceDays?: number } = {}): Promise<InboxResult> {
-  const empty: InboxResult = { replies: 0, bounces: 0, scanned: 0, matchedBy: { adresse: 0, fil: 0, domaine: 0 }, unmatched: 0, folders: [] }
+  const empty: InboxResult = { replies: 0, optOuts: 0, notInterested: 0, bounces: 0, scanned: 0, matchedBy: { adresse: 0, fil: 0, domaine: 0 }, unmatched: 0, folders: [] }
   const cfg = outreachConfig()
   if (!cfg) return empty
   // Contacts à surveiller : ceux qu'on a déjà contactés
@@ -378,16 +378,25 @@ export async function handleInbox(db: Db, settings: Settings, opts: { sinceDays?
       ? new Date(Math.max(new Date(settings.last_imap_check).getTime() - 36 * 3600_000, Date.now() - 10 * 86400_000))
       : new Date(Date.now() - 3 * 86400_000)
   const scan = await scanInbox(cfg, since, new Set(byEmail.keys()), { byThread, byDomain: uniqueProDomains(byEmail.keys()) })
-  let replies = 0
+  let replies = 0, optOuts = 0, notInterested = 0
   for (const [email, when] of Array.from(scan.replies.entries())) {
     const c = byEmail.get(email)
     if (!c || ['a_repondu', 'interesse', 'inscrit', 'client', 'desinscrit', 'invalide', 'pas_interesse'].includes(c.stage)) continue
-    await setStage(db, [c.id], 'a_repondu', { replied_at: when.toISOString() })
-    replies++
+    const kind = scan.kinds.get(email) ?? 'reponse'
+    if (kind === 'stop') {
+      // « Stop » : opposition gardée pour toujours (liste d'opposition, CNIL), comme le lien de désinscription
+      await db.from('outreach_contacts').update({ replied_at: when.toISOString() }).eq('id', c.id)
+      await suppress(db, email, 'desinscrit')
+      optOuts++
+      continue
+    }
+    await setStage(db, [c.id], kind === 'non' ? 'pas_interesse' : 'a_repondu', { replied_at: when.toISOString() })
+    if (kind === 'non') notInterested++
+    else replies++
   }
   for (const email of scan.bounces) await suppress(db, email, 'rebond')
   await db.from('outreach_settings').update({ last_imap_check: new Date().toISOString() }).eq('id', 1)
-  return { replies, bounces: scan.bounces.length, scanned: scan.scanned, matchedBy: scan.matchedBy, unmatched: scan.unmatched, folders: scan.folders }
+  return { replies, optOuts, notInterested, bounces: scan.bounces.length, scanned: scan.scanned, matchedBy: scan.matchedBy, unmatched: scan.unmatched, folders: scan.folders }
 }
 
 /**

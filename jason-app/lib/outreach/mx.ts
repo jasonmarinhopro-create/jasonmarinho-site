@@ -22,22 +22,35 @@ export function mxVerdict(result: { records?: Array<{ exchange: string }>; error
   return usable.length ? 'ok' : 'sans_mx'
 }
 
-/** Domaine de l'adresse → verdict, avec un cache par passage et 4 s au plus. */
-export async function checkMx(email: string, cache: Map<string, MxVerdict> = new Map()): Promise<MxVerdict> {
-  const domain = String(email).toLowerCase().split('@')[1] ?? ''
-  if (!domain) return 'sans_mx'
-  const known = cache.get(domain)
-  if (known) return known
-  let verdict: MxVerdict
+async function lookup(domain: string): Promise<MxVerdict> {
   try {
     const records = await Promise.race([
       dns.resolveMx(domain),
       new Promise<never>((_, reject) => setTimeout(() => reject(Object.assign(new Error('délai'), { code: 'ETIMEOUT' })), 4_000)),
     ])
-    verdict = mxVerdict({ records })
+    return mxVerdict({ records })
   } catch (e) {
-    verdict = mxVerdict({ errorCode: (e as { code?: string })?.code ?? 'EUNKNOWN' })
+    return mxVerdict({ errorCode: (e as { code?: string })?.code ?? 'EUNKNOWN' })
   }
+}
+
+/** Repère : si gmail.com n'a pas de MX, c'est le DNS qui ne répond pas, pas l'adresse. */
+const CONTROL_DOMAIN = 'gmail.com'
+
+/**
+ * Domaine de l'adresse → verdict, avec un cache par passage et 4 s au plus.
+ * Garde-fou : le DNS est d'abord testé sur gmail.com ; s'il ne répond pas
+ * correctement, tout est « incertain » (on n'invalide jamais une adresse sur
+ * une panne de DNS).
+ */
+export async function checkMx(email: string, cache: Map<string, MxVerdict> = new Map()): Promise<MxVerdict> {
+  const domain = String(email).toLowerCase().split('@')[1] ?? ''
+  if (!domain) return 'sans_mx'
+  if (!cache.has(`#${CONTROL_DOMAIN}`)) cache.set(`#${CONTROL_DOMAIN}`, await lookup(CONTROL_DOMAIN))
+  if (cache.get(`#${CONTROL_DOMAIN}`) !== 'ok') return 'incertain'
+  const known = cache.get(domain)
+  if (known) return known
+  const verdict = await lookup(domain)
   cache.set(domain, verdict)
   return verdict
 }
