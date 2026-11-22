@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-21 23:22 UTC.
+Mis à jour le 2026-11-22 00:18 UTC.
 
 - 2026-11-22 · reel · depannage-demandes-viennent-a-toi · FB pending · IG pending · stories FB pending IG pending · « Une fuite à 15 h, des voyageurs à 17 h : l’hôte n’a pas le temps de chercher un annuaire. »
 - 2026-11-21 · stories (4 écrans) · stories-deco-noel-dosage · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Décorer pour Noël, sans alourdir tes ménages / Moins, mais bien placé / Bougies LED, jamais de flamm »
