@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-23 · reglementation · L'UE donne aux communes un droit de plafonner les meublés de tourisme (https://www.journaldunet.com/business/action-publique/1554665-l-union-europeenne-presente-un-plan-visant-a-encadrer-la-location-de-meubles-de-tourisme-pour-contrer-l-essor-d-airbnb-et-lutter-contre-la-penurie-de-logements/)
-- 2026-09-23 · marche · Été 2026 : taux d'occupation en hausse, le littoral en tête des performances · masquée (https://blog.elloha.com/2026/08/29/bilan-ete-2026-lincroyable-resistance-du-tourisme-francais-et-les-cles-pour-reussir-la-rentree/)
 - 2026-09-24 · plateformes · Airbnb bascule vers un frais hôte unique à 15,5 % HT dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-24 · fiscalite · Hausser tes prix Airbnb pour compenser : attention au seuil des 23 000 euros (https://www.moneyvox.fr/immobilier/actualites/110230/airbnb-de-nouvelles-consequencesfiscales-pour-la-location-meublee-de-courte-duree)
 - 2026-09-25 · plateformes · Airbnb passe à une commission unique de 15,5 % le 13 octobre 2026 · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
@@ -73,3 +71,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-20 · marche · Booking.com T3 2026 : +7 % de nuitées mais la concurrence grimpe plus vite · pour photographe, menage (https://www.rentalscaleup.com/fr/booking-com-t3-2026-la-demande-dhebergements-alternatifs-est-de-retour-mais-la-concurrence-aussi/)
 - 2026-11-21 · plateformes · Mise à jour : Airbnb contrôle les annonces depuis le 20 novembre (https://www.rentalscaleup.com/fr/nous-avons-teste-le-nouvel-outil-de-verification-des-regles-de-maison-dairbnb-voici-ce-quil-signale-et-ce-que-cela-signifie-pour-les-gestionnaires/)
 - 2026-11-21 · marche · Décembre chargé : prépare tes interventions d'urgence pour tes clients hôtes · pour depannage (https://www.service-public.fr/particuliers/vosdroits/F31952)
+- 2026-11-22 · entreprise · Changer ta périodicité Urssaf pour 2027 : tu as jusqu'au 31 janvier · pour photographe, menage, depannage (https://banque.meilleurtaux.com/banque-en-ligne/actualites/2026-novembre/micro-entrepreneurs-date-limite-pour-changer-lurssaf.html)
