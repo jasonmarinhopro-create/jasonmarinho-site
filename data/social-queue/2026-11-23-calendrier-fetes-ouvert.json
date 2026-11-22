@@ -1,0 +1,16 @@
+{
+  "slug": "calendrier-fetes-ouvert",
+  "format": "photo",
+  "public": "hotes",
+  "photo": "pexels:christmas dinner table candles",
+  "slides": [
+    { "type": "couverture", "kicker": "Fêtes de fin d’année", "titre": "Ton 24 et ton 31 décembre sont *vraiment ouverts* ?", "sous_titre": "Une case bloquée, et le voyageur réserve ailleurs sans t’écrire." }
+  ],
+  "legende": "Ton 24, ton 25 et ton 31 décembre sont vraiment ouverts à la réservation ?\n\nBeaucoup d’hôtes bloquent ces nuits « au cas où », pour un usage perso qui ne se fait pas, et oublient de les rouvrir. Le voyageur qui cherche son réveillon tombe sur une case indisponible et passe à l’annonce suivante, sans jamais te contacter.\n\nTrois vérifications à faire maintenant :\n1. Ton calendrier Airbnb, Booking et direct, nuit par nuit du 20 décembre au 3 janvier.\n2. Ta durée minimum de séjour sur les fêtes : elle doit limiter les ménages du 25 au matin, sans bloquer les séjours que tu veux.\n3. Ta fenêtre de réservation : un voyageur qui prépare déjà ses fêtes 2027 ne doit pas trouver ton calendrier fermé.\n\nTu as déjà des réservations pour le réveillon ?",
+  "hashtags": ["#airbnb", "#locationcourteduree", "#hoteairbnb", "#reveillon", "#noel"],
+  "lien": "https://jasonmarinho.com/blog/noel-nouvel-an-lcd-7-actions-pic-revenus-fin-annee",
+  "story": {
+    "texte": "Ton calendrier des fêtes : *3 vérifications* à faire maintenant",
+    "frames": [ { "type": "question", "titre": "Déjà une réservation *pour le réveillon* ?" } ]
+  }
+}
