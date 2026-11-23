@@ -82,10 +82,10 @@
         <div><div class="k">Prix moyen par nuit</div><div class="v" id="r-adr">…</div><div class="d">prix moyen du marché, ajusté à ton logement</div></div>
         <div><div class="k">Ce qu'il te reste</div><div class="v" id="r-net">…</div><div class="d">après frais, ménage et impôts</div></div>
       </div>
-      <div class="months" id="r-months" aria-hidden="true"></div>
+      <div class="months" id="r-months" data-bulle role="group" aria-label="Revenu estimé mois par mois"></div>
       <div class="ml"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
       <div class="r-foot">
-        <div class="src">Données du marché : <span id="r-src">…</span>. Mois en vert foncé : haute saison. <a href="#methode">Comment c'est calculé</a></div>
+        <div class="src">Données du marché : <span id="r-src">…</span>. Mois en vert foncé : haute saison. <span data-bulle-hint><span class="bh-s">Passe la souris sur un mois pour voir son montant.</span><span class="bh-t">Touche un mois pour voir son montant.</span></span> <a href="#methode">Comment c'est calculé</a></div>
         <a class="btn" href="#detail">Voir le détail <i class="ph-bold ph-arrow-down"></i></a>
       </div>
     </div>
@@ -226,6 +226,7 @@
 </main>
 
 <script defer src="/footer.js"></script>
+<script defer src="/bulle.js"></script>
 <script>
 (function () {
   'use strict'
@@ -313,7 +314,8 @@
     var max = Math.max.apply(null, res.monthly.map(function (m) { return m.revenu }))
     $('r-months').innerHTML = res.monthly.map(function (m, i) {
       var h = max > 0 ? Math.max(6, m.revenu / max * 100) : 6
-      return '<span class="' + (m.isHigh ? 'h' : '') + '" style="height:' + h + '%" title="' + window.JMCalc.MONTHS[i] + ' : ' + eur(m.revenu * brut / Math.max(1, res.revenuAnnuel)) + '"></span>'
+      var v = eur(m.revenu * brut / Math.max(1, res.revenuAnnuel)), mo = window.JMCalc.MONTHS[i]
+      return '<span class="' + (m.isHigh ? 'h' : '') + '" style="height:' + h + '%" tabindex="0" role="img" aria-label="' + mo + ' : ' + v + '" data-bt="' + v + '" data-bs="' + mo + (m.isHigh ? ', haute saison' : '') + '"></span>'
     }).join('')
 
     // Détail

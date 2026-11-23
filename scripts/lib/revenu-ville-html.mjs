@@ -59,7 +59,7 @@ export function buildRevenuVille(city, ctx) {
   const title = `Louer en courte durée à ${city.ville} : revenus 2026`
   const description = `${city.ville} : ${bench.occ} % d'occupation, ${bench.adr} € la nuit en moyenne (${source}). Revenus par type de logement, saisons, règles locales et tendances 2026.`
   const max = Math.max(...base.monthly.map(m => m.revenu))
-  const months = base.monthly.map((m, i) => `<span class="${m.isHigh ? 'h' : ''}" style="height:${Math.max(6, Math.round(m.revenu / max * 100))}%" title="${MONTHS[i]} : ${eur(m.revenu)}"></span>`).join('')
+  const months = base.monthly.map((m, i) => `<span class="${m.isHigh ? 'h' : ''}" style="height:${Math.max(6, Math.round(m.revenu / max * 100))}%" tabindex="0" role="img" aria-label="${MONTHS[i]} : ${eur(m.revenu)}" data-bt="${eur(m.revenu)}" data-bs="${MONTHS[i]}${m.isHigh ? ', haute saison' : ''}"></span>`).join('')
 
   const faq = [
     {
@@ -256,9 +256,9 @@ ${neighbours.map(n => `        <tr><td><a href="${n.url}">${esc(n.ville)}</a></t
     <div class="types">
 ${rows.map(r => `      <a href="${calcUrl}&amp;type=${r.key}"${r.key === 't2' ? ' class="hl"' : ''}><div class="n">${r.label}</div><div class="v">${eur(r.revenu)}</div><div class="s">${r.adr} € la nuit</div></a>`).join('\n')}
     </div>
-    <div class="months" aria-hidden="true">${months}</div>
+    <div class="months" data-bulle role="group" aria-label="Revenus d'un T2 mois par mois">${months}</div>
     <div class="ml"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
-    <p class="src" style="margin-top:10px">Revenus d'un T2 par mois. En vert foncé, la haute saison${saison ? ` : ${saison}` : ''}.</p>
+    <p class="src" style="margin-top:10px">Revenus d'un T2 par mois. En vert foncé, la haute saison${saison ? ` : ${saison}` : ''}. <span data-bulle-hint><span class="bh-s">Passe la souris sur un mois pour voir son montant.</span><span class="bh-t">Touche un mois pour voir son montant.</span></span></p>
     <div class="actions">
       <a class="btn" href="${calcUrl}">Calculer mon revenu net <i class="ph-bold ph-arrow-right"></i></a>
       <a class="btn o" href="/services/simulateurs/prix-lcd?pays=${city.pays}&amp;ville=${encodeURIComponent(city.ville)}">Quel prix afficher par nuit</a>
@@ -329,6 +329,7 @@ ${faq.map(f => `    <details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></d
 </section>
 
 <script defer src="/footer.js"></script>
+<script defer src="/bulle.js"></script>
 <script>
 (function () {
   var b = document.getElementById('share')
