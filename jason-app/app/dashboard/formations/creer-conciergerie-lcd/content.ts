@@ -23,7 +23,13 @@ export const CREER_CONCIERGERIE_FORMATION = {
           id: 1,
           title: `Ce qu'est vraiment une conciergerie LCD (et ce que ce n'est pas)`,
           duration: '12 min',
-          content: `## La conciergerie LCD : définition réelle
+          content: `:::bref
+- Une conciergerie gère le logement d'un propriétaire contre une commission.
+- Annonces, calendrier, voyageurs, ménage, prix : tout le quotidien de la location.
+- Avant de te lancer, demande-toi si tu aimes le service et l'imprévu.
+:::
+
+## La conciergerie LCD : définition réelle
 Une conciergerie LCD prend en charge
 la gestion d'un logement pour le compte
 d'un propriétaire, en échange d'une commission.
@@ -118,13 +124,34 @@ combler ce manque avant de te lancer.
 
 ## Exercice
 **Exercice pratique :** Réponds aux 4 questions de la slide 5. Par écrit, pas dans ta tête. Les points faibles identifiés maintenant coûtent moins cher à corriger qu'une fois l'activité lancée.
-`,
+
+:::quiz
+? Comment une conciergerie gagne-t-elle de l'argent ?
+- En achetant les logements
+- En revendant les données des voyageurs
+* Par une commission sur les revenus ou un forfait par logement
+= Elle se rémunère sur la gestion qu'elle assure pour le propriétaire.
+:::
+
+:::quiz
+? Quelle qualité est indispensable dans ce métier ?
+- Éviter tout contact humain
+* Aimer le service et gérer l'imprévu
+- Ne jamais répondre le week-end
+= Urgences, voyageurs et propriétaires demandent réactivité et sang-froid.
+:::`,
         },
         {
           id: 2,
           title: `Étude de marché : valider son territoire avant d'investir`,
           duration: '13 min',
-          content: `## Les 3 types de zones qui fonctionnent
+          content: `:::bref
+- Trois types de zones : touristique, urbaine d'affaires, mixte.
+- Évalue la demande : nombre d'annonces, remplissage, prix moyen, concurrence.
+- Calcule ton seuil de rentabilité avant d'investir.
+:::
+
+## Les 3 types de zones qui fonctionnent
 ZONE TYPE 1, TOURISTIQUE
 Littoral, montagne, villes historiques,
 destinations de week-end.
@@ -216,7 +243,29 @@ Les 6 premiers mois : montée en charge progressive.
 
 ## Exercice
 **Exercice pratique :** Va sur Airbnb et compte le nombre de logements actifs dans ton secteur géographique cible (rayon de 10-15 km). Va ensuite sur l'annuaire Driing et compte les conciergeries déjà présentes dans cette zone. Le ratio logements/conciergeries te donne une première indication du potentiel.
-`,
+
+:::quiz
+? Quel avantage offre une zone urbaine d'affaires ?
+* Une demande plus stable toute l'année
+- Des pics très forts seulement l'été
+- Aucune concurrence
+= Voyageurs pros et loisirs se relaient au fil de l'année.
+:::
+
+:::quiz
+? Pourquoi calculer ton seuil de rentabilité d'abord ?
+* Pour savoir combien de logements il te faut pour en vivre
+- Pour fixer le prix des voyageurs
+- Ce n'est pas utile
+= Sans ce chiffre, tu ne sais pas si ton projet tient.
+:::
+
+:::action
+titre: Estime les revenus d'un logement de ta zone
+texte: Utilise le simulateur pour évaluer ce qu'un logement type rapporte dans ta ville.
+lien: /dashboard/simulateurs
+bouton: Ouvrir le simulateur
+:::`,
         },
       ],
     },
@@ -229,7 +278,13 @@ Les 6 premiers mois : montée en charge progressive.
           id: 11,
           title: 'Choisir son statut juridique selon ses ambitions',
           duration: '15 min',
-          content: `## Les 4 statuts possibles et leur logique
+          content: `:::bref
+- Quatre statuts : micro-entreprise, EURL, SASU, SARL ou SAS à plusieurs.
+- La micro-entreprise permet de tester, avec un plafond de 83 600 € pour les services.
+- Assurance responsabilité civile professionnelle et contrats écrits sont indispensables.
+:::
+
+## Les 4 statuts possibles et leur logique
 MICRO-ENTREPRISE (Auto-entrepreneur)
 → Pour : démarrer simplement, tester
 → Plafond CA : 83 600€/an (services, 2026 à 2028)
@@ -323,13 +378,34 @@ TOTAL : ~3 000 à 5 000€ la première année
 
 ## Exercice
 **Exercice pratique :** Décide maintenant de ton statut de départ. Si tu testes : micro-entreprise. Si tu es décidé avec un budget : SASU. Va sur **inpi.fr** et commence la démarche d'immatriculation. C'est la première action concrète de création de ton activité.
-`,
+
+:::quiz
+? Quel statut pour tester le métier simplement ?
+* La micro-entreprise
+- Une société anonyme cotée
+- Aucun statut
+= Création gratuite et rapide, idéale pour valider le concept.
+:::
+
+:::quiz
+? Quelle limite de la micro-entreprise faut-il connaître ?
+- Elle interdit d'avoir des clients
+- Elle oblige à avoir un associé
+* Tes charges ne sont pas déductibles
+= Si tu as beaucoup de frais, une société peut devenir plus intéressante.
+:::`,
         },
         {
           id: 12,
           title: `La Carte G : ce que c'est, qui en a besoin, et les solutions légales`,
           duration: '15 min',
-          content: `## Qu'est-ce que la Carte G ?
+          content: `:::bref
+- La carte G (loi Hoguet) est obligatoire si tu encaisses les loyers pour le compte du propriétaire.
+- Elle exige diplôme ou expérience, garantie financière et assurance.
+- Sinon, le propriétaire encaisse lui-même et tu factures ta prestation.
+:::
+
+## Qu'est-ce que la Carte G ?
 La Carte G est la Carte Professionnelle
 de Gestion Immobilière, régie par la
 Loi Hoguet (1970).
@@ -448,7 +524,29 @@ dépense de démarrage.
 
 ## Exercice
 **Exercice pratique :** Décide de ton modèle légal : co-hôte Airbnb, réseau d'indépendants ou obtention de la Carte G. Si tu as le moindre doute, réserve une consultation avec un avocat spécialisé en droit immobilier (1 à 2 heures suffisent pour valider ton montage). C'est 200 à 400€ qui peuvent t'éviter des années de problèmes.
-`,
+
+:::quiz
+? Quand la carte G est-elle obligatoire ?
+* Quand tu encaisses les loyers pour le compte du propriétaire
+- Dès que tu fais un ménage
+- Jamais en location courte durée
+= Manier les fonds de tiers relève de la loi Hoguet.
+:::
+
+:::quiz
+? Comment exercer sans carte G ?
+* Le propriétaire encaisse lui-même et tu factures tes services
+- En encaissant sur ton compte personnel
+- En ne faisant pas de contrat
+= Tu restes prestataire de services, sans manier ses fonds.
+:::
+
+:::action
+titre: Prépare ton contrat de gestion
+texte: Pars des contrats de l'app pour formaliser ta mission avec chaque propriétaire.
+lien: /dashboard/contrats
+bouton: Ouvrir les contrats
+:::`,
         },
       ],
     },
@@ -461,7 +559,13 @@ dépense de démarrage.
           id: 21,
           title: 'Définir ses services et se différencier',
           duration: '12 min',
-          content: `## Les services d'une conciergerie : de base à premium
+          content: `:::bref
+- Services de base : annonces, calendrier, voyageurs, ménage, arrivées, avis.
+- Services avancés : tarification dynamique, photos, livret d'accueil, rapports.
+- Choisis un positionnement clair plutôt que de tout promettre.
+:::
+
+## Les services d'une conciergerie : de base à premium
 SERVICES CORE (indispensables)
 → Création et optimisation des annonces
 → Gestion du calendrier et des réservations
@@ -551,13 +655,34 @@ ERREUR 3, Sous-estimer l'importance des photos
 
 ## Exercice
 **Exercice pratique :** Rédige en 3 phrases ton positionnement : "Je suis une conciergerie spécialisée dans [type de logements] pour [type de propriétaires] dans [zone géographique]. Je me différencie par [1 ou 2 éléments clés]. Mon client idéal est [portrait précis]." Garde ces 3 phrases sous la main, elles guideront toute ta communication.
-`,
+
+:::quiz
+? Quelle erreur de positionnement éviter ?
+- Choisir une zone précise
+- Expliquer tes services
+* Promettre tout à tout le monde
+= Un positionnement flou ne convainc personne.
+:::
+
+:::quiz
+? Quel service fait partie du socle indispensable ?
+- La décoration complète
+- La vente du logement
+* La communication avec les voyageurs
+= C'est le cœur du quotidien de la location.
+:::`,
         },
         {
           id: 22,
           title: 'Fixer ses tarifs sans se brader ni effrayer les propriétaires',
           duration: '13 min',
-          content: `## Les modèles tarifaires possibles
+          content: `:::bref
+- Trois modèles : commission, forfait mensuel, hybride.
+- Le modèle hybride combine un forfait de base et une commission.
+- Justifie ton tarif par le revenu que tu fais gagner et le temps que tu libères.
+:::
+
+## Les modèles tarifaires possibles
 MODÈLE 1, COMMISSION PURE (le plus courant)
 → Tu prélèves X% des revenus bruts
 → Avantage : tu es aligné avec
@@ -648,7 +773,29 @@ NE JAMAIS :
 
 ## Exercice
 **Exercice pratique :** Calcule ton seuil de rentabilité : tes charges mensuelles (outils, déplacements, temps valorisé...) divisées par ta commission moyenne. Combien de logements te faut-il pour couvrir tes frais ? C'est ton objectif de phase 1.
-`,
+
+:::quiz
+? Quel est l'avantage d'une commission sur les revenus ?
+- Tes revenus ne bougent jamais
+- Elle est interdite
+* Tu es aligné avec l'intérêt du propriétaire
+= Plus le logement rapporte, plus vous gagnez tous les deux.
+:::
+
+:::quiz
+? Comment défendre ton tarif face à un propriétaire ?
+- Baisser jusqu'à ce qu'il accepte
+- Refuser d'en parler
+* Montrer le revenu supplémentaire et le temps gagné
+= Le propriétaire achète un résultat, pas un pourcentage.
+:::
+
+:::action
+titre: Ajoute un logement géré avec tes honoraires
+texte: Crée le logement du propriétaire et indique ton pourcentage d'honoraires.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -661,7 +808,13 @@ NE JAMAIS :
           id: 31,
           title: 'Où trouver tes premiers mandats',
           duration: '15 min',
-          content: `## Canal 1 : La prospection Airbnb directe
+          content: `:::bref
+- Les propriétaires qui gèrent seuls des logements bien notés sont tes meilleures cibles.
+- Ton réseau local, l'annuaire Driing (je suis co-fondateur) et le contenu local complètent.
+- Le bouche-à-oreille devient ton premier canal après quelques mois.
+:::
+
+## Canal 1 : La prospection Airbnb directe
 C'est le canal le plus efficace pour débuter.
 
 LES PROPRIÉTAIRES QUI GÈRENT SEULS
@@ -779,13 +932,34 @@ en LCD, je serai ravi d'échanger avec eux."
 
 ## Exercice
 **Exercice pratique :** Inscris-toi maintenant sur l'annuaire Driing : **driing.co/inscription-conciergerie**. Utilise le code **JASON2** pour bénéficier de 2 mois offerts sur le Profil Plus. C'est ta première présence en ligne professionnelle, et ça te prend 20 minutes.
-`,
+
+:::quiz
+? Quel propriétaire est la cible la plus qualifiée ?
+* Un hôte bien noté qui gère seul 1 à 3 logements
+- Quelqu'un qui n'a jamais loué
+- Une grande chaîne hôtelière
+= Il connaît la location courte durée et a juste besoin de déléguer.
+:::
+
+:::quiz
+? Quel canal devient le plus puissant avec le temps ?
+- Les annonces payantes
+- Les appels au hasard
+* Le bouche-à-oreille de propriétaires satisfaits
+= Une recommandation transmet la confiance, ce que tu vends.
+:::`,
         },
         {
           id: 32,
           title: 'Convaincre un propriétaire : le premier rendez-vous',
           duration: '15 min',
-          content: `## Ce que cherche un propriétaire
+          content: `:::bref
+- Un propriétaire cherche du temps, de la transparence et un meilleur revenu.
+- Structure du rendez-vous : écoute, diagnostic, proposition, prochaine étape.
+- Ne pars jamais sans accord écrit.
+:::
+
+## Ce que cherche un propriétaire
 Avant de pitcher ta conciergerie,
 comprends ce que le propriétaire veut vraiment.
 
@@ -884,7 +1058,29 @@ par un avocat (voir module 2).
 
 ## Exercice
 **Exercice pratique :** Prépare ton "pitch de 3 minutes" : en 3 minutes, tu dois être capable d'expliquer ce que tu fais, pour qui, et pourquoi ça vaut la commission que tu demandes. Entraîne-toi à voix haute. Ce pitch servira en rendez-vous, au téléphone, et dans ta bio Driing.
-`,
+
+:::quiz
+? Que cherche d'abord un propriétaire ?
+* Du temps, de la transparence et un meilleur revenu
+- Le prix le plus bas
+- Une belle brochure
+= Ton argumentaire doit répondre à ces trois attentes.
+:::
+
+:::quiz
+? Que faire à la fin d'un rendez-vous réussi ?
+- Se contenter d'une poignée de main
+- Attendre qu'il te rappelle
+* Formaliser l'accord par écrit
+= Un contrat écrit protège les deux parties.
+:::
+
+:::action
+titre: Estime le revenu du logement de ton prospect
+texte: Arrive au rendez-vous avec une estimation chiffrée du logement.
+lien: /dashboard/calculateurs#revenus
+bouton: Estimer les revenus
+:::`,
         },
       ],
     },
@@ -897,7 +1093,13 @@ par un avocat (voir module 2).
           id: 41,
           title: `Pourquoi l'annuaire Driing remplace avantageusement un site internet au démarrage`,
           duration: '12 min',
-          content: `## Le problème du site internet au démarrage
+          content: `:::bref
+- Un site internet coûte cher et met des mois à attirer du monde.
+- Au démarrage, une fiche sur un annuaire et les réseaux suffisent.
+- Concentre ton énergie sur la prospection et les premiers mandats.
+:::
+
+## Le problème du site internet au démarrage
 Beaucoup de créateurs de conciergerie
 pensent avoir besoin d'un site internet
 avant de se lancer.
@@ -993,13 +1195,34 @@ LINKEDIN
 
 ## Exercice
 **Exercice pratique :** Va sur **driing.co/inscription-conciergerie** et crée ou complète ton profil. Utilise le code **JASON2** pour 2 mois offerts sur le Profil Plus. Remplis toutes les sections : nom, zone(s), services, description. Un profil complet est un profil qui convertit.
-`,
+
+:::quiz
+? Pourquoi ne pas commencer par un site internet ?
+- Les propriétaires ne lisent pas
+* Il coûte cher et met des mois à générer du trafic
+- C'est interdit
+= Pendant ce temps, tu ne prospectes pas et tu n'as pas de revenus.
+:::
+
+:::quiz
+? Que privilégier au démarrage ?
+- Un logo à 2 000 €
+* Une présence simple et la prospection directe
+- Une agence de communication
+= Les premiers mandats viennent du contact direct.
+:::`,
         },
         {
           id: 42,
           title: 'Construire sa réputation rapidement : les avis et le bouche à oreille',
           duration: '13 min',
-          content: `## Pourquoi la réputation prime sur tout le reste
+          content: `:::bref
+- En conciergerie, tu vends de la confiance.
+- Les six premiers mois, ta réputation est ta seule priorité.
+- Un rapport mensuel clair au propriétaire fonde la relation.
+:::
+
+## Pourquoi la réputation prime sur tout le reste
 En conciergerie, tu vends de la confiance.
 
 Un propriétaire va te confier les clés
@@ -1117,7 +1340,29 @@ Au-delà de 12 mois : Scalabilité
 
 ## Exercice
 **Exercice pratique :** Crée un template de rapport mensuel maintenant, avant même d'avoir ton premier propriétaire. Ça t'oblige à réfléchir aux données que tu vas suivre. Et quand tu auras ton premier mandat, tu l'enverras dès le premier mois.
-`,
+
+:::quiz
+? Que contient un bon rapport mensuel au propriétaire ?
+- Rien, il n'en a pas besoin
+* Revenus, réservations, incidents et actions menées
+- Seulement le montant de tes honoraires
+= La transparence rassure et fidélise.
+:::
+
+:::quiz
+? Pourquoi la réputation prime-t-elle au début ?
+- Elle remplace l'assurance
+- Elle baisse les impôts
+* Les propriétaires choisissent sur recommandation
+= Un propriétaire te confie ses clés : il veut des preuves de confiance.
+:::
+
+:::action
+titre: Prépare ton premier rapport mensuel
+texte: Pars de tes performances pour construire le rapport du propriétaire.
+lien: /dashboard/performances
+bouton: Voir les performances
+:::`,
         },
       ],
     },
@@ -1130,7 +1375,13 @@ Au-delà de 12 mois : Scalabilité
           id: 51,
           title: 'La tech stack minimale pour démarrer',
           duration: '12 min',
-          content: `## Les outils indispensables (et rien de plus)
+          content: `:::bref
+- Pour 1 à 3 logements, la messagerie des plateformes et l'iCal suffisent.
+- Dès 5 logements, un logiciel de gestion devient indispensable.
+- N'achète pas d'outils trop tôt.
+:::
+
+## Les outils indispensables (et rien de plus)
 COMMUNICATION VOYAGEURS
 → La messagerie intégrée des plateformes
   suffit pour 1 à 3 logements
@@ -1226,13 +1477,34 @@ tu dois avoir ces documents :
 
 ## Exercice
 **Exercice pratique :** Crée ta checklist d'onboarding pour un nouveau logement. Liste les 10 à 15 étapes depuis la signature du contrat jusqu'au premier voyageur accueilli. Ce document deviendra le process que tu suivras (et éventuellement transmettras à une équipe) pour chaque nouveau mandat.
-`,
+
+:::quiz
+? À partir de quand un logiciel de gestion devient-il indispensable ?
+- Dès le premier jour
+- Jamais
+* Vers 5 logements
+= Avant, les outils gratuits suffisent ; après, la coordination devient trop lourde.
+:::
+
+:::quiz
+? Comment éviter les doubles réservations au début ?
+- N'utiliser qu'une seule nuit par mois
+* Synchroniser les calendriers par iCal
+- Noter sur un carnet
+= L'iCal relie gratuitement les calendriers des plateformes.
+:::`,
         },
         {
           id: 52,
           title: `Scaler : passer de 5 à 20 logements sans s'épuiser`,
           duration: '13 min',
-          content: `## Les 3 piliers de la scalabilité
+          content: `:::bref
+- Trois piliers pour grandir : procédures écrites, prestataires fiables, outils.
+- Délègue d'abord le ménage, les arrivées et les messages courants.
+- À 10 logements, tu passes de faire à faire faire.
+:::
+
+## Les 3 piliers de la scalabilité
 Une conciergerie qui scale repose sur 3 piliers :
 
 01. DES PROCESS STANDARDISÉS
@@ -1337,7 +1609,7 @@ Définis tes 3 objectifs à 6 mois :
 
 Avec ces 3 chiffres, tu as un plan. Il ne reste plus qu'à l'exécuter.
 
-# RÉCAPITULATIF, Le plan de lancement en 30 jours
+## RÉCAPITULATIF, Le plan de lancement en 30 jours
 
 SEMAINE 1, FONDATIONS
 □ Choisir et créer son statut juridique (inpi.fr)
@@ -1363,7 +1635,7 @@ SEMAINE 4, PREMIERS RENDEZ-VOUS
 □ Signer son premier mandat
 □ Mettre en place son processus d'onboarding
 
-# ANNEXE, Ressources utiles
+## ANNEXE, Ressources utiles
 
 IMMATRICULATION
 → inpi.fr (guichet unique)
@@ -1396,7 +1668,30 @@ ACCOMPAGNEMENT JASON
 → jasonmarinho.com/contact
 → Appel découverte 30 min gratuit
 
-Formation suivante :`,
+Formation suivante :
+
+:::quiz
+? Que signifie une procédure écrite ?
+* Une tâche expliquée pour qu'un autre puisse la faire
+- Un contrat de travail
+- Une facture
+= Si tu ne peux pas l'expliquer en 10 minutes, ce n'est pas encore une procédure.
+:::
+
+:::quiz
+? Que déléguer en premier ?
+- La stratégie de prix
+* Le ménage et les arrivées
+- La relation avec les propriétaires
+= Ces tâches prennent beaucoup de temps et se délèguent bien.
+:::
+
+:::action
+titre: Partage le planning de ménage avec ton équipe
+texte: Donne à tes prestataires l'accès au planning des départs.
+lien: /dashboard/menages
+bouton: Ouvrir les ménages
+:::`,
         },
       ],
     },

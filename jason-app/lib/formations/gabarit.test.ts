@@ -7,7 +7,7 @@ import { parseLesson } from './blocks'
 // l'être dès sa création. Les anciennes, en cours de conversion, sont listées
 // dans A_CONVERTIR : en retirer le slug une fois la formation convertie.
 const A_CONVERTIR = new Set([
-  'creer-conciergerie-lcd', 'fiscalite-statut-conciergerie-tourisme', 'maitriser-booking-com-algorithme-genius',
+  'maitriser-booking-com-algorithme-genius',
   'photographie-lcd-smartphone', 'gerer-incidents-litiges-lcd', 'annonce-360', 'audit-annonce',
   'declarer-lmnp-seul-decla-fr', 'louer-en-direct-securise',
 ])

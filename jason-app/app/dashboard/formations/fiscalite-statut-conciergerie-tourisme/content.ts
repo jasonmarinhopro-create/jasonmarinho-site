@@ -23,7 +23,13 @@ export const FISCALITE_CONCIERGERIE_FORMATION = {
           id: 1,
           title: 'BIC ou BNC ? La réalité fiscale d\'une conciergerie',
           duration: '15 min',
-          content: `## La réponse directe : BIC
+          content: `:::bref
+- Une conciergerie de tourisme relève des bénéfices industriels et commerciaux (BIC), article 34 du CGI.
+- Ce n'est pas une profession libérale, donc pas des BNC.
+- Le code APE est attribué par l'Insee à la création.
+:::
+
+## La réponse directe : BIC
 
 Une conciergerie de tourisme relève des **Bénéfices Industriels et Commerciaux (BIC)**, conformément à l'**article 34 du CGI**.
 
@@ -94,13 +100,35 @@ La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des
 
 S'il n'est pas adapté à ton activité réelle de conciergerie, tu peux demander sa modification via le **guichet unique** *(inpi.fr)*.
 
-> Un mauvais code APE peut te priver **d'aides sectorielles**.`,
+> Un mauvais code APE peut te priver **d'aides sectorielles**.
+
+:::quiz
+? Dans quelle catégorie fiscale entre une conciergerie ?
+- Les BNC
+- Les revenus fonciers
+* Les BIC
+= Elle vend des prestations commerciales sans qualification réglementée.
+:::
+
+:::quiz
+? Qui attribue le code APE ?
+* L'Insee, à la création de l'activité
+- Airbnb
+- Le propriétaire
+= Il décrit ton activité principale.
+:::`,
         },
         {
           id: 2,
           title: 'TVA conciergerie, taux, seuils et obligations 2025-2026',
           duration: '15 min',
-          content: `## Le taux applicable : 20 %
+          content: `:::bref
+- Les services d'une conciergerie au propriétaire sont soumis à la TVA à 20 %.
+- Sous le seuil de franchise (37 500 € en 2025 pour les services), tu ne factures pas de TVA.
+- Une fois assujetti : facturer, déclarer et reverser la TVA, et récupérer celle de tes achats.
+:::
+
+## Le taux applicable : 20 %
 
 Les prestations d'une conciergerie sont soumises au **taux normal de TVA : 20 %**.
 
@@ -176,7 +204,30 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 2. Es-tu en **franchise** ?
 3. Vas-tu **dépasser 37 500 €** cette année ?
 
-> Si tu approches du seuil, **anticipe** avec ton comptable le passage à la TVA, la transition est à **planifier**, pas à subir.`,
+> Si tu approches du seuil, **anticipe** avec ton comptable le passage à la TVA, la transition est à **planifier**, pas à subir.
+
+:::quiz
+? Quel taux de TVA sur les services facturés au propriétaire ?
+- 5,5 %
+* 20 %
+- 10 %
+= Ce sont des prestations de services commerciales au taux normal.
+:::
+
+:::quiz
+? Sous le seuil de franchise, que se passe-t-il ?
+- Tu factures 20 % quand même
+- Tu paies une amende
+* Tu ne factures pas de TVA
+= La franchise en base dispense de facturer la TVA.
+:::
+
+:::action
+titre: Note ton chiffre d'affaires de l'année
+texte: Suis tes encaissements pour savoir quand tu approches du seuil de TVA.
+lien: /dashboard/finances/encaissements
+bouton: Voir mes encaissements
+:::`,
         },
       ],
     },
@@ -189,7 +240,13 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
           id: 11,
           title: 'Auto-entrepreneur / micro-BIC, pour qui, jusqu\'où ?',
           duration: '20 min',
-          content: `## Ce que le régime micro-BIC offre vraiment
+          content: `:::bref
+- En micro, l'administration applique un abattement forfaitaire de 50 % sur ton chiffre d'affaires de services.
+- Plafond de 83 600 € pour 2026 à 2028 (77 700 € en 2025).
+- Limites : pas de déduction des charges réelles, plafond bloquant.
+:::
+
+## Ce que le régime micro-BIC offre vraiment
 
 Le micro-BIC est le **régime par défaut** quand tu crées en auto-entrepreneur.
 
@@ -278,13 +335,35 @@ Cotisations calculées sur le **CA**, pas sur le **bénéfice réel** → droits
 2. **Divise ce total par ton CA.**
 3. Si le résultat **dépasse 50 %**, le régime réel te permettrait de payer **moins d'impôts**.
 
-> Note ce ratio, il guidera ta décision de statut.`,
+> Note ce ratio, il guidera ta décision de statut.
+
+:::quiz
+? 60 000 € de chiffre d'affaires en micro : quelle base imposable ?
+- 60 000 €
+- 18 000 €
+* 30 000 €
+= Abattement de 50 % : 60 000 × 50 % = 30 000 €.
+:::
+
+:::quiz
+? Quelle est la limite principale du micro ?
+- Tu dois avoir un associé
+* Tu ne déduis pas tes charges réelles
+- Tu ne peux pas avoir de clients
+= Avec beaucoup de charges, le réel peut devenir plus avantageux.
+:::`,
         },
         {
           id: 12,
           title: 'EI réel, EURL, SASU, quand franchir le cap ?',
           duration: '20 min',
-          content: `## L'Entreprise Individuelle au régime réel *(EI réel)*
+          content: `:::bref
+- Entreprise individuelle au réel : charges réelles déduites, patrimoine protégé depuis 2022.
+- EURL : société simple pour un gérant seul.
+- SASU : salaire minimal et dividendes, à étudier avec un comptable.
+:::
+
+## L'Entreprise Individuelle au régime réel *(EI réel)*
 
 ### Ce que c'est
 
@@ -387,7 +466,30 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 3. Quelles sont tes **charges réelles** ?
 4. Le statut actuel est-il encore **optimal** ?
 
-> Si tu identifies un écart, note les **2 prochaines étapes concrètes** *(ex : « consulter un expert-comptable » + « simuler EURL vs micro »)*.`,
+> Si tu identifies un écart, note les **2 prochaines étapes concrètes** *(ex : « consulter un expert-comptable » + « simuler EURL vs micro »)*.
+
+:::quiz
+? Quand le régime réel devient-il intéressant ?
+* Quand tes charges dépassent 50 % de ton chiffre d'affaires
+- Dès le premier euro
+- Jamais
+= L'abattement forfaitaire du micro devient alors moins avantageux.
+:::
+
+:::quiz
+? Que protège l'entreprise individuelle depuis 2022 ?
+* Ton patrimoine personnel, séparé du patrimoine professionnel
+- Rien
+- Tes clients
+= La réforme a intégré la protection de l'ancienne EIRL.
+:::
+
+:::action
+titre: Calcule ton ratio charges sur chiffre d'affaires
+texte: Ajoute tes charges et recettes dans ton journal pour voir si le réel te serait plus favorable.
+lien: /dashboard/finances/journal
+bouton: Ouvrir mon journal
+:::`,
         },
       ],
     },
@@ -400,7 +502,13 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
           id: 21,
           title: 'Cotisations TNS vs assimilé salarié, le vrai coût',
           duration: '20 min',
-          content: `## Le régime TNS *(Travailleur Non Salarié)*
+          content: `:::bref
+- En travailleur non salarié (EI, EURL), les cotisations tournent autour de 40 à 45 % de la rémunération.
+- Des cotisations minimales restent dues, environ 1 200 € par an.
+- En SASU, salaire minimal et dividendes sont une stratégie courante.
+:::
+
+## Le régime TNS *(Travailleur Non Salarié)*
 
 > **Concerne** : EI réel, EURL *(gérant majoritaire)*.
 
@@ -478,13 +586,35 @@ Si la SASU génère **80 000 € de bénéfice** :
 2. **Multiplie** par 40 % pour le coût TNS, ou par 82 % pour le coût SASU-salaire.
 3. **Compare** les deux scénarios.
 
-> Si tes bénéfices dépassent largement ta rémunération désirée, le modèle **SASU avec dividendes** devient souvent gagnant.`,
+> Si tes bénéfices dépassent largement ta rémunération désirée, le modèle **SASU avec dividendes** devient souvent gagnant.
+
+:::quiz
+? Que se passe-t-il si tu ne te verses rien en EURL ?
+* Des cotisations minimales restent dues
+- Tu ne paies rien
+- Tu perds ton entreprise
+= Environ 1 200 € par an selon le contenu de cette leçon.
+:::
+
+:::quiz
+? Quelle stratégie est souvent conseillée en SASU ?
+- Tout en salaire
+- Aucune rémunération
+* Un salaire minimal et des dividendes
+= Elle optimise les cotisations, à valider avec un expert-comptable.
+:::`,
         },
         {
           id: 22,
           title: "IS ou IR, choisir son régime d'imposition",
           duration: '20 min',
-          content: `## L'Impôt sur le Revenu *(IR)*, le régime par défaut
+          content: `:::bref
+- Par défaut, l'impôt sur le revenu s'applique au barème progressif.
+- Avec l'impôt sur les sociétés : 15 % jusqu'à 42 500 € de bénéfice, puis 25 %.
+- Le choix dépend de tes autres revenus et de ce que tu laisses dans la société.
+:::
+
+## L'Impôt sur le Revenu *(IR)*, le régime par défaut
 
 > **Applicable en** : micro-BIC, EI réel, EURL sans option IS.
 
@@ -583,7 +713,30 @@ Si la SASU génère **80 000 € de bénéfice** :
 2. **Calcule l'impôt dû en IR** avec le barème progressif.
 3. **Simule le même montant en IS** *(15 % jusqu'à 42 500 €, 25 % au-delà)*.
 
-> La différence te donne l'**économie annuelle potentielle** de l'option IS.`,
+> La différence te donne l'**économie annuelle potentielle** de l'option IS.
+
+:::quiz
+? Quel taux réduit d'impôt sur les sociétés s'applique aux premiers bénéfices ?
+* 15 % jusqu'à 42 500 €
+- 5 % sur tout
+- 45 % dès le premier euro
+= Au-delà, le taux normal de 25 % s'applique.
+:::
+
+:::quiz
+? Quand l'impôt sur le revenu est-il souvent préférable ?
+- Jamais
+* Avec un bénéfice modeste et peu d'autres revenus
+- Avec un très gros bénéfice
+= Le barème progressif reste léger sur les premières tranches.
+:::
+
+:::action
+titre: Prépare tes questions pour un expert-comptable
+texte: Note ton chiffre d'affaires, tes charges et ton projet pour choisir le bon régime.
+lien: /dashboard/finances/fiscalite
+bouton: Ouvrir la fiscalité
+:::`,
         },
       ],
     },
@@ -596,7 +749,13 @@ Si la SASU génère **80 000 € de bénéfice** :
           id: 31,
           title: "Toutes les charges déductibles d'une conciergerie",
           duration: '15 min',
-          content: `## Principe : charges réelles vs abattement micro
+          content: `:::bref
+- En micro, aucune charge ne se déduit : l'abattement de 50 % les remplace.
+- Au réel : déplacements, logiciels, téléphone, assurances, sous-traitance, linge.
+- Garde tous tes justificatifs.
+:::
+
+## Principe : charges réelles vs abattement micro
 
 ### En micro-BIC
 
@@ -691,13 +850,35 @@ Pour être déductible, une charge doit être :
 2. **Vérifie** si chacune est justifiée par facture.
 3. **Calcule leur total annuel projeté.**
 
-> Si ce total dépasse **50 % de ton CA**, le passage au régime réel te permettrait de payer **moins**, note-le comme priorité.`,
+> Si ce total dépasse **50 % de ton CA**, le passage au régime réel te permettrait de payer **moins**, note-le comme priorité.
+
+:::quiz
+? Au réel, quelle dépense est déductible ?
+- Tes courses de la semaine
+* Ton logiciel de gestion des réservations
+- Tes vacances personnelles
+= Seules les dépenses liées à l'activité sont déductibles.
+:::
+
+:::quiz
+? Quelle est la règle d'or des charges déductibles ?
+* Une dépense professionnelle, justifiée par une facture
+- Toute dépense, même sans facture
+- Uniquement le loyer
+= Sans justificatif, la charge peut être rejetée en cas de contrôle.
+:::`,
         },
         {
           id: 32,
           title: 'CFE, provisions fiscales et agenda fiscal',
           duration: '15 min',
-          content: `## La Cotisation Foncière des Entreprises *(CFE)*
+          content: `:::bref
+- La CFE est due par toute entreprise, exonérée la première année.
+- L'échéance principale est le 15 décembre.
+- Mets de côté chaque mois tes impôts et cotisations.
+:::
+
+## La Cotisation Foncière des Entreprises *(CFE)*
 
 La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activité **fixe** en France.
 
@@ -772,7 +953,30 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
    - **Micro-BIC** → 28 % de ton CA mensuel moyen
    - **Société IS** → IS annuel estimé / 12
 
-> Cette seule habitude évite **l'essentiel des surprises** de trésorerie en fin d'exercice.`,
+> Cette seule habitude évite **l'essentiel des surprises** de trésorerie en fin d'exercice.
+
+:::quiz
+? Quand la CFE est-elle exonérée ?
+- Toujours
+- Jamais
+* La première année d'activité
+= Elle devient due à partir de la deuxième année.
+:::
+
+:::quiz
+? Pourquoi provisionner chaque mois ?
+- Pour dépenser plus
+- C'est obligatoire légalement
+* Pour ne pas être surpris par les impôts et cotisations à payer
+= Une réserve mensuelle évite les difficultés de trésorerie.
+:::
+
+:::action
+titre: Ajoute la CFE à ton calendrier
+texte: Note l'échéance du 15 décembre et ta provision mensuelle.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },
@@ -785,7 +989,13 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
           id: 41,
           title: 'La loi Le Meur, ce qui change pour les conciergeries',
           duration: '15 min',
-          content: `## La loi Le Meur en bref
+          content: `:::bref
+- La loi Le Meur (19 novembre 2024) vise surtout les propriétaires, mais touche les conciergeries.
+- Vérifie le numéro d'enregistrement de chaque logement géré.
+- DPE, plafond de jours et pouvoirs des communes changent le conseil que tu donnes.
+:::
+
+## La loi Le Meur en bref
 
 Promulguée le **19 novembre 2024** *(n° 2024-1039)*, la loi Le Meur **encadre davantage** les locations de courte durée en France.
 
@@ -861,13 +1071,35 @@ Les communes peuvent désormais :
 2. Pour chaque logement **G ou F**, contacte le propriétaire pour anticiper la trajectoire.
 3. **Combien de logements** risquent d'être impactés avant 2028 ?
 
-> C'est ton **risque portefeuille** à gérer dès maintenant.`,
+> C'est ton **risque portefeuille** à gérer dès maintenant.
+
+:::quiz
+? Que vérifier pour chaque logement que tu gères ?
+- Le nombre de tableaux
+* Qu'il a son numéro d'enregistrement
+- La couleur des murs
+= Sans numéro, l'annonce peut être suspendue.
+:::
+
+:::quiz
+? Qui la loi Le Meur vise-t-elle principalement ?
+- Les voyageurs
+- Les plateformes uniquement
+* Les propriétaires
+= Les conciergeries sont touchées indirectement à travers leurs clients.
+:::`,
         },
         {
           id: 42,
           title: "Guide de décision, 5 profils et plan d'action",
           duration: '15 min',
-          content: `## Les 5 profils type d'une conciergerie
+          content: `:::bref
+- Cinq profils selon le chiffre d'affaires, du micro à la société à l'impôt sur les sociétés.
+- Erreurs fréquentes : ne pas provisionner, rester en micro trop longtemps, oublier la CFE.
+- Plan : diagnostiquer, décider, structurer.
+:::
+
+## Les 5 profils type d'une conciergerie
 
 ### Profil 1, Démarrage *(CA < 30 000 €/an)*
 
@@ -938,27 +1170,27 @@ Les communes peuvent désormais :
 
 ### Étape 1, Diagnostiquer *(cette semaine)*
 
-- ☐ Calcule ton **CA des 12 derniers mois**.
-- ☐ Calcule tes **charges réelles totales**.
-- ☐ Calcule ton **ratio charges/CA**.
-- ☐ Situe-toi dans les **5 profils** ci-dessus.
-- ☐ Vérifie ton **code APE** sur inpi.fr.
+- Calcule ton **CA des 12 derniers mois**.
+- Calcule tes **charges réelles totales**.
+- Calcule ton **ratio charges/CA**.
+- Situe-toi dans les **5 profils** ci-dessus.
+- Vérifie ton **code APE** sur inpi.fr.
 
 ### Étape 2, Décider *(dans le mois)*
 
-- ☐ Compare ton impôt actuel vs le statut optimal identifié.
+- Compare ton impôt actuel vs le statut optimal identifié.
 - Si l'écart dépasse **2 000 €/an** : consulte un expert-comptable.
-- ☐ Prends une décision **IS vs IR** pour l'exercice en cours.
-- ☐ Vérifie la **date de clôture** pour optimiser le timing fiscal.
+- Prends une décision **IS vs IR** pour l'exercice en cours.
+- Vérifie la **date de clôture** pour optimiser le timing fiscal.
 
 ### Étape 3, Structurer *(dans les 3 mois)*
 
-- ☐ Mets en place les **provisions fiscales mensuelles**.
-- ☐ Ouvre un **compte bancaire pro** dédié si ce n'est pas fait.
-- ☐ Classe toutes tes **factures** dans un outil numérique.
-- ☐ Vérifie le **numéro d'enregistrement** de chaque logement *(avant 20/05/2026)*.
-- ☐ **Audite le DPE** de ton portefeuille.
-- ☐ Planifie ton **rendez-vous comptable annuel**.
+- Mets en place les **provisions fiscales mensuelles**.
+- Ouvre un **compte bancaire pro** dédié si ce n'est pas fait.
+- Classe toutes tes **factures** dans un outil numérique.
+- Vérifie le **numéro d'enregistrement** de chaque logement *(avant 20/05/2026)*.
+- **Audite le DPE** de ton portefeuille.
+- Planifie ton **rendez-vous comptable annuel**.
 
 ## Ressources officielles
 
@@ -974,7 +1206,30 @@ Tu as terminé la formation **Fiscalité et meilleur statut pour une conciergeri
 
 > Bien choisir son régime peut représenter **plusieurs milliers d'euros par an** pour une conciergerie qui grandit : fais le calcul avec tes chiffres.
 
-> Ce n'est pas de l'argent gagné en travaillant plus. *C'est de l'argent récupéré sur ce que tu paies déjà.*`,
+> Ce n'est pas de l'argent gagné en travaillant plus. *C'est de l'argent récupéré sur ce que tu paies déjà.*
+
+:::quiz
+? Quelle erreur fiscale est très fréquente ?
+* Ne pas mettre de côté les cotisations sociales
+- Garder ses factures
+- Déclarer son chiffre d'affaires
+= Les cotisations arrivent plus tard et surprennent sans provision.
+:::
+
+:::quiz
+? Par quoi commence le plan d'action ?
+* Diagnostiquer ta situation actuelle
+- Créer une SASU tout de suite
+- Changer de banque
+= On ne choisit un statut qu'une fois sa situation chiffrée.
+:::
+
+:::action
+titre: Vérifie les numéros d'enregistrement de tes logements
+texte: Contrôle dans chaque fiche logement que le numéro est renseigné.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
