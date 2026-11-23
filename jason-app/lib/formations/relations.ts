@@ -140,7 +140,7 @@ const RELATIONS: Record<string, FormationRelations> = {
   },
   'livret-accueil-digital': {
     articles: [
-      { label: 'Livret d\'accueil digital LCD', slug: 'livret-accueil-digital-hotes-lcd' },
+      { label: 'Livret d\'accueil digital LCD', slug: 'livret-accueil-digital-creer-location-courte-duree' },
       { label: 'Signalétique intérieure LCD', slug: 'signaletique-interieure-lcd-reduit-questions' },
       { label: 'Welcome bag : 12 idées', slug: 'welcome-bag-lcd-12-idees-marquantes-budget' },
     ],

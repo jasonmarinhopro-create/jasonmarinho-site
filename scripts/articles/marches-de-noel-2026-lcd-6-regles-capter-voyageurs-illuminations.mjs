@@ -1,7 +1,7 @@
 export default {
   slug: 'marches-de-noel-2026-lcd-6-regles-capter-voyageurs-illuminations',
   title: 'Marchés de Noël 2026 en LCD : 6 règles pour capter les voyageurs qui viennent pour les illuminations',
-  seoTitle: 'Marchés de Noël 2026 LCD : 6 règles pour capter les voyageurs',
+  seoTitle: 'Marchés de Noël 2026 : 6 règles pour capter les voyageurs',
   description: "Dates, tarifs, durée minimum, livret, canaux directs, fidélisation : 6 règles pour capter les voyageurs qui viennent pour les marchés de Noël 2026.",
   keywords: 'marché de noël lcd, marché noël airbnb 2026, Strasbourg Christkindelsmärik, Colmar marché Noël, Metz marché merveilleux, location courte durée hiver, hôte airbnb noël',
   date: '2026-11-06',

@@ -210,7 +210,6 @@ const PLACEMENTS = [
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'qonto-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', qontoTu],
   ['blog/partenariats-locaux-hotes-lcd-restaurants-activites/index.html', 'sport-local', '<h2 class="art-h2">3. Boulangerie partenaire', sportLocal],
   ['blog/livret-accueil-digital-creer-location-courte-duree/index.html', 'sport-livret', '<h2 class="art-h2">Les outils pour créer ton livret digital', sportLivret],
-  ['blog/livret-accueil-digital-hotes-lcd/index.html', 'sport-livret', '<h2 class="art-h2">Les outils pour le créer', sportLivret],
   ['blog/equipe-menage-conciergerie-recruter-fideliser/index.html', 'sport-equipe', '<div class="art-cta-box"><p>Tu veux structurer ta conciergerie de A à Z', sportEquipe],
 ]
 

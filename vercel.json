@@ -299,6 +299,11 @@
       "source": "/mon-compte",
       "destination": "https://app.jasonmarinho.com/auth/login",
       "permanent": false
+    },
+    {
+      "source": "/blog/livret-accueil-digital-hotes-lcd",
+      "destination": "/blog/livret-accueil-digital-creer-location-courte-duree",
+      "permanent": true
     }
   ],
   "rewrites": [

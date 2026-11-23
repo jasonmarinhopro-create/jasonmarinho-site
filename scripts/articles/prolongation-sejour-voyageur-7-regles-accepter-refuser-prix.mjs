@@ -1,6 +1,7 @@
 export default {
   slug: 'prolongation-sejour-voyageur-7-regles-accepter-refuser-prix',
   title: 'Prolongation de séjour voyageur : 7 règles pour accepter ou refuser au bon prix',
+  seoTitle: 'Prolongation de séjour en LCD : 7 règles et le bon prix',
   description: 'Un voyageur te demande de rester une nuit de plus ? Les 7 règles concrètes pour accepter ou refuser une prolongation, fixer le bon tarif et sécuriser le contrat sans y perdre.',
   keywords: 'prolongation séjour airbnb, prolonger réservation voyageur, extension nuit location courte durée, tarif prolongation airbnb, demande rester nuit supplémentaire LCD, modifier réservation airbnb',
   date: '2026-10-17',

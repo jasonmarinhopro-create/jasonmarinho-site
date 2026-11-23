@@ -22,6 +22,7 @@ export default {
       h2: '2. Comment obtenir ton numéro d\'enregistrement',
       content: [
         { type: 'p', text: 'Le téléservice de déclaration est accessible sur le portail du Ministère du Logement. La procédure demande les informations suivantes : adresse complète du logement, DPE en cours de validité, nombre de pièces et de couchages, et identité du propriétaire ou mandataire.' },
+        { type: 'p', text: 'La démarche pas à pas, du DPE à l\'affichage du numéro sur tes annonces : <a href="/blog/numero-enregistrement-lcd-obtenir-etapes-pratiques" style="color:var(--g);font-weight:500">obtenir son numéro d\'enregistrement en 8 étapes</a>.' },
         { type: 'ul', items: [
           'Accéder au téléservice sur le portail officiel service-public.fr rubrique "Meublés de tourisme"',
           'Renseigner l\'adresse du logement et ton identité (numéro de SIRET si tu as une activité déclarée)',

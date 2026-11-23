@@ -1160,7 +1160,7 @@ export const PAGES = [
       "Ça ne remplace pas le Wi-Fi du logement, que les voyageurs regardent toujours dans les annonces.",
     ],
     liens: [
-      { href: '/blog/livret-accueil-digital-hotes-lcd', t: "Ton livret d'accueil digital", d: 'Ce qu’il doit contenir pour les voyageurs.' },
+      { href: '/blog/livret-accueil-digital-creer-location-courte-duree', t: "Ton livret d'accueil digital", d: 'Ce qu’il doit contenir pour les voyageurs.' },
       { href: '/partenaires/sport-decouverte', t: 'Sport Découverte', d: 'Des activités à conseiller autour du logement.' },
       { href: '/partenaires', t: 'Tous les partenaires', d: 'Les outils que je recommande, par catégorie.' },
     ],

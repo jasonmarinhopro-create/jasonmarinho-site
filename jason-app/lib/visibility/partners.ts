@@ -417,7 +417,7 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
   },
   {
     key: 'sport-decouverte', name: 'Sport Découverte',
-    paths: ['/partenaires/sport-decouverte', '/blog/partenariats-locaux-hotes-lcd-restaurants-activites', '/blog/livret-accueil-digital-creer-location-courte-duree', '/blog/livret-accueil-digital-hotes-lcd', '/blog/equipe-menage-conciergerie-recruter-fideliser'],
+    paths: ['/partenaires/sport-decouverte', '/blog/partenariats-locaux-hotes-lcd-restaurants-activites', '/blog/livret-accueil-digital-creer-location-courte-duree', '/blog/equipe-menage-conciergerie-recruter-fideliser'],
     match: /sport-decouverte/,
     targets: ['sport decouverte', 'sport decouverte avis', 'bon cadeau sport decouverte', 'activites autour location', 'idee cadeau equipe menage'],
   },

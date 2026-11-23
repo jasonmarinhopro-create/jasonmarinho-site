@@ -11,6 +11,8 @@ node scripts/build-depannage.mjs
 node scripts/build-exemples-fiches.mjs
 node scripts/build-trouver-un-pro.mjs
 node scripts/build-derniers-articles.mjs
+# Bloc « À lire aussi » : relie chaque nouvel article depuis ses voisins (23/11/2026)
+node scripts/inject-a-lire-aussi.mjs
 node scripts/build-accueil-annuaire.mjs
 node scripts/inject-photos-villes.mjs
 node scripts/inject-blog-covers.mjs

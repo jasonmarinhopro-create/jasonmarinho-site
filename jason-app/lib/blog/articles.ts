@@ -33,7 +33,6 @@ export const BLOG_ARTICLES: BlogArticle[] = [
   { slug: 'creer-conciergerie-airbnb-2025', categorySlug: 'conciergerie', date: '2026-05-02', readTime: 10, title: 'Créer sa conciergerie Airbnb en 2025 : les étapes essentielles pour démarrer' },
   { slug: 'driing-plateforme-vacances-sans-commissions', categorySlug: 'driing', date: '2026-05-02', readTime: 6, title: 'Driing : la plateforme de vacances sans commissions qui change la donne' },
   { slug: 'google-my-business-hotes-lcd', categorySlug: 'visibilite', date: '2026-05-02', readTime: 6, title: 'Pourquoi Google My Business est indispensable pour les hôtes LCD en 2025' },
-  { slug: 'livret-accueil-digital-hotes-lcd', categorySlug: 'experience', date: '2026-05-02', readTime: 4, title: 'Livret d\'accueil digital : pourquoi c\'est devenu indispensable pour les hôtes LCD' },
   { slug: 'location-courte-duree-impots-france', categorySlug: 'fiscalite', date: '2026-05-02', readTime: 9, title: 'Location courte durée et impôts : ce que tout hôte doit savoir en France' },
   { slug: 'messages-airbnb-automatiser', categorySlug: 'automatisation', date: '2026-05-02', readTime: 4, title: 'Les 5 messages Airbnb à automatiser absolument dès cette semaine' },
   { slug: 'obtenir-avis-5-etoiles-airbnb', categorySlug: 'experience', date: '2026-05-02', readTime: 5, title: 'Comment obtenir plus d\'avis 5 étoiles sur Airbnb sans harceler tes voyageurs' },
