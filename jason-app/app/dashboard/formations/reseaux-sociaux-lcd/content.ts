@@ -9,7 +9,7 @@ export const RESEAUX_SOCIAUX_FORMATION = {
     'Créer une page Instagram professionnelle et optimisée',
     'Savoir exactement quoi publier et à quelle fréquence',
     'Utiliser les hashtags et la géolocalisation pour être découvert',
-    'Transformer vos abonnés en voyageurs via Driing',
+    'Transformer tes abonnés en voyageurs via Driing',
     'Gérer sa présence sociale en 30 minutes par semaine',
   ],
   modules: [
@@ -31,56 +31,56 @@ Des visuels soignés font réagir
 davantage, et chaque réaction
 augmente ta visibilité.
 
-Ce que ça signifie pour vous :
-→ Vos futurs voyageurs sont sur Instagram
+Ce que ça signifie pour toi :
+→ Tes futurs voyageurs sont sur Instagram
   avant même d'ouvrir Airbnb.
 → Une belle présence sociale peut influencer
   la décision de réservation AVANT
   qu'ils arrivent sur les plateformes.
-→ Les voyageurs qui vous découvrent
+→ Les voyageurs qui te découvrent
   via Instagram ont déjà décidé
-  que votre logement leur plaît.
+  que ton logement leur plaît.
   Leur taux de conversion est bien
   supérieur à un visiteur Airbnb froid.
 
 ## Ce que les réseaux sociaux font qu'Airbnb ne peut pas faire
 AIRBNB
-→ Vous trouvez les voyageurs qui cherchent.
-→ Vous payez une commission pour chaque.
-→ Vous n'avez pas accès à vos clients.
-→ Vous dépendez de l'algorithme de la plateforme.
+→ Tu trouves les voyageurs qui cherchent.
+→ Tu paies une commission pour chaque.
+→ Tu n'as pas accès à tes clients.
+→ Tu dépends de l'algorithme de la plateforme.
 
 INSTAGRAM / RÉSEAUX SOCIAUX
-→ Vous créez une audience qui VOUS suit.
-→ Vous pouvez les contacter directement.
-→ Vous construisez une marque et une identité.
-→ Vous pouvez les envoyer vers Driing
+→ Tu crées une audience qui VOUS suit.
+→ Tu peux les contacter directement.
+→ Tu construis une marque et une identité.
+→ Tu peux les envoyer vers Driing
   pour réserver sans commission.
 
 → Les deux ne s'opposent pas.
-  Airbnb est votre canal d'acquisition.
-  Instagram est votre canal de fidélisation
+  Airbnb est ton canal d'acquisition.
+  Instagram est ton canal de fidélisation
   et d'indépendance.
 
 ## Les 3 bénéfices concrets des réseaux sociaux
 BÉNÉFICE 1, RÉSERVATIONS DIRECTES SANS COMMISSION
 → Un abonné Instagram qui réserve via Driing
-  = 0% de commission pour vous
+  = 0% de commission pour toi
 → Sur 10 abonnés engagés, 1 à 2
   réservent en direct dans l'année
 
 BÉNÉFICE 2, PREUVE SOCIALE ET CRÉDIBILITÉ
 → Un compte Instagram avec de belles photos
   et des avis voyageurs rassure les futurs clients
-→ Un voyageur qui vous "trouve" sur Instagram
-  et Airbnb vous perçoit comme plus professionnel
+→ Un voyageur qui te "trouve" sur Instagram
+  et Airbnb te perçoit comme plus professionnel
   et plus fiable qu'un hôte invisible en ligne
 
 BÉNÉFICE 3, FIDÉLISATION ET BOUCHE-À-OREILLE
-→ Vos anciens voyageurs vous suivent.
-→ Ils voient vos posts, pensent à vous
+→ Tes anciens voyageurs te suivent.
+→ Ils voient tes posts, pensent à toi
   quand ils planifient leur prochain voyage.
-→ Ils partagent votre compte avec leurs amis.
+→ Ils partagent ton compte avec leurs amis.
 
 ## Quelle plateforme choisir ?
 INSTAGRAM, LA PRIORITÉ ABSOLUE
@@ -97,16 +97,16 @@ FACEBOOK, COMPLÉMENTAIRE
 → Partage automatique depuis Instagram
 
 PINTEREST, BONUS SI VOUS AVEZ DU TEMPS
-→ Trafic long terme vers votre lien Driing
+→ Trafic long terme vers ton lien Driing
 → Audience : planification de voyages
-→ Vos photos de logement + recommandations locales
+→ Tes photos de logement + recommandations locales
 
 TikTok, OPTIONNEL
 → Pour les profils à l'aise en vidéo
 → Audience jeune, potentiel fort
   pour les logements atypiques
 
-→ Commencez par Instagram uniquement.
+→ Commence par Instagram uniquement.
   Mieux vaut un seul canal bien géré
   que quatre canaux abandonnés.
 
@@ -127,54 +127,54 @@ ou créer un compte séparé pour mon logement ?"
 COMPTE DÉDIÉ AU LOGEMENT (recommandé)
 → Identité claire et professionnelle
 → Contenu 100% orienté voyageurs
-→ Statistiques précises sur votre audience
+→ Statistiques précises sur ton audience
 → Possibilité de passer en "Compte Pro"
   (accès aux insights, bouton de contact,
    possibilité de faire de la pub)
 
 COMPTE PERSONNEL
-→ Simple si vous avez peu de temps
+→ Simple si tu as peu de temps
 → Mais mélange vie privée et promotion
 → Moins de crédibilité pour les voyageurs
 → Moins de fonctionnalités marketing
 
-→ Créez un compte dédié.
+→ Crée un compte dédié.
   Ça prend 5 minutes et ça change
-  tout dans la perception de votre logement.
+  tout dans la perception de ton logement.
 
-## Le nom de compte et la bio : votre vitrine en 150 caractères
+## Le nom de compte et la bio : ta vitrine en 150 caractères
 NOM DE COMPTE (@handle)
-→ Court, mémorable, lié à votre logement
+→ Court, mémorable, lié à ton logement
 → Exemples :
   @leloftdumarais
   @villasunsetcotedazur
   @studiofibreparis11
-→ Évitez les chiffres et underscores multiples
+→ Évite les chiffres et underscores multiples
 
 BIO (150 caractères max)
 Structure recommandée :
-→ Ligne 1 : Ce que vous êtes
+→ Ligne 1 : Ce que tu es
   " Appartement design · Paris 11ème"
-→ Ligne 2 : Ce que vous offrez
+→ Ligne 2 : Ce que tu offres
   "Séjours sans commission · Fibre + bureau"
 → Ligne 3 : Appel à l'action + lien
   "↓ Réservez en direct ici"
 
 LIEN EN BIO
-→ Votre lien Driing
+→ Ton lien Driing
 → C'est la SEULE place sur Instagram
   où un lien est cliquable directement
-→ Mettez-le à jour si vous avez
+→ Mets-le à jour si tu as
   une offre saisonnière
 
 PHOTO DE PROFIL
-→ Votre meilleure photo du logement
-  (ou votre photo si vous valorisez
+→ Ta meilleure photo du logement
+  (ou ta photo si tu valorises
    l'aspect humain de l'accueil)
 
 ## Les 5 premiers posts : lancer son compte sur de bonnes bases
 Les 5 premiers posts définissent
-l'identité de votre compte.
+l'identité de ton compte.
 Ils restent visibles longtemps.
 
 POST 1, LE POST DE PRÉSENTATION
@@ -189,12 +189,12 @@ Carousel de 4-6 photos
 + Description courte et chaleureuse
 
 POST 3, L'HISTOIRE DE L'ENDROIT
-Ce qui rend votre logement ou votre quartier unique.
+Ce qui rend ton logement ou ton quartier unique.
 Quelque chose de personnel et authentique.
 
 POST 4, UNE RECOMMANDATION LOCALE
-Votre restaurant préféré, votre spot photo secret...
-+ Lien en bio vers votre livret Driing
+Ton restaurant préféré, ton spot photo secret...
++ Lien en bio vers ton livret Driing
 
 POST 5, UNE PHOTO ATMOSPHÉRIQUE
 Ambiance de soirée, lumière du matin,
@@ -202,7 +202,7 @@ quelque chose qui fait rêver.
 
 
 ## Exercice
-**Exercice pratique :** Crée maintenant votre compte Instagram dédié à ton logement. Passe-le en "Compte Professionnel" (Paramètres → Compte → Passer en compte professionnel). Rédige ta bio en 3 lignes avec le lien Driing. C'est ta page, la prochaine leçon t'apprend quoi y publier.
+**Exercice pratique :** Crée maintenant ton compte Instagram dédié à ton logement. Passe-le en "Compte Professionnel" (Paramètres → Compte → Passer en compte professionnel). Rédige ta bio en 3 lignes avec le lien Driing. C'est ta page, la prochaine leçon t'apprend quoi y publier.
 `,
         },
       ],
@@ -242,16 +242,16 @@ LÉGENDE IDÉALE :
   "Imaginez votre café du matin ici..."
 → 5-8 hashtags (pas 30)
 
-## TYPE 2 : Le contenu local (votre vraie valeur ajoutée)
+## TYPE 2 : Le contenu local (ta vraie valeur ajoutée)
 C'est le type de contenu le plus sous-utilisé
 et le plus efficace pour attirer des voyageurs.
 
 POURQUOI ÇA MARCHE :
 → Les voyageurs cherchent "quoi faire à [ville]"
-→ Vous leur donnez les réponses AVANT qu'ils réservent
-→ Vous vous positionnez comme expert local
+→ Tu leur donnes les réponses AVANT qu'ils réservent
+→ Tu te positionne comme expert local
 → Ce contenu est indexé par Instagram
-  sur votre zone géographique
+  sur ta zone géographique
 
 EXEMPLES :
 → "Notre boulangerie préférée à 5 min du logement"
@@ -262,20 +262,20 @@ EXEMPLES :
 → "Mes 3 restaurants incontournables du quartier"
 
 → Pour chaque post local :
-  • Taguez le lieu
-  • Utilisez le hashtag de la ville
-  • Mentionnez votre lien Driing en commentaire
+  • Tague le lieu
+  • Utilise le hashtag de la ville
+  • Mentionne ton lien Driing en commentaire
     ou en bio ("Réservez en direct → lien en bio")
 
 ## TYPE 3 : Les témoignages voyageurs
 La preuve sociale est le contenu le plus convertissant.
 
 COMMENT L'UTILISER :
-→ Demandez l'accord du voyageur
+→ Demande l'accord du voyageur
   pour partager son avis ou sa photo
-→ Citez une phrase marquante de son avis
+→ Cite une phrase marquante de son avis
   sur une belle photo du logement
-→ Partagez ses photos avec un remerciement
+→ Partage ses photos avec un remerciement
 
 EXEMPLES DE FORMATS :
 → Citation de l'avis sur fond de photo :
@@ -283,7 +283,7 @@ EXEMPLES DE FORMATS :
    je n'avais pas envie de partir"
 → Photo du voyageur dans le logement
   (avec son accord)
-→ Repost d'un tag de votre logement par un voyageur
+→ Repost d'un tag de ton logement par un voyageur
 
 → Ce type de contenu :
   • Montre que de vraies personnes ont aimé
@@ -298,10 +298,10 @@ TYPE 4, LES COULISSES (behind the scenes)
 → Photo du ménage bien fait / du lit mis en scène
 → "Ce que j'ai ajouté ce mois-ci pour améliorer
    votre expérience"
-→ Votre processus de préparation d'une saison
+→ Ton processus de préparation d'une saison
 
 → Pourquoi ça marche :
-  Humanise l'expérience, montre votre soin.
+  Humanise l'expérience, montre ton soin.
   Les voyageurs font plus confiance à un hôte
   qu'ils "connaissent" via les réseaux.
 
@@ -324,7 +324,7 @@ TYPE 5, LES OFFRES ET DISPONIBILITÉS
           id: 12,
           title: 'La fréquence et le calendrier éditorial',
           duration: '12 min',
-          content: `## La fréquence idéale selon votre temps disponible
+          content: `## La fréquence idéale selon ton temps disponible
 LA RÈGLE D'OR :
 Mieux vaut 1 post/semaine pendant 1 an
 que 10 posts/semaine pendant 3 semaines
@@ -352,9 +352,9 @@ STRATÉGIE AVANCÉE (2-3h/semaine)
   potentiel de réservations directes
   significatif en 3-6 mois
 
-→ Choisissez la stratégie que vous
-  pouvez tenir dans la durée.
-  Commencez minimaliste si vous débutez.
+→ Choisis la stratégie que tu
+  peux tenir dans la durée.
+  Commence minimaliste si tu débutes.
 
 ## Le calendrier éditorial mensuel type
 UN MOIS DE CONTENU EN AVANCE :
@@ -363,7 +363,7 @@ SEMAINE 1
 → Lundi : Photo d'ambiance du logement
 → Jeudi : Recommandation locale
 → Stories : Réponse à une question
-  fréquente de vos voyageurs
+  fréquente de tes voyageurs
 
 SEMAINE 2
 → Mardi : Témoignage voyageur
@@ -390,25 +390,25 @@ Programmer à l'avance = moins de stress,
 meilleure régularité.
 
 META BUSINESS SUITE (gratuit)
-→ Planifiez vos posts Instagram et Facebook
+→ Planifie tes posts Instagram et Facebook
   jusqu'à 30 jours à l'avance
 → Directement depuis Facebook/Meta
 → Idéal pour les non-techniciens
 
 LATER (freemium)
 → Interface visuelle de planification
-→ Prévisualisation de votre grille Instagram
+→ Prévisualisation de ta grille Instagram
 → Plan gratuit : 30 posts/mois
 
 CANVA (freemium)
-→ Créez ET programmez vos posts
+→ Crée ET programme tes posts
 → Templates prêts pour Instagram
 → Plan gratuit suffisant pour débuter
 
 MÉTHODE SIMPLE SANS OUTIL
-→ Dimanche soir : créez 3 posts
+→ Dimanche soir : crée 3 posts
   de la semaine à venir
-→ Programmez-les avec Meta Business Suite
+→ Programme-les avec Meta Business Suite
 → La semaine tourne toute seule
 
 
@@ -420,25 +420,25 @@ MÉTHODE SIMPLE SANS OUTIL
           id: 13,
           title: 'Hashtags, géolocalisation et algorithme Instagram',
           duration: '11 min',
-          content: `## Comment Instagram vous fait découvrir
-Instagram vous montre à de nouvelles personnes
+          content: `## Comment Instagram te fait découvrir
+Instagram te montre à de nouvelles personnes
 via 3 mécanismes :
 
 01. LES HASHTAGS
     → Quand un voyageur cherche
       #locationparis ou #airbnblyon,
-      vos posts peuvent apparaître.
+      tes posts peuvent apparaître.
 
 02. LA GÉOLOCALISATION
     → Quand quelqu'un cherche des contenus
-      liés à votre ville ou quartier,
-      vos posts tagués apparaissent.
+      liés à ta ville ou quartier,
+      tes posts tagués apparaissent.
 
 03. L'ALGORITHME DE RECOMMENDATION
-    → Instagram recommande vos posts
+    → Instagram recommande tes posts
       aux personnes qui suivent des comptes
       similaires au vôtre.
-    → Plus votre contenu est engageant
+    → Plus ton contenu est engageant
       (likes, commentaires, sauvegardes),
       plus il est distribué.
 
@@ -451,7 +451,7 @@ STRUCTURE RECOMMANDÉE : 7 à 12 hashtags par post
 
 CATÉGORIE 1, HASHTAGS LOCAUX (3-4)
 Très importants pour toucher les voyageurs
-qui planifient un séjour dans votre zone.
+qui planifient un séjour dans ta zone.
 
 Exemples :
 → #locationparis #airbnbparis #sejournantes
@@ -468,38 +468,38 @@ Exemples :
 → #weekendescape #sejournantes
 
 CATÉGORIE 3, HASHTAGS NICHE (1-3)
-Spécifiques à votre logement ou cible.
+Spécifiques à ton logement ou cible.
 
 Exemples :
 → #appartementteletravailleurs
 → #coupleretreat #familyvacation
 → #logementcosy #chemineeauthentique
 
-## La géolocalisation : le tag que vous oubliez toujours
-Sur chaque post, ajoutez une localisation.
+## La géolocalisation : le tag que tu oublies toujours
+Sur chaque post, ajoute une localisation.
 C'est gratuit, ça prend 5 secondes
-et ça peut doubler votre portée locale.
+et ça peut doubler ta portée locale.
 
 QUOI TAGUER :
-→ Votre quartier exact
+→ Ton quartier exact
   (ex : "Le Marais, Paris")
-→ Votre ville
+→ Ta ville
   (ex : "Lyon, France")
 → Un lieu emblématique proche
-  (ex : "Tour Eiffel" si vous êtes à Paris)
+  (ex : "Tour Eiffel" si tu es à Paris)
 → Un événement local si applicable
   (ex : "Festival de Cannes 2026")
 
 POURQUOI C'EST IMPORTANT :
 → Quand un voyageur explore Paris sur Instagram,
-  il peut voir votre post dans les contenus
+  il peut voir ton post dans les contenus
   récents de ce lieu.
 → C'est une découverte organique, gratuite,
   ultra-ciblée géographiquement.
 
-→ Variez les lieux taguées selon les posts.
-  Ne taguez pas toujours exactement
-  la même adresse, variez avec le quartier,
+→ Varie les lieux taguées selon les posts.
+  Ne tague pas toujours exactement
+  la même adresse, varie avec le quartier,
   la ville, les attractions proches.
 
 
@@ -516,20 +516,20 @@ POURQUOI C'EST IMPORTANT :
       lessons: [
         {
           id: 21,
-          title: `Le lien en bio : votre seul appel à l'action direct`,
+          title: `Le lien en bio : ton seul appel à l'action direct`,
           duration: '12 min',
           content: `## Pourquoi le lien en bio est stratégique
-Sur Instagram, vous ne pouvez pas
-mettre de lien cliquable dans vos posts.
+Sur Instagram, tu ne peux pas
+mettre de lien cliquable dans tes posts.
 
 Le lien en bio est LA SEULE exception.
-C'est votre unique passerelle directe
-entre un abonné Instagram et votre
+C'est ta seule passerelle directe
+entre un abonné Instagram et ta
 page de réservation Driing.
 
 Conséquence :
 → Chaque post doit inciter les gens
-  à aller sur votre profil ET à cliquer
+  à aller sur ton profil ET à cliquer
   sur le lien en bio.
 
 Comment le faire naturellement :
@@ -539,26 +539,26 @@ Comment le faire naturellement :
 
 → En story :
   Sticker "Lien" qui pointe directement
-  vers votre page Driing
+  vers ta page Driing
   (disponible pour tous les comptes)
 
 → Dans les stories à la une :
-  Sauvegardez une story "Réservez en direct"
-  avec votre lien Driing
-  visible en permanence sur votre profil
+  Sauvegarde une story "Réservez en direct"
+  avec ton lien Driing
+  visible en permanence sur ton profil
 
-## Le linktree : si vous avez plusieurs liens
-Vous avez plusieurs logements ou plusieurs
+## Le linktree : si tu as plusieurs liens
+Tu as plusieurs logements ou plusieurs
 liens à partager (Driing + livret + avis) ?
 
-Utilisez un "link in bio" multiples :
+Utilise un "link in bio" multiples :
 
 LINKTREE (gratuit)
 → linktr.ee
-→ Une page avec tous vos liens
-→ Votre page Driing en premier
-→ Votre livret d'accueil en second
-→ Votre annonce Airbnb si applicable
+→ Une page avec tous tes liens
+→ Ta page Driing en premier
+→ Ton livret d'accueil en second
+→ Ton annonce Airbnb si applicable
 
 EXEMPLE DE PAGE LINKTREE POUR UN HÔTE :
 → Réserver directement (Driing)
@@ -566,17 +566,17 @@ EXEMPLE DE PAGE LINKTREE POUR UN HÔTE :
 → 1/5 Voir nos avis voyageurs
 → Nous contacter
 
-→ Astuce : mettez votre lien Linktree
-  dans votre bio Instagram, pas directement
-  le lien Driing, vous pouvez ainsi
+→ Astuce : mets ton lien Linktree
+  dans ta bio Instagram, pas directement
+  le lien Driing, tu peux ainsi
   mettre à jour les liens sans changer
-  votre bio Instagram.
+  ta bio Instagram.
 
-## Les stories à la une : votre vitrine permanente
+## Les stories à la une : ta vitrine permanente
 Les "stories à la une" (highlights)
-restent sur votre profil indéfiniment.
+restent sur ton profil indéfiniment.
 
-C'est votre vitrine permanente.
+C'est ta vitrine permanente.
 
 HIGHLIGHTS RECOMMANDÉS :
 
@@ -585,7 +585,7 @@ HIGHLIGHTS RECOMMANDÉS :
 → Vidéo tour rapide
 
  "LE QUARTIER"
-→ Vos adresses favorites
+→ Tes adresses favorites
 → Les spots à voir
 
 1/5 "AVIS VOYAGEURS"
@@ -602,11 +602,11 @@ HIGHLIGHTS RECOMMANDÉS :
 
 → Ces highlights donnent instantanément
   toutes les infos à un voyageur qui découvre
-  votre compte pour la première fois.
+  ton compte pour la première fois.
 
 
 ## Exercice
-**Exercice pratique :** Crée maintenant vos 3 premiers highlights : "Le logement", "Avis voyageurs" et "Réserver". Pour chacun : faites 1-2 stories dédiées et sauvegardez-les dans le highlight correspondant. Ces 3 highlights suffisent pour une première vitrine professionnelle.
+**Exercice pratique :** Crée maintenant tes 3 premiers highlights : "Le logement", "Avis voyageurs" et "Réserver". Pour chacun : faites 1-2 stories dédiées et sauvegarde-les dans le highlight correspondant. Ces 3 highlights suffisent pour une première vitrine professionnelle.
 `,
         },
         {
@@ -619,16 +619,16 @@ génère plus de réservations directes
 qu'un compte avec 5 000 abonnés passifs.
 
 ABONNÉS PASSIFS
-→ Ils vous suivent mais ne réagissent pas.
-→ Ils voient rarement vos posts
+→ Ils te suivent mais ne réagissent pas.
+→ Ils voient rarement tes posts
   (l'algorithme ne les leur montre plus).
 → Ils n'achèteront probablement jamais.
 
 COMMUNAUTÉ ENGAGÉE
 → Ils likent, commentent, sauvegardent.
-→ L'algorithme leur montre plus de vos posts.
-→ Ils pensent à vous quand ils planifient un voyage.
-→ Ils recommandent votre logement à leur entourage.
+→ L'algorithme leur montre plus de tes posts.
+→ Ils pensent à toi quand ils planifient un voyage.
+→ Ils recommandent ton logement à leur entourage.
 
 → L'objectif n'est pas le nombre d'abonnés.
   C'est le niveau d'engagement.
@@ -642,26 +642,26 @@ COMMUNAUTÉ ENGAGÉE
 
 02. RÉPONDRE AUX MESSAGES DIRECTS
     Rapidement et chaleureusement.
-    → Un prospect qui vous envoie un DM
+    → Un prospect qui te envoie un DM
       est à 2 messages d'une réservation.
-    → Proposez le lien Driing directement.
+    → Propose le lien Driing directement.
 
 03. UTILISER LES FONCTIONNALITÉS STORIES
     Sondages, questions, curseurs...
     → "Vous préférez vue mer ou montagne ?"
     → "Votre type de séjour idéal ?"
     → Crée de l'interaction et
-      vous renseigne sur votre audience.
+      te renseigne sur ton audience.
 
 04. TAGUER LES LIEUX ET PARTENAIRES LOCAUX
-    → Certains re-partagent votre post
+    → Certains re-partagent ton post
       à leur propre audience.
     → Visibilité gratuite sur une audience
       de voyageurs qualifiés.
 
 05. PARTAGER LES CONTENUS DE VOS VOYAGEURS
-    → Quand un voyageur vous tague dans sa photo :
-      repostez-la (avec son accord).
+    → Quand un voyageur te tague dans sa photo :
+      reposte-la (avec son accord).
     → Le voyageur est touché, partage à son tour.
     → Preuve sociale authentique.
 
@@ -710,17 +710,17 @@ N'hésitez pas si vous avez des questions !"
           duration: '10 min',
           content: `## La semaine type en 30 minutes
 LUNDI, 10 MIN : CRÉATION
-→ Prenez 1-2 photos du logement
+→ Prends 1-2 photos du logement
   ou du quartier
-→ Rédigez la légende (2-3 lignes)
-→ Choisissez 8-10 hashtags
-→ Programmez via Meta Business Suite
+→ Rédige la légende (2-3 lignes)
+→ Choisis 8-10 hashtags
+→ Programme via Meta Business Suite
   pour mercredi ou jeudi
 
 MERCREDI, 5 MIN : ENGAGEMENT
-→ Répondez aux commentaires et DM
-→ Likez et commentez 3-4 posts
-  d'autres comptes de votre secteur
+→ Réponds aux commentaires et DM
+→ Like et commente 3-4 posts
+  d'autres comptes de ton secteur
   (visibilité croisée)
 
 VENDREDI, 10 MIN : STORIES
@@ -731,22 +731,22 @@ VENDREDI, 10 MIN : STORIES
   avec sticker lien Driing
 
 DIMANCHE, 5 MIN : ANALYSE
-→ Regardez vos statistiques Instagram
+→ Regarde tes statistiques Instagram
   (quels posts ont le mieux performé ?)
-→ Notez 1 idée de contenu pour la semaine suivante
+→ Note 1 idée de contenu pour la semaine suivante
 
 TOTAL : 30 minutes/semaine
 
 ## Les statistiques à regarder chaque semaine
-Dans les "Insights" de votre compte
+Dans les "Insights" de ton compte
 Instagram Pro :
 
 PORTÉE
-→ Combien de personnes ont vu vos posts.
+→ Combien de personnes ont vu tes posts.
 → En hausse = bonne direction.
 
 IMPRESSIONS
-→ Combien de fois vos posts ont été vus.
+→ Combien de fois tes posts ont été vus.
 
 ENGAGEMENT
 → Likes + commentaires + sauvegardes.
@@ -754,12 +754,12 @@ ENGAGEMENT
 → Un bon taux : > 3%.
 
 CLICS SUR LE LIEN EN BIO
-→ Le plus important pour vous.
+→ Le plus important pour toi.
 → Combien de personnes ont cliqué
-  vers votre Driing.
+  vers ton Driing.
 → Chaque clic est un prospect potentiel.
 
-→ Regardez une fois par semaine,
+→ Regarde une fois par semaine,
   pas une fois par heure.
   L'obsession des stats tue la créativité.
 
@@ -778,8 +778,8 @@ JOURS 1-7 : LES FONDATIONS
 □ Rédiger la bio avec lien Driing
 □ Publier les 5 premiers posts
 □ Créer les 3 highlights essentiels
-□ Inviter vos anciens voyageurs
-  à vous suivre (email ou message)
+□ Inviter tes anciens voyageurs
+  à te suivre (email ou message)
 
 JOURS 8-30 : LE RYTHME
 □ 2-3 posts par semaine minimum
@@ -788,11 +788,11 @@ JOURS 8-30 : LE RYTHME
 □ Tagger les lieux sur chaque post
 
 JOURS 31-60 : LA CROISSANCE
-□ Identifier vos posts qui performent
+□ Identifier tes posts qui performent
   le mieux → reproduire ce format
 □ Commencer à collaborer avec
   des lieux locaux (restaurant, activité)
-□ Partager les contenus de vos voyageurs
+□ Partager les contenus de tes voyageurs
 
 JOURS 61-90 : LA CONVERSION
 □ Analyser : y a-t-il des clics sur
@@ -807,7 +807,7 @@ RÉSULTATS RÉALISTES À 3 MOIS :
 → 100 à 300 abonnés (si actif)
 → 2 à 5 DM de voyageurs potentiels
 → 0 à 2 réservations directes
-  (selon votre zone et votre activité)
+  (selon ta zone et ton activité)
 
 RÉSULTATS RÉALISTES À 6 MOIS :
 → 300 à 800 abonnés
@@ -815,10 +815,10 @@ RÉSULTATS RÉALISTES À 6 MOIS :
 → 2 à 8 réservations directes
 
 RÉSULTATS RÉALISTES À 12 MOIS :
-→ 500 à 2 000 abonnés selon votre activité
+→ 500 à 2 000 abonnés selon ton activité
 → 10+ réservations directes via Driing
 → Canal de fidélisation actif avec
-  vos anciens voyageurs
+  tes anciens voyageurs
 
 → Instagram n'est pas un interrupteur.
   C'est un moteur qui prend du temps
@@ -857,16 +857,16 @@ MODULE 4
   30 minutes par semaine pendant 1 an
   valent mieux que 10 heures pendant 3 semaines.
 
-Des questions sur votre stratégie réseaux ?
+Des questions sur ta stratégie réseaux ?
 [Prends un appel avec Jason](/contact)
-Créez votre lien de réservation directe :
+Crée ton lien de réservation directe :
 → driing.co/deposer-annonce
 
 
 ## Exercice
 **L'action finale de la formation :**
 
-Aujourd'hui, une seule action : créez votre compte Instagram dédié, rédigez votre bio avec le lien Driing, et publiez votre tout premier post. Une photo de votre logement, une légende chaleureuse en 2 lignes, 8 hashtags locaux.
+Aujourd'hui, une seule action : crée ton compte Instagram dédié, rédige ta bio avec le lien Driing, et publie ton tout premier post. Une photo de ton logement, une légende chaleureuse en 2 lignes, 8 hashtags locaux.
 
 C'est tout. Le reste vient avec la régularité.
 

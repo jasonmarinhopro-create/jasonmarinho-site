@@ -857,8 +857,8 @@ BEYOND
 → Prix : ~25$/logement/mois
 → Essai gratuit 30 jours
 
-→ Dans tous les cas : configurez TOUJOURS
-  votre prix minimum manuellement.
+→ Dans tous les cas : configure TOUJOURS
+  ton prix minimum manuellement.
   Les outils respectent ce seuil.
 
 ## Ce qu'aucun outil ne peut faire à ta place

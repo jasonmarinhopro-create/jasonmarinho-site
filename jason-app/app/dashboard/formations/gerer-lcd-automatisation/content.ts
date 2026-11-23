@@ -15,12 +15,12 @@ export const GERER_LCD_FORMATION = {
   modules: [
     {
       id: 1,
-      title: 'Comprendre ce qui vous vole vraiment du temps',
+      title: 'Comprendre ce qui te vole vraiment du temps',
       duration: '25 min',
       lessons: [
         {
           id: 1,
-          title: `L'audit de vos tâches : trouver les heures perdues`,
+          title: `L'audit de tes tâches : trouver les heures perdues`,
           duration: '12 min',
           content: `## Le temps que tu récupères
 Messages, codes d'accès, planning
@@ -30,7 +30,7 @@ chaque semaine.
 
 Ce que tu peux en faire :
 → Réinvestir ce temps dans : d'autres logements,
-  votre vie personnelle, d'autres activités
+  ta vie personnelle, d'autres activités
 
 Une conciergerie qui fait encore
 ses rapports à la main sur Excel
@@ -41,7 +41,7 @@ y passe des dizaines d'heures par an.
   pour rester compétitif et sain d'esprit.
 
 ## Les 6 tâches qui volent le plus de temps
-Par ordre d'impact sur votre temps :
+Par ordre d'impact sur ton temps :
 
 01. COMMUNICATION VOYAGEURS (2-4h/semaine)
     Messages de confirmation, check-in,
@@ -71,7 +71,7 @@ Par ordre d'impact sur votre temps :
     → Automatisable à 60%
 
 ## L'audit en 10 minutes
-Pour chaque semaine type, estimez :
+Pour chaque semaine type, estime :
 
 TÂCHE                           TEMPS ESTIMÉ
 Communication voyageurs         _____ h
@@ -81,16 +81,16 @@ Mise à jour calendriers         _____ h
 Tarification et prix            _____ h
 Reporting / comptabilité        _____ h
 Gestion des incidents           _____ h
-Autres (listez)                 _____ h
+Autres (liste)                 _____ h
 
 TOTAL                           _____ h/semaine
 
-→ Multipliez par 52 pour l'impact annuel.
-→ Identifiez la tâche la plus chronophage.
-  C'est votre première priorité d'automatisation.
+→ Multiplie par 52 pour l'impact annuel.
+→ Identifie la tâche la plus chronophage.
+  C'est ta première priorité d'automatisation.
 
 ## L'ordre d'automatisation recommandé
-Ne tentez pas de tout automatiser
+Ne tente pas de tout automatiser
 en même temps.
 
 Ordre recommandé pour un hôte solo :
@@ -108,10 +108,10 @@ PHASE 3 (mois 2-3)
 → Tarification dynamique
 → Reporting automatisé
 
-→ Chaque phase vous fait gagner
-  du temps que vous pouvez consacrer
+→ Chaque phase te fait gagner
+  du temps que tu peux consacrer
   à la suivante.
-  Ne passez pas à la phase 2 avant
+  Ne passe pas à la phase 2 avant
   d'avoir stabilisé la phase 1.
 
 
@@ -125,7 +125,7 @@ PHASE 3 (mois 2-3)
           duration: '13 min',
           content: `## La différence entre channel manager et PMS
 CHANNEL MANAGER
-→ Synchronise vos calendriers et tarifs
+→ Synchronise tes calendriers et tarifs
   entre plateformes (Airbnb, Booking,
   Abritel, Driing...)
 → Évite les doubles réservations
@@ -138,16 +138,16 @@ PMS (Property Management System)
 → Inclut le channel manager + bien plus :
   messagerie automatisée, gestion ménage,
   facturation, reporting, CRM voyageurs
-→ Centralise toute votre activité
+→ Centralise toute ton activité
 → Idéal pour : hôtes avec 5+ logements
   ou conciergeries
 → Prix : 30 à 150€/mois selon les fonctions
 
-→ Commencez par un channel manager.
-  Passez au PMS quand vous gérez 5+ biens
-  ou quand vous avez une équipe à coordonner.
+→ Commence par un channel manager.
+  Passe au PMS quand tu gères 5+ biens
+  ou quand tu as une équipe à coordonner.
 
-## Les outils recommandés selon votre profil
+## Les outils recommandés selon ton profil
 PROFIL 1, HÔTE SOLO 1-3 LOGEMENTS
 → Smoobu (français, intuitif, 20-30€/mois)
   Channel manager + messagerie basique
@@ -167,7 +167,7 @@ PROFIL 3, CONCIERGERIE 10+ LOGEMENTS
 → Loftely (gestion tâches + conciergerie)
 
 → Quelle que soit la solution choisie :
-  testez toujours avant d'acheter.
+  teste toujours avant d'acheter.
   Tous les outils sérieux proposent
   un essai gratuit de 14 jours.
 
@@ -181,22 +181,22 @@ LES ERREURS D'OUTIL LES PLUS FRÉQUENTES :
 ❌ Utiliser uniquement iCal pour synchroniser
    → iCal est lent (mise à jour toutes 3h),
      peut générer des doubles réservations.
-     Préférez la synchronisation API.
+     Préfère la synchronisation API.
 
 ❌ Prendre 5 outils différents non connectés
    → Plus d'outils = plus de friction.
      Priorité aux outils qui s'intègrent bien.
 
 ❌ Automatiser sans avoir compris le process manuel
-   → Automatisez seulement ce que vous
-     maîtrisez déjà manuellement.
+   → Automatise seulement ce que tu
+     maîtrise déjà manuellement.
      Un process mal compris = automatisation
-     de vos erreurs.
+     de tes erreurs.
 
 ❌ Changer d'outil tous les 6 mois
    → Le temps de configuration et de migration
      coûte plus cher que les gains.
-     Choisissez bien et restez.
+     Choisis bien et reste.
 
 
 ## Exercice
@@ -228,7 +228,7 @@ Variables à utiliser :
 → {date_arrivée}
 → {heure_checkin}
 → {code_acces}
-→ {lien_livret} (votre livret Driing)
+→ {lien_livret} (ton livret Driing)
 
 → Un message avec le prénom du voyageur
   et les détails de SON séjour
@@ -295,13 +295,13 @@ SUR BOOKING :
 POUR DRIING :
 → Les gabarits de messages de la plateforme
   Jason Marinho sont directement réutilisables
-  comme templates dans votre outil d'automatisation.
+  comme templates dans ton outil d'automatisation.
 
 ## Les questions fréquentes à anticiper dans les messages
 La plupart des questions voyageurs concernent
 les mêmes 5 sujets.
 
-Intégrez les réponses dans vos messages
+Intègre les réponses dans tes messages
 AVANT que la question soit posée :
 
 → "Le Wi-Fi est [Nom réseau], mot de passe : [Code]"
@@ -328,7 +328,7 @@ AVANT que la question soit posée :
 
 
 ## Exercice
-**Exercice pratique :** Rédige maintenant le message J-1 (instructions d'arrivée) de façon complète. Inclus le code d'accès, les instructions de stationnement, le Wi-Fi, le lien livret Driing et votre numéro. C'est le message le plus important car il évite 50% des questions pendant le séjour. Configurez-le en envoi automatique dès aujourd'hui.
+**Exercice pratique :** Rédige maintenant le message J-1 (instructions d'arrivée) de façon complète. Inclus le code d'accès, les instructions de stationnement, le Wi-Fi, le lien livret Driing et ton numéro. C'est le message le plus important car il évite 50% des questions pendant le séjour. Configure-le en envoi automatique dès aujourd'hui.
 `,
         },
         {
@@ -336,8 +336,8 @@ AVANT que la question soit posée :
           title: 'Répondre aux questions en dehors des heures ouvrées',
           duration: '12 min',
           content: `## Le problème du taux de réponse Airbnb
-Airbnb mesure votre taux de réponse
-et votre délai moyen sur 30 jours.
+Airbnb mesure ton taux de réponse
+et ton délai moyen sur 30 jours.
 
 Objectif : > 90% de réponses, < 1h de délai.
 
@@ -352,7 +352,7 @@ La solution en 3 niveaux :
 
 NIVEAU 1, LES MESSAGES AUTOMATIQUES
 (couvrent la plupart des questions)
-→ Si votre message J-1 est complet,
+→ Si ton message J-1 est complet,
   la plupart des questions n'arrivent pas.
 
 NIVEAU 2, LE LIVRET DRIING 24H/24
@@ -366,8 +366,8 @@ NIVEAU 3, LE MESSAGE D'ACCUSÉ DE RÉCEPTION
   un accusé de réception automatique
   qui dit "Je lis votre message
   et reviens vers vous très prochainement."
-  → Maintient votre taux de réponse Airbnb
-    sans vous forcer à répondre à 23h.
+  → Maintient ton taux de réponse Airbnb
+    sans te forcer à répondre à 23h.
 
 ## Les outils d'IA pour répondre aux messages
 En 2026, des outils basés sur l'IA
@@ -375,10 +375,10 @@ peuvent répondre automatiquement
 à une grande partie des messages voyageurs.
 
 HOSPITABLE.COM (ex-Smartbnb)
-→ IA qui apprend votre style de communication
+→ IA qui apprend ton style de communication
 → Répond automatiquement aux questions
   standard (Wi-Fi, accès, horaires...)
-→ Escalade à vous pour les cas complexes
+→ Escalade à toi pour les cas complexes
 → Prix : à partir de 29€/mois
 
 NOWISTAY
@@ -392,27 +392,27 @@ SUPERHOTE
   et déclencheurs précis
 
 → Ces outils ne remplacent pas
-  votre personnalité en tant qu'hôte.
+  ta personnalité en tant qu'hôte.
   Ils gèrent les questions opérationnelles
-  pendant que vous vous concentrez sur
+  pendant que tu te concentre sur
   la relation humaine quand c'est nécessaire.
 
 ## La règle des plages horaires
-Même sans IA, vous pouvez préserver
-votre vie personnelle avec une règle simple :
+Même sans IA, tu peux préserver
+ta vie personnelle avec une règle simple :
 
-Définissez vos plages de réponse :
+Définis tes plages de réponse :
 → Matin : 8h-9h (répondre aux messages
   de la nuit)
 → Soir : 18h-19h (répondre aux messages
   de la journée)
 
-Communicquez-le clairement :
-→ Dans votre profil Airbnb :
+Communique-le clairement :
+→ Dans ton profil Airbnb :
   "Je réponds à tous les messages
   dans les 4 heures entre 8h et 20h."
 
-→ Dans votre message de confirmation :
+→ Dans ton message de confirmation :
   "Pour toute question urgente pendant
   votre séjour, je suis disponible
   au [numéro]. Pour les questions
@@ -425,7 +425,7 @@ Communicquez-le clairement :
 
 
 ## Exercice
-**Exercice pratique :** Configure maintenant un message d'accusé de réception automatique sur Airbnb pour les demandes de réservation et les messages entrants. Même une phrase simple : "Merci pour votre message, je reviens vers vous très prochainement !" maintient votre taux de réponse sans vous forcer à répondre immédiatement.
+**Exercice pratique :** Configure maintenant un message d'accusé de réception automatique sur Airbnb pour les demandes de réservation et les messages entrants. Même une phrase simple : "Merci pour votre message, je reviens vers vous très prochainement !" maintient ton taux de réponse sans te forcer à répondre immédiatement.
 `,
         },
       ],
@@ -441,18 +441,18 @@ Communicquez-le clairement :
           duration: '12 min',
           content: `## Ce que l'accès autonome change
 AVANT (remise de clés manuelle) :
-→ Vous devez être disponible à l'heure exacte d'arrivée
-→ Le voyageur arrive avec 2h de retard : vous attendez
-→ Arrivée tardive (22h) : vous déplacez en soirée
+→ Tu dois être disponible à l'heure exacte d'arrivée
+→ Le voyageur arrive avec 2h de retard : tu attends
+→ Arrivée tardive (22h) : tu déplaces en soirée
 → Oubli de clés : urgence à gérer
 → Logement dans une autre ville : impossible
 
 APRÈS (accès autonome) :
 → Le voyageur entre quand il arrive
-→ Vous n'êtes jamais bloqué par un horaire
+→ Tu n'es jamais bloqué par un horaire
 → Le code change automatiquement à chaque séjour
-→ Vous gérez tout à distance
-→ Votre logement peut être dans
+→ Tu gères tout à distance
+→ Ton logement peut être dans
   une autre ville ou région
 
 → C'est souvent LA première automatisation
@@ -462,8 +462,8 @@ APRÈS (accès autonome) :
 ## Les 3 solutions d'accès autonome
 SOLUTION 1, LA BOÎTE À CLÉS (budget : 30-80€)
 → Coffre à code fixé au mur ou à la rambarde
-→ Vous y déposez la clé
-→ Vous communiquez le code au voyageur
+→ Tu y déposes la clé
+→ Tu communiques le code au voyageur
 → Simple, fiable, pas de technologie
 → Limite : code fixe (à changer manuellement
   entre chaque voyageur) ou code commun
@@ -474,7 +474,7 @@ logements sans connexion Wi-Fi stable
 SOLUTION 2, SERRURE CONNECTÉE (budget : 100-250€)
 → Code unique généré par voyageur
 → Code valable uniquement pendant le séjour
-→ Code envoyé automatiquement par votre PMS
+→ Code envoyé automatiquement par ton PMS
 → Historique des accès disponible
 → Contrôle à distance (activation/désactivation)
 
@@ -489,14 +489,14 @@ SOLUTION 3, INTERPHONE CONNECTÉ (immeubles)
 → Application mobile pour ouvrir à distance
 → Solution si remplacement de serrure impossible
 
-## Comment intégrer la serrure connectée dans votre automatisation
+## Comment intégrer la serrure connectée dans ton automatisation
 L'intérêt de la serrure connectée
 va bien au-delà de la remise de clés.
 
 Intégration complète :
 
 1. Voyageur réserve sur Airbnb ou Driing
-2. Votre PMS / channel manager reçoit la réservation
+2. Ton PMS / channel manager reçoit la réservation
 3. Le PMS génère automatiquement un code
    pour les dates exactes du séjour
 4. Le code est inclus automatiquement
@@ -505,13 +505,13 @@ Intégration complète :
 6. Le code expire automatiquement
    à l'heure de check-out
 
-→ Zéro action de votre part
+→ Zéro action de ta part
   entre la réservation et l'accès.
 
 Outils qui s'intègrent nativement :
 → Nuki + Smoobu / Superhote / Beds24
 → Igloohome + la plupart des PMS
-→ Vérifiez la compatibilité avant l'achat.
+→ Vérifie la compatibilité avant l'achat.
 
 
 ## Exercice
@@ -542,23 +542,23 @@ Pour 20 séjours par mois :
 Avec automatisation :
 → Chaque nouvelle réservation
   déclenche automatiquement
-  une tâche de ménage pour votre prestataire.
+  une tâche de ménage pour ton prestataire.
 → Il reçoit une notification avec
   les dates, horaires et instructions.
 → Il confirme en un clic.
-→ Vous n'êtes impliqué qu'en cas de problème.
+→ Tu n'es impliqué qu'en cas de problème.
 
 ## Les outils de coordination ménage
 OPTION 1, GOOGLE CALENDAR PARTAGÉ (gratuit)
-→ Créez un calendrier partagé avec votre ménage
+→ Crée un calendrier partagé avec ton ménage
 → Chaque réservation = événement visible
-→ Simple mais manuel : vous créez l'événement
+→ Simple mais manuel : tu crées l'événement
 
-OPTION 2, VOTRE PMS (si vous en avez un)
+OPTION 2, VOTRE PMS (si tu en as un)
 → Superhote, Smoobu, Hostaway intègrent
   tous la gestion des équipes de ménage
 → Notification automatique à chaque réservation
-→ Application mobile pour votre prestataire
+→ Application mobile pour ton prestataire
 
 OPTION 3, BREEZEWAY OU PROPERLY
 → Outils spécialisés gestion des tâches LCD
@@ -568,8 +568,8 @@ OPTION 3, BREEZEWAY OU PROPERLY
 
 OPTION 4, WHATSAPP + CALENDRIER PARTAGÉ (simple)
 → Pour 1-2 logements et 1 prestataire :
-  Partagez votre calendrier Airbnb
-  en format iCal avec votre prestataire.
+  Partage ton calendrier Airbnb
+  en format iCal avec ton prestataire.
 → Il voit les arrivées et départs en temps réel.
 → Accord verbal sur les délais d'intervention.
 
@@ -619,16 +619,16 @@ VÉRIFICATION FINALE
           id: 23,
           title: 'La tarification dynamique : automatiser son pricing',
           duration: '11 min',
-          content: `## Ce que la tarification dynamique fait pour vous
+          content: `## Ce que la tarification dynamique fait pour toi
 La tarification dynamique ajuste
-vos prix automatiquement chaque jour
+tes prix automatiquement chaque jour
 selon la demande locale.
 
 Ce que l'outil analyse en temps réel :
-→ Le taux d'occupation de vos concurrents
+→ Le taux d'occupation de tes concurrents
 → Les événements locaux (concerts, salons,
   matchs, festivals...)
-→ La saisonnalité de votre marché
+→ La saisonnalité de ton marché
 → Le délai avant la date
   (prix monte quand la date approche
    et que les logements se remplissent)
@@ -640,9 +640,9 @@ Ce qu'on en attend :
   (le gain varie selon ton marché)
 
 → Sans tarification dynamique :
-  vous laissez de l'argent sur la table
+  tu laisses de l'argent sur la table
   pendant les périodes de forte demande
-  et videz votre calendrier
+  et vide ton calendrier
   pendant les périodes creuses.
 
 ## Les outils de tarification dynamique
@@ -666,8 +666,8 @@ TARIFICATION INTELLIGENTE AIRBNB
 → Activer dans : Tableau de bord → Tarification
 
 RÈGLE GÉNÉRALE :
-→ 1 logement : commencez par l'outil Airbnb gratuit
-→ 2+ logements : investissez dans Pricelabs ou Beyond
+→ 1 logement : commence par l'outil Airbnb gratuit
+→ 2+ logements : investis dans Pricelabs ou Beyond
   (ROI positif dès le 1er mois en général)
 
 ## Les règles de base à configurer
@@ -675,9 +675,9 @@ Même avec un outil automatique,
 quelques règles manuelles sont nécessaires :
 
 PRIX MINIMUM (non négociable)
-→ Définissez un prix minimum en dessous
-  duquel vous ne descendez JAMAIS.
-→ Calculez-le : charges fixes + ménage
+→ Définis un prix minimum en dessous
+  duquel tu ne descends JAMAIS.
+→ Calcule-le : charges fixes + ménage
   + marge minimale.
 → Un outil de tarification dynamique
   sans prix minimum peut descendre
@@ -691,17 +691,17 @@ PRIX MAXIMUM (optionnel mais utile)
 SÉJOUR MINIMUM PAR PÉRIODE
 → High season : 3-7 nuits minimum
 → Basse saison : 1-2 nuits minimum
-→ (Configurable dans votre PMS ou Airbnb)
+→ (Configurable dans ton PMS ou Airbnb)
 
 BLOCAGES CALENDRIER
-→ Bloquez les dates personnelles
+→ Bloque les dates personnelles
   AVANT d'activer la tarification dynamique.
-  Sinon l'outil peut proposer vos dates
+  Sinon l'outil peut proposer tes dates
   personnelles à des voyageurs.
 
 
 ## Exercice
-**Exercice pratique :** Si tu n'as pas encore de tarification dynamique : active l'outil "Prix intelligents" gratuit d'Airbnb dès aujourd'hui. Définis ton prix minimum (charges + ménage + marge minimale). C'est la version simple, gratuite, et qui améliore déjà vos revenus sur les périodes de forte demande.
+**Exercice pratique :** Si tu n'as pas encore de tarification dynamique : active l'outil "Prix intelligents" gratuit d'Airbnb dès aujourd'hui. Définis ton prix minimum (charges + ménage + marge minimale). C'est la version simple, gratuite, et qui améliore déjà tes revenus sur les périodes de forte demande.
 `,
         },
       ],
@@ -713,11 +713,11 @@ BLOCAGES CALENDRIER
       lessons: [
         {
           id: 31,
-          title: 'Le tableau de bord de votre activité LCD',
+          title: 'Le tableau de bord de ton activité LCD',
           duration: '12 min',
           content: `## Les 5 métriques à suivre chaque semaine
-Vous n'avez pas besoin d'un reporting complexe.
-5 chiffres suffisent pour piloter votre LCD :
+Tu n'as pas besoin d'un reporting complexe.
+5 chiffres suffisent pour piloter ton LCD :
 
 01. TAUX D'OCCUPATION
     Nuits louées / Nuits disponibles
@@ -741,11 +741,11 @@ Vous n'avez pas besoin d'un reporting complexe.
     Objectif : croissant mois après mois
 
 → Ces 5 chiffres mis à jour chaque semaine
-  en 5 minutes = vous pilotez vraiment
-  votre activité.
+  en 5 minutes = tu pilotes vraiment
+  ton activité.
 
 ## Le Google Sheet de pilotage (gratuit et suffisant)
-Créez un Google Sheet avec ces onglets :
+Crée un Google Sheet avec ces onglets :
 
 ONGLET 1, RÉSERVATIONS
 Mois | Plateforme | Nuits | Revenus bruts
@@ -763,12 +763,12 @@ ONGLET 4, CONTACTS VOYAGEURS
 
 → 15 minutes par semaine pour mettre à jour.
   En retour : visibilité totale
-  sur votre activité et ses tendances.
+  sur ton activité et ses tendances.
 
-→ Vous pouvez aussi utiliser les statistiques
-  intégrées d'Airbnb ou de votre PMS.
-  Mais avoir votre propre outil garantit
-  que vous possédez vos données
+→ Tu peux aussi utiliser les statistiques
+  intégrées d'Airbnb ou de ton PMS.
+  Mais avoir ton propre outil garantit
+  que tu possèdes tes données
   indépendamment des plateformes.
 
 ## Les indicateurs d'alerte à surveiller
@@ -777,31 +777,31 @@ une action immédiate :
 
  Note moyenne < 4,5
 → Problème urgent à identifier et corriger.
-   Lisez les avis récents, identifiez le motif.
+   Lis les avis récents, identifie le motif.
 
  Taux d'occupation < 30%
    sur un mois normalement chargé
-→ Vérifiez : prix trop élevé ?
+→ Vérifie : prix trop élevé ?
    Séjour minimum trop long ?
    Calendrier non à jour ?
 
  Plus de 48h sans réservation
    en haute saison
-→ Vérifiez votre annonce, votre visibilité,
-   vos prix vs la concurrence.
+→ Vérifie ton annonce, ta visibilité,
+   tes prix vs la concurrence.
 
  Temps de gestion > 10h/semaine
    pour 1-2 logements
 → Automatisation insuffisante.
-   Revenez sur les modules précédents.
+   Reviens sur les modules précédents.
 
  Note "Propreté" < 4,6
-→ Briefez à nouveau votre équipe ménage.
-   Ajoutez des éléments à la checklist.
+→ Briefe à nouveau ton équipe ménage.
+   Ajoute des éléments à la checklist.
 
 
 ## Exercice
-**Exercice pratique :** Crée ton Google Sheet de pilotage maintenant avec les 4 onglets. Remplis-le avec les données de tes 3 derniers mois. Ça prend 20 minutes. Ce tableau devient votre tableau de bord permanent, 15 minutes par semaine pour le maintenir à jour.
+**Exercice pratique :** Crée ton Google Sheet de pilotage maintenant avec les 4 onglets. Remplis-le avec les données de tes 3 derniers mois. Ça prend 20 minutes. Ce tableau devient ton tableau de bord permanent, 15 minutes par semaine pour le maintenir à jour.
 `,
         },
         {
@@ -852,12 +852,12 @@ NOTIFICATIONS À DÉSACTIVER
 
 → Règle : si une notification ne nécessite pas
   une action immédiate, elle ne doit pas
-  vous interrompre en temps réel.
-  Traitez-la dans votre plage horaire dédiée.
+  t'interrompre en temps réel.
+  Traite-la dans ta plage horaire dédiée.
 
-## Ce que vous faites avec les heures récupérées
-Une fois votre système en place,
-vous avez récupéré plusieurs heures par semaine.
+## Ce que tu fais avec les heures récupérées
+Une fois ton système en place,
+tu as récupéré plusieurs heures par semaine.
 
 Ce que font les hôtes performants
 avec ce temps :
@@ -872,10 +872,10 @@ avec ce temps :
 → Vivre leur vie hors LCD
 
 → Le temps récupéré par l'automatisation
-  n'est pas du temps "gagné" si vous
-  le réinvestissez dans les mêmes tâches.
-  Décidez consciemment de ce que
-  vous en faites.
+  n'est pas du temps "gagné" si tu
+  le réinvestis dans les mêmes tâches.
+  Décide consciemment de ce que
+  en fais.
 
 
 ## Exercice
@@ -894,7 +894,7 @@ SEMAINE 1, ACCÈS AUTONOME
 
 SEMAINE 2, MESSAGES AUTOMATIQUES
 □ Rédiger les 7 messages du parcours voyageur
-□ Les configurer dans Airbnb ou votre PMS
+□ Les configurer dans Airbnb ou ton PMS
 □ Tester sur une réservation réelle
 
 SEMAINE 3, COORDINATION MÉNAGE
@@ -928,9 +928,9 @@ SEMAINE 8, BILAN
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :
 
 MODULE 1
-□ Auditer vos tâches et identifier
+□ Auditer tes tâches et identifier
   les priorités d'automatisation
-□ Choisir le bon outil selon votre profil
+□ Choisir le bon outil selon ton profil
 
 MODULE 2
 □ Automatiser les 7 messages du parcours voyageur
@@ -943,7 +943,7 @@ MODULE 3
 □ Activer la tarification dynamique
 
 MODULE 4
-□ Piloter votre activité en 15 min/semaine
+□ Piloter ton activité en 15 min/semaine
 □ Suivre les bonnes métriques
 □ Respecter une routine hebdomadaire
   de 2 à 3 heures
@@ -953,14 +953,14 @@ MODULE 4
   Elle demande moins de temps opérationnel
   pour le même niveau d'excellence.
 
-Des questions sur votre configuration ?
+Des questions sur ta configuration ?
 [Prends un appel avec Jason](/contact)
 
 
 ## Exercice
 **L'action finale de la formation :**
 
-Imprimez le plan sur 8 semaines. Donnez une date à chaque semaine à partir d'aujourd'hui. Commencez par la semaine 1 cette semaine, commandez votre boîte à clés ou identifiez votre solution d'accès autonome. C'est la seule action qui change vraiment le quotidien d'un hôte LCD, et elle coûte moins de 50€.
+Imprime le plan sur 8 semaines. Donne une date à chaque semaine à partir d'aujourd'hui. Commence par la semaine 1 cette semaine, commande ta boîte à clés ou identifie ta solution d'accès autonome. C'est la seule action qui change vraiment le quotidien d'un hôte LCD, et elle coûte moins de 50€.
 
 Formation suivante :`,
         },

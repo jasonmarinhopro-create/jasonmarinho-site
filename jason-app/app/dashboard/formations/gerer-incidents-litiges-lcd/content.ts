@@ -2441,7 +2441,7 @@ Sur Airbnb, **toi et le voyageur** évaluez l'un l'autre **en aveugle**.
 
 ### Comment ça marche
 
-- Vous avez **14 jours** après le départ pour évaluer.
+- Le voyageur et toi avez **14 jours** après le départ pour évaluer.
 - Les avis sont **publiés simultanément** quand les deux ont posté (ou à J+14).
 - **Aucun ne voit l'avis de l'autre** avant publication.
 

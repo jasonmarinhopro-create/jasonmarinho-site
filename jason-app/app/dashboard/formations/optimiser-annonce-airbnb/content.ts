@@ -1,12 +1,12 @@
 export const OPTIMISER_ANNONCE_FORMATION = {
   slug: 'optimiser-annonce-airbnb',
   title: 'Optimiser son annonce Airbnb : photos, titre, description, algorithme',
-  description: `L'algorithme Airbnb a changé de logique en 2026. Découvrez comment remonter dans les résultats, rédiger un titre qui convertit, des photos qui font cliquer et une description qui vend, sans changer votre logement.`,
+  description: `L'algorithme Airbnb a changé de logique en 2026. Découvre comment remonter dans les résultats, rédiger un titre qui convertit, des photos qui font cliquer et une description qui vend, sans changer ton logement.`,
   duration: '2h30',
   level: 'Débutant',
   objectifs: [
     `Comprendre les 7 facteurs de classement de l'algorithme Airbnb 2026`,
-    'Identifier les signaux qui font monter ou descendre votre annonce',
+    'Identifier les signaux qui font monter ou descendre ton annonce',
     `Rédiger un titre optimisé pour l'algorithme et les voyageurs`,
     'Organiser et optimiser ses photos pour maximiser le taux de clic',
     'Écrire une description qui convertit les visites en réservations',
@@ -33,18 +33,18 @@ Cette logique ne suffit plus en 2026.
 Ce que l'algorithme cherche vraiment :
 
 → La probabilité qu'un voyageur précis
-  réserve ET soit satisfait par votre logement.
+  réserve ET soit satisfait par ton logement.
 
-L'algorithme ne vous classe plus
+L'algorithme ne te classe plus
 parmi les meilleures annonces.
-Il vous classe parmi les annonces
+Il te classe parmi les annonces
 les plus susceptibles de satisfaire
 CE voyageur, pour CES dates, à CE prix.
 
-→ Votre ennemi n°1 : être une belle annonce
+→ Ton ennemi n°1 : être une belle annonce
   mais incohérente dans l'exécution.
-→ Votre allié n°1 : tenir exactement
-  la promesse de votre annonce, à chaque séjour.
+→ Ton allié n°1 : tenir exactement
+  la promesse de ton annonce, à chaque séjour.
 
 ## Les 7 facteurs de classement par ordre d'impact
 
@@ -95,7 +95,7 @@ Pourquoi Airbnb le valorise autant :
   plus longtemps sur la plateforme.
 → Elles améliorent la réputation globale d'Airbnb.
 
-Pour l'obtenir, vous devez avoir :
+Pour l'obtenir, tu dois avoir :
 → Une note globale ≥ 4,9
 → Des notes sous-critères ≥ 4,8
   (propreté, précision, communication,
@@ -106,8 +106,8 @@ Pour l'obtenir, vous devez avoir :
 → C'est l'objectif numéro 1 de cette formation.
 
 ## Les métriques à suivre chaque mois
-Dans votre tableau de bord Airbnb
-(Statistiques), surveillez :
+Dans ton tableau de bord Airbnb
+(Statistiques), surveille :
 
 CTR (Taux de clic)
 Objectif : > 2%
@@ -132,8 +132,8 @@ NOTE MOYENNE
 Objectif : ≥ 4,8
 En dessous de 4,7 : visibilité impactée.
 
-→ Ces 5 chiffres vous disent exactement
-  où concentrer vos efforts d'optimisation.
+→ Ces 5 chiffres te disent exactement
+  où concentrer tes efforts d'optimisation.
 
 
 ## Exercice
@@ -142,7 +142,7 @@ En dessous de 4,7 : visibilité impactée.
         },
         {
           id: 2,
-          title: 'Les erreurs qui font descendre votre annonce',
+          title: 'Les erreurs qui font descendre ton annonce',
           duration: '15 min',
           content: `## Erreur 1 : Le calendrier mal géré
 C'est une cause fréquente de déclassement
@@ -151,7 +151,7 @@ chez les hôtes expérimentés.
 Ce que l'algorithme punit :
 
 → Calendrier ouvert sur moins de 3 mois
-  (vous ratez des recherches anticipées)
+  (tu rates des recherches anticipées)
 
 → Calendrier non mis à jour depuis
   plus de 7 jours
@@ -160,7 +160,7 @@ Ce que l'algorithme punit :
 → Annulations côté hôte
   Chaque annulation = pénalité directe.
   Sur réservation instantanée :
-  vous avez 1 mois "gratuit" à l'ouverture,
+  tu as 1 mois "gratuit" à l'ouverture,
   puis chaque annulation pénalise.
 
 → Blocages excessifs sans raison
@@ -168,13 +168,13 @@ Ce que l'algorithme punit :
    mais non louées = signal négatif)
 
 Action corrective :
-→ Ouvrez votre calendrier sur 12 mois.
-→ Mettez-le à jour au moins 2 fois/semaine.
+→ Ouvre ton calendrier sur 12 mois.
+→ Mets-le à jour au moins 2 fois/semaine.
 → Ne jamais annuler sauf force majeure.
 
 ## Erreur 2 : Le séjour minimum trop élevé
 Un séjour minimum de 3 nuits élimine
-votre annonce de toutes les recherches
+ton annonce de toutes les recherches
 pour 1-2 nuits.
 
 En France, une part significative
@@ -184,9 +184,9 @@ de 1 à 2 nuits, notamment :
 → Les déplacements professionnels
 → Les courts séjours touristiques
 
-Si votre minimum est 3 nuits :
-→ Vous n'apparaissez pas dans 30-40%
-  des recherches.
+Si ton minimum est 3 nuits :
+→ Tu disparais d'une bonne partie
+  des recherches (tous les séjours plus courts).
 
 Solution intelligente :
 → 1 nuit en semaine (pro, last-minute)
@@ -194,13 +194,13 @@ Solution intelligente :
 → 3-7 nuits en haute saison
   (familles, vacances)
 
-Configurez des règles par période
-dans votre calendrier Airbnb
+Configure des règles par période
+dans ton calendrier Airbnb
 plutôt qu'un minimum global.
 
 ## Erreur 3 : Les filtres manquants
 Les voyageurs filtrent leurs recherches.
-Si votre annonce ne coche pas les filtres,
+Si ton annonce ne coche pas les filtres,
 elle n'apparaît pas, même si elle est parfaite.
 
 Les filtres les plus utilisés en France :
@@ -214,20 +214,20 @@ Climatisation → Été : filtre décisif
 Espace de travail → Télétravailleurs
 Animaux → Segment fidèle et récurrent
 
-Action : ouvrez votre annonce,
-allez dans "Équipements" et vérifiez
-que TOUT ce que vous avez réellement
+Action : ouvre ton annonce,
+va dans "Équipements" et vérifie
+que TOUT ce que tu as réellement
 est coché. Chaque équipement non coché
 est une invisibilité dans les recherches.
 
 ## Erreur 4 : Le taux de réponse négligé
-Airbnb mesure votre taux de réponse
+Airbnb mesure ton taux de réponse
 sur les 30 derniers jours.
 
 Ce qui est mesuré :
-→ Avez-vous répondu à chaque message
+→ As-tu répondu à chaque message
   dans les 24h ?
-→ Avez-vous pré-approuvé ou refusé
+→ As-tu pré-approuvé ou refusé
   les demandes dans les 24h ?
 
 Impact direct sur le classement :
@@ -237,7 +237,7 @@ Impact direct sur le classement :
 
 Comment maintenir > 90% :
 → Activer les notifications push
-  sur votre téléphone
+  sur ton téléphone
 → Répondre même aux messages qui
   ne nécessitent pas de réponse
   ("Merci pour votre message, je reviens
@@ -254,7 +254,7 @@ Comment maintenir > 90% :
     },
     {
       id: 2,
-      title: 'Les photos : votre premier filtre de conversion',
+      title: 'Les photos : ton premier filtre de conversion',
       duration: '30 min',
       lessons: [
         {
@@ -269,20 +269,20 @@ Il prend sa décision de cliquer ou non
 en moins de 2 secondes.
 
 À ce stade, il ne voit que :
-→ Votre photo principale
-→ Votre prix
-→ Votre note
+→ Ta photo principale
+→ Ton prix
+→ Ta note
 
-Votre photo principale est donc
-le seul levier de votre taux de clic.
+Ta photo principale est donc
+le seul levier de ton taux de clic.
 
 L'algorithme mesure ce taux de clic.
 Si les voyageurs scrollent sans cliquer,
-votre annonce descend dans le classement.
+ton annonce descend dans le classement.
 
 → Une mauvaise photo principale peut réduire
-  votre taux de clic de 50%
-  et faire descendre votre annonce
+  ton taux de clic de 50%
+  et faire descendre ton annonce
   indépendamment de tout le reste.
 
 ## Les caractéristiques d'une photo principale performante
@@ -316,7 +316,7 @@ Ce qui fait cliquer :
 
 ## Les photos principales qui ne fonctionnent pas
 ❌ La salle de bain en première photo
-   (logique pour vous, pas pour le voyageur)
+   (logique pour toi, pas pour le voyageur)
 
 ❌ La cuisine vide et froide
    sans mise en scène
@@ -333,31 +333,31 @@ Ce qui fait cliquer :
 ❌ La photo avec des effets de filtre
    Instagram (sur-saturée, noir et blanc...)
 
-→ Test simple : ouvrez votre annonce
-  sur votre téléphone et regardez
-  votre photo principale dans la grille
+→ Test simple : ouvre ton annonce
+  sur ton téléphone et regarde
+  ta photo principale dans la grille
   des résultats. Est-ce qu'elle se démarque ?
   Est-ce qu'elle donne envie de cliquer ?
-  Si vous hésitez : changez-la.
+  Si tu hésites : change-la.
 
 ## Tester et changer sa photo principale
 L'avantage d'Airbnb :
-vous pouvez changer votre photo principale
+tu peux changer ta photo principale
 à tout moment sans pénalité.
 
 Comment tester quelle photo convertit mieux :
 
-→ Changez votre photo principale.
-→ Attendez 2 semaines.
-→ Comparez votre CTR (taux de clic)
+→ Change ta photo principale.
+→ Attends 2 semaines.
+→ Compare ton CTR (taux de clic)
   dans les statistiques Airbnb avant/après.
-→ Gardez la version qui performe le mieux.
+→ Garde la version qui performe le mieux.
 
-Airbnb indique dans vos statistiques
-le nombre de vues de votre annonce.
-C'est votre indicateur de taux de clic.
+Airbnb indique dans tes statistiques
+le nombre de vues de ton annonce.
+C'est ton indicateur de taux de clic.
 
-→ Testez en priorité :
+→ Teste en priorité :
   1. La pièce principale (salon ou chambre)
   2. La vue depuis le logement si belle
   3. Un détail distinctif (cheminée,
@@ -410,10 +410,10 @@ Photos 16-20 : Détails distinctifs
               (cheminée, déco, équipements spéciaux)
 Photos 21+ : Quartier, environnement proche
 
-→ Ne commencez jamais par les pièces secondaires.
-→ Finissez toujours sur un détail chaleureux
+→ Ne commence jamais par les pièces secondaires.
+→ Finis toujours sur un détail chaleureux
   ou une vue attrayante.
-→ L'ordre crée une histoire, racontez-la bien.
+→ L'ordre crée une histoire, raconte-la bien.
 
 ## Les photos que la plupart des hôtes n'ont pas (et devraient avoir)
 Ces photos font la différence entre
@@ -452,7 +452,7 @@ Peu d'hôtes l'utilisent.
 C'est pourtant un levier SEO interne :
 
 → L'algorithme lit ces légendes pour
-  comprendre et classer votre annonce
+  comprendre et classer ton annonce
   dans des recherches précises.
 
 → Les voyageurs les lisent aussi
@@ -468,9 +468,9 @@ literie haut de gamme et blackout complet"
 "Cuisine entièrement équipée : four,
 lave-vaisselle, machine à café Nespresso"
 
-→ Intégrez naturellement des mots-clés
-  pertinents pour votre type de logement
-  et votre cible de voyageurs.
+→ Intègre naturellement des mots-clés
+  pertinents pour ton type de logement
+  et ta cible de voyageurs.
 
 
 ## Exercice
@@ -488,20 +488,20 @@ lave-vaisselle, machine à café Nespresso"
           id: 21,
           title: `La structure d'un titre qui remonte dans les résultats`,
           duration: '12 min',
-          content: `## Ce que l'algorithme cherche dans votre titre
+          content: `## Ce que l'algorithme cherche dans ton titre
 En 2026, l'algorithme Airbnb analyse
-votre titre pour deux choses :
+ton titre pour deux choses :
 
 01. LA PERTINENCE LOCALE
     Des références géographiques précises
-    vous font apparaître dans des recherches
+    te font apparaître dans des recherches
     ultra-ciblées ("appartement Marais Paris",
     "logement Presqu'île Lyon"...).
 
 02. LA CORRESPONDANCE AVEC LES FILTRES VOYAGEURS
     Si un voyageur filtre "espace de travail"
-    et que votre titre mentionne "bureau",
-    votre annonce est mieux positionnée.
+    et que ton titre mentionne "bureau",
+    ton annonce est mieux positionnée.
 
 Et ce que les voyageurs cherchent :
 
@@ -542,7 +542,7 @@ Accès pistes direct
   pour le SEO interne Airbnb.
   "Paris" est trop vague.
   "Marais", "Oberkampf", "Batignolles"
-  vous positionnent sur des recherches précises.
+  te positionnent sur des recherches précises.
 
 ## Les mots à utiliser et à éviter
 MOTS QUI PERFORMENT :
@@ -577,17 +577,17 @@ qu'une virgule ou un espace.
           title: 'Adapter son titre selon la saison et la cible',
           duration: '13 min',
           content: `## Pourquoi changer de titre selon la saison
-Votre logement ne change pas.
-Vos voyageurs, si.
+Ton logement ne change pas.
+Tes voyageurs, si.
 
-En été, votre cible principale :
+En été, ta cible principale :
 → Familles, couples, groupes d'amis
 → Ils cherchent : espace, terrasse,
   proximité de la nature ou du centre
 → Titre idéal : met en avant le cadre,
   la fraîcheur, les activités estivales
 
-En hiver, votre cible principale :
+En hiver, ta cible principale :
 → Télétravailleurs, couples romantiques,
   voyageurs d'affaires
 → Ils cherchent : cosy, cheminée,
@@ -622,11 +622,11 @@ POUR LES GROUPES :
 [Équipement collectif] · [Lieu] ·
 Séjours groupe bienvenue"
 
-→ Vous ne pouvez cibler qu'une cible
-  principale dans votre titre.
-  Choisissez celle qui représente
-  70%+ de vos réservations actuelles
-  ou celle que vous voulez attirer
+→ Tu ne peux cibler qu'une cible
+  principale dans ton titre.
+  Choisis celle qui représente
+  70%+ de tes réservations actuelles
+  ou celle que tu veux attirer
   en priorité.
 
 
@@ -667,11 +667,11 @@ Ce que ça devrait dire :
   mon séjour meilleur ?
 → Qu'est-ce que je vais vivre ici
   que je ne vivrai pas ailleurs ?
-→ Qui êtes-vous en tant qu'hôte ?
+→ Qui es-tu en tant qu'hôte ?
 
 ## La structure en 4 parties
 PARTIE 1, L'ACCROCHE (2-3 lignes)
-Vendez l'expérience, pas les mètres carrés.
+Vends l'expérience, pas les mètres carrés.
 → "Votre refuge parisien à 5 minutes
    du Marais. Un appartement lumineux
    où vous vous sentirez chez vous
@@ -679,7 +679,7 @@ Vendez l'expérience, pas les mètres carrés.
 
 PARTIE 2, LE LOGEMENT (3-4 lignes)
 Les caractéristiques qui comptent
-pour votre cible principale.
+pour ta cible principale.
 → Équipements clés + spécificités
   + ce qui est différent de la concurrence
 
@@ -688,7 +688,7 @@ Pourquoi VOTRE quartier est le bon choix.
 → Adresses locales + transport + ambiance
 
 PARTIE 4, VOUS EN TANT QU'HÔTE (1-2 lignes)
-Votre promesse personnelle.
+Ta promesse personnelle.
 → "Je réponds à toutes les questions
    en moins d'une heure et je vous
    partage mes adresses secrètes."
@@ -705,7 +705,7 @@ MOTS QUI CONVERTISSENT :
 MOTS QUI REFROIDISSENT :
 → "Petit" (même si c'est vrai, dites "cosy")
 → "Sans ascenseur" en début de description
-  (mettez-le dans "À savoir" pas dans la desc)
+  (mets-le dans "À savoir" pas dans la desc)
 → "Interdit de fumer / d'animaux"
   en description (c'est dans le règlement)
 → "Disponible à partir de..." (calendrier = ailleurs)
@@ -725,13 +725,13 @@ MOTS QUI REFROIDISSENT :
           id: 32,
           title: `Le SEO interne Airbnb : écrire pour l'algorithme`,
           duration: '12 min',
-          content: `## Comment l'algorithme lit votre description
+          content: `## Comment l'algorithme lit ta description
 En 2026, l'algorithme Airbnb analyse
-votre description pour :
+ta description pour :
 
 01. IDENTIFIER VOTRE LOCALISATION PRÉCISE
     Des références géographiques ultra-précises
-    vous indexent sur des recherches ciblées.
+    te indexent sur des recherches ciblées.
     → "à deux pas du Canal Saint-Martin"
       vs "dans le 10ème arrondissement"
     Le premier positionne mieux sur
@@ -747,11 +747,11 @@ votre description pour :
     renforce le signal algorithmique.
 
 → Principe : intégrer naturellement
-  dans votre description les mots-clés
-  que vos voyageurs tapent dans la barre
+  dans ta description les mots-clés
+  que tes voyageurs tapent dans la barre
   de recherche Airbnb.
 
-## Les mots-clés à intégrer selon votre cible
+## Les mots-clés à intégrer selon ta cible
 CIBLE TÉLÉTRAVAILLEURS :
 → "fibre optique", "connexion stable",
   "espace bureau", "calme", "lumineux",
@@ -777,7 +777,7 @@ CIBLE GÉNÉRALE :
 
 → Ne JAMAIS bourrer les mots-clés.
   L'algorithme pénalise le keyword stuffing.
-  Intégrez-les naturellement dans des phrases.
+  Intègre-les naturellement dans des phrases.
 
 ## Exemple de description optimisée (avant/après)
 AVANT (typique) :
@@ -823,30 +823,30 @@ préférées du quartier."
           duration: '11 min',
           content: `## L'impact du règlement sur le classement
 Un règlement trop restrictif
-nuit à votre classement Airbnb.
+nuit à ton classement Airbnb.
 
 Pourquoi :
-→ Chaque règle restrictive élimine votre
+→ Chaque règle restrictive élimine ton
   annonce d'une partie des recherches.
 → Fumeurs interdits = ok (standard)
-→ Animaux interdits = vous manquez
+→ Animaux interdits = tu manques
   un segment fidèle et récurrent
-→ Pas d'enfants = vous limitez fortement
-→ Arrivée uniquement 15h-17h = vous perdez
+→ Pas d'enfants = tu limites fortement
+→ Arrivée uniquement 15h-17h = tu perds
   des voyageurs avec des vols décalés
 
 L'équilibre à trouver :
 → Règles protectrices mais pas hostiles.
 → Chaque règle restrictive doit avoir
   une vraie justification.
-→ Les voyageurs lisent votre règlement
+→ Les voyageurs lisent ton règlement
   AVANT de réserver, un règlement
   trop long ou trop sévère fait fuir
   les bons voyageurs autant que les mauvais.
 
 ## Structure d'un règlement efficace
 SECTION 1, RÈGLES ESSENTIELLES (3-5 règles max)
-Celles qui protègent vraiment votre logement :
+Celles qui protègent vraiment ton logement :
 → Silence après [heure]
 → Pas de fête / rassemblement non déclaré
 → Nombre d'occupants maximum respecté
@@ -862,7 +862,7 @@ SECTION 3, CHECK-IN ET CHECK-OUT
 
 SECTION 4, RÈGLES SUPPLÉMENTAIRES
 → Tout ce qui est spécifique
-  à votre logement et votre situation
+  à ton logement et ta situation
 
 → Moins de 200 mots au total.
   Un règlement de 800 mots effraie
@@ -908,22 +908,22 @@ CE QUI ACCÉLÈRE L'OBTENTION :
   recommandations, logement conforme...)
 
 → Avec un score de 4,8 stable,
-  comptez 3 à 6 mois pour l'obtenir
-  si vous avez au moins 10 avis récents.
+  compte 3 à 6 mois pour l'obtenir
+  si tu as au moins 10 avis récents.
 
 ## Les sous-critères à optimiser en priorité
-Si votre note globale est 4,8 mais que
+Si ta note globale est 4,8 mais que
 certains sous-critères tirent vers le bas :
 
 PROPRETÉ (le plus important)
-→ Investissez dans le ménage professionnel.
+→ Investis dans le ménage professionnel.
 → C'est le critère le plus noté
   et le plus impactant.
 
 PRÉCISION DE L'ANNONCE
 → Le logement correspond-il aux photos
   et à la description ?
-→ Si non : mettez les photos et la
+→ Si non : mets les photos et la
   description à jour, pas le logement.
 
 ARRIVÉE
@@ -933,8 +933,8 @@ ARRIVÉE
   avec toutes les instructions.
 
 COMMUNICATION
-→ Répondez vite, répondez bien.
-→ Envoyez des messages proactifs.
+→ Réponds vite, réponds bien.
+→ Envoie des messages proactifs.
 
 RAPPORT QUALITÉ/PRIX
 → Le plus difficile à contrôler.
@@ -944,7 +944,7 @@ RAPPORT QUALITÉ/PRIX
 
 
 ## Exercice
-**Exercice pratique :** Regarde tes notes par sous-critère dans ton tableau de bord Airbnb. Identifie le critère le plus faible. C'est votre priorité d'amélioration n°1. Une action concrète pour chaque critère sous 4,8 cette semaine.
+**Exercice pratique :** Regarde tes notes par sous-critère dans ton tableau de bord Airbnb. Identifie le critère le plus faible. C'est ta priorité d'amélioration n°1. Une action concrète pour chaque critère sous 4,8 cette semaine.
 `,
         },
         {
@@ -997,15 +997,15 @@ Les causes de perte les plus fréquentes :
       deviennent des avis négatifs.
 
 04. DEMANDE D'AVIS DANS LES 48H POST-DÉPART
-    + Votre propre avis sur le voyageur
+    + Ton propre avis sur le voyageur
       (réciprocité).
 
 05. AUDIT MENSUEL DE L'ANNONCE
-    → Vos photos sont-elles toujours
+    → Tes photos sont-elles toujours
       représentatives du logement actuel ?
     → Les équipements listés sont-ils
       toujours disponibles ?
-    → Votre titre est-il toujours adapté ?
+    → Ton titre est-il toujours adapté ?
 
 
 ## Exercice
@@ -1036,11 +1036,11 @@ IMPACT MOYEN TERME (ce mois-ci) :
 □ Configurer les 5 habitudes de maintien badge
 
 ## Les métriques à suivre après optimisation
-Attendez 2 à 4 semaines avant de juger
-l'impact de vos modifications.
+Attends 2 à 4 semaines avant de juger
+l'impact de tes modifications.
 
 L'algorithme Airbnb met quelques semaines
-à recalibrer votre classement.
+à recalibrer ton classement.
 
 Métriques à comparer (avant/après) :
 
@@ -1052,9 +1052,9 @@ Métriques à comparer (avant/après) :
 → Note récente post-optimisation
 
 → Si les métriques s'améliorent :
-  continuez dans cette direction.
+  continue dans cette direction.
 → Si elles stagnent ou baissent :
-  revenez sur le module où votre
+  reviens sur le module où ta
   métrique la plus faible se situe.
 
 ## Le récapitulatif de la formation
@@ -1063,22 +1063,22 @@ CE QUE VOUS SAVEZ MAINTENANT FAIRE :
 MODULE 1
 □ Comprendre les 7 facteurs de l'algorithme
 □ Identifier et corriger les erreurs
-  qui font descendre votre annonce
+  qui font descendre ton annonce
 
 MODULE 2
-□ Choisir et optimiser votre photo principale
-□ Organiser vos photos dans le bon ordre
+□ Choisir et optimiser ta photo principale
+□ Organiser tes photos dans le bon ordre
 □ Ajouter des légendes SEO
 
 MODULE 3
 □ Rédiger un titre optimisé pour l'algorithme
-  et pour votre cible voyageur
+  et pour ta cible voyageur
 □ Adapter le titre selon la saison
 
 MODULE 4
 □ Structurer une description qui convertit
 □ Intégrer les mots-clés SEO naturellement
-□ Simplifier votre règlement sans perdre
+□ Simplifier ton règlement sans perdre
   la protection
 
 MODULE 5
@@ -1088,17 +1088,17 @@ MODULE 5
 
 → Même logement, même prix.
   Une annonce optimisée peut multiplier
-  vos réservations par 1,5 à 2
+  tes réservations par 1,5 à 2
   en quelques semaines.
 
-Des questions sur votre annonce spécifique ?
+Des questions sur ton annonce spécifique ?
 [Prends un appel avec Jason](/contact)
 
 
 ## Exercice
 **L'action finale de la formation :**
 
-Choisissez 3 actions dans la liste "Impact immédiat" et faites-les maintenant, avant de fermer cette formation. Bloquez 2 heures dans votre agenda cette semaine pour les actions "Impact fort". Et planifiez les actions "Impact moyen terme" dans le mois à venir.
+Choisis 3 actions dans la liste "Impact immédiat" et faites-les maintenant, avant de fermer cette formation. Bloque 2 heures dans ton agenda cette semaine pour les actions "Impact fort". Et planifie les actions "Impact moyen terme" dans le mois à venir.
 
 L'annonce parfaite ne se crée pas en un jour. Mais une annonce significativement meilleure se crée en une semaine d'actions régulières.
 

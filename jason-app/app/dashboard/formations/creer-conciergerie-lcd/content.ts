@@ -1014,7 +1014,7 @@ ta belle brochure. Il te choisit parce que :
 
 Dans les 6 premiers mois :
 construire ta réputation est
-ton unique priorité.
+ta seule priorité.
 Avant la croissance.
 Avant la rentabilité maximale.
 

@@ -1,7 +1,7 @@
 export const DECORER_AMENAGER_FORMATION = {
   slug: 'decorer-amenager-logement-lcd',
   title: 'Décorer et aménager son logement pour maximiser les avis',
-  description: `Un logement bien décoré se remarque dans les résultats et dans les avis. Couleurs, literie, cuisine, équipements, l'effet waouh, les erreurs à éviter : la méthode complète pour transformer votre logement sans vous ruiner.`,
+  description: `Un logement bien décoré se remarque dans les résultats et dans les avis. Couleurs, literie, cuisine, équipements, l'effet waouh, les erreurs à éviter : la méthode complète pour transformer ton logement sans te ruiner.`,
   duration: '2h00',
   level: 'Débutant',
   objectifs: [
@@ -20,7 +20,7 @@ export const DECORER_AMENAGER_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: 'Pourquoi la décoration impacte directement vos avis',
+          title: 'Pourquoi la décoration impacte directement tes avis',
           duration: '12 min',
           content: `## Ce qui change tout
 Un logement bien pensé et bien équipé
@@ -49,7 +49,7 @@ Pourquoi ?
   C'est de la stratégie commerciale.
 
 ## Ce que les voyageurs ressentent en 30 secondes
-Un voyageur qui entre dans votre logement
+Un voyageur qui entre dans ton logement
 se forge une impression en moins de 30 secondes.
 
 Cette impression de première seconde détermine :
@@ -65,7 +65,7 @@ Un voyageur qui entre dans un logement
 "quelconque" sera beaucoup plus critique
 sur les moindres imperfections.
 
-→ Votre logement doit provoquer
+→ Ton logement doit provoquer
   une émotion positive immédiate.
   Pas seulement être "correct".
 
@@ -84,12 +84,12 @@ NIVEAU 2, L'IMPACT SUR L'EXPÉRIENCE
 NIVEAU 3, L'IMPACT SUR LA DIFFÉRENCIATION
 → Sur un marché saturé, la décoration
   est ce qui fait qu'un voyageur choisit
-  votre logement plutôt qu'un similaire
+  ton logement plutôt qu'un similaire
   au même prix.
 → Impact sur le taux de conversion
-  de votre annonce.
+  de ton annonce.
 
-## Décorer pour votre cible, pas pour vous
+## Décorer pour ta cible, pas pour toi
 L'erreur la plus fréquente :
 décorer selon ses propres goûts
 sans penser aux voyageurs ciblés.
@@ -115,7 +115,7 @@ VOYAGEURS "EXPÉRIENCE"
 → Ce qu'on ne trouve pas dans un hôtel.
 
 → Avant d'acheter quoi que ce soit :
-  qui est votre voyageur idéal ?
+  qui est ton voyageur idéal ?
 
 
 ## Exercice
@@ -127,9 +127,9 @@ VOYAGEURS "EXPÉRIENCE"
           title: 'Les erreurs de décoration qui font fuir les bons voyageurs',
           duration: '13 min',
           content: `## Erreur 1 : Les objets trop personnels
-Vos photos de famille, les dessins
-de vos enfants, vos livres personnels,
-vos vêtements dans les placards visibles...
+Tes photos de famille, les dessins
+de tes enfants, tes livres personnels,
+tes vêtements dans les placards visibles...
 
 Ce que ça provoque chez le voyageur :
 → "Je suis chez quelqu'un, pas chez moi."
@@ -143,10 +143,10 @@ des parties accessibles aux voyageurs."
 
 > Source : Centre de ressources Airbnb
 
-→ Gardez une touche personnelle
+→ Garde une touche personnelle
   via la décoration (un tableau,
   un objet local...), pas via
-  des traces de votre vie quotidienne.
+  des traces de ta vie quotidienne.
 
 ## Erreur 2 : La décoration thématique trop marquée
 Un logement entièrement décoré autour
@@ -160,7 +160,7 @@ Ce que ça provoque :
 → Les photos peuvent être décourageantes
   si le thème ne correspond pas
   aux goûts du voyageur.
-→ Cela peut réduire votre marché
+→ Cela peut réduire ton marché
   à une niche très étroite.
 
 La règle du pouce :
@@ -178,14 +178,14 @@ Ce que ça provoque :
 → Les voyageurs se sentent sur la défensive.
 → Ils ont peur de casser quelque chose.
 → Ils ne se détendent pas vraiment.
-→ Vous non plus, d'ailleurs.
+→ Toi non plus, d'ailleurs.
 
 La règle de l'aménagement LCD :
 → Tout ce qui est dans le logement
   doit pouvoir être cassé, tâché ou volé
   sans que ce soit une catastrophe.
 
-→ Choisissez du mobilier :
+→ Choisis du mobilier :
   Robuste (résiste aux usages répétés)
   Facile à nettoyer (tissu lavable, bois traité)
   Facile à remplacer (produit courant,
@@ -275,9 +275,9 @@ LUMIÈRE NATURELLE (à maximiser)
 → Pas d'obstruction devant les fenêtres
 
 ÉCLAIRAGE ARTIFICIEL (à travailler)
-→ Évitez le néon de cuisine unique
+→ Évite le néon de cuisine unique
   qui éclaire comme un bloc opératoire
-→ Multipliez les sources de lumière :
+→ Multiplie les sources de lumière :
   lampe de salon + lampes de chevet
   + guirlandes + bougies LED
 → Ampoules à lumière chaude (2700-3000K)
@@ -308,9 +308,9 @@ PLANTES RECOMMANDÉES POUR LA LCD :
 
 ERREURS À ÉVITER :
 → Plantes nécessitant un arrosage quotidien
-  (vous les oublierez entre deux séjours)
+  (tu les oublieras entre deux séjours)
 → Plantes qui perdent leurs feuilles partout
-→ Plantes toxiques si vous accueillez
+→ Plantes toxiques si tu accueilles
   des enfants ou des animaux
 
 → 2-3 plantes bien placées suffisent.
@@ -346,15 +346,15 @@ Budget recommandé pour les textiles :
 → C'est l'investissement le plus rentable
   en LCD en termes de retour sur avis.
 → Avant d'acheter un meuble neuf :
-  achetez de beaux draps.
+  achète de beaux draps.
 
 ## La literie : un critère majeur des avis
 LE MATELAS
-→ Investissez entre 300 et 700€.
+→ Investis entre 300 et 700€.
 → Un mauvais matelas = mauvaise nuit
   = mauvais avis systématique.
-→ Test : allongez-vous 5 minutes.
-  Si c'est inconfortable pour vous,
+→ Test : allonge-toi 5 minutes.
+  Si c'est inconfortable pour toi,
   c'est inconfortable pour tout le monde.
 → Un surmatelas (50-100€) peut sauver
   un bon matelas vieillissant.
@@ -365,7 +365,7 @@ LES DRAPS
   • Perception de propreté maximale
   • Facile à blanchir
   • Intemporel sur les photos
-→ Évitez les imprimés trop personnels.
+→ Évite les imprimés trop personnels.
 → Investissement : 40-80€ par lit.
 
 LA COUETTE ET LES OREILLERS
@@ -396,19 +396,19 @@ CE QU'IL FAUT REMPLACER RÉGULIÈREMENT :
 → Une serviette légèrement grise ou
   dont les bords s'effilochent doit
   être remplacée immédiatement.
-→ Test : est-ce que vous utiliseriez
+→ Test : est-ce que tu utiliserais
   cette serviette dans un bon hôtel ?
-  Si non : remplacez-la.
+  Si non : remplace-la.
 
 ASTUCE ÉCONOMIQUE :
-→ Achetez vos serviettes en lot
+→ Achète tes serviettes en lot
   (Amazon, grossistes hôteliers)
   pour avoir des stocks de remplacement
   et maintenir la cohérence de couleur.
 
 
 ## Exercice
-**Exercice pratique :** Inspecte tes draps et serviettes maintenant comme si tu étais voyageur. Sont-ils blancs ou légèrement jaunis ? Les serviettes sont-elles douces ou râpeuses ? Y a-t-il des taches ou des bords effilochés ? Tout ce qui ne passerait pas dans un bon hôtel 3 étoiles : commandez le remplacement cette semaine. C'est l'investissement avec le meilleur retour sur avis en LCD.
+**Exercice pratique :** Inspecte tes draps et serviettes maintenant comme si tu étais voyageur. Sont-ils blancs ou légèrement jaunis ? Les serviettes sont-elles douces ou râpeuses ? Y a-t-il des taches ou des bords effilochés ? Tout ce qui ne passerait pas dans un bon hôtel 3 étoiles : commande le remplacement cette semaine. C'est l'investissement avec le meilleur retour sur avis en LCD.
 `,
         },
       ],
@@ -493,7 +493,7 @@ LA MÉTHODE HÔTEL EN 5 ÉTAPES :
 
 
 ## Exercice
-**Exercice pratique :** Fais la mise en scène complète de ton lit maintenant avec la méthode en 5 étapes. Prends une photo. Compare-la avec ta photo de chambre actuelle dans ton annonce. Si la différence est visible, mets la nouvelle photo en ligne. Cette seule action peut améliorer significativement le taux de clic sur votre annonce.
+**Exercice pratique :** Fais la mise en scène complète de ton lit maintenant avec la méthode en 5 étapes. Prends une photo. Compare-la avec ta photo de chambre actuelle dans ton annonce. Si la différence est visible, mets la nouvelle photo en ligne. Cette seule action peut améliorer significativement le taux de clic sur ton annonce.
 `,
         },
         {
@@ -535,7 +535,7 @@ CE QUI GÉNÈRE DES AVIS NÉGATIFS EN CUISINE :
 → Poêles et casseroles avec revêtement rayé
   ou brûlé
   → Impression de saleté même si c'est propre.
-  → Remplacez-les. Budget : 30-50€.
+  → Remplace-les. Budget : 30-50€.
 
 → Pas assez de vaisselle pour le nombre
   de personnes affiché
@@ -544,7 +544,7 @@ CE QUI GÉNÈRE DES AVIS NÉGATIFS EN CUISINE :
 → Couteaux qui ne coupent pas
   → Un couteau de cuisine correct coûte 20€
     et change radicalement la perception
-    de la qualité de votre cuisine.
+    de la qualité de ta cuisine.
 
 → Manque de produits de base
   (liquide vaisselle, éponge, torchons)
@@ -552,7 +552,7 @@ CE QUI GÉNÈRE DES AVIS NÉGATIFS EN CUISINE :
 
 → Un tiroir ou placard fermé à clé
   → Crée de la méfiance.
-  → Fermez ce que vous voulez protéger
+  → Ferme ce que tu veux protéger
     dans une pièce entière, pas dans
     des tiroirs visibles et accessibles.
 
@@ -561,7 +561,7 @@ Le salon est l'espace de vie.
 Il doit être confortable, dégagé et accueillant.
 
 ESSENTIELS :
-→ Canapé confortable (testez-le vous-même)
+→ Canapé confortable (teste-le toi-même)
 → Table basse accessible depuis le canapé
 → Éclairage d'ambiance (pas uniquement
   le plafonnier central)
@@ -571,8 +571,8 @@ ESSENTIELS :
   livret d'accueil Driing affiché)
 
 LE CANAPÉ CONVERTIBLE : le choix stratégique
-→ Augmente votre capacité d'accueil
-  (et donc votre tarif potentiel)
+→ Augmente ta capacité d'accueil
+  (et donc ton tarif potentiel)
 → Attractif pour les familles et groupes
 → Investissement : 400-800€ pour un bon modèle
 → ROI : quelques réservations supplémentaires
@@ -686,7 +686,7 @@ fournies, c'était parfait"
 → L'effet waouh ne coûte pas cher.
   Il demande de la réflexion.
   Quelle est la PETITE chose qui ferait
-  que votre voyageur en parle ?
+  que ton voyageur en parle ?
 
 ## Les éléments waouh les plus efficaces (par budget)
 MOINS DE 20€ :
@@ -713,7 +713,7 @@ MOINS DE 20€ :
 → Miroir rétroéclairé dans la salle de bain
 → Lampe de lecture sur pied dans le salon
 
-## L'élément local : votre avantage unique
+## L'élément local : ton avantage unique
 Ce qu'aucun hôtel ne peut reproduire :
 l'authenticité locale.
 
@@ -721,7 +721,7 @@ Des éléments de déco locaux créent
 une connexion émotionnelle unique.
 
 EXEMPLES :
-→ Une aquarelle ou affiche de votre ville
+→ Une aquarelle ou affiche de ta ville
   d'un artiste local
 → Un livre de recettes régionales
 → Des produits gastronomiques locaux
@@ -740,7 +740,7 @@ EXEMPLES :
 
 
 ## Exercice
-**Exercice pratique :** Identifie l'élément waouh que ton logement n'a pas encore. Parmi la liste de la slide 3, lequel correspond le mieux à ta cible et à ton logement ? Commandez-le cette semaine. Un seul élément waouh bien choisi peut transformer des avis de 4 étoiles en avis de 5 étoiles.
+**Exercice pratique :** Identifie l'élément waouh que ton logement n'a pas encore. Parmi la liste de la slide 3, lequel correspond le mieux à ta cible et à ton logement ? Commande-le cette semaine. Un seul élément waouh bien choisi peut transformer des avis de 4 étoiles en avis de 5 étoiles.
 `,
         },
         {
@@ -847,7 +847,7 @@ DESTOCKAGE / SOLDERIE HÔTELIÈRE
           title: `Le récapitulatif et le plan d'action`,
           duration: '11 min',
           content: `## L'audit complet en 1 heure
-Bloquez 1 heure pour faire cet audit
+Bloque 1 heure pour faire cet audit
 pièce par pièce :
 
 ENTRÉE
@@ -932,14 +932,14 @@ MODULE 4
   de meilleurs avis, sans changer
   de logement ni de prix.
 
-Des questions sur votre logement spécifique ?
+Des questions sur ton logement spécifique ?
 [Prends un appel avec Jason](/contact)
 
 
 ## Exercice
 **L'action finale de la formation :**
 
-Fais l'audit complet de la slide 2 maintenant. Cochez ce qui est déjà en place. Pour chaque case non cochée : notez l'action et son coût estimé. Rangez les actions dans les 3 catégories (immédiat / fort / moyen terme). Votre logement ne se transforme pas en un jour, mais une action par semaine pendant 2 mois suffit à le rendre mémorable.
+Fais l'audit complet de la slide 2 maintenant. Coche ce qui est déjà en place. Pour chaque case non cochée : note l'action et son coût estimé. Range les actions dans les 3 catégories (immédiat / fort / moyen terme). Ton logement ne se transforme pas en un jour, mais une action par semaine pendant 2 mois suffit à le rendre mémorable.
 
 Formation suivante :`,
         },

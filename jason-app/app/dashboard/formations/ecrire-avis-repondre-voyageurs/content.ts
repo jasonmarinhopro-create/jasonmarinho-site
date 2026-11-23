@@ -15,16 +15,16 @@ export const ECRIRE_AVIS_FORMATION = {
   modules: [
     {
       id: 1,
-      title: 'Pourquoi les avis sont votre actif le plus précieux',
+      title: 'Pourquoi les avis sont ton actif le plus précieux',
       duration: '25 min',
       lessons: [
         {
           id: 1,
-          title: `L'impact direct des avis sur vos réservations`,
+          title: `L'impact direct des avis sur tes réservations`,
           duration: '12 min',
           content: `## Les chiffres qui montrent tout
 Les avis influencent directement
-vos revenus, dans les deux sens.
+tes revenus, dans les deux sens.
 
 → Une note élevée rassure les voyageurs
   et t'aide à défendre ton prix face
@@ -36,14 +36,14 @@ vos revenus, dans les deux sens.
   plus de visibilité = plus de réservations.
 
 → Un seul avis négatif bien géré
-  n'entache pas votre réputation.
+  n'entache pas ta réputation.
   Mais un avis négatif sans réponse
   fait fuir les futurs voyageurs.
 
 Les avis ne sont pas optionnels.
-Ce sont les fondations de votre activité.
+Ce sont les fondations de ton activité.
 
-## Comment les plateformes utilisent vos avis
+## Comment les plateformes utilisent tes avis
 AIRBNB
 → Prend en compte la note globale,
   la note sur 6 critères spécifiques
@@ -97,7 +97,7 @@ Airbnb note les hôtes sur 6 dimensions :
     Le voyageur a-t-il le sentiment
     d'avoir eu ce qu'il a payé ?
 
-→ Identifier votre critère le plus faible
+→ Identifier ton critère le plus faible
   et l'améliorer est souvent plus efficace
   que de tout optimiser en même temps.
 
@@ -123,7 +123,7 @@ Sur Google My Business :
 → Tu peux répondre à tout moment.
 
 → Implication pratique :
-  Votre demande d'avis doit être
+  Ta demande d'avis doit être
   envoyée dans les 24-48h après le départ.
   Pas une semaine après.
 
@@ -154,12 +154,12 @@ sur ce qui est INTERDIT :
 ❌ Harceler un voyageur avec des relances
    répétées pour qu'il laisse un avis.
 
-❌ Conditionner votre propre avis
-   sur le voyageur à sa note sur vous.
+❌ Conditionner ton propre avis
+   sur le voyageur à sa note sur toi.
 
 Sanctions possibles : suppression
 de l'annonce, suspension du compte,
-retrait de l'avis et de votre réponse.
+retrait de l'avis et de ta réponse.
 
 ## Les méthodes légitimes et efficaces
 MÉTHODE 1, La demande dans le message de check-out
@@ -173,12 +173,12 @@ MÉTHODE 2, Le QR code dans le logement
 Un cadre encadré, posé sur la table :
 "Vous avez aimé votre séjour ?
 Laissez-nous un avis Google"
-+ QR code vers votre fiche GMB.
++ QR code vers ta fiche GMB.
 → Discret, efficace, disponible 24h/24.
 
-MÉTHODE 3, Laisser votre avis en premier
-Sur Airbnb, dès que vous laissez
-votre avis sur le voyageur,
+MÉTHODE 3, Laisser ton avis en premier
+Sur Airbnb, dès que tu laisses
+ton avis sur le voyageur,
 il reçoit une notification.
 → La réciprocité joue : 
   ils pensent à laisser le leur.
@@ -217,11 +217,11 @@ et la communication.
 
 Pourquoi ? Parce que Google et les futures
 plateformes "lisent" les avis.
-Les mots utilisés renforcent votre
+Les mots utilisés renforcent ton
 référencement sur certaines recherches.
 
 Pour obtenir des avis détaillés :
-→ Posez une question dans votre demande :
+→ Pose une question dans ta demande :
   "Si vous deviez conseiller notre logement
   à un ami, qu'est-ce que vous lui diriez ?"
 → Cette formulation incite naturellement
@@ -243,9 +243,9 @@ Pour obtenir des avis détaillés :
           id: 11,
           title: `La structure d'un bon avis positif`,
           duration: '12 min',
-          content: `## Pourquoi vos avis sur les voyageurs comptent
-Quand vous laissez un avis sur un voyageur,
-vous contribuez à la communauté.
+          content: `## Pourquoi tes avis sur les voyageurs comptent
+Quand tu laisses un avis sur un voyageur,
+tu contribues à la communauté.
 
 Les futurs hôtes lisent ces avis
 pour décider d'accepter ou refuser
@@ -316,18 +316,18 @@ RAS de notre côté, on recommande."
   Impossible de savoir ce qui s'est bien passé.
 
 ## La recommandation "public" vs note privée
-Sur Airbnb, vous avez deux options :
+Sur Airbnb, tu as deux options :
 
 1. L'AVIS PUBLIC
-   Visible par tous sur votre profil
+   Visible par tous sur ton profil
    et celui du voyageur.
-   → Soyez honnête mais professionnel.
+   → Sois honnête mais professionnel.
    → Pas de détails inutilement blessants.
 
 2. LES COMMENTAIRES PRIVÉS
    Visibles uniquement par le voyageur.
    → Idéal pour des retours constructifs
-     que vous ne souhaitez pas rendre publics.
+     que tu ne souhaites pas rendre publics.
    → Ex : "La vaisselle n'avait pas été faite
      mais tout le reste était parfait."
 
@@ -379,7 +379,7 @@ laissé dans un état scandaleux,
 Le problème :
 → Subjectif = contestable
 → Émotionnel = peu crédible
-→ Agressif = vous fait passer pour
+→ Agressif = te fait passer pour
   l'hôte difficile
 
 Ce qui fonctionne :
@@ -397,7 +397,7 @@ pas ce voyageur."
 
 ## Structure d'un avis négatif professionnel
 PARTIE 1, Constat factuel (1-2 phrases)
-Décrivez ce qui s'est passé,
+Décris ce qui s'est passé,
 sans interprétation ni jugement de valeur.
 → "Le logement a été rendu avec [constat précis]."
 → "Le règlement intérieur n'a pas été respecté
@@ -461,7 +461,7 @@ perd des réservations.
           duration: '11 min',
           content: `## Ce que les futurs voyageurs cherchent vraiment
 Quand un futur voyageur lit un avis négatif,
-il ne cherche pas à savoir si votre logement
+il ne cherche pas à savoir si ton logement
 est parfait.
 
 Il cherche à savoir si VOUS êtes
@@ -472,9 +472,9 @@ Sa vraie question :
 mon séjour, comment cet hôte va-t-il
 réagir ?"
 
-Votre réponse à un avis négatif
+Ta réponse à un avis négatif
 est la démonstration directe
-de votre façon de gérer les problèmes.
+de ta façon de gérer les problèmes.
 
 → Une réponse calme, professionnelle
   et constructive rassure bien plus
@@ -527,7 +527,7 @@ La plupart sont de type 1 ou 2.
    sans détail concret
 
 ❌ Copier-coller la même réponse
-   sur tous vos avis négatifs
+   sur tous tes avis négatifs
    → Les futurs voyageurs le voient.
 
 ## Le délai idéal pour répondre
@@ -566,19 +566,19 @@ Sur Google My Business :
 ÉTAPE 1, REMERCIER (1 phrase)
 Toujours. Même si ça fait mal.
 "Merci pour votre retour."
-→ Montre que vous prenez les avis
+→ Montre que tu prends les avis
   au sérieux, pas seulement les positifs.
 
 ÉTAPE 2, RECONNAÎTRE (1-2 phrases)
 Reconnaître le ressenti,
-même si vous n'êtes pas entièrement d'accord.
+même si tu n'es pas entièrement d'accord.
 "Nous comprenons que [X] n'a pas
 correspondu à vos attentes."
 → Ne pas confondre reconnaître et admettre
-  une faute que vous n'avez pas commise.
+  une faute que tu n'as pas commise.
 
 ÉTAPE 3, AGIR OU EXPLIQUER (1-2 phrases)
-Ce que vous avez fait ou allez faire.
+Ce que tu as fait ou va faire.
 "Depuis ce séjour, nous avons [action concrète]."
 ou
 "Pour information, [élément de contexte
@@ -614,7 +614,7 @@ qui corresponde davantage à vos attentes."
 
 → Pourquoi ça fonctionne :
   Honnête, factuel, action concrète.
-  Le futur voyageur voit que vous agissez.
+  Le futur voyageur voit que tu agis.
 
 ## Exemple : avis excessif
 AVIS REÇU :
@@ -705,8 +705,8 @@ Ce qu'Airbnb peut supprimer :
 
 Ce qu'Airbnb NE supprime PAS :
 → Un avis négatif honnête même sévère
-→ Un avis avec lequel vous êtes en désaccord
-→ Un avis qui vous dérange
+→ Un avis avec lequel tu es en désaccord
+→ Un avis qui te dérange
   mais qui respecte les règles
 
 ## Comment signaler un avis abusif sur Airbnb
@@ -771,19 +771,19 @@ Si Airbnb refuse de supprimer l'avis
       lessons: [
         {
           id: 31,
-          title: 'Lire entre les lignes : ce que vos avis révèlent vraiment',
+          title: 'Lire entre les lignes : ce que tes avis révèlent vraiment',
           duration: '12 min',
           content: `## Les mots qui reviennent = ce qui compte vraiment
-Vos avis sont une mine d'informations.
+Tes avis sont une mine d'informations.
 La plupart des hôtes les lisent une fois
 et passent à autre chose.
 Les meilleurs hôtes les analysent.
 
 Méthode simple :
-→ Prenez vos 20 derniers avis.
-→ Notez les mots qui reviennent
+→ Prends tes 20 derniers avis.
+→ Note les mots qui reviennent
   dans les avis positifs.
-→ Notez les mots qui reviennent
+→ Note les mots qui reviennent
   dans les critiques.
 
 Exemples courants :
@@ -791,13 +791,13 @@ Exemples courants :
 Positifs fréquents :
 "propre", "pratique", "calme",
 "bien équipé", "hôte réactif"
-→ Ce sont vos atouts à mettre en avant
-  dans votre annonce.
+→ Ce sont tes atouts à mettre en avant
+  dans ton annonce.
 
 Critiques fréquentes :
 "wifi lent", "matelas inconfortable",
 "cuisine mal équipée", "bruit"
-→ Ce sont vos priorités d'amélioration.
+→ Ce sont tes priorités d'amélioration.
 
 ## Les critiques implicites à ne pas rater
 Certaines critiques ne disent pas
@@ -827,8 +827,8 @@ Ces phrases sonnent positives
 mais cachent des attentes non comblées.
 
 ## Créer sa liste d'améliorations prioritaires
-Après avoir analysé vos avis,
-classez les améliorations en 3 niveaux :
+Après avoir analysé tes avis,
+classe les améliorations en 3 niveaux :
 
 NIVEAU 1, QUICK WINS (< 50€, 1 journée)
 → Remplacer un équipement défaillant
@@ -847,7 +847,7 @@ NIVEAU 3, INVESTISSEMENTS LOURDS (> 500€)
 → Isolation phonique
 → Changement de mobilier majeur
 
-→ Commencez toujours par le niveau 1.
+→ Commence toujours par le niveau 1.
   L'impact sur les avis est souvent
   disproportionné par rapport au coût.
 
@@ -873,14 +873,14 @@ C'est une erreur pour 3 raisons :
 
 02. EXPÉRIENCE VOYAGEUR
     Un voyageur qui voit sa réponse
-    se souvient de vous.
+    se souvient de toi.
     Fidélisation et bouche-à-oreille.
 
 03. MARKETING INDIRECT
-    Votre réponse s'affiche publiquement.
+    Ta réponse s'affiche publiquement.
     C'est de l'espace pour parler
-    à vos futurs voyageurs.
-    Utilisez-le intelligemment.
+    à tes futurs voyageurs.
+    Utilise-le intelligemment.
 
 ## La structure d'une réponse à un avis positif
 MOINS de 3 lignes. Toujours.
@@ -888,8 +888,8 @@ MOINS de 3 lignes. Toujours.
 STRUCTURE :
 1. Remerciement personnalisé
    (mentionner un détail de l'avis)
-2. Une phrase sur votre engagement
-   ou ce que vous aimez dans votre métier
+2. Une phrase sur ton engagement
+   ou ce que tu aimes dans ton métier
 3. Invitation à revenir (optionnel)
 
 EXEMPLES :
@@ -913,10 +913,10 @@ N'hésitez pas à revenir !"
   impersonnel. Contre-productif.
 
 ## La règle du 80/20 sur les réponses
-Vous n'avez pas le temps de répondre
-à 100% de vos avis positifs ?
+Tu n'as pas le temps de répondre
+à 100% de tes avis positifs ?
 
-Priorisez selon cette logique :
+Priorise selon cette logique :
 
 RÉPONDEZ TOUJOURS à :
 → Tous les avis négatifs (sans exception)
