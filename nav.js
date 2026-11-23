@@ -337,6 +337,8 @@
       'nav#nav.nv-light .nb-st-dot{box-shadow:0 0 0 2px #fff}',
       '.nst{position:absolute;top:calc(100% + 10px);right:0;width:min(420px,calc(100vw - 16px));background:#fff;border:1px solid #E3EAE6;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.32);padding:20px;display:none;flex-direction:column;gap:14px;z-index:310;color:#0F1A0D;font-family:\'Outfit\',\'Outfit Fallback\',sans-serif;text-align:left;cursor:default}',
       '.nst.open{display:flex}',
+      /* Jamais plus haut que l'écran (iPhone SE : le bas du panneau sortait) : défilement interne */
+      '.nst{max-height:calc(100vh - 96px);max-height:calc(100dvh - 96px);overflow-y:auto;overscroll-behavior:contain}',
       '.nst-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}',
       '.nst-t{font:500 20px/1.2 \'Fraunces\',\'Fraunces Fallback\',serif;color:#0F1A0D}',
       '.nst-s{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:12.5px;color:#4A5C47}',
@@ -349,11 +351,19 @@
       '.nst-c em{font-style:normal;font-size:12px;font-weight:600;color:#0B6B4F}',
       '.nst-c em.nst-n{color:#4A5C47;font-weight:500}',
       '.nst-ch{border:1px solid #E5ECE8;border-radius:14px;padding:12px 14px 10px}',
-      '.nst-ch-h{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:600;color:#4A5C47;margin-bottom:8px}',
+      '.nst-ch-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 8px;font-size:12px;font-weight:600;color:#4A5C47;margin-bottom:8px;min-height:18px}',
+      '.nst-ch-h.sel span{color:#0F1A0D}',
       '.nst-ch-h b{color:var(--g)}',
       '.nst-bars{height:64px;display:flex;align-items:flex-end;gap:8px}',
-      '.nst-bars i{flex:1;border-radius:5px 5px 2px 2px;background:#B9D3C8;min-height:3px}',
+      '.nst-bars i{flex:1;border-radius:5px 5px 2px 2px;background:#B9D3C8;min-height:3px;cursor:pointer;outline:none;transition:background .15s;-webkit-tap-highlight-color:transparent}',
       '.nst-bars i:last-child{background:var(--g)}',
+      '.nst-bars.sel i{background:#D5E5DE}',
+      '.nst-bars.sel i.on{background:var(--g)}',
+      '.nst-bars i:focus-visible{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--g)}',
+      '.nst-m span.on{color:#0F1A0D;font-weight:700}',
+      '.nst-hint{margin-top:6px;font-size:11px;color:#6B7C68}',
+      '.nst-hint .t{display:none}',
+      '@media(hover:none){.nst-hint .t{display:inline}.nst-hint .s{display:none}}',
       '.nst-m{display:flex;gap:8px;margin-top:5px;font-size:11px;color:#4A5C47}',
       '.nst-m span{flex:1;text-align:center}',
       '.nst-f{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}',
@@ -1101,11 +1111,46 @@
           + tile('Recherches en 1re page', fmtN(g.firstPageCount), typeof g.pagesSeen === 'number' ? 'sur ' + fmtN(g.pagesSeen) + ' pages vues' : '', true)
         + '</div>'
         + (months.length > 1
-          ? '<div class="nst-ch"><div class="nst-ch-h"><span>Affichages Google par mois</span><b>' + trend + '</b></div>'
-            + '<div class="nst-bars">' + months.map(function (m) { return '<i style="height:' + Math.max(4, Math.round(m.impressions / max * 100)) + '%" title="' + fmtN(m.impressions) + '"></i>'; }).join('') + '</div>'
-            + '<div class="nst-m">' + months.map(function (m) { return '<span>' + MOIS[+m.month.slice(5, 7) - 1] + '</span>'; }).join('') + '</div></div>'
+          ? '<div class="nst-ch"><div class="nst-ch-h" aria-live="polite"><span>Affichages Google par mois</span><b>' + trend + '</b></div>'
+            + '<div class="nst-bars">' + months.map(function (m) { return '<i tabindex="0" role="button" aria-label="' + moisLong(m.month) + ' : ' + fmtN(m.impressions) + ' affichages, ' + fmtN(m.clicks) + ' clics" style="height:' + Math.max(4, Math.round(m.impressions / max * 100)) + '%"></i>'; }).join('') + '</div>'
+            + '<div class="nst-m">' + months.map(function (m) { return '<span>' + MOIS[+m.month.slice(5, 7) - 1] + '</span>'; }).join('') + '</div>'
+            + '<div class="nst-hint"><span class="s">Passe la souris sur un mois pour voir son chiffre.</span><span class="t">Touche un mois pour voir son chiffre.</span></div></div>'
           : '')
         + '<div class="nst-f"><small>Google Search Console et mesures du site</small><a class="nst-go" href="/chiffres">Voir tous les chiffres <i class="ph-bold ph-arrow-right"></i></a></div>';
+      stChart(months, trend);
+    }
+    /* Graphique du panneau : le chiffre du mois s'affiche dans l'en-tête du graphique (pas de bulle
+       flottante qui serait coupée ou cacherait les cases), au survol, au toucher ou au clavier. */
+    var stPick = function () {};
+    function moisLong(m) {
+      var L = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+      return L[+m.slice(5, 7) - 1] + ' ' + m.slice(0, 4);
+    }
+    function stChart(months, trend) {
+      var bars = nst.querySelector('.nst-bars'), head = nst.querySelector('.nst-ch-h');
+      if (!bars || !head) { stPick = function () {}; return; }
+      var bs = bars.children, labs = nst.querySelectorAll('.nst-m span'), cur = -1;
+      var fine = window.matchMedia && matchMedia('(hover:hover)').matches;
+      /* Espace fine des milliers absente de la police Outfit : espace insécable classique */
+      var sp = function (t) { return String(t).replace(/\u202f/g, '\u00a0'); };
+      var pick = function (i) {
+        cur = i;
+        for (var k = 0; k < bs.length; k++) { bs[k].classList.toggle('on', k === i); if (labs[k]) labs[k].classList.toggle('on', k === i); }
+        bars.classList.toggle('sel', i >= 0); head.classList.toggle('sel', i >= 0);
+        var m = months[i];
+        head.innerHTML = m
+          ? '<span>' + moisLong(m.month) + '</span><b>' + sp(fmtN(m.impressions)) + ' affichages, ' + sp(fmtN(m.clicks)) + ' clic' + (m.clicks > 1 ? 's' : '') + '</b>'
+          : '<span>Affichages Google par mois</span><b>' + trend + '</b>';
+      };
+      stPick = pick;
+      Array.prototype.forEach.call(bs, function (b, i) {
+        if (fine) b.addEventListener('mouseenter', function () { pick(i); });
+        /* Au toucher, le focus arrive juste avant le clic : seul un second toucher referme */
+        b.addEventListener('click', function (e) { e.stopPropagation(); pick(!fine && cur === i && Date.now() - (b._f || 0) > 400 ? -1 : i); });
+        b.addEventListener('focus', function () { b._f = Date.now(); pick(i); });
+      });
+      if (fine) bars.addEventListener('mouseleave', function () { pick(-1); });
+      bars.addEventListener('focusout', function (e) { if (!bars.contains(e.relatedTarget)) pick(-1); });
     }
     function loadSt() {
       nst.innerHTML = '<div class="nst-t">Le site en chiffres</div><p class="nst-msg">Chargement des chiffres…</p>';
@@ -1121,6 +1166,7 @@
       if (!nst || !nst.classList.contains('open')) return;
       nst.classList.remove('open');
       st.setAttribute('aria-expanded', 'false');
+      stPick(-1);
     }
     if (st && nst) {
       st.addEventListener('click', function (e) {
@@ -1131,7 +1177,7 @@
         st.setAttribute('aria-expanded', 'true');
         if (!stLoaded) { stLoaded = true; loadSt(); }
       });
-      nst.addEventListener('click', function (e) { e.stopPropagation(); });
+      nst.addEventListener('click', function (e) { e.stopPropagation(); stPick(-1); });
       document.addEventListener('click', closeSt);
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSt(); });
       if (hbg) hbg.addEventListener('click', closeSt);
