@@ -1,0 +1,30 @@
+name: IndexNow
+
+# Prévient Bing, Yandex et les autres moteurs IndexNow des pages nouvelles ou
+# modifiées (scripts/indexnow.mjs). Google ne participe pas à IndexNow.
+on:
+  schedule:
+    - cron: '23 19 * * *'
+  workflow_dispatch:
+    inputs:
+      tout:
+        description: 'Envoyer toutes les adresses des sitemaps'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  envoyer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 300
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Envoyer les adresses modifiées
+        run: node scripts/indexnow.mjs ${{ inputs.tout && '--tout' || '' }}
