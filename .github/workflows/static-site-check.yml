@@ -72,5 +72,7 @@ jobs:
         run: node scripts/build-apercus-formations.mjs --check
       - name: Formations : données Course, titre, description, canonique, sitemap
         run: node scripts/inject-course-formations.mjs --check
+      - name: Liens entre formations et blog à jour
+        run: node scripts/inject-formations-blog.mjs --check
       - name: Fil d'Ariane (relevé, sans échec)
         run: node scripts/audit-fil-ariane.mjs

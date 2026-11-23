@@ -15,6 +15,8 @@ node scripts/build-derniers-articles.mjs
 node scripts/inject-a-lire-aussi.mjs
 # Données Course des formations, tirées du contenu de l'app (24/11/2026)
 node scripts/inject-course-formations.mjs
+# Liens entre formations et blog (24/11/2026)
+node scripts/inject-formations-blog.mjs
 node scripts/build-accueil-annuaire.mjs
 node scripts/inject-photos-villes.mjs
 node scripts/inject-blog-covers.mjs
