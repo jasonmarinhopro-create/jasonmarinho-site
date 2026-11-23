@@ -459,7 +459,7 @@ Questions 5, 6, 7 + envoi du contrat + lien de caution Stripe
       duration: '25 min',
       lessons: [
         {
-          id: 1,
+          id: 21,
           title: `Les 8 alertes silencieuses qui annoncent un problème`,
           duration: '9 min',
           content: `## Pourquoi les signaux sont silencieux
@@ -589,7 +589,7 @@ Les actions à enclencher :
 > Un hôte attentif détecte un problème **24 h avant** un hôte distrait.`,
         },
         {
-          id: 2,
+          id: 22,
           title: `La plainte voisin : réagir sans escalader`,
           duration: '8 min',
           content: `## Le scénario classique
@@ -741,7 +741,7 @@ Si ton contrat (cf. M1.L1) inclut une **clause anti-fête**, tu peux :
 > Mal gérée = avis 11/5, signalement copropriété, voire perte de l'autorisation municipale.`,
         },
         {
-          id: 3,
+          id: 23,
           title: `Le voyageur qui ne respecte pas les règles : que faire en direct`,
           duration: '8 min',
           content: `## Les 5 règles les plus violées
@@ -935,7 +935,7 @@ Quand un voyageur viole une règle, suis toujours ces 3 étapes :
       duration: '20 min',
       lessons: [
         {
-          id: 1,
+          id: 31,
           title: `L'inventaire photo : la méthode 47 photos`,
           duration: '7 min',
           content: `## Pourquoi 47 photos exactement
@@ -1113,7 +1113,7 @@ Voici les **5 zones oubliées** qui causent la plupart des litiges :
 > Et c'est ce qui te fait gagner 500 € de caution prélevée sans contestation.`,
         },
         {
-          id: 2,
+          id: 32,
           title: `L'état des lieux d'arrivée : ce qui te protège juridiquement`,
           duration: '7 min',
           content: `## Pourquoi un EDL d'arrivée formel
@@ -1298,7 +1298,7 @@ Garde le détail pour le **mobilier de valeur** (> 100 €) et les **équipement
 > Un EDL bâclé te coûte la totalité de la caution.`,
         },
         {
-          id: 3,
+          id: 33,
           title: `L'état des lieux de sortie en 10 minutes sans le voyageur`,
           duration: '6 min',
           content: `## Le mythe de l'EDL de sortie en présence du voyageur
@@ -1463,7 +1463,7 @@ Si tu prélèves la caution, envoie un **rapport structuré** :
       duration: '35 min',
       lessons: [
         {
-          id: 1,
+          id: 41,
           title: `Identifier et chiffrer un dégât (avec ou sans assurance)`,
           duration: '7 min',
           content: `## Les 4 types de dégâts en LCD
@@ -1655,7 +1655,7 @@ Tu perds en crédibilité, le voyageur conteste tout.
 > Avoir tes prix sous la main = chiffrage en 5 minutes au lieu de 1 heure.`,
         },
         {
-          id: 2,
+          id: 42,
           title: `Réclamer la caution sur Airbnb : la procédure officielle 2026`,
           duration: '8 min',
           content: `## Le mythe de la "caution Airbnb"
@@ -1822,7 +1822,7 @@ Tu ouvres la demande 16 jours après le départ.
 > Une demande bâclée = **0 €** et avis 11/5.`,
         },
         {
-          id: 3,
+          id: 43,
           title: `Réclamer la caution sur Booking.com : la procédure officielle`,
           duration: '7 min',
           content: `## Booking.com vs Airbnb : la grande différence
@@ -1993,7 +1993,7 @@ Pour un séjour Booking, ton schéma de protection optimal :
 > Plus tu te prépares, moins tu te fais piéger.`,
         },
         {
-          id: 4,
+          id: 44,
           title: `La caution Stripe / virement direct : comment encaisser`,
           duration: '7 min',
           content: `## Stripe : la procédure de capture en 5 minutes
@@ -2158,7 +2158,7 @@ Selon le mode de caution, voici les **frais cachés** :
 > La capture oubliée = caution perdue à jamais.`,
         },
         {
-          id: 5,
+          id: 45,
           title: `Les preuves à conserver (photos, dates, devis, témoignages)`,
           duration: '6 min',
           content: `## Pourquoi la preuve est ton seul atout
@@ -2356,7 +2356,7 @@ Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashbo
       duration: '25 min',
       lessons: [
         {
-          id: 1,
+          id: 51,
           title: `Le voyageur menace de te mettre 11/5 : que faire (et ne pas faire)`,
           duration: '7 min',
           content: `## La menace classique
@@ -2530,7 +2530,7 @@ Le voyageur menace clairement et explicitement de te mettre un avis injustifié.
 > Tu as le droit de **te protéger**. Le chantage n'est pas une stratégie commerciale, c'est de la lâcheté.`,
         },
         {
-          id: 2,
+          id: 52,
           title: `Répondre publiquement à un avis injustifié sans s'enliser`,
           duration: '6 min',
           content: `## Tu as reçu un avis 11/5. Et maintenant ?
@@ -2696,7 +2696,7 @@ Si la réponse est non à une seule question, **réécris**.
 > Une bonne réponse publique transforme un avis 11/5 en **outil de vente** pour les voyageurs intelligents.`,
         },
         {
-          id: 3,
+          id: 53,
           title: `Médiation Airbnb : déclencher quand et comment`,
           duration: '6 min',
           content: `## Quand la médiation est ton seul recours
@@ -2877,7 +2877,7 @@ Si tout échoue côté Airbnb, tu peux saisir le **médiateur du tourisme**.
 > Sans préparation, c'est **0 %**.`,
         },
         {
-          id: 4,
+          id: 54,
           title: `Quand impliquer la justice (et quand laisser tomber)`,
           duration: '6 min',
           content: `## La justice : ton dernier recours
@@ -3078,7 +3078,7 @@ Plus tu fais cette formation, plus tu **préviens**.
       duration: '25 min',
       lessons: [
         {
-          id: 1,
+          id: 61,
           title: `Plainte voisin pour bruit : la marche à suivre`,
           duration: '6 min',
           content: `## Le scénario complet
@@ -3234,7 +3234,7 @@ Si tu critiques le voisin, **toi** paraîtras peu raisonnable.
 > Mal gérée = interdiction LCD à terme.`,
         },
         {
-          id: 2,
+          id: 62,
           title: `Linge taché / casse : la facturation réflexe`,
           duration: '6 min',
           content: `## Les 3 dégâts les plus fréquents
@@ -3462,7 +3462,7 @@ Tu factures *« 500 € pour les nuisances »* sans coût réel.
 > Une facturation **floue ou tardive** = **abus** des voyageurs malins.`,
         },
         {
-          id: 3,
+          id: 63,
           title: `No-show et annulation tardive : comment réagir`,
           duration: '6 min',
           content: `## Les 3 scénarios principaux
@@ -3655,7 +3655,7 @@ Pour les **séjours > 500 €**, appelle le voyageur la veille.
 > Une politique floue = **abus garantis**.`,
         },
         {
-          id: 4,
+          id: 64,
           title: `Garder son sang-froid et ne pas s'épuiser : le mental de l'hôte`,
           duration: '7 min',
           content: `## Le burn-out de l'hôte LCD existe

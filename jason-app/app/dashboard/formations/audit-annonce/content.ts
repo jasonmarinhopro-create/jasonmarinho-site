@@ -22,7 +22,13 @@ export const AUDIT_ANNONCE_FORMATION = {
           id: 1,
           title: 'Pourquoi un diagnostic au feeling passe à côté de l\'essentiel',
           duration: '10 min',
-          content: `## "Je trouve que ça va" n'est pas un diagnostic
+          content: `:::bref
+- Regarder sa propre annonce au feeling donne un diagnostic faussé.
+- Trois biais : l'habitude, l'attachement et le manque de comparaison.
+- Une grille notée rend l'audit objectif et répétable.
+:::
+
+## "Je trouve que ça va" n'est pas un diagnostic
 
 Demande à dix hôtes ce qu'ils pensent de leur annonce, neuf te diront "ça va" ou "je pourrais faire mieux mais je ne sais pas quoi". Ce n'est pas un manque d'attention, c'est un problème de méthode : regarder sa propre annonce au feeling produit systématiquement un diagnostic faussé, par trois biais qui reviennent à chaque fois.
 
@@ -38,13 +44,35 @@ Demande à dix hôtes ce qu'ils pensent de leur annonce, neuf te diront "ça va"
 
 Un audit n'est pas un avis d'expert ni un ressenti amélioré. C'est une **grille appliquée de la même façon à chaque fois**, qui produit un score comparable dans le temps (as-tu progressé depuis le dernier audit ?) et comparable entre logements (lequel de tes deux biens a le plus besoin d'attention ?). C'est exactement ce que font, moyennant paiement, les services d'audit Airbnb qui existent déjà à l'international, mais avec une méthode que tu peux appliquer toi-même, gratuitement, en moins d'une heure.
 
-La leçon suivante présente la grille complète : le **Score Annonce sur 100 points**, le fil rouge de toute cette formation.`,
+La leçon suivante présente la grille complète : le **Score Annonce sur 100 points**, le fil rouge de toute cette formation.
+
+:::quiz
+? Pourquoi un diagnostic au feeling est-il peu fiable ?
+* Habitude et attachement faussent le regard
+- Parce qu'il prend trop de temps
+- Parce que les plateformes l'interdisent
+= On ne voit plus les défauts de ce qu'on connaît par cœur.
+:::
+
+:::quiz
+? Qu'apporte une grille notée ?
+* Un diagnostic objectif et comparable dans le temps
+- Une note toujours parfaite
+- Rien de plus
+= Les mêmes critères permettent de mesurer les progrès.
+:::`,
         },
         {
           id: 2,
           title: 'Le Score Annonce /100 : les 8 catégories et leur pondération',
           duration: '20 min',
-          content: `## Une seule grille, huit catégories, cent points
+          content: `:::bref
+- Le Score Annonce note l'annonce sur 100 points, en 8 catégories.
+- Chaque catégorie est pondérée selon son impact réel sur les réservations.
+- Un score se lit catégorie par catégorie, pas seulement au total.
+:::
+
+## Une seule grille, huit catégories, cent points
 
 Le Score Annonce note une annonce sur 8 catégories, chacune pondérée selon son impact réel sur les réservations, pas de façon égale. Une annonce avec des photos parfaites mais un règlement flou n'a pas le même risque qu'une annonce avec des photos moyennes mais un prix mal placé : la pondération reflète cette différence d'impact.
 
@@ -80,7 +108,30 @@ La pondération de base convient à la majorité des logements. Deux ajustements
 - **Logement haut de gamme** : monte le Visuel à /25 et baisse le Prix à /10, la décision se joue davantage sur l'image que sur la comparaison tarifaire.
 - **Colocation ou logement partagé** : monte la Conformité à /10 (règles de vie commune, respect des espaces partagés) et baisse le Visuel à /15.
 
-**Concrètement** : imprime ou copie cette grille avant de passer au module suivant. Chaque leçon qui suit correspond à une ou plusieurs de ces 8 catégories.`,
+**Concrètement** : imprime ou copie cette grille avant de passer au module suivant. Chaque leçon qui suit correspond à une ou plusieurs de ces 8 catégories.
+
+:::quiz
+? Pourquoi les catégories ne pèsent-elles pas toutes pareil ?
+- Par hasard
+- Pour compliquer
+* Elles n'ont pas le même impact sur les réservations
+= La pondération reflète ce qui fait vraiment réserver.
+:::
+
+:::quiz
+? Comment lire un score ?
+- Seulement le total
+- Seulement la meilleure catégorie
+* Catégorie par catégorie, pour trouver les faiblesses
+= Le détail montre où agir en premier.
+:::
+
+:::action
+titre: Note ton annonce sur 100
+texte: Bloque 30 minutes dans ton calendrier pour faire ton premier audit.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },
@@ -93,7 +144,13 @@ La pondération de base convient à la majorité des logements. Deux ajustements
           id: 3,
           title: 'Noter la photo de couverture et la galerie en 5 minutes',
           duration: '15 min',
-          content: `## Catégorie Visuel (/20)
+          content: `:::bref
+- Le visuel compte pour 20 points.
+- Test du pouce : la photo de couverture reste lisible en tout petit.
+- Un score faible révèle souvent une couverture peu lisible ou une galerie incomplète.
+:::
+
+## Catégorie Visuel (/20)
 
 Cette leçon donne le protocole de notation, pas la méthode pour prendre de meilleures photos : pour ça, la formation Photographie LCD au smartphone va beaucoup plus loin. Ici, l'objectif est de noter ce qui existe déjà, vite et sans expertise photo.
 
@@ -110,13 +167,35 @@ Cette leçon donne le protocole de notation, pas la méthode pour prendre de mei
 
 Un score sous 12/20 signale presque toujours la même cause : des photos prises pour se souvenir du logement, pas pour convaincre un inconnu de réserver. Ce n'est pas un problème de matériel, un smartphone récent suffit largement, c'est un problème de méthode et de moment de la journée.
 
-**Concrètement** : note la photo de couverture actuelle sur ces 6 critères avant de continuer. Si le score est sous 12/20, c'est la première action à corriger, avant même de retoucher le texte.`,
+**Concrètement** : note la photo de couverture actuelle sur ces 6 critères avant de continuer. Si le score est sous 12/20, c'est la première action à corriger, avant même de retoucher le texte.
+
+:::quiz
+? Qu'est-ce que le test du pouce ?
+- Prendre la photo d'une main
+* Vérifier que la photo de couverture reste lisible en miniature
+- Compter les photos avec le pouce
+= Dans les résultats, la photo s'affiche en petit sur téléphone.
+:::
+
+:::quiz
+? Que révèle souvent un score visuel faible ?
+- Un prix trop bas
+- Un mauvais règlement
+* Une couverture peu lisible ou une galerie incomplète
+= Ce sont les deux défauts visuels les plus fréquents.
+:::`,
         },
         {
           id: 4,
           title: 'Noter le titre et la description sans se noyer dans le détail',
           duration: '15 min',
-          content: `## Catégorie Texte (/15)
+          content: `:::bref
+- Le texte compte pour 15 points : titre et description.
+- Le titre doit montrer un avantage clair et un repère de lieu.
+- Ne te noie pas dans les détails : note vite, corrige ensuite.
+:::
+
+## Catégorie Texte (/15)
 
 Même logique que la leçon précédente : un protocole de notation rapide, pas un cours de copywriting complet (couvert en détail dans Optimiser son annonce Airbnb et dans le module psychologie de la conversion d'Annonce 360°).
 
@@ -136,7 +215,30 @@ Même logique que la leçon précédente : un protocole de notation rapide, pas 
 
 Ne cherche pas à réécrire le titre ou la description pendant que tu notes : sépare strictement le diagnostic de la correction. Un audit qui se transforme en session de réécriture perd le fil, et le score obtenu devient peu fiable puisqu'il note un texte à moitié modifié plutôt que l'existant.
 
-**Concrètement** : note le titre et la description actuels sans les toucher. Garde la correction pour après l'audit complet, une fois que tu sais si le texte est vraiment le problème principal ou juste un symptôme secondaire.`,
+**Concrètement** : note le titre et la description actuels sans les toucher. Garde la correction pour après l'audit complet, une fois que tu sais si le texte est vraiment le problème principal ou juste un symptôme secondaire.
+
+:::quiz
+? Qu'est-ce qui rapporte des points dans un titre ?
+- Des majuscules
+* Un avantage clair qui distingue le logement
+- Le plus de mots possible
+= Le titre doit donner une raison de cliquer.
+:::
+
+:::quiz
+? Quel piège éviter dans cette étape ?
+- Lire la description
+- Noter le titre
+* Réécrire tout le texte au lieu de le noter
+= L'audit mesure ; la correction vient après.
+:::
+
+:::action
+titre: Note ta catégorie visuel et texte
+texte: Inscris tes deux notes dans ta fiche logement pour suivre ton évolution.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -149,7 +251,13 @@ Ne cherche pas à réécrire le titre ou la description pendant que tu notes : s
           id: 5,
           title: 'Prix, calendrier, réactivité : les 3 signaux qui tuent un classement',
           duration: '20 min',
-          content: `## Catégories Prix (/15), Disponibilité (/10) et Comportement hôte (/10)
+          content: `:::bref
+- Prix (15), disponibilité (10) et comportement de l'hôte (10) sont surveillés en continu.
+- Compare ton prix à 3 à 5 concurrents directs.
+- Calendrier ouvert loin et réponses rapides comptent.
+:::
+
+## Catégories Prix (/15), Disponibilité (/10) et Comportement hôte (/10)
 
 Trois catégories regroupées dans cette leçon parce qu'elles partagent un point commun : ce sont des signaux que l'algorithme de chaque plateforme surveille en continu, et qu'un hôte laisse dériver sans s'en rendre compte, contrairement au visuel ou au texte qu'on revoit au moins de temps en temps.
 
@@ -173,13 +281,35 @@ Trois catégories regroupées dans cette leçon parce qu'elles partagent un poin
 
 Contrairement aux photos ou au texte, personne ne "voit" un mauvais taux de réponse ou un calendrier trop court en consultant sa propre annonce, ces données sont dans les statistiques de la plateforme, pas dans la fiche elle-même. C'est exactement pour ça qu'elles font l'objet d'un audit à part : elles se dégradent silencieusement.
 
-**Concrètement** : ouvre les statistiques de ton compte hôte (Airbnb, Booking) et note ces trois catégories avant de continuer, plutôt que de te fier à ton impression générale.`,
+**Concrètement** : ouvre les statistiques de ton compte hôte (Airbnb, Booking) et note ces trois catégories avant de continuer, plutôt que de te fier à ton impression générale.
+
+:::quiz
+? Pourquoi ces trois catégories sont-elles souvent négligées ?
+- Elles sont automatiques
+* Elles dérivent sans qu'on s'en rende compte
+- Elles ne comptent pas
+= On revoit ses photos, rarement son calendrier ou son délai de réponse.
+:::
+
+:::quiz
+? Comment noter ton prix ?
+- Sans comparaison
+* En le comparant à 3 à 5 logements concurrents
+- En le comparant à un hôtel de luxe
+= Seule la comparaison dit s'il est bien placé.
+:::`,
         },
         {
           id: 6,
           title: 'Avis et badge Coup de Cœur : lire ce que la note ne dit pas',
           duration: '15 min',
-          content: `## Catégorie Avis (/15)
+          content: `:::bref
+- Les avis comptent pour 15 points.
+- Ne t'arrête pas à la moyenne : regarde la fraîcheur des avis.
+- Le badge Coup de Cœur reflète plusieurs signaux à la fois.
+:::
+
+## Catégorie Avis (/15)
 
 La formation Écrire des avis et répondre aux voyageurs couvre la rédaction et la sollicitation. Ici, l'objectif est différent : savoir noter la catégorie Avis dans un audit, en évitant l'erreur la plus fréquente, s'arrêter à la moyenne affichée.
 
@@ -197,7 +327,30 @@ Compte le nombre d'avis reçus dans les 90 derniers jours et compare-le au rythm
 
 Le badge Coup de Cœur Voyageurs (couvert en détail dans Optimiser son annonce Airbnb) n'a pas sa propre ligne dans le Score Annonce : il est la **conséquence** d'un bon score sur Avis, Comportement hôte et Visuel combinés, pas une catégorie à auditer séparément. Si le score obtenu sur ces trois catégories dépasse 80 % chacune et que le badge n'apparaît toujours pas, c'est un signal à surveiller dans le temps plutôt qu'à corriger dans l'immédiat : le badge se recalcule sur une fenêtre glissante.
 
-**Concrètement** : calcule la vélocité des 90 derniers jours avant de noter cette catégorie. C'est la donnée la plus révélatrice et la plus souvent absente d'un audit fait au feeling.`,
+**Concrètement** : calcule la vélocité des 90 derniers jours avant de noter cette catégorie. C'est la donnée la plus révélatrice et la plus souvent absente d'un audit fait au feeling.
+
+:::quiz
+? Quelle erreur faire en notant les avis ?
+- Regarder les avis récents
+- Lire les critiques
+* S'arrêter à la note moyenne
+= La fraîcheur des avis compte autant que la moyenne.
+:::
+
+:::quiz
+? Que mesure la vélocité d'avis ?
+- La longueur des avis
+- Le nombre de photos
+* Le rythme des avis récents
+= Des avis réguliers montrent une qualité actuelle.
+:::
+
+:::action
+titre: Vérifie tes performances
+texte: Regarde ton remplissage et ton revenu par nuit disponible pour compléter ton audit.
+lien: /dashboard/performances
+bouton: Voir mes performances
+:::`,
         },
       ],
     },
@@ -210,7 +363,13 @@ Le badge Coup de Cœur Voyageurs (couvert en détail dans Optimiser son annonce 
           id: 7,
           title: 'Équipements déclarés vs équipements réels',
           duration: '15 min',
-          content: `## Catégorie Équipements réels (/10)
+          content: `:::bref
+- Les équipements réels comptent pour 10 points.
+- Un équipement coché mais absent ou en panne déçoit le voyageur.
+- Vérifie sur place, surtout si le logement est géré à distance.
+:::
+
+## Catégorie Équipements réels (/10)
 
 C'est l'angle presque jamais traité ailleurs dans le catalogue : pas "comment lister ses équipements" mais "comment vérifier que ce qui est listé existe vraiment", un contrôle que la quasi-totalité des hôtes ne refont jamais après la création de l'annonce.
 
@@ -229,13 +388,35 @@ Un équipement coché mais absent, en panne, ou différent de la photo est l'une
 
 Pour un hôte qui ne visite plus son logement régulièrement, ou pour une conciergerie qui audite le bien d'un client, cette catégorie demande une vérification sur place ou via la personne en charge du ménage, pas uniquement une relecture de l'annonce depuis un ordinateur. C'est la seule catégorie du Score Annonce qui ne peut pas se noter entièrement à distance avec un niveau de confiance élevé.
 
-**Concrètement** : si tu n'es pas allé physiquement dans le logement depuis plus de 6 mois, cette catégorie ne peut être notée qu'avec une réserve explicite dans le rapport final, plutôt qu'avec un score ferme, un point qui sera repris dans le module sur la restitution.`,
+**Concrètement** : si tu n'es pas allé physiquement dans le logement depuis plus de 6 mois, cette catégorie ne peut être notée qu'avec une réserve explicite dans le rapport final, plutôt qu'avec un score ferme, un point qui sera repris dans le module sur la restitution.
+
+:::quiz
+? Pourquoi vérifier les équipements sur place ?
+- Pour les compter
+- Ce n'est pas utile
+* Un équipement coché mais absent fait baisser la note
+= Le voyageur juge sur ce qui était promis.
+:::
+
+:::quiz
+? Quand cette vérification est-elle la plus importante ?
+- Jamais
+- Seulement l'été
+* Pour un logement géré à distance
+= On voit moins souvent le logement, donc les écarts passent inaperçus.
+:::`,
         },
         {
           id: 8,
           title: 'Règlement intérieur et photos trompeuses : le risque caché',
           duration: '15 min',
-          content: `## Catégorie Conformité (/5)
+          content: `:::bref
+- La conformité compte pour 5 points mais protège d'un gros risque.
+- Règlement complet et photos fidèles évitent litiges et mauvais avis.
+- Une photo trompeuse coûte bien plus qu'elle ne rapporte.
+:::
+
+## Catégorie Conformité (/5)
 
 Seulement 5 points sur 100, mais une catégorie qui protège contre un risque disproportionné par rapport à son poids : le litige évitable et le mauvais avis lié à une attente non cadrée dès le départ.
 
@@ -254,7 +435,30 @@ Un règlement flou ne fait pas directement baisser un classement, mais il augmen
 
 Contrairement aux autres catégories, la Conformité peut passer de 5/5 à un score dégradé du jour au lendemain, un changement de réglementation locale, une nouvelle mention obligatoire. C'est la seule catégorie du Score Annonce qui mérite d'être revérifiée même quand rien n'a changé dans l'annonce elle-même.
 
-**Concrètement** : ferme cette leçon en ayant vérifié une chose précise : ton règlement intérieur mentionne-t-il explicitement le nombre maximum de voyageurs autorisés ? C'est le point le plus souvent absent, et l'un des plus fréquemment source de litige.`,
+**Concrètement** : ferme cette leçon en ayant vérifié une chose précise : ton règlement intérieur mentionne-t-il explicitement le nombre maximum de voyageurs autorisés ? C'est le point le plus souvent absent, et l'un des plus fréquemment source de litige.
+
+:::quiz
+? Pourquoi une catégorie de 5 points compte-t-elle autant ?
+- Elle est décorative
+* Elle évite des litiges et des avis négatifs coûteux
+- Elle double la note
+= Une attente mal cadrée crée des conflits.
+:::
+
+:::quiz
+? Quel risque présente une photo trompeuse ?
+- Aucun
+* Un voyageur déçu et un avis négatif
+- Plus de réservations sans effet
+= La déception se paie dans les avis.
+:::
+
+:::action
+titre: Fais le tour des équipements de ton logement
+texte: Note dans ta fiche logement les équipements à réparer ou à retirer de l'annonce.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -267,7 +471,13 @@ Contrairement aux autres catégories, la Conformité peut passer de 5/5 à un sc
           id: 9,
           title: 'La structure d\'un rapport d\'audit qu\'on lit vraiment',
           duration: '15 min',
-          content: `## Du score au document
+          content: `:::bref
+- Un bon rapport d'audit tient sur une page.
+- Quatre blocs : score, points forts, points faibles, actions.
+- Adapte le ton au lecteur : toi, ou un propriétaire.
+:::
+
+## Du score au document
 
 Une grille remplie de notes n'est pas encore un audit utilisable, ni pour toi-même dans six mois, ni pour un propriétaire qui doit comprendre ce qu'il faut faire. Cette leçon transforme le score en document lisible.
 
@@ -289,13 +499,35 @@ Un audit exhaustif qui liste chaque défaut détecté, remarque par remarque, pr
 - **Pour toi-même** : direct, sans ménagement, le but est l'efficacité, pas le moral.
 - **Pour un propriétaire tiers** (si tu es conciergerie ou si tu prêtes main-forte à un autre hôte) : factuel, jamais accusateur. "La catégorie Visuel obtient 11/20" se lit très différemment de "tes photos ne sont pas terribles", pour un contenu presque identique. Le module 6 détaille cette nuance en profondeur.
 
-**Concrètement** : prends le score que tu as calculé dans les modules précédents et mets-le en forme selon cette structure en une page, avant de passer à la leçon sur la priorisation.`,
+**Concrètement** : prends le score que tu as calculé dans les modules précédents et mets-le en forme selon cette structure en une page, avant de passer à la leçon sur la priorisation.
+
+:::quiz
+? Combien de pages pour un rapport d'audit ?
+* Une seule
+- Au moins dix
+- Aucune, à l'oral
+= Un document court est lu et appliqué.
+:::
+
+:::quiz
+? Par quoi commencer le rapport ?
+- La liste des défauts
+- Le prix de l'audit
+* Le score global et les sous-scores
+= Le lecteur voit d'abord la situation d'ensemble.
+:::`,
         },
         {
           id: 10,
           title: 'Prioriser sans décourager : rapide / moyen / structurel',
           duration: '15 min',
-          content: `## Toutes les corrections ne se valent pas
+          content: `:::bref
+- Trois niveaux d'actions : rapide, moyen, structurel.
+- Les actions rapides en premier : effet visible en deux semaines.
+- Limite le rapport à quelques actions bien choisies.
+:::
+
+## Toutes les corrections ne se valent pas
 
 Un rapport d'audit qui présente 12 actions à mener dans le désordre a le même défaut qu'une grille jamais transformée en document : personne ne sait par où commencer, et rien n'est fait. Cette leçon donne la méthode de classement qui résout ce problème.
 
@@ -317,7 +549,30 @@ Classe chaque point faible identifié dans le rapport selon deux axes : l'effort
 
 Au-delà de 5 actions listées simultanément, l'attention du lecteur chute fortement, qu'il s'agisse de toi-même relisant ton propre rapport dans 3 mois, ou d'un propriétaire qui le découvre pour la première fois. Garde toujours les actions restantes en réserve pour un second passage, plutôt que de tout lister d'un coup.
 
-**Concrètement** : reprends les points faibles identifiés dans ton rapport et classe-les en rapide / moyen / structurel avant de continuer. C'est ce classement, pas le score lui-même, qui rend un audit réellement actionnable.`,
+**Concrètement** : reprends les points faibles identifiés dans ton rapport et classe-les en rapide / moyen / structurel avant de continuer. C'est ce classement, pas le score lui-même, qui rend un audit réellement actionnable.
+
+:::quiz
+? Qu'est-ce qu'une action rapide ?
+* Moins d'une heure, effet visible en deux semaines
+- Des travaux de cuisine
+- Changer de ville
+= Exemple : changer la photo de couverture.
+:::
+
+:::quiz
+? Combien d'actions mettre dans le rapport ?
+- Le plus possible
+- Une seule pour toute l'année
+* Quelques actions prioritaires
+= Trop d'actions découragent et rien n'est fait.
+:::
+
+:::action
+titre: Planifie tes 3 actions rapides
+texte: Ajoute-les dans ton calendrier cette semaine.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },
@@ -330,7 +585,13 @@ Au-delà de 5 actions listées simultanément, l'attention du lecteur chute fort
           id: 11,
           title: 'Audit gratuit ou payant : lequel choisir et pourquoi',
           duration: '15 min',
-          content: `## Deux modèles, deux objectifs différents
+          content: `:::bref
+- L'audit gratuit sert de porte d'entrée vers un mandat de gestion.
+- L'audit payant est une prestation ponctuelle.
+- Choisis selon ton objectif : signer des mandats ou vendre un service.
+:::
+
+## Deux modèles, deux objectifs différents
 
 À l'international, l'audit d'annonce est déjà un service payant établi. En France, il reste quasiment absent en tant qu'offre formalisée, ce qui laisse le champ libre à qui structure cette compétence en premier. Deux façons de le monétiser, selon l'objectif poursuivi.
 
@@ -357,13 +618,35 @@ Pour un propriétaire qui gère seul son bien et veut un diagnostic externe sans
 
 Rien n'empêche de combiner les deux : un audit payant pour les hôtes autonomes, et un audit gratuit réservé aux prospects qui correspondent au profil recherché pour un mandat de gestion.
 
-**Concrètement** : détermine dès maintenant lequel des deux objectifs correspond à ta situation, cette décision conditionne directement la façon de présenter l'audit, traitée dans la dernière leçon.`,
+**Concrètement** : détermine dès maintenant lequel des deux objectifs correspond à ta situation, cette décision conditionne directement la façon de présenter l'audit, traitée dans la dernière leçon.
+
+:::quiz
+? À quoi sert un audit gratuit pour une conciergerie ?
+* Ouvrir la discussion vers un mandat de gestion
+- Gagner de l'argent immédiatement
+- Remplacer le contrat
+= Il montre ton expertise avant la signature.
+:::
+
+:::quiz
+? Quand proposer un audit payant ?
+- Jamais
+- À tous tes clients en gestion
+* Quand le propriétaire veut un diagnostic sans déléguer la gestion
+= C'est une prestation ponctuelle autonome.
+:::`,
         },
         {
           id: 12,
           title: 'Présenter un audit sans braquer, et le transformer en mandat',
           duration: '20 min',
-          content: `## Le rapport le plus juste peut quand même braquer
+          content: `:::bref
+- Même un audit juste peut braquer s'il est mal présenté.
+- Commence par le score et les points forts, puis les priorités.
+- Propose la suite sans forcer la main.
+:::
+
+## Le rapport le plus juste peut quand même braquer
 
 Un audit techniquement irréprochable peut échouer complètement s'il est mal présenté. Un propriétaire qui reçoit une liste de défauts sur son bien, même factuelle, réagit d'abord émotionnellement, pas rationnellement. Cette dernière leçon donne la structure de présentation qui évite ce piège.
 
@@ -387,7 +670,30 @@ Si l'objectif est la prospection (leçon précédente), la transition vers un ma
 
 Cette formation part du score, passe par le rapport, et se termine par la conversation qui donne à ce travail sa vraie valeur. Un audit jamais restitué correctement, aussi rigoureux soit le score, ne produit aucun résultat, ni pour un usage personnel (tu ne le relis jamais), ni pour un usage commercial (le propriétaire ne donne pas suite).
 
-**C'est la fin de la formation.** La prochaine étape : choisis une annonce, la tienne ou celle d'un premier client, et fais tourner la grille complète de bout en bout avant que la méthode ne se dilue dans la théorie.`,
+**C'est la fin de la formation.** La prochaine étape : choisis une annonce, la tienne ou celle d'un premier client, et fais tourner la grille complète de bout en bout avant que la méthode ne se dilue dans la théorie.
+
+:::quiz
+? Par quoi commencer la restitution d'un audit ?
+- La liste complète des défauts
+- Le tarif du mandat
+* Le score et les points forts
+= Un propriétaire réagit d'abord émotionnellement : valorise avant de critiquer.
+:::
+
+:::quiz
+? Comment transformer un audit en mandat ?
+- Exiger une signature immédiate
+- Critiquer le propriétaire
+* Proposer de prendre en charge les actions, sans pression
+= Le propriétaire décide mieux quand il ne se sent pas poussé.
+:::
+
+:::action
+titre: Estime les revenus du logement audité
+texte: Ajoute une estimation chiffrée à ton rapport pour convaincre.
+lien: /dashboard/calculateurs#revenus
+bouton: Estimer les revenus
+:::`,
         },
       ],
     },

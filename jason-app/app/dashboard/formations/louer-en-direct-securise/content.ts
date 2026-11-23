@@ -30,7 +30,13 @@ export const LOUER_EN_DIRECT_FORMATION = {
           id: 1,
           title: 'Ce que la plateforme faisait pour toi (et que tu vas reprendre)',
           duration: '15 min',
-          content: `## Pourquoi tant d'hôtes regardent vers le direct
+          content: `:::bref
+- Depuis le 13 octobre 2026, Airbnb prélève 15,5 % à l'hôte, soit 18,6 % avec la TVA.
+- La plateforme ne faisait pas que prendre une commission : vérification, paiement, garantie, médiation.
+- En direct, ces protections sont à reprendre toi-même, et c'est faisable.
+:::
+
+## Pourquoi tant d'hôtes regardent vers le direct
 
 Depuis le 13 octobre 2026, Airbnb applique dans l'Espace économique européen un **frais d'hôte unique de 15,5 %** sur chaque réservation, soit **18,6 % avec la TVA** sur cette commission. Avant, l'hôte payait environ 3 % et le voyageur le reste. Sur un séjour de 1 000 €, c'est désormais 186 € qui partent avant même que tu aies fait le ménage.
 
@@ -64,13 +70,35 @@ Aucune de ces briques n'est compliquée. Il faut juste les poser **une fois**, p
 
 ## À retenir
 
-Le direct n'est pas « Airbnb en moins bien ». C'est un autre métier : tu deviens ta propre plateforme. Cette formation te donne les 8 briques, dans l'ordre.`,
+Le direct n'est pas « Airbnb en moins bien ». C'est un autre métier : tu deviens ta propre plateforme. Cette formation te donne les 8 briques, dans l'ordre.
+
+:::quiz
+? Sur un séjour de 1 000 €, combien part en frais Airbnb TVA comprise ?
+- 30 €
+- 100 €
+* 186 €
+= 1 000 × 18,6 % = 186 € depuis le 13 octobre 2026.
+:::
+
+:::quiz
+? Que faisait la plateforme en plus de prendre une commission ?
+- Faire le ménage
+* Vérifier, encaisser, garantir et arbitrer les litiges
+- Rien d'autre
+= En direct, tu reprends ces rôles avec les bons outils.
+:::`,
         },
         {
           id: 2,
           title: 'Où trouver tes voyageurs en direct (et le rôle de Driing)',
           duration: '15 min',
-          content: `## Garde les plateformes, ajoute le direct
+          content: `:::bref
+- Garde les plateformes et construis le direct à côté.
+- Cinq sources : anciens voyageurs, bouche-à-oreille, fiche Google, réseaux, Driing (je suis co-fondateur).
+- Le premier frein du voyageur est la peur : rassure-le.
+:::
+
+## Garde les plateformes, ajoute le direct
 
 Ne coupe pas Airbnb ou Booking du jour au lendemain. Ils t'apportent la visibilité de masse. Le direct se construit à côté, réservation après réservation, jusqu'à représenter une vraie part de tes revenus.
 
@@ -107,7 +135,30 @@ Le voyageur aussi a peur de réserver en direct : peur de l'arnaque, de payer po
 - ton **numéro d'enregistrement** et tes avis visibles
 - une **caution expliquée** : bloquée, jamais débitée sans raison
 
-Pour attirer les voyageurs (site, Google, réseaux), la formation **Annonce Directe** va plus loin. Ici, on se concentre sur la sécurité : à qui tu loues, comment tu encaisses, comment tu te protèges.`,
+Pour attirer les voyageurs (site, Google, réseaux), la formation **Annonce Directe** va plus loin. Ici, on se concentre sur la sécurité : à qui tu loues, comment tu encaisses, comment tu te protèges.
+
+:::quiz
+? Quelle est la source de réservations directes la plus rentable ?
+* Tes anciens voyageurs
+- Les inconnus sur internet
+- Les petites annonces gratuites
+= Ils te connaissent déjà et n'ont plus besoin de la plateforme.
+:::
+
+:::quiz
+? Faut-il quitter Airbnb pour faire du direct ?
+- Oui, mais seulement l'été
+* Non, le direct se construit à côté
+- Oui, tout de suite
+= Les plateformes t'apportent la visibilité qui alimente ensuite le direct.
+:::
+
+:::action
+titre: Prépare une affiche pour ton logement
+texte: Invite tes voyageurs à revenir en direct avec un QR code dans le logement.
+lien: /dashboard/outils-impression
+bouton: Créer mon affiche
+:::`,
         },
       ],
     },
@@ -117,10 +168,16 @@ Pour attirer les voyageurs (site, Google, réseaux), la formation **Annonce Dire
       duration: '35 min',
       lessons: [
         {
-          id: 1,
+          id: 21,
           title: "Vérifier l'identité d'un voyageur, dans les règles",
           duration: '20 min',
-          content: `## Ce que tu as le droit de faire (et ce qui est interdit)
+          content: `:::bref
+- Tu peux demander à voir la pièce d'identité, pas en garder une copie (CNIL).
+- La fiche de police est obligatoire pour les voyageurs étrangers et se garde 6 mois.
+- Un outil de vérification d'identité sérieux renforce la sécurité.
+:::
+
+## Ce que tu as le droit de faire (et ce qui est interdit)
 
 La règle surprend beaucoup d'hôtes : **tu n'as pas le droit de garder une copie de la pièce d'identité** de ton voyageur. La CNIL l'a dit clairement pour les hébergeurs : photocopie, scan et photo de la pièce sont exclus. Tu peux en revanche **demander à voir** la pièce, par exemple pour vérifier la nationalité ou que la personne qui arrive est bien celle qui a réservé.
 
@@ -166,13 +223,35 @@ Pour un logement haut de gamme, des arrivées autonomes ou beaucoup de réservat
 ✅ Voir la pièce, vérifier le nom, faire remplir la fiche de police aux étrangers
 ✅ Payer par carte au nom du voyageur
 ✅ Vérifier le voyageur dans la base Sécurité voyageur
-❌ Photocopier, scanner ou photographier la pièce d'identité`,
+❌ Photocopier, scanner ou photographier la pièce d'identité
+
+:::quiz
+? As-tu le droit de garder une photocopie de la pièce d'identité du voyageur ?
+- Oui, toujours
+- Oui, si elle est en couleur
+* Non, tu peux seulement la voir
+= La CNIL exclut photocopie, scan et photo pour les hébergeurs.
+:::
+
+:::quiz
+? Combien de temps garder une fiche de police ?
+* 6 mois
+- 10 ans
+- Une semaine
+= Articles R814-1 à R814-3 du CESEDA.
+:::`,
         },
         {
-          id: 2,
+          id: 22,
           title: 'Les arnaques qui visent les propriétaires',
           duration: '15 min',
-          content: `## Le direct attire aussi les escrocs
+          content: `:::bref
+- Les arnaques du direct font croire qu'un paiement est arrivé, puis réclament de l'argent.
+- Faux virement bloqué, trop-perçu, contrat pré-rempli, paiement imposé hors de ton outil.
+- Règle d'or : l'argent n'est reçu que lorsqu'il est sur ton compte.
+:::
+
+## Le direct attire aussi les escrocs
 
 Sans plateforme entre vous, certains faux voyageurs tentent leur chance. Les arnaques se ressemblent toutes : on te fait croire qu'un paiement est arrivé, puis on te demande de l'argent.
 
@@ -207,7 +286,30 @@ Mandat cash, coupons prépayés, crypto, virement vers un tiers : aucun voyageur
 
 ### Le signal qui ne trompe pas
 
-Une histoire compliquée, de l'urgence, et toi qui dois sortir de l'argent. Si les trois sont réunis, arrête l'échange. Tu peux signaler la personne dans **Sécurité voyageur** : la base protège les autres hôtes, et l'onglet des arnaques du moment t'aide à reconnaître les nouvelles techniques.`,
+Une histoire compliquée, de l'urgence, et toi qui dois sortir de l'argent. Si les trois sont réunis, arrête l'échange. Tu peux signaler la personne dans **Sécurité voyageur** : la base protège les autres hôtes, et l'onglet des arnaques du moment t'aide à reconnaître les nouvelles techniques.
+
+:::quiz
+? Un voyageur envoie une capture de virement et te demande des frais de déblocage. Que faire ?
+* Refuser : c'est une arnaque classique
+- Payer les frais
+- Lui donner ta carte bancaire
+= Aucune banque ne demande au bénéficiaire de payer pour recevoir un virement.
+:::
+
+:::quiz
+? Quand considérer un paiement comme reçu ?
+* Quand il apparaît réellement sur ton compte
+- Quand le voyageur envoie une capture
+- Quand il le promet par message
+= Une capture d'écran se falsifie facilement.
+:::
+
+:::action
+titre: Active l'encaissement par carte
+texte: Encaisse par lien de paiement sécurisé plutôt que par virement.
+lien: /dashboard/contrats
+bouton: Ouvrir mes contrats
+:::`,
         },
       ],
     },
@@ -217,10 +319,16 @@ Une histoire compliquée, de l'urgence, et toi qui dois sortir de l'argent. Si l
       duration: '45 min',
       lessons: [
         {
-          id: 1,
+          id: 31,
           title: 'Le contrat de location saisonnière : ce qu\'il doit contenir',
           duration: '25 min',
-          content: `## Un écrit est obligatoire, même pour une nuit
+          content: `:::bref
+- Un contrat écrit est obligatoire, même pour une nuit (article L324-2 du Code du tourisme).
+- Arrhes ou acompte : le choix change tout en cas d'annulation.
+- Pas de droit de rétractation de 14 jours pour une location à date fixe.
+:::
+
+## Un écrit est obligatoire, même pour une nuit
 
 Le Code du tourisme impose que toute offre ou tout contrat de location saisonnière soit **écrit**, avec le **prix demandé** et un **état descriptif des lieux**. Un échange de messages ne suffit pas.
 
@@ -272,13 +380,35 @@ Le module **Contrats & paiements** (formule Standard) génère un contrat qui re
 
 ## À retenir
 
-Un bon contrat ne sert pas qu'en cas de litige : il rassure le voyageur et évite la plupart des malentendus (heure d'arrivée, nombre de personnes, ce qui est inclus). Prends le temps de l'écrire une fois, proprement.`,
+Un bon contrat ne sert pas qu'en cas de litige : il rassure le voyageur et évite la plupart des malentendus (heure d'arrivée, nombre de personnes, ce qui est inclus). Prends le temps de l'écrire une fois, proprement.
+
+:::quiz
+? Qu'impose l'article L324-2 du Code du tourisme ?
+- Un simple message suffit
+- Un acte notarié
+* Un écrit avec le prix et un état descriptif des lieux
+= Toute location saisonnière doit faire l'objet d'un contrat écrit.
+:::
+
+:::quiz
+? Le voyageur a-t-il 14 jours pour se rétracter ?
+* Non, pas pour une location à date déterminée
+- Oui, toujours
+- Oui, s'il paie par carte
+= L'article L221-28 du Code de la consommation exclut ce droit.
+:::`,
         },
         {
-          id: 2,
+          id: 32,
           title: 'Encaisser le loyer et la caution sans risque',
           duration: '20 min',
-          content: `## Carte ou virement : le match
+          content: `:::bref
+- Le paiement par carte est réellement reçu ; le virement peut être falsifié.
+- La caution par empreinte bancaire bloque une somme sans la débiter.
+- Une empreinte ne dure qu'environ 7 jours : l'app la renouvelle pour toi.
+:::
+
+## Carte ou virement : le match
 
 | | Lien de paiement par carte | Virement bancaire |
 | --- | --- | --- |
@@ -321,7 +451,30 @@ Dans **Contrats & paiements**, une fois ton compte Stripe connecté (Mon compte 
 
 ✅ Carte pour le loyer, empreinte pour la caution, bloquée juste avant l'arrivée
 ✅ Virement accepté seulement s'il est visible sur ton compte avant l'arrivée
-❌ Jamais de remise de clés contre une simple capture d'écran`,
+❌ Jamais de remise de clés contre une simple capture d'écran
+
+:::quiz
+? Quel moyen de paiement évite le risque de faux justificatif ?
+* Le lien de paiement par carte
+- Le virement annoncé par capture
+- Les espèces envoyées par courrier
+= La banque du voyageur authentifie le paiement.
+:::
+
+:::quiz
+? Combien de temps dure une empreinte bancaire ?
+* Environ 7 jours
+- Un an
+- Une heure
+= Pour un long séjour, elle doit être renouvelée.
+:::
+
+:::action
+titre: Prépare ton premier contrat direct
+texte: Remplis ta fiche logement puis crée un contrat avec loyer et caution.
+lien: /dashboard/contrats
+bouton: Créer un contrat
+:::`,
         },
       ],
     },
@@ -331,10 +484,16 @@ Dans **Contrats & paiements**, une fois ton compte Stripe connecté (Mon compte 
       duration: '30 min',
       lessons: [
         {
-          id: 1,
+          id: 41,
           title: 'Ce que ton assurance actuelle ne couvre (probablement) pas',
           duration: '15 min',
-          content: `## Pas d'obligation légale, mais un vrai risque
+          content: `:::bref
+- Aucune loi n'oblige à s'assurer, mais un assureur non prévenu peut refuser de payer.
+- Préviens ton assureur par écrit de la location courte durée.
+- En direct, la garantie de la plateforme ne joue plus.
+:::
+
+## Pas d'obligation légale, mais un vrai risque
 
 Aucune loi n'oblige un loueur de meublé de tourisme à s'assurer. Mais louer sans le dire à ton assureur, c'est prendre le risque qu'il **refuse de payer** le jour du sinistre.
 
@@ -364,13 +523,35 @@ AirCover d'Airbnb ne couvre que les séjours **réservés sur Airbnb**. Pour une
 
 Tu peux demander dans ton contrat que le voyageur ait une **assurance villégiature** (responsabilité civile pour un séjour en location), souvent incluse dans son assurance habitation, et lui demander une attestation. Ça ne remplace pas la tienne, mais ça ajoute un payeur en cas de gros dégât.
 
-> Source : Welkeys, « Quelle assurance pour votre location saisonnière ? » (2026).`,
+> Source : Welkeys, « Quelle assurance pour votre location saisonnière ? » (2026).
+
+:::quiz
+? Pourquoi prévenir ton assureur par écrit ?
+- Pour baisser tes impôts
+* Sinon il peut refuser de payer en cas de sinistre
+- C'est inutile
+= La location courte durée change le risque couvert.
+:::
+
+:::quiz
+? Qu'est-ce qui disparaît en réservation directe ?
+- Le Code du tourisme
+* La garantie dommages de la plateforme
+- Ton assurance habitation
+= Ta protection repose sur ton contrat, ta caution et ton assurance.
+:::`,
         },
         {
-          id: 2,
+          id: 42,
           title: 'Comparer les offres : les 10 questions à poser',
           duration: '15 min',
-          content: `## Le piège des offres qui se ressemblent
+          content: `:::bref
+- Deux contrats au même prix peuvent couvrir des choses très différentes.
+- Pose 10 questions par écrit à chaque assureur.
+- Garde les preuves : photos datées, inventaire, factures.
+:::
+
+## Le piège des offres qui se ressemblent
 
 Deux contrats au même prix peuvent couvrir des choses très différentes. Pose ces 10 questions à chaque assureur, par écrit, et compare les réponses.
 
@@ -404,7 +585,30 @@ Le jour d'un sinistre, l'assureur te demandera de prouver l'état du logement av
 ✅ L'état des lieux d'arrivée et de départ du séjour
 ✅ Le contrat signé et les échanges avec le voyageur
 
-La formation **Gérer les incidents et litiges en LCD** détaille la méthode d'inventaire et d'état des lieux.`,
+La formation **Gérer les incidents et litiges en LCD** détaille la méthode d'inventaire et d'état des lieux.
+
+:::quiz
+? Quelle est la première question à poser à un assureur ?
+- Quelle est la couleur du contrat ?
+- Avez-vous une application ?
+* La location courte durée est-elle écrite au contrat ?
+= Sans mention écrite, tu risques un refus d'indemnisation.
+:::
+
+:::quiz
+? Quelles preuves aident à être indemnisé ?
+- Un témoignage oral
+* Photos datées, inventaire et factures
+- Ton avis Airbnb
+= Elles prouvent l'état et la valeur avant le sinistre.
+:::
+
+:::action
+titre: Ajoute l'assureur dans ta fiche logement
+texte: Note ton assureur et ton numéro de contrat pour les retrouver vite.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -414,10 +618,16 @@ La formation **Gérer les incidents et litiges en LCD** détaille la méthode d'
       duration: '35 min',
       lessons: [
         {
-          id: 1,
+          id: 51,
           title: 'La taxe de séjour : la collecter et la reverser toi-même',
           duration: '15 min',
-          content: `## Ce qui change en direct
+          content: `:::bref
+- En direct, c'est toi qui annonces, collectes et reverses la taxe de séjour.
+- Le montant dépend de ta commune et du classement du logement.
+- Évite la double collecte si tu es aussi sur des plateformes.
+:::
+
+## Ce qui change en direct
 
 Sur Airbnb ou Booking, la plateforme collecte la taxe de séjour et la reverse à la commune. **En direct, c'est toi** :
 
@@ -449,13 +659,35 @@ La commune peut sanctionner un défaut de déclaration ou de reversement par des
 
 ### Attention aux doubles collectes
 
-Si un voyageur annule sur une plateforme puis réserve chez toi en direct, vérifie que la taxe n'est pas collectée deux fois.`,
+Si un voyageur annule sur une plateforme puis réserve chez toi en direct, vérifie que la taxe n'est pas collectée deux fois.
+
+:::quiz
+? En direct, qui reverse la taxe de séjour à la commune ?
+- Le voyageur directement
+- Airbnb
+* Toi
+= Sans plateforme, la collecte et le reversement sont à ta charge.
+:::
+
+:::quiz
+? Qu'est-ce qu'une double collecte ?
+- Collecter pour deux communes
+- Une taxe obligatoire en plus
+* Faire payer la taxe deux fois pour le même séjour
+= Vérifie qui collecte selon le canal de réservation.
+:::`,
         },
         {
-          id: 2,
+          id: 52,
           title: "Numéro d'enregistrement, fiche de police, données personnelles et médiateur",
           duration: '20 min',
-          content: `## 1. Ton numéro d'enregistrement sur chaque annonce
+          content: `:::bref
+- Numéro d'enregistrement sur chaque annonce, y compris Facebook et ton site.
+- Fiche de police pour les étrangers, données des voyageurs protégées (RGPD).
+- Un loueur professionnel doit proposer un médiateur de la consommation.
+:::
+
+## 1. Ton numéro d'enregistrement sur chaque annonce
 
 La loi Le Meur a généralisé la déclaration des meublés de tourisme et le numéro d'enregistrement au **20 mai 2026**. Le téléservice national est annoncé pour la fin 2026 : d'ici là, c'est ta **mairie** qui délivre le numéro. Il doit figurer sur **chaque annonce**, pas seulement sur Airbnb : ta page Driing, ton post Facebook, ton site.
 
@@ -496,7 +728,30 @@ Es-tu un professionnel ? Si tu loues de façon **habituelle**, pour en tirer un 
 | Fiche de police | Voyageurs de nationalité étrangère | App : Mes voyageurs → Déclarations |
 | Taxe de séjour | Toutes les réservations directes | Ta commune |
 | Données personnelles | Tous | Garder peu, 3 ans max pour les offres |
-| Médiateur de la consommation | Les loueurs professionnels | Un médiateur référencé CECMC |`,
+| Médiateur de la consommation | Les loueurs professionnels | Un médiateur référencé CECMC |
+
+:::quiz
+? Où afficher ton numéro d'enregistrement ?
+* Sur chaque annonce, partout
+- Seulement sur Airbnb
+- Nulle part
+= La loi Le Meur l'impose sur toute offre de location.
+:::
+
+:::quiz
+? Combien de temps garder les données d'un voyageur pour la prospection ?
+* 3 ans après le dernier contact
+- Pour toujours
+- Une semaine
+= C'est la durée retenue par le RGPD pour la prospection.
+:::
+
+:::action
+titre: Vérifie ton numéro d'enregistrement
+texte: Renseigne-le dans ta fiche logement pour l'avoir sur toutes tes annonces.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -506,10 +761,16 @@ Es-tu un professionnel ? Si tu loues de façon **habituelle**, pour en tirer un 
       duration: '25 min',
       lessons: [
         {
-          id: 1,
+          id: 61,
           title: 'Faut-il un juriste ? Quand oui, quand non',
           duration: '10 min',
-          content: `## La réponse courte : pas obligatoire
+          content: `:::bref
+- Aucune loi n'oblige à passer par un juriste pour louer en direct.
+- Un professionnel devient utile avec un site, plusieurs logements ou un litige.
+- Avant d'aller au tribunal, privilégie la discussion écrite et la médiation.
+:::
+
+## La réponse courte : pas obligatoire
 
 Aucune loi ne t'oblige à passer par un juriste ou un avocat pour louer en direct. Un contrat clair, conforme à l'article L324-2 du Code du tourisme, et des conditions d'annulation bien écrites suffisent pour la grande majorité des séjours.
 
@@ -530,13 +791,35 @@ Aucune loi ne t'oblige à passer par un juriste ou un avocat pour louer en direc
 
 ## La règle d'or du litige
 
-Un litige se gagne avec des **preuves** : contrat signé, état des lieux, photos datées, échanges écrits. Sans elles, même le meilleur avocat ne peut pas grand-chose. La formation **Gérer les incidents et litiges en LCD** te donne la méthode complète.`,
+Un litige se gagne avec des **preuves** : contrat signé, état des lieux, photos datées, échanges écrits. Sans elles, même le meilleur avocat ne peut pas grand-chose. La formation **Gérer les incidents et litiges en LCD** te donne la méthode complète.
+
+:::quiz
+? Un juriste est-il obligatoire pour louer en direct ?
+- Oui, dès la première nuit
+* Non
+- Oui, toujours
+= Un contrat conforme au Code du tourisme suffit dans la plupart des cas.
+:::
+
+:::quiz
+? Quand un professionnel du droit vaut-il son prix ?
+* Pour créer ton site avec conditions générales ou gérer un litige
+- Pour chaque séjour d'une nuit
+- Jamais
+= Ces situations demandent des documents ou une défense solides.
+:::`,
         },
         {
-          id: 2,
+          id: 62,
           title: 'Ton plan en 10 étapes pour ta première réservation directe',
           duration: '15 min',
-          content: `## Avant la première réservation (une seule fois)
+          content: `:::bref
+- Avant la première réservation : assureur, numéro, contrat, paiement en ligne.
+- À chaque réservation : vérification, contrat signé, paiement, caution, fiche de police.
+- Une liste à suivre évite les oublis.
+:::
+
+## Avant la première réservation (une seule fois)
 
 1. **Préviens ton assureur par écrit** et vérifie les 10 points du module 4.
 2. **Obtiens ton numéro d'enregistrement** et mets-le sur toutes tes annonces.
@@ -569,7 +852,30 @@ Un litige se gagne avec des **preuves** : contrat signé, état des lieux, photo
 
 Commence petit : un ancien voyageur, un proche d'un voyageur, une demande reçue sur ta fiche Google. Une première réservation directe bien faite te donnera la confiance pour la suivante. Pour aller chercher plus de voyageurs, enchaîne avec la formation **Annonce Directe**, et regarde si **Driing** peut devenir ton canal direct principal.
 
-Tu as une question sur ta situation ? Écris-moi depuis la page Contact du site : je réponds personnellement.`,
+Tu as une question sur ta situation ? Écris-moi depuis la page Contact du site : je réponds personnellement.
+
+:::quiz
+? Que faire avant ta première réservation directe ?
+* Prévenir ton assureur et préparer ton contrat
+- Partir en vacances
+- Supprimer tes annonces
+= Ce sont les protections de base, à mettre en place une seule fois.
+:::
+
+:::quiz
+? Qu'est-ce qui revient à chaque réservation ?
+- Changer d'assureur
+- Refaire les photos
+* Contrat signé, paiement et caution
+= Chaque séjour doit être encadré de la même façon.
+:::
+
+:::action
+titre: Crée ton premier contrat direct
+texte: Suis la liste : fiche logement complète, contrat, paiement et caution.
+lien: /dashboard/contrats
+bouton: Ouvrir mes contrats
+:::`,
         },
       ],
     },

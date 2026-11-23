@@ -7,10 +7,7 @@ import { parseLesson } from './blocks'
 // l'être dès sa création. Les anciennes, en cours de conversion, sont listées
 // dans A_CONVERTIR : en retirer le slug une fois la formation convertie.
 const A_CONVERTIR = new Set([
-  'maitriser-booking-com-algorithme-genius',
-  'photographie-lcd-smartphone', 'gerer-incidents-litiges-lcd', 'annonce-360', 'audit-annonce',
-  'declarer-lmnp-seul-decla-fr', 'louer-en-direct-securise',
-])
+  'photographie-lcd-smartphone', 'gerer-incidents-litiges-lcd', 'declarer-lmnp-seul-decla-fr', ])
 
 const slugs = Object.keys(FORMATION_CONTENT_MAP).filter(s => !A_CONVERTIR.has(s))
 

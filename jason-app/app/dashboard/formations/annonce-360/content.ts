@@ -22,7 +22,13 @@ export const ANNONCE_360_FORMATION = {
           id: 1,
           title: 'Cartographier son portefeuille : canal héros et canaux secondaires',
           duration: '20 min',
-          content: `## Arrête de penser "mes annonces", pense "mon portefeuille"
+          content: `:::bref
+- Tu ne gères pas trois annonces séparées mais un portefeuille de canaux.
+- Le canal héros apporte l'essentiel des réservations, les autres complètent.
+- Donne à chaque canal un rôle précis.
+:::
+
+## Arrête de penser "mes annonces", pense "mon portefeuille"
 
 Si tu es sur Airbnb, Booking, et peut-être Driing, tu ne gères pas trois annonces séparées. Tu gères un **portefeuille de canaux**, chacun avec un rôle précis. Le problème de la plupart des hôtes multicanaux : ils traitent chaque plateforme comme un projet isolé, avec sa propre logique, sans jamais se demander comment elles s'articulent entre elles.
 
@@ -41,13 +47,35 @@ Les **canaux secondaires** jouent un rôle différent :
 
 Un hôte qui passe autant de temps à peaufiner sa fiche Driing que sa fiche Airbnb inverse la logique de rendement. Le bon réflexe : audite chaque canal une fois par trimestre, mais concentre 70 % de ton temps d'optimisation sur ton canal héros, 20 % sur le canal secondaire le plus prometteur, 10 % sur le reste, en mode "présent et propre" plutôt que "optimisé à fond".
 
-**Concrètement**, cette semaine : liste tes canaux actifs, note en face de chacun la part de ton chiffre d'affaires qu'il représente sur les 12 derniers mois. Le classement qui en ressort, c'est ta feuille de route de priorités pour les modules suivants.`,
+**Concrètement**, cette semaine : liste tes canaux actifs, note en face de chacun la part de ton chiffre d'affaires qu'il représente sur les 12 derniers mois. Le classement qui en ressort, c'est ta feuille de route de priorités pour les modules suivants.
+
+:::quiz
+? Qu'est-ce que le canal héros ?
+- Le canal le plus récent
+- Le canal le moins cher
+* Celui qui apporte l'essentiel de tes réservations
+= Il mérite le plus d'attention ; les autres jouent un rôle de complément.
+:::
+
+:::quiz
+? Quelle erreur font la plupart des hôtes multicanaux ?
+* Traiter chaque plateforme comme un projet isolé
+- Synchroniser leurs calendriers
+- Avoir un canal principal
+= Sans vision d'ensemble, les canaux se concurrencent au lieu de se compléter.
+:::`,
         },
         {
           id: 2,
           title: 'Parité tarifaire et anti-cannibalisation : les règles du jeu',
           duration: '15 min',
-          content: `## La parité tarifaire : ce que tu dois vraiment respecter
+          content: `:::bref
+- Les plateformes surveillent les écarts de prix pour un même logement.
+- Un prix systématiquement plus bas ailleurs peut réduire ta visibilité.
+- Évite que tes canaux se volent les mêmes voyageurs.
+:::
+
+## La parité tarifaire : ce que tu dois vraiment respecter
 
 Airbnb et Booking surveillent les écarts de prix entre plateformes concurrentes pour un même logement, même s'ils l'appellent rarement "parité" officiellement comme le fait l'hôtellerie classique. Un logement systématiquement moins cher ailleurs peut voir sa visibilité réduite, l'algorithme de chaque plateforme intégrant le **prix compétitif relatif** comme signal de classement.
 
@@ -64,7 +92,30 @@ La cannibalisation, c'est quand un canal secondaire capte des réservations qui 
 2. **Une allocation de calendrier réfléchie**, si tu as plusieurs logements ou beaucoup de disponibilité : garde certaines dates premium (vacances scolaires, événements locaux) prioritairement sur ton canal héros, où la conversion est la plus élevée.
 3. **Un channel manager qui synchronise en temps réel.** Sans synchronisation immédiate, le risque n'est plus la cannibalisation mais le double-booking, l'échec opérationnel le plus coûteux en multicanal. Piloter ses canaux avec un outil dédié plutôt qu'à la main évite les erreurs et libère du temps pour ajuster les prix : la coordination elle-même est un levier de revenu, pas juste un confort de gestion.
 
-**Concrètement** : si tu n'as pas encore de channel manager et que tu gères 2 canaux ou plus à la main, c'est le premier chantier à lancer avant même de retoucher tes annonces.`,
+**Concrètement** : si tu n'as pas encore de channel manager et que tu gères 2 canaux ou plus à la main, c'est le premier chantier à lancer avant même de retoucher tes annonces.
+
+:::quiz
+? Que risques-tu si ton logement est toujours moins cher ailleurs ?
+- Plus de réservations partout
+- Aucun effet
+* Une visibilité réduite sur la plateforme plus chère
+= Les algorithmes intègrent la compétitivité de ton prix.
+:::
+
+:::quiz
+? Qu'est-ce que la cannibalisation entre canaux ?
+- Une panne de synchronisation
+- Un avis négatif
+* Des canaux qui se prennent les mêmes voyageurs sans en attirer de nouveaux
+= Chaque canal doit apporter un public différent.
+:::
+
+:::action
+titre: Compare tes prix sur chaque canal
+texte: Renseigne tes prix par plateforme dans Mes prix pour vérifier tes écarts.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Ouvrir Mes prix
+:::`,
         },
       ],
     },
@@ -77,7 +128,13 @@ La cannibalisation, c'est quand un canal secondaire capte des réservations qui 
           id: 3,
           title: 'Pourquoi la plupart des hôtes ne testent jamais rien',
           duration: '10 min',
-          content: `## La peur qui coûte cher
+          content: `:::bref
+- La plupart des hôtes optimisent leur annonce une seule fois, puis n'y touchent plus.
+- Ne rien changer coûte aussi : le marché bouge.
+- Tester, c'est changer une chose à la fois et mesurer.
+:::
+
+## La peur qui coûte cher
 
 Tu as une annonce qui "marche à peu près". Tu as peur d'y toucher, de perdre le classement que tu as mis des mois à construire. Cette peur est compréhensible, elle est aussi la raison pour laquelle la plupart des hôtes optimisent leur annonce **une fois**, au lancement, puis n'y reviennent plus jamais.
 
@@ -97,13 +154,35 @@ Un vrai test répond à trois exigences :
 - **Une durée fixée à l'avance**, suffisamment longue pour lisser le bruit du marché, typiquement deux semaines.
 - **Une métrique définie avant de commencer**, pas choisie après coup selon ce qui arrange la conclusion.
 
-La leçon suivante donne la méthode complète, étape par étape.`,
+La leçon suivante donne la méthode complète, étape par étape.
+
+:::quiz
+? Pourquoi beaucoup d'hôtes ne testent jamais rien ?
+- Parce que c'est payant
+* Par peur de perdre leur classement
+- Parce que c'est interdit
+= Cette peur est compréhensible, mais l'inaction coûte aussi.
+:::
+
+:::quiz
+? Quelle est la différence entre tester et improviser ?
+- Tester, c'est tout changer d'un coup
+* Tester, c'est un changement à la fois, mesuré
+- Il n'y en a aucune
+= Sans méthode, on ne sait pas ce qui a marché.
+:::`,
         },
         {
           id: 4,
           title: 'La méthode du test séquentiel, étape par étape',
           duration: '20 min',
-          content: `## Le principe : un changement, deux semaines, une métrique
+          content: `:::bref
+- Méthode : un changement, deux semaines, une métrique.
+- Commence par les tests les plus rentables : photo de couverture, titre, prix.
+- Note chaque test et son résultat.
+:::
+
+## Le principe : un changement, deux semaines, une métrique
 
 Airbnb ne propose pas nativement d'A/B testing où deux versions de ton annonce seraient montrées simultanément à des audiences comparables, contrairement à ce que permettent certains outils publicitaires. La méthode réaliste pour un hôte LCD est donc le **test séquentiel** : tu changes un élément, tu mesures sur une période fixe, tu compares à la période précédente, tu décides de garder ou de revenir en arrière.
 
@@ -123,7 +202,30 @@ Utilise le **taux de clic** pour juger les tests sur la photo et le titre : ce s
 
 Ne jamais empiler deux tests en même temps sur le même canal. Si tu changes la photo ET le titre la même semaine, et que tes résultats s'améliorent, tu ne sauras jamais lequel des deux a fait le travail, et tu ne pourras pas répliquer l'apprentissage sur un autre logement ou un autre canal.
 
-**Concrètement** : ouvre un tableau simple, une ligne par test, avec la date de lancement, l'élément modifié, la métrique suivie, et la date de décision. Ce tableau, tenu sur 6 mois, vaut plus que n'importe quel conseil générique trouvé en ligne, parce qu'il est calibré sur TON logement, TA zone, TA saisonnalité.`,
+**Concrètement** : ouvre un tableau simple, une ligne par test, avec la date de lancement, l'élément modifié, la métrique suivie, et la date de décision. Ce tableau, tenu sur 6 mois, vaut plus que n'importe quel conseil générique trouvé en ligne, parce qu'il est calibré sur TON logement, TA zone, TA saisonnalité.
+
+:::quiz
+? Combien de temps laisser un test avant de conclure ?
+- Six mois
+* Environ deux semaines
+- Une heure
+= Assez pour avoir des données, pas trop pour garder le rythme.
+:::
+
+:::quiz
+? Combien d'éléments changer à la fois ?
+* Un seul
+- Tous
+- Trois au hasard
+= Sinon impossible de savoir lequel a eu un effet.
+:::
+
+:::action
+titre: Lance ton premier test
+texte: Change ta photo de couverture et note la date dans ton calendrier pour mesurer dans 2 semaines.
+lien: /dashboard/calendrier
+bouton: Noter la date
+:::`,
         },
       ],
     },
@@ -136,7 +238,13 @@ Ne jamais empiler deux tests en même temps sur le même canal. Si tu changes la
           id: 5,
           title: 'Les 5 biais cognitifs qui font réserver',
           duration: '20 min',
-          content: `## Une annonce bien écrite ne suffit pas toujours à convertir
+          content: `:::bref
+- Cinq leviers de décision : ancrage, preuve sociale, aversion à la perte, rareté, cohérence.
+- Utilisés avec honnêteté, ils aident un voyageur hésitant à décider.
+- Jamais de fausse urgence ni de faux avis.
+:::
+
+## Une annonce bien écrite ne suffit pas toujours à convertir
 
 Tu peux avoir une description sans faute, complète, honnête, et pourtant sous-performer une annonce moins soignée mais qui active les bons ressorts de décision. La rédaction et la psychologie de la décision sont deux compétences différentes. Voici les cinq leviers qui, mobilisés avec honnêteté, font réellement pencher une hésitation vers une réservation.
 
@@ -160,13 +268,35 @@ Les gens sont plus sensibles à ce qu'ils risquent de perdre qu'à ce qu'ils pou
 
 Un voyageur qui a commencé à s'imaginer dans ton logement, en lisant une description qui projette une expérience concrète plutôt qu'une liste d'équipements, est plus enclin à aller au bout de la réservation. C'est l'idée derrière "petit-déjeuner sur la terrasse face aux vignes" plutôt que "terrasse avec table extérieure".
 
-**Ce module ne t'apprend pas à manipuler**, il t'apprend à reconnaître les leviers qui existent déjà dans une décision d'achat, pour les activer honnêtement là où ton offre a effectivement des atouts réels à mettre en avant.`,
+**Ce module ne t'apprend pas à manipuler**, il t'apprend à reconnaître les leviers qui existent déjà dans une décision d'achat, pour les activer honnêtement là où ton offre a effectivement des atouts réels à mettre en avant.
+
+:::quiz
+? Qu'est-ce que la preuve sociale ?
+- Baisser le prix
+* Montrer que d'autres voyageurs ont aimé, par les avis
+- Inventer des avis
+= Les avis réels rassurent un voyageur qui hésite.
+:::
+
+:::quiz
+? Quelle pratique est à proscrire ?
+- Indiquer les dates restantes réelles
+* Créer une fausse urgence
+- Montrer de vrais avis
+= Tromper le voyageur détruit la confiance et peut être sanctionné.
+:::`,
         },
         {
           id: 6,
           title: 'Extraire ton meilleur copywriting de tes propres avis',
           duration: '20 min',
-          content: `## Tes voyageurs ont déjà écrit ton meilleur texte de vente
+          content: `:::bref
+- Tes avis 5 étoiles contiennent les mots qui parlent aux voyageurs.
+- Relève les expressions qui reviennent et réutilise-les.
+- Applique ce vocabulaire sur tous tes canaux.
+:::
+
+## Tes voyageurs ont déjà écrit ton meilleur texte de vente
 
 La plupart des hôtes cherchent l'inspiration pour leur description en lisant des guides ou en copiant des formulations vues ailleurs. Il existe une source bien plus fiable, et gratuite : **tes propres avis 5 étoiles**. Un voyageur satisfait qui décrit spontanément ce qu'il a aimé emploie des mots qui parlent à d'autres voyageurs comme lui, avec une sincérité qu'aucun copywriter ne peut fabriquer.
 
@@ -186,7 +316,30 @@ Un voyageur qui lit une description écrite avec le vocabulaire d'autres voyageu
 
 Cette banque de formulations authentiques sert au-delà de la description Airbnb : titre de ta fiche Booking, accroche de ta page directe, légende d'un post Instagram, réponse type à un avis. Un même insight, "les voyageurs adorent le petit-déjeuner sur la terrasse", peut se décliner différemment sur chaque canal tout en gardant la même vérité de fond.
 
-**Concrètement** : bloque 30 minutes ce mois-ci pour faire cet exercice une première fois, puis reproduis-le tous les 3 mois à mesure que de nouveaux avis arrivent. C'est un des rares exercices de copywriting qui s'améliore automatiquement avec le temps, sans effort supplémentaire de ta part.`,
+**Concrètement** : bloque 30 minutes ce mois-ci pour faire cet exercice une première fois, puis reproduis-le tous les 3 mois à mesure que de nouveaux avis arrivent. C'est un des rares exercices de copywriting qui s'améliore automatiquement avec le temps, sans effort supplémentaire de ta part.
+
+:::quiz
+? Où trouver ton meilleur texte de vente ?
+- Dans un guide générique
+- Dans l'annonce d'un concurrent
+* Dans tes avis 5 étoiles
+= Tes voyageurs décrivent ce qui compte avec leurs propres mots.
+:::
+
+:::quiz
+? Comment utiliser ces mots ?
+* Les intégrer dans ton titre et ta description
+- Les copier dans un faux avis
+- Les ignorer
+= Ils parlent naturellement aux futurs voyageurs.
+:::
+
+:::action
+titre: Relève les mots de tes meilleurs avis
+texte: Note 5 expressions de tes avis dans ta fiche logement pour ta prochaine description.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -199,7 +352,13 @@ Cette banque de formulations authentiques sert au-delà de la description Airbnb
           id: 7,
           title: 'Pourquoi les voyageurs commencent déjà leur recherche dans une IA',
           duration: '15 min',
-          content: `## Un nouveau point de départ pour la recherche de logement
+          content: `:::bref
+- Des voyageurs commencent leur recherche dans un assistant d'IA plutôt que sur Google.
+- L'IA répond avec une sélection, pas une liste de liens.
+- Être cité demande une information claire et vérifiable.
+:::
+
+## Un nouveau point de départ pour la recherche de logement
 
 Une part croissante de voyageurs ne tape plus "location appartement Bordeaux centre" dans Google. Ils demandent directement à ChatGPT, Gemini ou Perplexity : *"Trouve-moi un logement calme pour un couple près du centre de Bordeaux, avec parking, budget 120 € la nuit"*. L'IA répond en quelques secondes avec une sélection de recommandations, souvent en citant 2 à 7 sites au total pour construire sa réponse.
 
@@ -216,13 +375,35 @@ Le SEO classique optimise pour être bien classé dans une liste de résultats q
 
 Les études sur le sujet montrent que la présence de citations, de statistiques vérifiables et de sources externes dans un contenu peut augmenter sa visibilité dans les réponses d'IA génératives de plus de 40 %. Le terrain est encore largement ouvert dans le secteur LCD en France : très peu d'hôtes ont pensé à soigner leur page Driing pour ça, ce qui signifie qu'agir maintenant capte un avantage que la majorité n'aura pas encore commencé à chercher.
 
-Ce n'est pas un chantier qui remplace le SEO classique ou la présence sur Airbnb et Booking, c'est une couche supplémentaire, spécifiquement sur ton canal direct, qui capte une audience qui ne passe même plus par une recherche traditionnelle.`,
+Ce n'est pas un chantier qui remplace le SEO classique ou la présence sur Airbnb et Booking, c'est une couche supplémentaire, spécifiquement sur ton canal direct, qui capte une audience qui ne passe même plus par une recherche traditionnelle.
+
+:::quiz
+? Qu'est-ce qui change avec la recherche par IA ?
+* Le voyageur reçoit directement une sélection de logements
+- Il ne voyage plus
+- Il ne lit plus les avis
+= Il faut donc être retenu dans cette courte sélection.
+:::
+
+:::quiz
+? Qu'est-ce qui aide une IA à te recommander ?
+* Des informations claires et vérifiables
+- Des slogans
+- Une page vide
+= L'IA cherche des faits qui correspondent à la demande.
+:::`,
         },
         {
           id: 8,
           title: 'La méthode GEO appliquée à ta page Driing',
           duration: '20 min',
-          content: `## Rendre ta page Driing "citable" par une IA générative
+          content: `:::bref
+- Une page citable par une IA répond à des questions précises avec des faits.
+- Structure tes informations : accès, équipements, quartier, règles.
+- Évite le texte vague et purement promotionnel.
+:::
+
+## Rendre ta page Driing "citable" par une IA générative
 
 Une IA générative construit sa réponse en cherchant des sources claires, structurées, et vérifiables. Une page vague ou purement promotionnelle a moins de chances d'être retenue qu'une page qui répond concrètement à des questions précises avec des faits. La bonne nouvelle : tout ce qui suit se joue dans les champs de texte que tu remplis toi-même sur ta page Driing, pas dans du code ou de la technique.
 
@@ -240,7 +421,30 @@ Une IA générative construit sa réponse en cherchant des sources claires, stru
 
 Ne cherche pas à "tromper" une IA générative avec du contenu généré en masse ou des affirmations exagérées. Les moteurs génératifs recoupent les sources entre elles ; une incohérence entre ce que dit ta page Driing et ce que disent tes avis publics ailleurs (Google, Airbnb) réduit ta crédibilité de citation plus vite qu'elle ne l'augmente.
 
-**Concrètement** : reprends la description de ta page Driing et réécris son premier paragraphe pour qu'il réponde directement à la question la plus probable qu'un voyageur poserait à une IA à ce sujet.`,
+**Concrètement** : reprends la description de ta page Driing et réécris son premier paragraphe pour qu'il réponde directement à la question la plus probable qu'un voyageur poserait à une IA à ce sujet.
+
+:::quiz
+? Quelle page a le plus de chances d'être citée par une IA ?
+* Une page qui répond à des questions précises avec des faits
+- Une page très courte et vague
+- Une page pleine de superlatifs
+= L'IA s'appuie sur des sources claires et vérifiables.
+:::
+
+:::quiz
+? Que faut-il éviter ?
+- Les informations pratiques
+- Les détails du quartier
+* Le texte purement promotionnel
+= Il n'apporte rien de vérifiable.
+:::
+
+:::action
+titre: Liste les questions de tes voyageurs
+texte: Relis tes échanges et note les questions fréquentes : ce sont les réponses à mettre sur ta page.
+lien: /dashboard/voyageurs
+bouton: Voir mes voyageurs
+:::`,
         },
       ],
     },
@@ -253,7 +457,13 @@ Ne cherche pas à "tromper" une IA générative avec du contenu généré en mas
           id: 9,
           title: `Metasearch : ce qui est vraiment accessible à un hôte indépendant`,
           duration: '15 min',
-          content: `## Une nuance à connaître avant d'y passer du temps
+          content: `:::bref
+- Les comparateurs agrègent des annonces et renvoient vers le site d'origine.
+- Un hôte indépendant y accède rarement en direct : il faut souvent passer par un outil partenaire.
+- Concentre ton temps sur ce qui est accessible.
+:::
+
+## Une nuance à connaître avant d'y passer du temps
 
 Google Vacation Rentals, Trivago, HomeToGo : ces plateformes de metasearch agrègent des annonces venues de multiples sources et redirigent le voyageur vers le site de réservation d'origine, sans prendre de commission à la manière d'une OTA classique. Elles sont attractives sur le papier, mais il existe une limite structurelle que beaucoup de contenus en ligne passent sous silence.
 
@@ -271,13 +481,35 @@ Ces deux plateformes fonctionnent différemment : elles agrègent principalement
 
 Le metasearch n'est pas un canal sur lequel investir du temps de rédaction ou d'optimisation directe pour un hôte avec peu de logements, contrairement à Airbnb, Booking ou Driing. C'est un bénéfice indirect qui découle de la qualité de ta présence sur tes canaux principaux, et d'une intégration technique côté channel manager, pas d'un effort de contenu de ta part.
 
-**Ne perds pas de temps à chercher comment "t'inscrire" sur Google Vacation Rentals en direct** : vérifie plutôt, dans les paramètres de ton channel manager, si cette diffusion est déjà activée.`,
+**Ne perds pas de temps à chercher comment "t'inscrire" sur Google Vacation Rentals en direct** : vérifie plutôt, dans les paramètres de ton channel manager, si cette diffusion est déjà activée.
+
+:::quiz
+? Comment un hôte indépendant apparaît-il généralement sur ces comparateurs ?
+* Via un outil de gestion partenaire
+- En s'inscrivant en un clic
+- En payant une publicité Instagram
+= L'accès direct est rarement ouvert aux particuliers.
+:::
+
+:::quiz
+? Quelle priorité si l'accès est difficile ?
+* Consacrer ton temps aux leviers accessibles
+- Insister des mois
+- Abandonner toutes les plateformes
+= Ton temps est limité : vise ce qui rapporte vite.
+:::`,
         },
         {
           id: 10,
           title: 'Vidéo courte et visite 3D : quand l\'investissement se rentabilise',
           duration: '20 min',
-          content: `## Le contenu immersif a un impact mesuré, pas juste théorique
+          content: `:::bref
+- Vidéo courte et visite 3D réduisent les doutes du voyageur.
+- Elles se rentabilisent surtout pour les logements haut de gamme ou atypiques.
+- Une vidéo de 30 secondes filmée au téléphone peut suffire.
+:::
+
+## Le contenu immersif a un impact mesuré, pas juste théorique
 
 Contrairement au metasearch, la vidéo et la visite virtuelle 3D sont des leviers directement actionnables par un hôte indépendant, avec un effet visible sur le temps passé sur l'annonce et sur la confiance du voyageur. Matterport met en avant le cas de Vacasa, opérateur qui gère des dizaines de milliers de logements, avec plus de réservations sur les logements équipés de visites 3D : un chiffre d'éditeur, à prendre comme tel.
 
@@ -296,7 +528,28 @@ Une visite 3D professionnelle représente un coût réel (prestataire, matériel
 
 Une vidéo courte de 30 à 60 secondes, filmée au smartphone (les bases techniques sont couvertes dans la formation Photographie LCD), sert un objectif différent de la visite 3D : elle capte l'attention en amont, sur les réseaux sociaux ou en tête de ta page directe, plutôt que de lever un doute au moment de la décision finale. Les deux formats sont complémentaires, pas substituables l'un à l'autre.
 
-**Concrètement** : si tu gères un logement premium ou atypique et que tu constates un fort taux de consultation sans réservation (beaucoup de vues, peu de conversion), la visite 3D est probablement le test le plus rentable à lancer cette année. Si ton logement est standard et tes réservations rapides, ce budget est mieux investi ailleurs pour l'instant.`,
+**Concrètement** : si tu gères un logement premium ou atypique et que tu constates un fort taux de consultation sans réservation (beaucoup de vues, peu de conversion), la visite 3D est probablement le test le plus rentable à lancer cette année. Si ton logement est standard et tes réservations rapides, ce budget est mieux investi ailleurs pour l'instant.
+
+:::quiz
+? Pourquoi le contenu immersif aide-t-il à réserver ?
+- Il remplace les avis
+- Il baisse les commissions
+* Il réduit les doutes du voyageur sur le logement
+= Voir le lieu en mouvement donne confiance.
+:::
+
+:::quiz
+? Pour quel logement une visite 3D se justifie-t-elle le plus ?
+- Aucun
+* Un logement haut de gamme ou atypique
+- Une chambre standard très bon marché
+= Le coût se rentabilise quand l'enjeu par réservation est élevé.
+:::
+
+:::action
+titre: Filme une vidéo de 30 secondes
+texte: Filme une visite rapide de ton logement au téléphone et note-le comme fait.
+:::`,
         },
       ],
     },
@@ -309,7 +562,13 @@ Une vidéo courte de 30 à 60 secondes, filmée au smartphone (les bases techniq
           id: 11,
           title: `Fraîcheur vs volume : ce que dit vraiment l'algorithme en 2026`,
           duration: '12 min',
-          content: `## Un point que la plupart des hôtes ignorent complètement
+          content: `:::bref
+- La fraîcheur des avis compte davantage que leur nombre total.
+- Un rythme régulier d'avis récents vaut mieux qu'un gros stock ancien.
+- Elle joue aussi sur le badge Coup de Cœur Voyageurs.
+:::
+
+## Un point que la plupart des hôtes ignorent complètement
 
 La formation "Écrire des avis et répondre aux voyageurs" couvre déjà comment rédiger et solliciter des avis. Ce qui manque souvent, c'est de comprendre **pourquoi la fraîcheur de tes avis pèse aujourd'hui davantage que leur volume total** dans le classement Airbnb.
 
@@ -327,13 +586,35 @@ Ce badge, couvert en détail dans la formation Optimiser son annonce Airbnb, s'a
 
 Un hôte qui a eu un excellent démarrage puis a laissé filer la sollicitation d'avis pendant plusieurs mois voit sa position se dégrader progressivement, non pas parce que la qualité a baissé, mais parce que le signal de fraîcheur s'est éteint. C'est un phénomène silencieux, difficile à repérer sans regarder spécifiquement cette donnée.
 
-**Concrètement** : regarde la date de tes 3 derniers avis. Si le dernier remonte à plus de 6-8 semaines alors que tu as eu des séjours depuis, le sujet n'est pas la qualité de ton accueil, c'est ton système de sollicitation, traité dans la leçon suivante.`,
+**Concrètement** : regarde la date de tes 3 derniers avis. Si le dernier remonte à plus de 6-8 semaines alors que tu as eu des séjours depuis, le sujet n'est pas la qualité de ton accueil, c'est ton système de sollicitation, traité dans la leçon suivante.
+
+:::quiz
+? Quel logement est le mieux placé ?
+* Celui qui reçoit des avis régulièrement ces derniers mois
+- Celui qui a beaucoup d'avis, tous anciens
+- Celui qui n'a aucun avis
+= Les avis récents montrent une qualité actuelle.
+:::
+
+:::quiz
+? Qu'est-ce que la vélocité d'avis ?
+* Le rythme auquel tu reçois de nouveaux avis
+- La longueur des avis
+- Le nombre de mots positifs
+= Un rythme régulier est un signal fort pour l'algorithme.
+:::`,
         },
         {
           id: 12,
           title: `Automatiser la collecte sans jamais violer les règles`,
           duration: '13 min',
-          content: `## Transformer la sollicitation en système, pas en rappel occasionnel
+          content: `:::bref
+- Automatise le moment de la demande d'avis, jamais son contenu.
+- Un message de remerciement le lendemain du départ suffit.
+- Jamais de récompense en échange d'un avis.
+:::
+
+## Transformer la sollicitation en système, pas en rappel occasionnel
 
 Solliciter un avis "quand on y pense" produit un rythme irrégulier, exactement ce qui nuit à la vélocité vue dans la leçon précédente. La solution n'est pas de solliciter plus agressivement, c'est de **rendre la sollicitation automatique et régulière**, sans jamais franchir la ligne des règles de la plateforme.
 
@@ -355,7 +636,30 @@ Un message de demande d'avis envoyé automatiquement dans la fenêtre officielle
 
 Une fois ce système automatisé en place, la mécanique se referme sur elle-même : sollicitation régulière → avis récents réguliers → meilleure vélocité → meilleur classement → plus de réservations → plus de séjours à solliciter. C'est un des rares leviers de classement qui, une fois configuré, continue de produire ses effets sans intervention manuelle répétée de ta part.
 
-**Concrètement** : si tu n'as pas encore de message automatique de demande d'avis programmé à J+1 post-check-out, c'est l'action la plus rapide à mettre en place de tout ce module, en général moins de 15 minutes de configuration pour un bénéfice qui se prolonge sur des mois.`,
+**Concrètement** : si tu n'as pas encore de message automatique de demande d'avis programmé à J+1 post-check-out, c'est l'action la plus rapide à mettre en place de tout ce module, en général moins de 15 minutes de configuration pour un bénéfice qui se prolonge sur des mois.
+
+:::quiz
+? Que peut-on automatiser dans la demande d'avis ?
+* Le moment de l'envoi
+- Le contenu de l'avis
+- La note donnée
+= Tu choisis quand demander ; le voyageur reste libre de ce qu'il écrit.
+:::
+
+:::quiz
+? Quelle pratique est interdite ?
+- Remercier le voyageur
+- Envoyer un rappel poli
+* Offrir une remise contre un avis
+= Les plateformes interdisent les avis contre récompense.
+:::
+
+:::action
+titre: Programme ton message après le départ
+texte: Ajoute le message de remerciement du lendemain dans tes modèles.
+lien: /dashboard/gabarits
+bouton: Ouvrir les modèles
+:::`,
         },
       ],
     },
@@ -368,7 +672,13 @@ Une fois ce système automatisé en place, la mécanique se referme sur elle-mê
           id: 13,
           title: 'L\'audit express de ta présence multicanal',
           duration: '15 min',
-          content: `## Avant d'agir, savoir précisément où tu en es
+          content: `:::bref
+- Avant d'agir, mesure honnêtement où tu en es sur chaque canal.
+- Note chaque canal sans complaisance.
+- Priorise par effort et impact, pas dans l'ordre du programme.
+:::
+
+## Avant d'agir, savoir précisément où tu en es
 
 Ce module de clôture ne t'apprend rien de nouveau, il t'aide à transformer les six modules précédents en actions concrètes, dans un ordre de priorité qui a du sens pour ta situation, pas pour une situation générique.
 
@@ -390,13 +700,35 @@ Pour chaque canal, chaque question à laquelle tu réponds "non" ou "je ne sais 
 
 Une fois l'audit fait, classe les actions possibles en deux axes : effort nécessaire (faible / élevé) et impact attendu (faible / élevé). Commence toujours par les actions à **fort impact et faible effort** : elles sont rares, mais ce sont elles qui font ressentir un résultat le plus vite, ce qui te donne l'élan pour t'attaquer ensuite aux chantiers plus lourds (channel manager, refonte GEO du site).
 
-**Concrètement** : remplis cette grille pour chacun de tes canaux actifs avant de passer à la dernière leçon. C'est elle qui va nourrir ton plan des 90 prochains jours.`,
+**Concrètement** : remplis cette grille pour chacun de tes canaux actifs avant de passer à la dernière leçon. C'est elle qui va nourrir ton plan des 90 prochains jours.
+
+:::quiz
+? Comment prioriser tes actions ?
+- Par ordre alphabétique
+* Selon l'effort demandé et l'impact attendu
+- Dans l'ordre des leçons
+= On commence par ce qui rapporte le plus pour le moins d'effort.
+:::
+
+:::quiz
+? Pourquoi noter sans complaisance ?
+- Pour impressionner
+* Pour voir les vrais points faibles
+- Pour se décourager
+= Un audit complaisant ne sert à rien.
+:::`,
         },
         {
           id: 14,
           title: 'Le rituel mensuel de pilotage',
           duration: '15 min',
-          content: `## Remplacer l'improvisation par un rendez-vous fixe
+          content: `:::bref
+- Un rendez-vous fixe de 30 minutes par mois remplace l'improvisation.
+- Quatre blocs : chiffres, tests, avis, actions du mois.
+- La régularité produit des effets sur la durée.
+:::
+
+## Remplacer l'improvisation par un rendez-vous fixe
 
 Tout ce que ce programme a couvert, le portefeuille de canaux, les tests continus, la psychologie de conversion, le GEO, la vélocité d'avis, perd son effet si ça reste un effort ponctuel fait une fois puis oublié. La dernière pièce du système, c'est un **rituel mensuel de 30 minutes**, toujours à la même période du mois, qui remplace le réflexe de tout reprendre en catastrophe quand les réservations ralentissent.
 
@@ -418,7 +750,30 @@ Un rituel trop long finit par être repoussé, puis abandonné. 30 minutes tient
 
 Un hôte qui tient ce rituel pendant un an accumule 12 tests menés proprement, une vélocité d'avis maîtrisée en continu, et une vision claire de l'évolution de chaque canal. C'est exactement la différence entre un hôte qui subit les changements d'algorithme et un hôte qui les anticipe, un mois à la fois.
 
-**C'est la fin du programme.** La prochaine étape n'est pas une nouvelle formation, c'est ton premier rituel mensuel, à programmer dans ton agenda avant de fermer cette page.`,
+**C'est la fin du programme.** La prochaine étape n'est pas une nouvelle formation, c'est ton premier rituel mensuel, à programmer dans ton agenda avant de fermer cette page.
+
+:::quiz
+? Pourquoi un rituel mensuel fixe ?
+- C'est obligatoire
+* Pour que les efforts ne restent pas ponctuels
+- Pour remplir l'agenda
+= Les gains viennent de la régularité.
+:::
+
+:::quiz
+? Combien de temps consacrer à ce rituel ?
+* Environ 30 minutes
+- Une journée entière
+- Cinq minutes par an
+= Court pour être tenu, assez pour décider.
+:::
+
+:::action
+titre: Bloque ton rituel mensuel
+texte: Ajoute un rendez-vous récurrent de 30 minutes en début de mois.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },

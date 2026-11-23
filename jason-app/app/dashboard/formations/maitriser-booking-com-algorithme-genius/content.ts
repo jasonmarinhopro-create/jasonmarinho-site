@@ -18,7 +18,13 @@ export const BOOKING_FORMATION = {
       title: 'Booking.com vs Airbnb, l\'essentiel à comprendre',
       duration: '25 min',
       lessons: [
-        { id: 1, title: 'Les 5 différences structurelles Booking vs Airbnb', duration: '12 min', content: `## Pourquoi on ne peut pas juste dupliquer son annonce Airbnb sur Booking
+        { id: 1, title: 'Les 5 différences structurelles Booking vs Airbnb', duration: '12 min', content: `:::bref
+- Booking et Airbnb fonctionnent sur des modèles différents : ne duplique pas ton annonce telle quelle.
+- Booking touche davantage une clientèle européenne et d'affaires.
+- La réservation instantanée y est la règle, et la politique d'annulation pèse lourd.
+:::
+
+## Pourquoi on ne peut pas juste dupliquer son annonce Airbnb sur Booking
 
 La majorité des hôtes LCD qui publient sur Booking.com après Airbnb appliquent exactement la même stratégie : même photos, même description, même prix, même politique d'annulation. Et se plantent.
 
@@ -73,8 +79,30 @@ Sur Airbnb, la politique d'annulation impacte surtout la conversion (pas le clas
 | Politique annulation | Conversion | Classement |
 | Tarification | Par durée | Dégressive |
 
-La suite de cette formation est bâtie sur ces 5 différences. À chaque module, on reviendra y faire référence.` },
-        { id: 2, title: 'Cadre juridique français 2026 (loi Le Meur et plateformes)', duration: '13 min', content: `## Ce que la loi Le Meur change pour toi sur Booking.com
+La suite de cette formation est bâtie sur ces 5 différences. À chaque module, on reviendra y faire référence.
+
+:::quiz
+? Pourquoi ne pas copier ton annonce Airbnb à l'identique sur Booking ?
+- C'est interdit par la loi
+- Booking refuse les photos d'Airbnb
+* Les deux plateformes ne lisent pas les mêmes signaux et n'ont pas la même clientèle
+= Titre, description et politique d'annulation doivent être adaptés.
+:::
+
+:::quiz
+? Quelle clientèle est plus présente sur Booking ?
+- Uniquement les étudiants
+- Uniquement les familles en été
+* Les voyageurs européens et d'affaires
+= C'est un public habitué à l'hôtellerie et à la réservation immédiate.
+:::` },
+        { id: 2, title: 'Cadre juridique français 2026 (loi Le Meur et plateformes)', duration: '13 min', content: `:::bref
+- Numéro d'enregistrement obligatoire au plus tard le 20 mai 2026.
+- Booking transmet tes revenus à l'administration fiscale.
+- Respecte le plafond de 120 jours (ou 90) pour une résidence principale.
+:::
+
+## Ce que la loi Le Meur change pour toi sur Booking.com
 
 La loi Le Meur du 19 novembre 2024 a rebattu les cartes de la LCD en France. Elle impacte Airbnb et Booking différemment, parce que les deux plateformes ont un statut juridique différent (revoir leçon précédente).
 
@@ -128,16 +156,39 @@ Booking compte automatiquement tes nuitées. À l'approche de la limite, tu reç
 
 Avant même de commencer à construire ta fiche (module 2) :
 
-☐ Numéro d'enregistrement national obtenu sur service-public.fr
-☐ DPE en cours de validité, au niveau exigé par la loi Le Meur pour ton logement
-☐ Déclaration en mairie faite (formulaire Cerfa 14004)
-☐ SIRET obtenu (obligatoire pour déclarer une location meublée)
-☐ Choix du statut TVA selon prestations para-hôtelières
-☐ Assurance LCD responsabilité civile en vigueur
+Numéro d'enregistrement national obtenu sur service-public.fr
+DPE en cours de validité, au niveau exigé par la loi Le Meur pour ton logement
+Déclaration en mairie faite (formulaire Cerfa 14004)
+SIRET obtenu (obligatoire pour déclarer une location meublée)
+Choix du statut TVA selon prestations para-hôtelières
+Assurance LCD responsabilité civile en vigueur
 
 **Sans cette check-list complète**, inutile d'aller plus loin dans la formation : la plateforme refusera ta fiche ou la suspendra dans les semaines qui suivent.
 
-La bonne nouvelle ? Cette check-list est **la même pour Booking et Airbnb**. Tu la fais une fois, tu l'appliques partout.` },
+La bonne nouvelle ? Cette check-list est **la même pour Booking et Airbnb**. Tu la fais une fois, tu l'appliques partout.
+
+:::quiz
+? Que transmet Booking à l'administration fiscale ?
+* Les revenus que tu perçois via la plateforme
+- Rien
+- Uniquement tes avis
+= L'administration peut croiser ces montants avec ta déclaration.
+:::
+
+:::quiz
+? Quel plafond s'applique à une résidence principale louée ?
+* 120 jours par an, ou 90 si la commune l'a réduit
+- 365 jours
+- Aucun plafond
+= Au-delà, ce n'est plus considéré comme une résidence principale.
+:::
+
+:::action
+titre: Vérifie ton numéro d'enregistrement
+texte: Renseigne-le dans ta fiche logement avant de publier sur Booking.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::` },
       ],
     },
     {
@@ -145,7 +196,13 @@ La bonne nouvelle ? Cette check-list est **la même pour Booking et Airbnb**. Tu
       title: 'Construire une fiche Booking qui convertit',
       duration: '30 min',
       lessons: [
-        { id: 3, title: 'Les 8 sections obligatoires pour passer le filtre qualité 2026', duration: '15 min', content: `## Le filtre qualité Booking en 2026 : plus strict qu'on ne le pense
+        { id: 3, title: 'Les 8 sections obligatoires pour passer le filtre qualité 2026', duration: '15 min', content: `:::bref
+- Une fiche incomplète recule nettement dans les résultats de Booking.
+- Huit sections à remplir : infos, photos, description, équipements, prix, horaires, règlement, réglementation.
+- Ne publie qu'une fois tout complété.
+:::
+
+## Le filtre qualité Booking en 2026 : plus strict qu'on ne le pense
 
 Booking.com a renforcé son filtre qualité en 2025. Une fiche incomplète ou mal remplie recule nettement dans les résultats, au point de disparaître de nombreuses recherches. Passer ce filtre n'est pas une option, c'est le préalable à toute stratégie.
 
@@ -228,8 +285,30 @@ C'est la section la plus récente, ajoutée fin 2024 :
 
 Une fiche Booking prête à être indexée coche **chacune** de ces 8 sections à 100 %. Chaque section incomplète te fait reculer dans les résultats.
 
-**Temps estimé la première fois : 2 à 3 heures** pour remplir proprement. C'est l'investissement initial qui conditionne 90 % de ton ROI Booking.` },
-        { id: 4, title: 'Photos, titre et description, les règles Booking (différentes d\'Airbnb)', duration: '15 min', content: `## Pourquoi ta description Airbnb va flopper sur Booking
+**Temps estimé la première fois : 2 à 3 heures** pour remplir proprement. C'est l'investissement initial qui conditionne 90 % de ton ROI Booking.
+
+:::quiz
+? Que se passe-t-il avec une fiche Booking incomplète ?
+- Rien ne change
+* Elle recule dans les résultats
+- Elle est mise en avant
+= Booking filtre la qualité avant de classer les annonces.
+:::
+
+:::quiz
+? Quand publier ta fiche ?
+* Une fois les huit sections remplies
+- Dès la première photo
+- Sans description
+= Une fiche complète démarre avec un meilleur classement.
+:::` },
+        { id: 4, title: 'Photos, titre et description, les règles Booking (différentes d\'Airbnb)', duration: '15 min', content: `:::bref
+- Sur Booking, le titre est court, factuel et localisé.
+- La description s'appuie sur des faits et des équipements précis.
+- Ordonne tes photos : pièces principales, équipements, extérieur.
+:::
+
+## Pourquoi ta description Airbnb va flopper sur Booking
 
 Tu peux copier-coller ton annonce Airbnb sur Booking, je l'ai vu faire des dizaines de fois. Résultat : la fiche est techniquement publiée, mais elle sous-performe systématiquement. Parce que les deux plateformes ne lisent pas les mêmes signaux.
 
@@ -296,14 +375,37 @@ Pourquoi c'est différent d'Airbnb ? Parce que le voyageur Booking fait une comp
 
 ### Check-list avant publication
 
-☐ Titre : type + lieu + atout, 60-80 caractères
-☐ Description courte : 4 phrases structurées, factuelles
-☐ Description longue : 7 sections ordonnées, 2000 caractères
-☐ 24 photos minimum, format paysage, ≥ Full HD
-☐ Première photo = vue d'ensemble
-☐ Chaque équipement clé a une photo associée
+Titre : type + lieu + atout, 60-80 caractères
+Description courte : 4 phrases structurées, factuelles
+Description longue : 7 sections ordonnées, 2000 caractères
+24 photos minimum, format paysage, ≥ Full HD
+Première photo = vue d'ensemble
+Chaque équipement clé a une photo associée
 
-**Temps estimé** : 1-2 heures pour réécrire titre + description, 30 min pour réorganiser les photos. C'est le plus gros ROI de cette formation.` },
+**Temps estimé** : 1-2 heures pour réécrire titre + description, 30 min pour réorganiser les photos. C'est le plus gros ROI de cette formation.
+
+:::quiz
+? Quel style de titre convient à Booking ?
+- Le plus long possible
+* Court, factuel et localisé
+- Très émotionnel avec des émojis
+= Booking privilégie l'information claire, comme en hôtellerie.
+:::
+
+:::quiz
+? Qu'est-ce qu'une bonne description pour Booking ?
+- Une liste d'adjectifs
+* Des faits précis sur le logement et ses équipements
+- Une histoire personnelle
+= Les voyageurs de Booking comparent des informations concrètes.
+:::
+
+:::action
+titre: Prépare ton titre et ta description Booking
+texte: Note-les dans ta fiche logement, à côté de ta version Airbnb.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::` },
       ],
     },
     {
@@ -311,7 +413,13 @@ Pourquoi c'est différent d'Airbnb ? Parce que le voyageur Booking fait une comp
       title: 'Programme Genius 2026, le décryptage',
       duration: '35 min',
       lessons: [
-        { id: 5, title: 'Les 3 niveaux Genius (10 % / 15 % / 20 %) et leurs effets réels', duration: '18 min', content: `## Genius : le programme de fidélité qui décide de 50 % de tes réservations
+        { id: 5, title: 'Les 3 niveaux Genius (10 % / 15 % / 20 %) et leurs effets réels', duration: '18 min', content: `:::bref
+- Genius est le programme de fidélité de Booking : des remises contre de la visibilité.
+- Trois niveaux de remise : 10, 15 et 20 %.
+- Calcule toujours le revenu net après remise et commission.
+:::
+
+## Genius : le programme de fidélité qui décide de 50 % de tes réservations
 
 Le programme Genius de Booking.com est un programme de fidélité destiné aux voyageurs qui réservent régulièrement. Pour eux : des réductions et avantages. Pour toi, l'hôte : **une visibilité accrue en échange d'une remise**.
 
@@ -397,8 +505,30 @@ Une feature peu connue : tu peux **activer / désactiver Genius par périodes**.
 - **Genius 10 % ne suffit plus** depuis 2026
 - **Genius 15 %** est le nouveau standard rentable
 - Calcule ton ROI avec tes vrais chiffres avant d'activer
-- Module par périodes, pas en permanence` },
-        { id: 6, title: 'L\'algorithme de pertinence 2026 : pourquoi 10 % ne suffit plus', duration: '17 min', content: `## L'algorithme de pertinence Booking : ce qui a changé
+- Module par périodes, pas en permanence
+
+:::quiz
+? Que t'apporte Genius en échange d'une remise ?
+* Plus de visibilité auprès des voyageurs fidèles de Booking
+- Une commission à zéro
+- Des avis automatiques
+= C'est un échange visibilité contre réduction.
+:::
+
+:::quiz
+? Prix 100 €, Genius à moins 10 %, commission de 15 % : que reçois-tu ?
+- 90 €
+* 76,50 €
+- 85 €
+= 100 moins 10 % = 90 €, puis moins 15 % de commission = 76,50 €.
+:::` },
+        { id: 6, title: 'L\'algorithme de pertinence 2026 : pourquoi 10 % ne suffit plus', duration: '17 min', content: `:::bref
+- Le classement de Booking croise plusieurs critères, pas seulement la remise.
+- Note, politique d'annulation, réactivité et complétude de la fiche comptent aussi.
+- Mesure l'effet de chaque changement avant d'en faire un autre.
+:::
+
+## L'algorithme de pertinence Booking : ce qui a changé
 
 Jusqu'à fin 2024, l'algorithme de Booking fonctionnait sur 3 critères principaux : **note moyenne**, **politique de prix**, **volume de réservations**. Depuis 2025-2026, il a basculé sur un modèle de **"pertinence basée sur l'intention voyageur"**.
 
@@ -476,7 +606,30 @@ Dans l'extranet Booking, section "Analyses" :
 - L'algorithme 2026 classe par **pertinence de recherche**, pas en absolu
 - Genius 10 % ne suffit plus seul, monte à 15 %
 - Les 4 leviers non-Genius (annulation, réponse, acceptation, mobile rate) doivent être maximisés **avant** de monter la remise
-- Mesure via l'extranet en changeant **un paramètre à la fois**` },
+- Mesure via l'extranet en changeant **un paramètre à la fois**
+
+:::quiz
+? Pourquoi une simple remise Genius ne suffit-elle plus ?
+- Genius n'existe plus
+- Booking classe au hasard
+* Le classement dépend aussi de la note, de la réactivité et de la fiche
+= Plusieurs critères se combinent pour classer les annonces.
+:::
+
+:::quiz
+? Comment savoir si un changement a fonctionné ?
+- Tout changer en même temps
+- Ne rien mesurer
+* Le faire seul et comparer vues et réservations avant et après
+= Un seul changement à la fois permet d'en voir l'effet.
+:::
+
+:::action
+titre: Calcule ton revenu net sur Booking
+texte: Saisis ton prix Booking dans Mes prix pour voir ce que tu reçois après remise et commission.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Ouvrir Mes prix
+:::` },
       ],
     },
     {
@@ -484,7 +637,13 @@ Dans l'extranet Booking, section "Analyses" :
       title: 'Les 5 signaux qui décident de ton classement',
       duration: '30 min',
       lessons: [
-        { id: 7, title: 'Taux d\'acceptation et délai de réponse, les seuils à respecter', duration: '10 min', content: `## Les 2 indicateurs qui pèsent le plus dans ton classement
+        { id: 7, title: 'Taux d\'acceptation et délai de réponse, les seuils à respecter', duration: '10 min', content: `:::bref
+- Booking surveille combien de demandes tu acceptes et en combien de temps tu réponds.
+- Refuser souvent ou répondre lentement fait reculer ton annonce.
+- Messages automatiques et notifications t'aident à tenir les délais.
+:::
+
+## Les 2 indicateurs qui pèsent le plus dans ton classement
 
 Booking mesure tous tes comportements : combien de demandes tu acceptes, en combien de temps tu réponds aux messages, comment tu gères les annulations. Deux indicateurs sortent du lot en 2026 : **le taux d'acceptation** et **le délai de réponse**.
 
@@ -554,8 +713,30 @@ Ouvre ton extranet Booking, section "Opportunités" > "Indicateurs de performanc
 - Ton score de fiabilité (on le détaille leçon suivante)
 
 **Si tes indicateurs sont dans le vert (seuils ci-dessus)** : tu es bien positionné, continue.
-**Si un indicateur est orange ou rouge** : corrige-le prioritairement, c'est rentabilisé en 30 jours.` },
-        { id: 8, title: 'Politique d\'annulation souple vs ferme, l\'impact SEO mesuré', duration: '10 min', content: `## La politique d'annulation : le critère le plus sous-estimé
+**Si un indicateur est orange ou rouge** : corrige-le prioritairement, c'est rentabilisé en 30 jours.
+
+:::quiz
+? Qu'est-ce qui fait baisser ton classement ?
+- Accepter les réservations
+* Refuser souvent des demandes et répondre lentement
+- Répondre vite
+= Booking privilégie les hôtes fiables et réactifs.
+:::
+
+:::quiz
+? Comment tenir un délai de réponse court ?
+* Messages automatiques et notifications activées
+- Répondre une fois par semaine
+- Ignorer les questions
+= Une réponse rapide rassure et améliore ton classement.
+:::` },
+        { id: 8, title: 'Politique d\'annulation souple vs ferme, l\'impact SEO mesuré', duration: '10 min', content: `:::bref
+- Une politique d'annulation ferme coûte cher en classement sur Booking.
+- La souplesse rassure les voyageurs et l'algorithme.
+- Une stratégie hybride : souple en temps normal, plus ferme pendant les pics.
+:::
+
+## La politique d'annulation : le critère le plus sous-estimé
 
 Beaucoup d'hôtes choisissent une politique d'annulation "ferme" par prudence (zéro remboursement après réservation). C'est logique, mais ça coûte extrêmement cher en classement sur Booking, et donc en revenus.
 
@@ -627,8 +808,30 @@ La plupart des réservations iront sur le tarif Flexible (Booking le pousse), ma
 3. **Ajoute un 2e tarif Non remboursable à -10 %** pour ne pas perdre les voyageurs prix-sensibles
 4. **Attends 30 jours** et mesure ton CA mensuel vs le mois précédent
 
-Tu devrais voir un gain net sur les 60 jours qui suivent.` },
-        { id: 9, title: 'Le score de fiabilité Booking, comment le monter et le garder haut', duration: '10 min', content: `## Le "Score de Fiabilité" : le critère global qui peut te rétrograder en une journée
+Tu devrais voir un gain net sur les 60 jours qui suivent.
+
+:::quiz
+? Pourquoi Booking favorise-t-il les politiques souples ?
+* Elles rassurent les voyageurs et augmentent les réservations
+- Elles lui coûtent moins
+- Par obligation légale
+= Plus de réservations, c'est plus de commissions pour la plateforme.
+:::
+
+:::quiz
+? Quand une politique plus ferme reste-t-elle pertinente ?
+- Toute l'année
+- Jamais
+* Pendant les pics de demande, comme un grand événement
+= En forte demande, une annulation se remplace difficilement à bon prix.
+:::` },
+        { id: 9, title: 'Le score de fiabilité Booking, comment le monter et le garder haut', duration: '10 min', content: `:::bref
+- Booking suit ta fiabilité d'hôte dans l'extranet.
+- Annuler, refuser ou fermer ton calendrier à la dernière minute la dégrade.
+- Synchronise tes calendriers pour ne jamais devoir annuler.
+:::
+
+## Le "Score de Fiabilité" : le critère global qui peut te rétrograder en une journée
 
 Depuis fin 2025, Booking affiche un **score de fiabilité de l'hôte** en pourcentage dans ton extranet. Visible par toi, invisible par les voyageurs, mais **utilisé directement par l'algorithme de classement**.
 
@@ -708,7 +911,30 @@ Moralité : le score est un indicateur **actionnable**, pas une fatalité.
 - **Score 75-90 %** = neutre
 - **Score < 75 %** = pénalité active
 - **Checker 1x/mois minimum**
-- **1 annulation hôte = -10 points pour 90 jours**` },
+- **1 annulation hôte = -10 points pour 90 jours**
+
+:::quiz
+? Quelle action dégrade le plus ta fiabilité ?
+- Mettre à jour tes photos
+* Annuler une réservation de ton côté
+- Répondre rapidement
+= Une annulation hôte pénalise fortement ta fiabilité.
+:::
+
+:::quiz
+? Quel est le meilleur moyen d'éviter d'annuler ?
+- Ne jamais vérifier ton calendrier
+* Synchroniser tes calendriers entre plateformes
+- Ouvrir peu de dates
+= Sans synchronisation, une double réservation t'oblige à annuler.
+:::
+
+:::action
+titre: Synchronise tes calendriers
+texte: Ajoute les liens iCal d'Airbnb et de Booking pour tout voir au même endroit.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::` },
       ],
     },
     {
@@ -716,7 +942,13 @@ Moralité : le score est un indicateur **actionnable**, pas une fatalité.
       title: 'Visibilité IA, ChatGPT x Booking.com',
       duration: '25 min',
       lessons: [
-        { id: 10, title: 'Comment ChatGPT sélectionne les annonces depuis octobre 2025', duration: '13 min', content: `## L'intégration ChatGPT × Booking.com : un nouveau canal de découverte
+        { id: 10, title: 'Comment ChatGPT sélectionne les annonces depuis octobre 2025', duration: '13 min', content: `:::bref
+- Des assistants d'IA permettent désormais de chercher un hébergement en conversation.
+- Ils s'appuient sur les informations factuelles de ta fiche.
+- Une fiche précise et complète sert aussi bien l'IA que les humains.
+:::
+
+## L'intégration ChatGPT × Booking.com : un nouveau canal de découverte
 
 Depuis octobre 2025, OpenAI et Booking.com ont noué un partenariat technique : les utilisateurs de ChatGPT peuvent désormais **planifier et réserver un hébergement directement dans la conversation**, sans jamais ouvrir le site Booking.com.
 
@@ -792,8 +1024,30 @@ Si elle apparaît mais avec un résumé qui ne te plaît pas ("appartement au ce
 - L'IA lit **du texte uniquement**, pas de photos
 - Les 4 critères : spécificité factuelle, cohérence, avis récents, annulation explicite
 - Optimiser pour ChatGPT est **complémentaire** de Booking natif (pas de conflit)
-- Test ta fiche via une requête ChatGPT sur ton marché` },
-        { id: 11, title: 'Structurer ta description pour être lisible par l\'IA (données factuelles)', duration: '12 min', content: `## Écrire une description LCD pour une IA (et pour les humains en même temps)
+- Test ta fiche via une requête ChatGPT sur ton marché
+
+:::quiz
+? Sur quoi un assistant d'IA s'appuie-t-il pour proposer ton logement ?
+- Tes publications Instagram
+- Ton numéro de téléphone
+* Les informations factuelles de ta fiche
+= Il compare des données précises aux besoins du voyageur.
+:::
+
+:::quiz
+? Comment rendre ta fiche lisible par une IA ?
+* Remplir précisément chaque information
+- Écrire des slogans
+- Laisser des champs vides
+= Ce qui n'est pas écrit n'existe pas pour l'IA.
+:::` },
+        { id: 11, title: 'Structurer ta description pour être lisible par l\'IA (données factuelles)', duration: '12 min', content: `:::bref
+- Remplace chaque adjectif par un fait chiffré.
+- Énumère tous tes équipements, utilise des sous-titres clairs.
+- Soigne les 200 premiers caractères.
+:::
+
+## Écrire une description LCD pour une IA (et pour les humains en même temps)
 
 Une description optimisée pour ChatGPT × Booking est **aussi** une meilleure description pour un humain. Factuelle, spécifique, structurée. Voici la méthode.
 
@@ -901,7 +1155,30 @@ La plupart des hôtes voient leurs performances ChatGPT tripler après 2-3 itér
 - Utilise des sous-titres sémantiques
 - Soigne les 200 premiers caractères
 - Les avis récents comptent autant que la description
-- Teste via ChatGPT sur ton marché` },
+- Teste via ChatGPT sur ton marché
+
+:::quiz
+? Quelle formulation est la meilleure ?
+* « Vue dégagée sur le Rhône depuis le salon, au 3e étage »
+- « Superbe vue »
+- « Très beau logement »
+= Un fait précis convainc et se compare.
+:::
+
+:::quiz
+? Pourquoi soigner les 200 premiers caractères ?
+* Ce sont ceux qui sont lus et repris en premier
+- Ils sont cachés
+- Ils ne comptent pas
+= Ils résument ton logement pour le voyageur comme pour l'IA.
+:::
+
+:::action
+titre: Réécris ta description avec des faits
+texte: Note dans ta fiche logement 5 faits chiffrés à intégrer dans ta description.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::` },
       ],
     },
     {
@@ -909,7 +1186,13 @@ La plupart des hôtes voient leurs performances ChatGPT tripler après 2-3 itér
       title: 'Synchroniser Booking + Airbnb sans cannibalisation',
       duration: '30 min',
       lessons: [
-        { id: 12, title: 'Tarifs, dates, disponibilités, la matrice de synchronisation', duration: '15 min', content: `## Synchroniser Booking et Airbnb : le piège du double-booking
+        { id: 12, title: 'Tarifs, dates, disponibilités, la matrice de synchronisation', duration: '15 min', content: `:::bref
+- Trois choses à synchroniser entre Booking et Airbnb : calendrier, prix, règles.
+- Une double réservation t'oblige à annuler et te pénalise.
+- Fixe tes prix par plateforme selon ton revenu net.
+:::
+
+## Synchroniser Booking et Airbnb : le piège du double-booking
 
 Gérer deux plateformes en parallèle sans outil, c'est possible mais risqué. Le scénario catastrophe : un voyageur réserve sur Booking le 15 juin, et 30 min plus tard un autre voyageur réserve sur Airbnb pour la même date. Résultat : une annulation hôte obligatoire = **-10 points de score de fiabilité** (voir Module 4).
 
@@ -976,17 +1259,39 @@ Si tu as **le même logement** visible sur les 2 plateformes, il y a cannibalisa
 
 ### Check-list avant de publier sur Booking (quand tu as déjà Airbnb)
 
-☐ Calendrier Airbnb exporté (lien iCal)
-☐ Calendrier Booking configuré pour importer Airbnb
-☐ Tarif Booking de base = tarif Airbnb
-☐ Genius 15 % activé sur Booking
-☐ Politique d'annulation Souple sur Booking (Flexible sur Airbnb)
-☐ Règles identiques entre les 2 plateformes
-☐ Description Booking réécrite (pas un copier-coller Airbnb, voir Module 5)
-☐ 24+ photos uploadées sur Booking (pas juste un import Airbnb)
+Calendrier Airbnb exporté (lien iCal)
+Calendrier Booking configuré pour importer Airbnb
+Tarif Booking de base = tarif Airbnb
+Genius 15 % activé sur Booking
+Politique d'annulation Souple sur Booking (Flexible sur Airbnb)
+Règles identiques entre les 2 plateformes
+Description Booking réécrite (pas un copier-coller Airbnb, voir Module 5)
+24+ photos uploadées sur Booking (pas juste un import Airbnb)
 
-Une fois ces 8 points validés, tu es prêt à publier sans risquer le double-booking ni la cannibalisation massive.` },
-        { id: 13, title: 'Channel managers : quand les utiliser et lesquels choisir en 2026', duration: '15 min', content: `## Channel manager : nécessité ou gadget ?
+Une fois ces 8 points validés, tu es prêt à publier sans risquer le double-booking ni la cannibalisation massive.
+
+:::quiz
+? Quelle synchronisation est la priorité absolue ?
+* Le calendrier
+- Les photos
+- La couleur de l'annonce
+= C'est ce qui évite les doubles réservations.
+:::
+
+:::quiz
+? Comment fixer ton prix sur chaque plateforme ?
+- Le même prix partout sans calcul
+- Au hasard
+* En comparant ton revenu net après commission
+= Les commissions et remises diffèrent selon la plateforme.
+:::` },
+        { id: 13, title: 'Channel managers : quand les utiliser et lesquels choisir en 2026', duration: '15 min', content: `:::bref
+- Un gestionnaire de canaux synchronise calendriers, prix et messages en temps réel.
+- Il devient utile avec plusieurs plateformes ou plusieurs logements.
+- N'en change pas trop tôt, et configure-le soigneusement.
+:::
+
+## Channel manager : nécessité ou gadget ?
 
 Un channel manager (CM) est un logiciel qui centralise la gestion des réservations et tarifs sur toutes tes plateformes. Il fait 3 choses principales :
 
@@ -1093,7 +1398,30 @@ Avant CM (iCal) : 30-45 min/jour passés sur les 2 plateformes, risque de double
 
 Après CM bien configuré : 10 min/jour, zéro double-booking, tarification différenciée optimisée, auto-messages, score Booking et Airbnb qui montent ensemble.
 
-**Le CM paie son prix en 1-2 mois** si tu as le volume requis.` },
+**Le CM paie son prix en 1-2 mois** si tu as le volume requis.
+
+:::quiz
+? Quel avantage le gestionnaire de canaux a-t-il sur l'iCal ?
+* Une synchronisation en temps réel
+- Il est toujours gratuit
+- Il écrit tes annonces
+= L'iCal met parfois plusieurs heures à se mettre à jour.
+:::
+
+:::quiz
+? Quand passer à un gestionnaire de canaux ?
+- Dès ta première nuit
+- Jamais
+* Quand tu gères plusieurs plateformes ou logements
+= Avant, l'iCal suffit souvent ; après, le risque d'erreur augmente.
+:::
+
+:::action
+titre: Compare tes revenus nets par plateforme
+texte: Renseigne tes prix Airbnb, Booking et direct dans Mes prix.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Ouvrir Mes prix
+:::` },
       ],
     },
     {
@@ -1101,7 +1429,13 @@ Après CM bien configuré : 10 min/jour, zéro double-booking, tarification diff
       title: 'Paiements, annulations et litiges Booking',
       duration: '20 min',
       lessons: [
-        { id: 14, title: 'Les pièges paiement (no-show, caution, virement) et comment se protéger', duration: '20 min', content: `## Les 4 pièges Booking qui coûtent cher si tu n'y es pas préparé
+        { id: 14, title: 'Les pièges paiement (no-show, caution, virement) et comment se protéger', duration: '20 min', content: `:::bref
+- Booking a ses propres règles pour les absences, cautions, virements et annulations.
+- Connais la procédure en cas de voyageur qui ne se présente pas.
+- Prévois une caution et des conditions claires.
+:::
+
+## Les 4 pièges Booking qui coûtent cher si tu n'y es pas préparé
 
 Booking a des règles contractuelles **différentes d'Airbnb** sur les paiements, cautions, annulations et litiges. Un hôte qui applique ses réflexes Airbnb se fait avoir. Voici les 4 pièges principaux et les parades.
 
@@ -1196,13 +1530,13 @@ Booking ne protège PAS l'hôte contre les annulations **autorisées par la poli
 
 ### Check-list anti-litiges
 
-☐ Politique d'annulation répétée dans description + email confirmation
-☐ Photos datées de moins de 6 mois
-☐ Caution expliquée dans la description (si tu en prends)
-☐ Checklist ménage photo à chaque arrivée
-☐ Message d'accueil automatique avec règles clarifiées
-☐ No-show déclaré immédiatement si > 3 h sans contact
-☐ Tous les messages conservés dans l'extranet (pas en SMS)
+Politique d'annulation répétée dans description + email confirmation
+Photos datées de moins de 6 mois
+Caution expliquée dans la description (si tu en prends)
+Checklist ménage photo à chaque arrivée
+Message d'accueil automatique avec règles clarifiées
+No-show déclaré immédiatement si > 3 h sans contact
+Tous les messages conservés dans l'extranet (pas en SMS)
 
 ### Clôture de la formation
 
@@ -1210,7 +1544,30 @@ Tu viens de terminer les 7 modules et 14 leçons de cette formation. Tu as maint
 
 **Prochaine étape recommandée** : applique **1 action par semaine** à partir du Module 2 (fiche complète), puis Module 4 (signaux classement), puis Module 5 (description IA). Compte 6 à 8 semaines pour atteindre un plateau de performance.
 
-Des questions ? Le support Jason Marinho est là pour répondre. Bonne mise en pratique !` },
+Des questions ? Le support Jason Marinho est là pour répondre. Bonne mise en pratique !
+
+:::quiz
+? Pourquoi tes réflexes Airbnb ne suffisent-ils pas sur Booking ?
+- Les voyageurs sont les mêmes
+* Les règles de paiement et de litige sont différentes
+- Booking n'a aucune règle
+= Paiements, cautions et annulations suivent des règles propres à Booking.
+:::
+
+:::quiz
+? Comment se protéger des dégâts sur Booking ?
+- Compter sur une garantie Booking
+- Ne rien prévoir
+* Prévoir une caution et un règlement clair
+= Booking n'offre pas de garantie dommages comparable à celle d'Airbnb.
+:::
+
+:::action
+titre: Prépare ta caution pour les séjours Booking
+texte: Active la caution par empreinte bancaire dans tes contrats.
+lien: /dashboard/contrats
+bouton: Ouvrir mes contrats
+:::` },
       ],
     },
   ],

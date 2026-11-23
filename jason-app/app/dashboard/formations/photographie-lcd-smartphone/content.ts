@@ -296,7 +296,7 @@ Garde cette liste, on s'en servira au **module 5**.`,
       duration: '15 min',
       lessons: [
         {
-          id: 1,
+          id: 21,
           title: `Smartphone vs reflex : ce qui compte vraiment`,
           duration: '8 min',
           content: `## La (bonne) nouvelle : ton smartphone suffit
@@ -380,7 +380,7 @@ Sauf à être photographe formé, **n'utilise pas ce mode**.
 > C'est tout pour le matériel. On passe aux **3 accessoires utiles à 50 €**.`,
         },
         {
-          id: 2,
+          id: 22,
           title: `3 accessoires utiles à moins de 50 €`,
           duration: '7 min',
           content: `## Accessoire 1, Le mini-trépied *(15-25 €)*
@@ -483,7 +483,7 @@ Récap de ce que tu peux acheter pour démarrer :
       duration: '30 min',
       lessons: [
         {
-          id: 1,
+          id: 31,
           title: `Checklist home staging, 23 points à vérifier`,
           duration: '12 min',
           content: `## Le secret des annonces qui font cliquer
@@ -550,7 +550,7 @@ Avant de prendre ta première photo :
 > Si tu coches **moins de 18 points sur 23**, tu sais déjà pourquoi tes photos sous-performent. Tu n'as même pas encore besoin de refaire les photos, **range** et **range encore** avant de cliquer.`,
         },
         {
-          id: 2,
+          id: 32,
           title: `Le rangement façon "magazine"`,
           duration: '10 min',
           content: `## La règle d'or : *« moins, mais mieux »*
@@ -672,7 +672,7 @@ Si tu te souviens du **beau bouquet**, de la lumière qui entre, du livre ouvert
 > **Indice :** la première fois, c'est lent. À partir de la 3ème, ça devient un réflexe de **10 minutes**.`,
         },
         {
-          id: 3,
+          id: 33,
           title: `Déco temporaire, 12 € pour transformer une pièce`,
           duration: '8 min',
           content: `## Le principe : la déco "pour la photo"
@@ -809,7 +809,7 @@ Tous ces objets sont rentables :
       duration: '35 min',
       lessons: [
         {
-          id: 1,
+          id: 41,
           title: `La règle des tiers en 2 minutes`,
           duration: '8 min',
           content: `## Pourquoi cette règle change tout
@@ -893,7 +893,7 @@ Au début, déplacer le sujet sur le tiers te semblera bizarre. Tu auras envie d
 > **Spoiler :** ce sera celle où tu as appliqué la règle des tiers.`,
         },
         {
-          id: 2,
+          id: 42,
           title: `La meilleure heure pour chaque pièce`,
           duration: '10 min',
           content: `## La lumière naturelle est gratuite et imbattable
@@ -1005,7 +1005,7 @@ Avant ton jour J :
 4. **Partage ce planning** avec quelqu'un *(conjoint, ami)* si tu as besoin d'aide pour tenir les angles ou les réflecteurs.`,
         },
         {
-          id: 3,
+          id: 43,
           title: `Naturel vs flash, pourquoi le flash tue tes photos`,
           duration: '8 min',
           content: `## La règle absolue de la photo LCD
@@ -1150,7 +1150,7 @@ Compare les 4. Note celle qui fait le plus envie d'entrer dans la pièce.
 > **Indice :** ce sera presque toujours la **D**.`,
         },
         {
-          id: 4,
+          id: 44,
           title: `Les angles qui agrandissent l'espace`,
           duration: '9 min',
           content: `## Pourquoi tes pièces semblent toutes petites
@@ -1320,7 +1320,7 @@ de ton logement.`,
       duration: '35 min',
       lessons: [
         {
-          id: 1,
+          id: 51,
           title: `Salon, cuisine, chambre, les angles types`,
           duration: '12 min',
           content: `## Préparation avant chaque pièce
@@ -1465,7 +1465,7 @@ Pour chaque pièce, planifie tes **3 angles** sur une feuille avant la séance :
 > Cette préparation prend **20 minutes max**, mais te fait gagner **1 heure** pendant la séance.`,
         },
         {
-          id: 2,
+          id: 52,
           title: `Salle de bain, la pièce la plus difficile`,
           duration: '8 min',
           content: `## Pourquoi la salle de bain est si dure
@@ -1595,7 +1595,7 @@ Si ta douche est moins glamour *(bac plastique standard, rideau de douche, flexi
 > **ROI très rapide** via les nouvelles photos.`,
         },
         {
-          id: 3,
+          id: 53,
           title: `Extérieurs, valoriser vues, terrasses et jardins`,
           duration: '8 min',
           content: `## Pourquoi les extérieurs convertissent
@@ -1745,7 +1745,7 @@ Les voyageurs adorent les photos qui leur montrent le **quartier** où ils dormi
 > **Note l'heure idéale** pour chacune. Ajoute-les à ton planning de séance.`,
         },
         {
-          id: 4,
+          id: 54,
           title: `Lifestyle shots, créer l'envie en 1 photo`,
           duration: '7 min',
           content: `## La différence entre "logement" et "expérience"
@@ -1888,7 +1888,7 @@ Sur les 20-30 photos de ton annonce, voici la répartition optimale :
       duration: '15 min',
       lessons: [
         {
-          id: 1,
+          id: 61,
           title: `Snapseed, les 5 réglages qui changent tout`,
           duration: '6 min',
           content: `## Pourquoi Snapseed et pas autre chose
@@ -2032,7 +2032,7 @@ Très utile pour **fixer une zone problématique** sans toucher au reste.
 > **L'objectif :** la photo *« naturelle, mais mieux »*.`,
         },
         {
-          id: 2,
+          id: 62,
           title: `Choisir l'ordre des photos, les 5 premières secondes`,
           duration: '5 min',
           content: `## Pourquoi l'ordre est plus important que le nombre
@@ -2147,7 +2147,7 @@ Si tu hésites, retravaille la sélection. Réordonne, remplace 1 ou 2 photos pa
 3. **Charge tes photos** dans l'ordre exact. *Ne laisse pas Airbnb les ré-ordonner automatiquement.*`,
         },
         {
-          id: 3,
+          id: 63,
           title: `Tester et mesurer, méthode A/B`,
           duration: '4 min',
           content: `## La photo de couverture vaut un mois de tarif
