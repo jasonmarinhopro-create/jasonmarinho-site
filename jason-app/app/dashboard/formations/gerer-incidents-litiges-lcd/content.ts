@@ -23,7 +23,13 @@ export const GERER_INCIDENTS_LITIGES_FORMATION = {
           id: 1,
           title: `Le contrat de location, ton vrai bouclier juridique`,
           duration: '7 min',
-          content: `## Pourquoi le contrat est non-négociable
+          content: `:::bref
+- Sur Airbnb, le voyageur accepte les conditions d'Airbnb, pas un contrat avec toi.
+- Un contrat signé fixe tes règles et ce que le voyageur reconnaît.
+- La signature électronique est la façon la plus simple de le faire signer.
+:::
+
+## Pourquoi le contrat est non-négociable
 
 Quand un voyageur réserve sur Airbnb, il accepte les CGU d'Airbnb. **Pas un contrat avec toi.**
 
@@ -125,13 +131,35 @@ Tu as 3 options, par ordre de qualité :
 2. Si tu n'as pas de contrat ou s'il est incomplet, **utilise le générateur** de contrat du dashboard pour en créer un en 5 minutes.
 3. **Configure l'envoi automatique** du contrat dès la réservation (cf. ta page Logements).
 
-> Sans contrat solide, tu pars perdant avant même que le séjour commence.`,
+> Sans contrat solide, tu pars perdant avant même que le séjour commence.
+
+:::quiz
+? Que signe un voyageur qui réserve sur Airbnb sans contrat de ta part ?
+- Un bail classique
+* Seulement les conditions d'Airbnb
+- Ton règlement intérieur
+= En cas de litige, Airbnb applique ses propres règles.
+:::
+
+:::quiz
+? Quelle façon de faire signer est la plus simple ?
+- La signature orale
+* La signature électronique
+- Le courrier recommandé
+= Elle se fait à distance et laisse une trace datée.
+:::`,
         },
         {
           id: 2,
           title: `La caution : Stripe vs chèque vs virement (et leurs traps)`,
           duration: '7 min',
-          content: `## Pourquoi la caution est ton 2ème bouclier
+          content: `:::bref
+- Le contrat te protège juridiquement, la caution financièrement.
+- Une empreinte bancaire (pré-autorisation) bloque le montant sans le prélever.
+- Avec une caution sécurisée, c'est au voyageur de contester, pas à toi de réclamer.
+:::
+
+## Pourquoi la caution est ton 2ème bouclier
 
 Le contrat te protège **juridiquement**.
 La caution te protège **financièrement**.
@@ -291,13 +319,35 @@ Pour les hôtes sérieux, **empile 3 niveaux de protection** :
 2. Si tu n'utilises pas Stripe, **configure-le** sur le dashboard maintenant (5 minutes).
 3. **Définis ton montant** de caution standard (2-3 nuits) et applique-le sur tes prochains contrats.
 
-> Une caution mal choisie = des dégâts jamais récupérés et un sommeil agité.`,
+> Une caution mal choisie = des dégâts jamais récupérés et un sommeil agité.
+
+:::quiz
+? Comment fonctionne une pré-autorisation bancaire ?
+- Le montant est encaissé puis remboursé
+- Rien n'est bloqué
+* Le montant est bloqué sur la carte sans être prélevé
+= Tu ne prélèves que si un dégât est constaté.
+:::
+
+:::quiz
+? Quel est l'intérêt principal d'une caution sécurisée ?
+- Elle remplace le ménage
+* Tu n'as pas à courir après l'argent
+- Elle augmente tes avis
+= C'est le voyageur qui doit contester le prélèvement.
+:::`,
         },
         {
           id: 3,
           title: `Les questions pré-arrivée qui détectent la plupart des risques`,
           duration: '6 min',
-          content: `## La phase la plus négligée
+          content: `:::bref
+- Entre réservation et arrivée, tu as le temps de vérifier.
+- Quelques questions simples révèlent beaucoup : motif, nombre de personnes, heure d'arrivée, animaux.
+- Un refus de répondre ou des réponses floues est un signal.
+:::
+
+## La phase la plus négligée
 
 Entre la réservation et l'arrivée, il s'écoule généralement **2 à 30 jours**.
 
@@ -449,7 +499,30 @@ Questions 5, 6, 7 + envoi du contrat + lien de caution Stripe
 3. **Active l'envoi semi-automatique** pour tes 5 prochaines réservations et observe les réponses.
 
 > La prévention bien faite réduit **nettement** tes incidents.
-> La prévention mal faite te fait perdre 1500 €/an et beaucoup de sommeil.`,
+> La prévention mal faite te fait perdre 1500 €/an et beaucoup de sommeil.
+
+:::quiz
+? Un voyageur refuse de dire combien de personnes viendront. Que penser ?
+- Il faut annuler tout de suite sans parler
+* C'est un signal à prendre au sérieux
+- C'est normal, aucun souci
+= La sur-occupation et les fêtes commencent souvent ainsi.
+:::
+
+:::quiz
+? Pourquoi demander le motif du séjour ?
+- Par simple curiosité
+* Pour repérer un risque de fête ou d'usage inhabituel
+- Pour le facturer plus
+= Un anniversaire de groupe dans un petit logement mérite une vérification.
+:::
+
+:::action
+titre: Prépare ton contrat et ta caution
+texte: Crée ton modèle de contrat avec ta caution pour l'envoyer à tes prochains voyageurs.
+lien: /dashboard/contrats
+bouton: Ouvrir mes contrats
+:::`,
         },
       ],
     },
@@ -462,7 +535,13 @@ Questions 5, 6, 7 + envoi du contrat + lien de caution Stripe
           id: 21,
           title: `Les 8 alertes silencieuses qui annoncent un problème`,
           duration: '9 min',
-          content: `## Pourquoi les signaux sont silencieux
+          content: `:::bref
+- Un voyageur qui pose problème prévient rarement.
+- Silence total, ton qui se dégrade, messages tard le soir : autant de signaux.
+- Réagis tôt, avant que la situation devienne irrécupérable.
+:::
+
+## Pourquoi les signaux sont silencieux
 
 Quand un voyageur cause un problème, il **prévient rarement**. À l'inverse, il essaie souvent de **masquer** ce qui se passe pour ne pas se faire facturer ou expulser.
 
@@ -586,13 +665,35 @@ Les actions à enclencher :
 3. **Configure des alertes** sur ton compteur intelligent (notifications de consommation anormale).
 4. Lors du prochain séjour, **applique le scoring de vigilance** systématiquement.
 
-> Un hôte attentif détecte un problème **24 h avant** un hôte distrait.`,
+> Un hôte attentif détecte un problème **24 h avant** un hôte distrait.
+
+:::quiz
+? Ton voyageur ne répond plus à aucun message depuis son arrivée. Que faire ?
+* Rester attentif et le relancer poliment
+- Entrer dans le logement sans prévenir
+- Ignorer complètement
+= Le silence total est un signal faible qui mérite une vérification.
+:::
+
+:::quiz
+? Pourquoi les signaux sont-ils dits « silencieux » ?
+* Le voyageur cherche souvent à masquer le problème
+- Ils n'existent pas
+- Ils viennent toujours des voisins
+= Il veut éviter une facturation ou une expulsion.
+:::`,
         },
         {
           id: 22,
           title: `La plainte voisin : réagir sans escalader`,
           duration: '8 min',
-          content: `## Le scénario classique
+          content: `:::bref
+- Remercie le voisin, puis contacte le voyageur calmement.
+- Vérifie une trentaine de minutes plus tard.
+- Consigne tout par écrit le lendemain.
+:::
+
+## Le scénario classique
 
 Tu reçois ce message à 23h47 :
 
@@ -738,13 +839,35 @@ Si ton contrat (cf. M1.L1) inclut une **clause anti-fête**, tu peux :
 4. **Note dans ton dashboard** chaque plainte, même mineure. Ça te sert à long terme.
 
 > Une plainte voisin bien gérée = **0 conséquence**.
-> Mal gérée = avis 11/5, signalement copropriété, voire perte de l'autorisation municipale.`,
+> Mal gérée = avis 1/5, signalement copropriété, voire perte de l'autorisation municipale.
+
+:::quiz
+? Un voisin se plaint du bruit à 23 h. Ta première réaction ?
+* Remercier le voisin et contacter le voyageur calmement
+- Appeler le voyageur pour l'engueuler
+- Ignorer le message
+= Le calme évite l'escalade et garde le voisin de ton côté.
+:::
+
+:::quiz
+? Pourquoi tout consigner par écrit le lendemain ?
+- Pour l'afficher dans l'immeuble
+- Ce n'est pas utile
+* Pour avoir une trace en cas de litige
+= Les messages écrits servent de preuve.
+:::`,
         },
         {
           id: 23,
           title: `Le voyageur qui ne respecte pas les règles : que faire en direct`,
           duration: '8 min',
-          content: `## Les 5 règles les plus violées
+          content: `:::bref
+- Règles les plus enfreintes : sur-occupation, animaux, fumée, fêtes, usage commercial.
+- Méthode : documenter, demander, appliquer.
+- Les pénalités doivent être prévues dans ton contrat ou ton règlement.
+:::
+
+## Les 5 règles les plus violées
 
 Voici les règles que les voyageurs **enfreignent le plus**, par ordre de fréquence :
 
@@ -925,7 +1048,30 @@ Quand un voyageur viole une règle, suis toujours ces 3 étapes :
 4. **Anticipe** : où sont les caméras autorisées ? Qui sont tes voisins-alliés ?
 
 > Un hôte qui applique systématiquement les pénalités contractuelles est **rarement** retesté.
-> Un hôte qui ferme les yeux sur la première infraction est **toujours** retesté.`,
+> Un hôte qui ferme les yeux sur la première infraction est **toujours** retesté.
+
+:::quiz
+? Tu découvres des personnes en plus. Première étape ?
+* Documenter ce que tu constates
+- Appliquer une pénalité sans prévenir
+- Ne rien faire
+= Sans preuve, aucune pénalité ne tient.
+:::
+
+:::quiz
+? Quand une pénalité est-elle applicable ?
+* Quand elle est prévue à l'avance dans le contrat ou le règlement
+- Toujours, même sans règle écrite
+- Jamais
+= Le voyageur doit l'avoir acceptée avant le séjour.
+:::
+
+:::action
+titre: Prépare tes messages types
+texte: Rédige un message calme pour une plainte de voisin et un rappel des règles.
+lien: /dashboard/gabarits
+bouton: Ouvrir mes gabarits
+:::`,
         },
       ],
     },
@@ -938,7 +1084,13 @@ Quand un voyageur viole une règle, suis toujours ces 3 étapes :
           id: 31,
           title: `L'inventaire photo : la méthode 47 photos`,
           duration: '7 min',
-          content: `## Pourquoi 47 photos exactement
+          content: `:::bref
+- Photographie le logement avant chaque arrivée.
+- Couvre chaque pièce et les détails à risque.
+- Une courte vidéo d'inspection complète les photos.
+:::
+
+## Pourquoi 47 photos exactement
 
 47, ce n'est pas un chiffre rond par hasard.
 
@@ -1110,13 +1262,35 @@ Voici les **5 zones oubliées** qui causent la plupart des litiges :
 5. **Programme** la refonte de cet inventaire **avant chaque arrivée**.
 
 > 47 photos + 1 vidéo, c'est 7 minutes de travail.
-> Et c'est ce qui te fait gagner 500 € de caution prélevée sans contestation.`,
+> Et c'est ce qui te fait gagner 500 € de caution prélevée sans contestation.
+
+:::quiz
+? Quand faire l'inventaire photo ?
+* Avant chaque arrivée
+- Une fois par an
+- Seulement après un problème
+= La preuve doit dater d'avant le séjour concerné.
+:::
+
+:::quiz
+? Un voyageur dit que la tache était déjà là. Qu'est-ce qui te protège ?
+- Un avis 5 étoiles ancien
+* Des photos datées prises avant son arrivée
+- Ta bonne foi
+= Une photo datée vaut plus qu'une parole.
+:::`,
         },
         {
           id: 32,
           title: `L'état des lieux d'arrivée : ce qui te protège juridiquement`,
           duration: '7 min',
-          content: `## Pourquoi un EDL d'arrivée formel
+          content: `:::bref
+- Les photos ne suffisent pas : un état des lieux reconnu par le voyageur te protège mieux.
+- Trois méthodes : papier, numérique signé, validation tacite par message.
+- Évite l'état des lieux verbal ou bâclé.
+:::
+
+## Pourquoi un EDL d'arrivée formel
 
 Tu as tes 47 photos avant l'arrivée. Mais ça ne suffit pas pour gagner en justice.
 
@@ -1295,13 +1469,35 @@ Garde le détail pour le **mobilier de valeur** (> 100 €) et les **équipement
 5. Pour les **séjours sensibles**, prévois un EDL formel (méthode 1 ou 2).
 
 > Un EDL bien fait te sauve **9 fois sur 10** d'un litige.
-> Un EDL bâclé te coûte la totalité de la caution.`,
+> Un EDL bâclé te coûte la totalité de la caution.
+
+:::quiz
+? Que doit reconnaître le voyageur dans l'état des lieux d'arrivée ?
+- Aimer la décoration
+* Avoir trouvé le logement dans l'état décrit
+- Avoir payé la taxe de séjour
+= C'est la base pour réclamer des dégâts ensuite.
+:::
+
+:::quiz
+? Quel état des lieux ne te protège pas ?
+- Un message avec photos et accord écrit
+* Un état des lieux verbal
+- Un état des lieux numérique signé
+= Sans trace écrite, impossible de prouver quoi que ce soit.
+:::`,
         },
         {
           id: 33,
           title: `L'état des lieux de sortie en 10 minutes sans le voyageur`,
           duration: '6 min',
-          content: `## Le mythe de l'EDL de sortie en présence du voyageur
+          content: `:::bref
+- Pas besoin d'être là au départ du voyageur.
+- Inspection rapide, photos des dégâts, relevé des compteurs.
+- Ton équipe de ménage peut faire l'inspection avec une consigne claire.
+:::
+
+## Le mythe de l'EDL de sortie en présence du voyageur
 
 Beaucoup d'hôtes pensent qu'il faut être présent **avec le voyageur** au moment du départ pour faire un EDL de sortie.
 
@@ -1453,7 +1649,30 @@ Si tu prélèves la caution, envoie un **rapport structuré** :
 4. **Prépare le matériel** pour l'inspection : smartphone chargé, mode vidéo, lockbox vérifiée.
 5. **Fixe une routine** : EDL de sortie systématique dans les 2 h après le départ.
 
-> Une routine de sortie en 10 minutes = **0 stress** + **100 % de prélèvements justifiés**.`,
+> Une routine de sortie en 10 minutes = **0 stress** + **100 % de prélèvements justifiés**.
+
+:::quiz
+? Faut-il être présent au départ du voyageur ?
+- Oui, avec un huissier
+* Non, une inspection juste après suffit
+- Oui, obligatoirement
+= Sur place, le voyageur pressé conteste tout en direct.
+:::
+
+:::quiz
+? Qui peut faire l'inspection de sortie ?
+* Ton équipe de ménage, avec une consigne claire
+- Le voyageur suivant
+- Personne
+= Le ménage passe de toute façon dans chaque pièce.
+:::
+
+:::action
+titre: Donne la consigne d'inspection au ménage
+texte: Ajoute à chaque ménage la consigne de photographier tout dégât constaté.
+lien: /dashboard/menages
+bouton: Ouvrir les ménages
+:::`,
         },
       ],
     },
@@ -1466,7 +1685,13 @@ Si tu prélèves la caution, envoie un **rapport structuré** :
           id: 41,
           title: `Identifier et chiffrer un dégât (avec ou sans assurance)`,
           duration: '7 min',
-          content: `## Les 4 types de dégâts en LCD
+          content: `:::bref
+- Classe le dégât : superficiel, moyen, lourd ou sinistre majeur.
+- Chiffre au prix de remplacement, avec des devis ou factures.
+- Tiens compte de l'usure : tu ne factures pas le neuf pour un objet ancien.
+:::
+
+## Les 4 types de dégâts en LCD
 
 Tout dégât appartient à l'une de ces 4 catégories. La procédure de chiffrage diffère pour chacune.
 
@@ -1652,13 +1877,35 @@ Tu perds en crédibilité, le voyageur conteste tout.
 3. **Sauvegarde** ce tableau dans ton dashboard.
 4. **Identifie** un nettoyeur professionnel et obtiens un **devis type** pour des prestations courantes (désinfection cigarette, nettoyage tache canapé, désincrustation joint douche).
 
-> Avoir tes prix sous la main = chiffrage en 5 minutes au lieu de 1 heure.`,
+> Avoir tes prix sous la main = chiffrage en 5 minutes au lieu de 1 heure.
+
+:::quiz
+? Comment chiffrer un dégât ?
+- Au double du prix d'achat
+* Au prix de remplacement, justifié par des devis ou factures
+- Au prix que tu estimes juste
+= Un chiffrage justifié est plus difficile à contester.
+:::
+
+:::quiz
+? Un canapé de 8 ans est taché. Peux-tu facturer un canapé neuf ?
+- Oui, plus des frais
+* Non, il faut tenir compte de l'usure
+- Oui, toujours
+= Facturer le neuf pour un objet ancien est contestable.
+:::`,
         },
         {
           id: 42,
           title: `Réclamer la caution sur Airbnb : la procédure officielle 2026`,
           duration: '8 min',
-          content: `## Le mythe de la "caution Airbnb"
+          content: `:::bref
+- Airbnb ne prélève pas de caution comme tu l'imagines.
+- La demande passe par le centre de résolution, avec photos et justificatifs.
+- Agis vite : Airbnb fixe un délai après le départ.
+:::
+
+## Le mythe de la "caution Airbnb"
 
 **Airbnb ne prélève pas de caution** au sens classique du terme.
 
@@ -1819,13 +2066,35 @@ Tu ouvres la demande 16 jours après le départ.
 4. **Vérifie ton processus** : as-tu toujours les 47 photos + l'EDL d'arrivée signé ? Sinon, c'est ta priorité avant tout litige.
 
 > Une demande Resolution Center bien préparée = **80 % d'acceptation** ou indemnisation AirCover.
-> Une demande bâclée = **0 €** et avis 11/5.`,
+> Une demande bâclée = **0 €** et avis 1/5.
+
+:::quiz
+? Où faire une demande de remboursement de dégâts sur Airbnb ?
+* Dans le centre de résolution
+- Par un avis public
+- Par courrier à Airbnb
+= C'est la procédure prévue par la plateforme.
+:::
+
+:::quiz
+? Quel motif de refus est le plus facile à éviter ?
+- Un dégât réel bien photographié
+- Un chiffrage avec facture
+* Une demande envoyée hors délai
+= Il suffit d'agir dès le départ du voyageur.
+:::`,
         },
         {
           id: 43,
           title: `Réclamer la caution sur Booking.com : la procédure officielle`,
           duration: '7 min',
-          content: `## Booking.com vs Airbnb : la grande différence
+          content: `:::bref
+- Booking n'offre pas de protection comparable à celle d'Airbnb.
+- La caution et les litiges sont à ta charge.
+- Prévois ta propre caution et une assurance adaptée.
+:::
+
+## Booking.com vs Airbnb : la grande différence
 
 Sur Airbnb, tu as **AirCover** (assurance plateforme) et le **Resolution Center**.
 
@@ -1990,13 +2259,35 @@ Pour un séjour Booking, ton schéma de protection optimal :
 5. **Bookmark** : *admin.booking.com* (Extranet) + numéro support hôte.
 
 > Sur Booking, ta sécurité c'est **toi**.
-> Plus tu te prépares, moins tu te fais piéger.`,
+> Plus tu te prépares, moins tu te fais piéger.
+
+:::quiz
+? Qui gère les dégâts pour une réservation Booking ?
+* Toi, avec ta propre caution
+- Booking, automatiquement
+- Le voyageur suivant
+= Booking est un canal de réservation, pas un assureur.
+:::
+
+:::quiz
+? Quelle protection combiner pour Booking ?
+* Une caution et une assurance propriétaire
+- Rien
+- Seulement un avis
+= Sans protection de la plateforme, tu dois t'équiper toi-même.
+:::`,
         },
         {
           id: 44,
           title: `La caution Stripe / virement direct : comment encaisser`,
           duration: '7 min',
-          content: `## Stripe : la procédure de capture en 5 minutes
+          content: `:::bref
+- Avant de prélever : photos, devis, et voyageur prévenu par écrit.
+- Une empreinte bancaire a une durée limitée : prélève à temps.
+- Une contestation bancaire se gagne avec tes preuves.
+:::
+
+## Stripe : la procédure de capture en 5 minutes
 
 Tu as utilisé une **pré-autorisation Stripe** comme caution (Module 1.L2). Voici comment l'encaisser proprement.
 
@@ -2155,13 +2446,35 @@ Selon le mode de caution, voici les **frais cachés** :
 4. **Sauvegarde** ton dossier "preuves" pour chaque séjour problématique (chargeback Stripe peut survenir 60 jours après).
 
 > La capture Stripe en **5 minutes** = caution récupérée.
-> La capture oubliée = caution perdue à jamais.`,
+> La capture oubliée = caution perdue à jamais.
+
+:::quiz
+? Que faire avant de prélever une caution ?
+- Prélever d'abord, expliquer ensuite
+- Rien de particulier
+* Photographier, justifier le montant et prévenir le voyageur
+= C'est ce qui te permet de gagner une contestation.
+:::
+
+:::quiz
+? Le voyageur conteste auprès de sa banque. Qu'est-ce qui compte ?
+* Tes preuves : photos, devis, messages
+- Ta note sur Airbnb
+- Le prix de la nuit
+= La banque tranche sur pièces.
+:::`,
         },
         {
           id: 45,
           title: `Les preuves à conserver (photos, dates, devis, témoignages)`,
           duration: '6 min',
-          content: `## Pourquoi la preuve est ton seul atout
+          content: `:::bref
+- Sans preuve, tu n'as que ta parole contre celle du voyageur.
+- Cinq familles de preuves : visuelles, écrites, financières, témoignages, données objectives.
+- Range-les à plusieurs endroits.
+:::
+
+## Pourquoi la preuve est ton seul atout
 
 En cas de litige, tu **n'as pas** la parole du voyageur de ton côté.
 
@@ -2323,16 +2636,16 @@ Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashbo
 
 | Élément | OK |
 |---|---|
-| ☐ 47 photos avant | |
-| ☐ 47 photos après | |
-| ☐ Vidéo d'inspection | |
-| ☐ Captures conversations | |
-| ☐ Devis professionnels | |
-| ☐ Factures | |
-| ☐ Témoignages | |
-| ☐ Index compteurs | |
-| ☐ Logs capteurs | |
-| ☐ Contrat signé | |
+| 47 photos avant | |
+| 47 photos après | |
+| Vidéo d'inspection | |
+| Captures conversations | |
+| Devis professionnels | |
+| Factures | |
+| Témoignages | |
+| Index compteurs | |
+| Logs capteurs | |
+| Contrat signé | |
 
 > Si tu as **8/10** et plus, tu es prêt pour AirCover, médiation, ou justice.
 > Si tu as **< 5/10**, tu vas perdre. Documente plus.
@@ -2346,7 +2659,30 @@ Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashbo
 5. **Crée une checklist** des 10 preuves à constituer pour chaque litige.
 
 > Une bonne archive te sauve **chaque litige**.
-> Une mauvaise archive te coûte **chaque litige**.`,
+> Une mauvaise archive te coûte **chaque litige**.
+
+:::quiz
+? Quelle est ta meilleure arme en cas de litige ?
+- Un avis négatif sur le voyageur
+* Des preuves bien rangées
+- Un ton ferme
+= C'est la preuve qui fait gagner, pas la conviction.
+:::
+
+:::quiz
+? Pourquoi garder tes preuves à plusieurs endroits ?
+- Ce n'est pas utile
+* Pour ne pas les perdre si un support tombe en panne
+- Pour les montrer aux voisins
+= Une preuve perdue ne sert à rien.
+:::
+
+:::action
+titre: Vérifie tes cautions en cours
+texte: Regarde les cautions de tes séjours récents et leur date limite de prélèvement.
+lien: /dashboard/finances/encaissements
+bouton: Voir mes encaissements
+:::`,
         },
       ],
     },
@@ -2357,9 +2693,15 @@ Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashbo
       lessons: [
         {
           id: 51,
-          title: `Le voyageur menace de te mettre 11/5 : que faire (et ne pas faire)`,
+          title: `Le voyageur menace de te mettre 1/5 : que faire (et ne pas faire)`,
           duration: '7 min',
-          content: `## La menace classique
+          content: `:::bref
+- Un voyageur menace d'un mauvais avis si tu prélèves la caution : ne cède pas.
+- Céder valide le chantage et fragilise tes prochains litiges.
+- Réponds calmement, par écrit, avec les faits.
+:::
+
+## La menace classique
 
 Tu reçois ce message après un litige :
 
@@ -2417,23 +2759,23 @@ Quand un voyageur menace, **applique** quand même les pénalités. Sans hésita
 
 ## Le mythe du "bad buzz" sur Airbnb
 
-Beaucoup d'hôtes ont peur qu'un avis 11/5 ruine leur annonce.
+Beaucoup d'hôtes ont peur qu'un avis 1/5 ruine leur annonce.
 
 **Réalité :**
 
 ### 1. Les voyageurs lisent **plusieurs** avis
 
-Sur 50 avis, 1 avis 11/5 noyé dans 49 avis 51/5 ne change pas la décision de réservation.
+Sur 50 avis, 1 avis 1/5 noyé dans 49 avis 5/5 ne change pas la décision de réservation.
 
 ### 2. Airbnb pondère les avis récents
 
-Les voyageurs voient surtout les **5-10 derniers avis**. Si tu en as 51/5 après l'incident, l'effet du 11/5 s'estompe rapidement.
+Les voyageurs voient surtout les **5-10 derniers avis**. Si tu en as 5/5 après l'incident, l'effet du 1/5 s'estompe rapidement.
 
 ### 3. Une **réponse publique** bien rédigée transforme l'avis
 
 Cf. la prochaine leçon.
 
-> Un avis 11/5 avec une **bonne réponse** vaut mieux qu'un avis 51/5 obtenu sous chantage.
+> Un avis 1/5 avec une **bonne réponse** vaut mieux qu'un avis 5/5 obtenu sous chantage.
 
 ## La double évaluation Airbnb
 
@@ -2527,13 +2869,35 @@ Le voyageur menace clairement et explicitement de te mettre un avis injustifié.
 3. **Sauvegarde** la procédure de contact support Airbnb.
 4. **Décide** d'avance ta stratégie : tu cèderas-tu en cas de menace ? *(Indice : non.)*
 
-> Tu as le droit de **te protéger**. Le chantage n'est pas une stratégie commerciale, c'est de la lâcheté.`,
+> Tu as le droit de **te protéger**. Le chantage n'est pas une stratégie commerciale, c'est de la lâcheté.
+
+:::quiz
+? Un voyageur te menace d'un avis 1 étoile si tu prélèves. Que faire ?
+- Le menacer en retour
+* Répondre calmement et appliquer ce qui est prévu
+- Renoncer à la caution
+= Céder valide le chantage.
+:::
+
+:::quiz
+? Pourquoi répondre par écrit ?
+- Pour éviter de répondre
+* Le message pourra servir de preuve
+- Pour le faire attendre
+= Une menace écrite peut être signalée à la plateforme.
+:::`,
         },
         {
           id: 52,
           title: `Répondre publiquement à un avis injustifié sans s'enliser`,
           duration: '6 min',
-          content: `## Tu as reçu un avis 11/5. Et maintenant ?
+          content: `:::bref
+- Attends au moins 24 heures avant de répondre à un avis injuste.
+- Ne nie pas, n'attaque pas : des faits, puis une conclusion positive.
+- Tu écris pour les futurs voyageurs, pas pour l'auteur de l'avis.
+:::
+
+## Tu as reçu un avis 1/5. Et maintenant ?
 
 Il vient d'apparaître sur ton annonce. Tu le lis. Tu vois rouge.
 
@@ -2608,7 +2972,7 @@ Voici un canevas en **5 paragraphes** :
 
 ## Exemple complet : réponse à un avis "sur-facturation caution"
 
-**Avis du voyageur (11/5) :**
+**Avis du voyageur (1/5) :**
 
 > *« L'hôte a prélevé 350 € sur la caution pour des dégâts qui n'existaient pas. Photos truquées. Fuyez. »*
 
@@ -2693,13 +3057,35 @@ Si la réponse est non à une seule question, **réécris**.
 3. **Réécris** une de tes anciennes réponses en utilisant la structure 5 paragraphes (en privé, pour la prochaine fois).
 4. **Sauvegarde le canevas** dans tes Gabarits pour gagner du temps lors du prochain avis difficile.
 
-> Une bonne réponse publique transforme un avis 11/5 en **outil de vente** pour les voyageurs intelligents.`,
+> Une bonne réponse publique transforme un avis 1/5 en **outil de vente** pour les voyageurs intelligents.
+
+:::quiz
+? À qui s'adresse vraiment ta réponse publique ?
+- À Airbnb
+* Aux futurs voyageurs
+- Au voyageur mécontent
+= Ce sont eux qui lisent et décident de réserver.
+:::
+
+:::quiz
+? Quelle réponse éviter ?
+* Une réponse émotionnelle et agressive
+- Une réponse courte et factuelle
+- Une réponse qui conclut positivement
+= Elle fait plus de mal que l'avis lui-même.
+:::`,
         },
         {
           id: 53,
           title: `Médiation Airbnb : déclencher quand et comment`,
           duration: '6 min',
-          content: `## Quand la médiation est ton seul recours
+          content: `:::bref
+- AirCover sert de recours quand vous ne trouvez pas d'accord sur Airbnb.
+- Le dossier doit être complet : photos, devis, échanges avec le voyageur.
+- Délai, usure normale et absence d'échange sont les refus les plus fréquents.
+:::
+
+## Quand la médiation est ton seul recours
 
 Tu as suivi toute la procédure :
 
@@ -2814,7 +3200,7 @@ Tu n'as **jamais** mentionné le dégât au voyageur avant d'ouvrir AirCover.
 
 ### Raison 5, Avis négatif perçu comme représailles
 
-Tu as mis 11/5 au voyageur, il conteste, AirCover suspecte que ta demande est de la vengeance.
+Tu as mis 1/5 au voyageur, il conteste, AirCover suspecte que ta demande est de la vengeance.
 
 > **Solution :** demande AirCover **avant** d'écrire ton avis.
 
@@ -2874,13 +3260,35 @@ Si tout échoue côté Airbnb, tu peux saisir le **médiateur du tourisme**.
 4. **Vérifie** que tu as l'historique complet de tes 5 derniers séjours problématiques (preuves prêtes en cas de besoin futur).
 
 > AirCover indemnise **50 % à 60 %** des dossiers bien préparés.
-> Sans préparation, c'est **0 %**.`,
+> Sans préparation, c'est **0 %**.
+
+:::quiz
+? Que faut-il avoir fait avant de saisir AirCover ?
+* Échangé avec le voyageur par la messagerie
+- Laissé un avis négatif
+- Rien du tout
+= L'absence de communication préalable est un motif de refus.
+:::
+
+:::quiz
+? Un dégât d'usure normale est-il couvert ?
+- Oui, toujours
+- Oui, s'il est ancien
+* Non, l'usure normale ne l'est pas
+= Seuls les dégâts causés pendant le séjour sont pris en compte.
+:::`,
         },
         {
           id: 54,
           title: `Quand impliquer la justice (et quand laisser tomber)`,
           duration: '6 min',
-          content: `## La justice : ton dernier recours
+          content: `:::bref
+- La justice est le dernier recours, après les voies amiables.
+- Fais toujours le calcul : temps, argent, énergie face au montant en jeu.
+- Pour les petits montants, laisser tomber est souvent le bon choix.
+:::
+
+## La justice : ton dernier recours
 
 Tu as épuisé toutes les voies amiables. Le voyageur t'a causé un préjudice **non récupéré** sur la plateforme.
 
@@ -3068,7 +3476,28 @@ Plus tu fais cette formation, plus tu **préviens**.
 3. **Calcule** ton ROI personnel : combien d'heures vaut 1 € pour toi ?
 4. **Décide d'avance** ton seuil personnel : à partir de quel montant tu vas en justice ?
 
-> La meilleure procédure est celle qu'on **n'a pas besoin** de lancer.`,
+> La meilleure procédure est celle qu'on **n'a pas besoin** de lancer.
+
+:::quiz
+? Avant d'aller en justice, que faire ?
+- Lancer la procédure tout de suite
+- Publier l'affaire en ligne
+* Comparer ce que ça coûte à ce que tu peux récupérer
+= Une procédure coûte du temps, de l'argent et de l'énergie.
+:::
+
+:::quiz
+? Quelle condition est indispensable pour gagner ?
+* Connaître l'identité du voyageur et avoir des preuves
+- Avoir beaucoup d'avis
+- Être hôte depuis longtemps
+= Sans identité ni preuve, aucune procédure n'aboutit.
+:::
+
+:::action
+titre: Range tes preuves d'un séjour difficile
+texte: Rassemble photos, messages et devis du dernier séjour compliqué dans un même dossier.
+:::`,
         },
       ],
     },
@@ -3081,7 +3510,13 @@ Plus tu fais cette formation, plus tu **préviens**.
           id: 61,
           title: `Plainte voisin pour bruit : la marche à suivre`,
           duration: '6 min',
-          content: `## Le scénario complet
+          content: `:::bref
+- Réponds au syndic dans les 24 heures, calmement.
+- Documente l'incident et évalue le niveau de risque.
+- Renforce ta sélection et ton règlement pour éviter la suite.
+:::
+
+## Le scénario complet
 
 Voici un cas réel que tu vivras au moins une fois si tu fais de la LCD plus de 6 mois.
 
@@ -3231,13 +3666,35 @@ Si tu critiques le voisin, **toi** paraîtras peu raisonnable.
 5. **Souscris** un capteur sonore type **Minut** (~80 €) pour prévenir avant la plainte.
 
 > Une plainte voisin **bien gérée** = 0 conséquence.
-> Mal gérée = interdiction LCD à terme.`,
+> Mal gérée = interdiction LCD à terme.
+
+:::quiz
+? Le syndic te signale une plainte pour bruit. Que faire ?
+* Répondre vite et calmement, puis agir pour éviter la suite
+- Ne pas répondre
+- Accuser les voisins
+= Une réponse rapide montre que tu prends le problème au sérieux.
+:::
+
+:::quiz
+? Comment éviter qu'une plainte se répète ?
+* Mieux sélectionner les voyageurs et rappeler les règles
+- Baisser les prix
+- Retirer les photos
+= La prévention commence avant l'arrivée.
+:::`,
         },
         {
           id: 62,
           title: `Linge taché / casse : la facturation réflexe`,
           duration: '6 min',
-          content: `## Les 3 dégâts les plus fréquents
+          content: `:::bref
+- Linge taché, casse, taches sur canapé : les dégâts les plus courants.
+- Tu factures ce que tu peux prouver et justifier, jamais plus.
+- Facture vite, avec un devis, sans émotion.
+:::
+
+## Les 3 dégâts les plus fréquents
 
 Sur 100 séjours, voici la fréquence statistique des dégâts les plus courants :
 
@@ -3459,13 +3916,35 @@ Tu factures *« 500 € pour les nuisances »* sans coût réel.
 4. **Configure** la procédure dans ton dashboard : photo + devis + capture en 5 minutes.
 
 > Une facturation **rapide et juste** = **respect** des futurs voyageurs.
-> Une facturation **floue ou tardive** = **abus** des voyageurs malins.`,
+> Une facturation **floue ou tardive** = **abus** des voyageurs malins.
+
+:::quiz
+? Un verre est cassé. Faut-il toujours facturer ?
+- Oui, au double du prix
+- Oui, avec une pénalité
+* Pas forcément pour un objet de faible valeur
+= Un geste sur un petit montant préserve la relation.
+:::
+
+:::quiz
+? Quelle est la règle d'or de la facturation ?
+- Facturer le plus possible
+- Ne jamais rien facturer
+* Facturer seulement ce que tu peux prouver et justifier
+= Un dégât inventé ruine ta crédibilité.
+:::`,
         },
         {
           id: 63,
           title: `No-show et annulation tardive : comment réagir`,
           duration: '6 min',
-          content: `## Les 3 scénarios principaux
+          content: `:::bref
+- Trois cas : le voyageur ne vient pas, annule au dernier moment, ou repart vite.
+- Ta politique d'annulation décide de ce qui est remboursé.
+- Envoie un message écrit et attends avant de relouer.
+:::
+
+## Les 3 scénarios principaux
 
 ### Scénario 1, Le voyageur ne vient pas
 
@@ -3652,19 +4131,41 @@ Pour les **séjours > 500 €**, appelle le voyageur la veille.
 5. Pour les séjours **> 500 €**, **active** un appel pré-arrivée systématique.
 
 > Une politique claire = **0 abus**.
-> Une politique floue = **abus garantis**.`,
+> Une politique floue = **abus garantis**.
+
+:::quiz
+? Le voyageur ne vient pas et ne répond pas. Première étape ?
+- Laisser un avis négatif tout de suite
+* Lui envoyer un message écrit et attendre un peu
+- Relouer immédiatement
+= Il peut avoir un simple retard.
+:::
+
+:::quiz
+? Qu'est-ce qui décide du remboursement d'une annulation tardive ?
+- Ton humeur
+- La météo
+* Ta politique d'annulation
+= C'est la règle acceptée par le voyageur à la réservation.
+:::`,
         },
         {
           id: 64,
           title: `Garder son sang-froid et ne pas s'épuiser : le mental de l'hôte`,
           duration: '7 min',
-          content: `## Le burn-out de l'hôte LCD existe
+          content: `:::bref
+- Les conflits répétés fatiguent : protège ton mental.
+- Après un incident : pause de 24 heures, analyse des faits, action, puis tourne la page.
+- Ne reste pas seul : échange avec d'autres hôtes.
+:::
+
+## Le burn-out de l'hôte LCD existe
 
 Si tu fais cette formation, c'est probablement parce que tu as déjà vécu :
 
 - Une nuit blanche à cause d'une fête.
 - Un voyageur agressif qui te menace.
-- Un avis 11/5 qui t'a laissé une boule au ventre pendant 3 jours.
+- Un avis 1/5 qui t'a laissé une boule au ventre pendant 3 jours.
 - Une caution prélevée mais perdue après contestation.
 
 Ces moments, **cumulés**, fragilisent ton **mental**.
@@ -3836,7 +4337,7 @@ C'est faux **au-delà** d'un certain seuil.
 | CA | ... € |
 | Préjudice non récupéré | ... € |
 | % de séjours problématiques | ... % |
-| Nb avis 51/5 | ... |
+| Nb avis 5/5 | ... |
 | Nb avis < 41/5 | ... |
 | Mon stress sur 10 | ... |
 
@@ -3881,9 +4382,31 @@ Tu sais maintenant :
 
 Bonne continuation, et sache que les meilleurs hôtes ont vécu **tous** ces incidents avant de devenir excellents.
 
-Pour toute question sur ton cas spécifique, [prends un appel avec Jason](/contact).
 
-**Formation Gérer les incidents et litiges en LCD, fin.**`,
+**Formation Gérer les incidents et litiges en LCD, fin.**
+
+:::quiz
+? Que faire juste après un incident pénible ?
+- Fermer l'annonce pour toujours
+* Prendre une pause avant de répondre
+- Répondre à chaud
+= La colère pousse aux mauvaises décisions.
+:::
+
+:::quiz
+? Pourquoi échanger avec d'autres hôtes ?
+- Pour copier leurs prix
+- Ce n'est pas utile
+* Pour prendre du recul et ne pas rester seul
+= Partager une difficulté aide à la relativiser.
+:::
+
+:::action
+titre: Fais ton plan de crise
+texte: Note qui appeler et quoi faire en cas de fête, de dégât ou de plainte, et garde-le à portée de main.
+lien: /dashboard/securite
+bouton: Ouvrir la sécurité
+:::`,
         },
       ],
     },

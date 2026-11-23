@@ -23,7 +23,13 @@ export const DECLARER_LMNP_FORMATION = {
           id: 1,
           title: 'LMNP, micro-BIC, régime réel : le vocabulaire à maîtriser avant de commencer',
           duration: '15 min',
-          content: `## Pourquoi commencer par le vocabulaire
+          content: `:::bref
+- Avant tout outil, réponds à trois questions : LMNP ou LMP, micro-BIC ou réel, quoi transmettre et à qui.
+- Le micro-BIC applique un abattement forfaitaire, sans justificatif.
+- Au réel, tu déclares tes charges et amortissements réels.
+:::
+
+## Pourquoi commencer par le vocabulaire
 
 Avant de parler de décla.fr, il faut être au clair sur ce que tu déclares et à quel régime tu es soumis.
 
@@ -76,13 +82,35 @@ Pour ça, tu dois produire chaque année une **liasse fiscale** : un mini-bilan 
 ✅ Le régime réel nécessite de produire une liasse fiscale (formulaires 2031-SD et annexes 2033)
 ❌ Un outil de "déclaration LMNP" ne sert à rien si tu es au micro-BIC : tu n'as pas de liasse à produire
 
-**Exercice pratique :** Note tes recettes LCD brutes de l'an dernier, et regarde si tu es en dessous du plafond micro-BIC qui correspond à ton logement (classé ou non classé). Si oui, tu n'as peut-être même pas besoin d'aller plus loin dans cette formation : sauf si tu es déjà au régime réel ou si tu veux évaluer si basculer serait plus avantageux. La leçon suivante t'aide à trancher.`,
+**Exercice pratique :** Note tes recettes LCD brutes de l'an dernier, et regarde si tu es en dessous du plafond micro-BIC qui correspond à ton logement (classé ou non classé). Si oui, tu n'as peut-être même pas besoin d'aller plus loin dans cette formation : sauf si tu es déjà au régime réel ou si tu veux évaluer si basculer serait plus avantageux. La leçon suivante t'aide à trancher.
+
+:::quiz
+? Qu'est-ce qui distingue le micro-BIC du régime réel ?
+* Le micro-BIC applique un abattement forfaitaire, le réel déduit les charges réelles
+- Le micro-BIC est réservé aux sociétés
+- Il n'y a aucune différence
+= Au réel, tu prouves tes charges ; au micro, un pourcentage fixe les remplace.
+:::
+
+:::quiz
+? Que faut-il savoir avant d'ouvrir un outil de déclaration ?
+* Ton statut et ton régime fiscal
+- Le nom de ton voisin
+- Ta note Airbnb
+= L'outil dépend du régime : un outil de liasse ne sert à rien au micro-BIC.
+:::`,
         },
         {
           id: 2,
           title: 'Micro-BIC ou régime réel : lequel choisir, concrètement',
           duration: '15 min',
-          content: `## Le principe de comparaison
+          content: `:::bref
+- La bonne question : quel régime laisse le moins de bénéfice imposable dans ta situation ?
+- Le réel devient intéressant quand charges et amortissements dépassent l'abattement.
+- L'amortissement rend souvent le réel plus favorable.
+:::
+
+## Le principe de comparaison
 
 La question n'est pas "lequel est le mieux" dans l'absolu. C'est : lequel laisse le moins de bénéfice imposable dans ta situation.
 
@@ -136,13 +164,35 @@ Attention : depuis 2025, l'amortissement n'est plus "gratuit" à long terme. La 
 
 Il n'y a aucune obligation de passer au réel. C'est un choix, réversible sous conditions (la leçon du module 2 détaille comment et quand).
 
-**Exercice pratique :** Fais le total de tes charges réelles de l'an dernier (ménage, assurance, commissions plateformes, copropriété, taxe foncière, intérêts d'emprunt : hors capital remboursé). Compare ce total à l'abattement micro-BIC qui s'appliquerait à toi. Si tes charges réelles dépassent ce pourcentage, tu as un signal fort pour envisager le régime réel : et donc, potentiellement, un outil comme décla.fr.`,
+**Exercice pratique :** Fais le total de tes charges réelles de l'an dernier (ménage, assurance, commissions plateformes, copropriété, taxe foncière, intérêts d'emprunt : hors capital remboursé). Compare ce total à l'abattement micro-BIC qui s'appliquerait à toi. Si tes charges réelles dépassent ce pourcentage, tu as un signal fort pour envisager le régime réel : et donc, potentiellement, un outil comme décla.fr.
+
+:::quiz
+? Quand le régime réel devient-il intéressant ?
+- Jamais
+* Quand tes charges et amortissements dépassent l'abattement du micro-BIC
+- Toujours
+= C'est la comparaison des deux bases imposables qui décide.
+:::
+
+:::quiz
+? Qu'est-ce qui rend souvent le réel très avantageux ?
+* L'amortissement du bien et des meubles
+- La taxe de séjour
+- Les avis clients
+= Il réduit le bénéfice imposable chaque année.
+:::`,
         },
         {
           id: 3,
           title: "La réforme 2025 sur les amortissements et la plus-value : ce qu'il faut savoir avant de basculer",
           duration: '15 min',
-          content: `## Pourquoi cette leçon est essentielle
+          content: `:::bref
+- Depuis la loi de finances pour 2025, les amortissements déduits au réel sont réintégrés dans le calcul de la plus-value à la revente.
+- L'avantage annuel reste, mais il n'est plus « gratuit » à long terme.
+- Si tu prévois de revendre, intègre-le dans ta décision.
+:::
+
+## Pourquoi cette leçon est essentielle
 
 Historiquement, l'amortissement au régime réel était présenté comme un double avantage :
 
@@ -185,7 +235,30 @@ La bonne question à te poser n'est plus "le réel me fait-il économiser des im
 
 C'est une question de projet patrimonial, pas une question technique. Si tu comptes garder le bien longtemps (au-delà de 22-30 ans) ou ne jamais le revendre, l'impact de la réforme est marginal pour toi. Si tu envisages une revente à moyen terme, fais le calcul avant de basculer, idéalement avec un professionnel pour cette décision précise.
 
-**Exercice pratique :** Si tu envisages de revendre ton bien LCD dans les 10 prochaines années, estime tes amortissements immobiliers cumulés sur cette période (prix du bien ÷ durée d'amortissement × nombre d'années). C'est approximativement le montant qui viendra augmenter ta plus-value taxable à la revente. Garde ce chiffre en tête pour la suite de la formation.`,
+**Exercice pratique :** Si tu envisages de revendre ton bien LCD dans les 10 prochaines années, estime tes amortissements immobiliers cumulés sur cette période (prix du bien ÷ durée d'amortissement × nombre d'années). C'est approximativement le montant qui viendra augmenter ta plus-value taxable à la revente. Garde ce chiffre en tête pour la suite de la formation.
+
+:::quiz
+? Que change la loi de finances pour 2025 ?
+- Elle interdit les amortissements
+* Les amortissements déduits augmentent la plus-value imposable à la revente
+- Elle supprime le régime réel
+= Ils sont réintégrés dans le calcul de la plus-value.
+:::
+
+:::quiz
+? Qui est le plus concerné par ce changement ?
+- Les voyageurs
+* Ceux qui prévoient de revendre leur bien
+- Ceux qui ne louent jamais
+= L'effet apparaît au moment de la vente.
+:::
+
+:::action
+titre: Compare micro-BIC et réel avec tes chiffres
+texte: Saisis tes recettes et charges pour voir quel régime te laisse le moins d'impôt.
+lien: /dashboard/finances/fiscalite
+bouton: Ouvrir la fiscalité
+:::`,
         },
       ],
     },
@@ -198,7 +271,13 @@ C'est une question de projet patrimonial, pas une question technique. Si tu comp
           id: 11,
           title: "L'immatriculation LMNP : obtenir ton SIRET gratuitement",
           duration: '12 min',
-          content: `## Pourquoi tu as besoin d'un SIRET
+          content: `:::bref
+- Même en LMNP, tu as besoin d'un numéro SIRET.
+- L'immatriculation se fait sur le Guichet unique de l'INPI, gratuitement.
+- Choisis bien l'activité et l'adresse du bien loué.
+:::
+
+## Pourquoi tu as besoin d'un SIRET
 
 Même en LMNP, tu exerces une activité (BIC). L'administration a besoin de t'identifier : c'est le rôle du numéro SIRET.
 
@@ -232,13 +311,35 @@ Beaucoup d'hôtes découvrent l'obligation d'immatriculation seulement quand ils
 
 Si tu loues déjà depuis un moment sans être immatriculé, régularise dès que possible : ce n'est pas sanctionné comme une fraude si tu es de bonne foi et que tu régularises, mais mieux vaut ne pas attendre un contrôle pour le faire.
 
-**Exercice pratique :** Vérifie si tu as déjà un SIRET pour ton activité de location meublée (regarde tes précédents avis d'imposition professionnels, ou cherche ton nom sur annuaire-entreprises.data.gouv.fr). Si tu n'en as pas, note dans ton agenda de faire la démarche sur formalites.entreprises.gouv.fr cette semaine : c'est un préalable obligatoire à tout le reste.`,
+**Exercice pratique :** Vérifie si tu as déjà un SIRET pour ton activité de location meublée (regarde tes précédents avis d'imposition professionnels, ou cherche ton nom sur annuaire-entreprises.data.gouv.fr). Si tu n'en as pas, note dans ton agenda de faire la démarche sur formalites.entreprises.gouv.fr cette semaine : c'est un préalable obligatoire à tout le reste.
+
+:::quiz
+? Où s'immatriculer en LMNP ?
+- À la banque
+* Sur le Guichet unique (formalites.entreprises.gouv.fr)
+- Sur Airbnb
+= Depuis le 1er janvier 2023, toutes les créations d'activité y passent.
+:::
+
+:::quiz
+? Combien coûte l'immatriculation LMNP ?
+- 500 €
+- Un pourcentage des loyers
+* Rien, elle est gratuite
+= Méfie-toi des sites qui la facturent.
+:::`,
         },
         {
           id: 12,
           title: 'Opter pour le régime réel : les deux façons de le faire, et le piège du timing',
           duration: '13 min',
-          content: `## Deux façons d'opter
+          content: `:::bref
+- On opte pour le réel à l'immatriculation, ou par lettre au service des impôts des entreprises.
+- Le timing compte : l'option doit être faite dans les délais pour l'année visée.
+- L'option est valable plusieurs années et se renouvelle.
+:::
+
+## Deux façons d'opter
 
 **Méthode 1 : Au moment de l'immatriculation.** Sur le Guichet unique (formalites.entreprises.gouv.fr), tu coches directement l'option "régime réel" lors de ta déclaration de début d'activité. C'est la méthode la plus simple si tu sais déjà que tu veux le réel dès le départ.
 
@@ -262,7 +363,30 @@ Attention : si tu envoies ta lettre après cette date, ton option ne prend effet
 
 Ne bascule donc pas au réel "pour tester" : prends la décision en connaissance de cause, avec la simulation chiffrée du module précédent.
 
-**Exercice pratique :** Si tu es actuellement au micro-BIC et que tu veux basculer au réel, note dans ton agenda la date limite de la prochaine déclaration de revenus (elle est échelonnée par département : voir module 4) et prévois d'envoyer ta lettre recommandée au moins 3 semaines avant, pour avoir une marge de sécurité postale.`,
+**Exercice pratique :** Si tu es actuellement au micro-BIC et que tu veux basculer au réel, note dans ton agenda la date limite de la prochaine déclaration de revenus (elle est échelonnée par département : voir module 4) et prévois d'envoyer ta lettre recommandée au moins 3 semaines avant, pour avoir une marge de sécurité postale.
+
+:::quiz
+? Comment opter pour le réel si tu es déjà au micro-BIC ?
+- En changeant d'annonce
+- Par un message sur Airbnb
+* Par une lettre d'option au service des impôts des entreprises
+= C'est la démarche officielle en cours d'activité.
+:::
+
+:::quiz
+? Pourquoi le timing de l'option est-il important ?
+- Il n'a aucune importance
+- Elle expire le lendemain
+* Faite trop tard, elle ne s'applique pas à l'année voulue
+= Les délais fixent l'année à partir de laquelle le réel s'applique.
+:::
+
+:::action
+titre: Note ton numéro SIRET dans ton compte
+texte: Garde-le à portée de main pour ta déclaration et tes factures.
+lien: /dashboard/profil
+bouton: Ouvrir mon compte
+:::`,
         },
       ],
     },
@@ -275,7 +399,13 @@ Ne bascule donc pas au réel "pour tester" : prends la décision en connaissance
           id: 21,
           title: "Qu'est-ce que décla.fr, exactement",
           duration: '13 min',
-          content: `## Ce que décla.fr n'est pas
+          content: `:::bref
+- Décla.fr sert à produire ta liasse fiscale annuelle au régime réel.
+- Ce n'est ni un cabinet comptable, ni un outil utile au micro-BIC.
+- La déclaration se fait en ligne, guidée étape par étape.
+:::
+
+## Ce que décla.fr n'est pas
 
 Ce n'est pas un cabinet d'expertise comptable. Ce n'est pas un logiciel de comptabilité au sens classique (pas de suivi de trésorerie au fil de l'eau, pas de facturation).
 
@@ -321,13 +451,35 @@ Des alertes automatiques signalent les incohérences de saisie (montants aberran
 
 Attention : les tarifs évoluent d'une année sur l'autre : vérifie toujours le prix affiché au moment de ton inscription plutôt que de te fier à ce chiffre dans un an ou deux.
 
-**Exercice pratique :** Va sur decla.fr et regarde la page tarifs actuelle. Compare le prix affiché aujourd'hui à celui indiqué dans cette leçon : s'il a changé, tu sauras que tu dois toujours vérifier l'info à la source plutôt que de te fier à un guide, aussi récent soit-il.`,
+**Exercice pratique :** Va sur decla.fr et regarde la page tarifs actuelle. Compare le prix affiché aujourd'hui à celui indiqué dans cette leçon : s'il a changé, tu sauras que tu dois toujours vérifier l'info à la source plutôt que de te fier à un guide, aussi récent soit-il.
+
+:::quiz
+? À quoi sert un outil comme décla.fr ?
+- Déclarer au micro-BIC
+- Gérer tes réservations
+* Produire ta liasse fiscale au régime réel
+= Au micro-BIC, tu n'as pas de liasse à produire.
+:::
+
+:::quiz
+? Décla.fr remplace-t-il un expert-comptable dans tous les cas ?
+- Oui, même en LMP
+* Non, seulement dans les situations simples
+- Oui, toujours
+= Certaines situations demandent un professionnel.
+:::`,
         },
         {
           id: 22,
           title: 'décla.fr vs expert-comptable vs autres outils : le comparatif honnête',
           duration: '14 min',
-          content: `## Ce qui ressort des avis utilisateurs
+          content: `:::bref
+- Points forts souvent cités : coût réduit, interface guidée, assistance par chat.
+- Limites : pas de conseil personnalisé sur les cas complexes.
+- La vraie question : ta situation est-elle standard ?
+:::
+
+## Ce qui ressort des avis utilisateurs
 
 Sans pouvoir garantir l'exhaustivité de chaque avis en ligne, les retours consultés (comparatifs indépendants, avis Google) convergent sur les mêmes points forts et les mêmes limites.
 
@@ -372,13 +524,35 @@ Autrement dit, l'argument "il faut adhérer à un CGA" pour optimiser ta fiscali
 
 > Source : loi n° 2020-1721 du 29 décembre 2020 (LF 2021) ; loi n° 2025-127 du 14 février 2025 (LF 2025)
 
-**Exercice pratique :** Reprends le tableau ci-dessus et coche ce qui te correspond dans chaque colonne. Si tu coches au moins une case de la colonne de droite, garde en tête la dernière leçon de cette formation avant de te décider définitivement pour un outil en ligne seul.`,
+**Exercice pratique :** Reprends le tableau ci-dessus et coche ce qui te correspond dans chaque colonne. Si tu coches au moins une case de la colonne de droite, garde en tête la dernière leçon de cette formation avant de te décider définitivement pour un outil en ligne seul.
+
+:::quiz
+? Quelle question décide entre outil en ligne et expert-comptable ?
+* Ma situation est-elle standard ?
+- Quel outil a le plus joli logo ?
+- Lequel est le plus connu ?
+= Un outil suffit pour un cas simple ; un cas complexe demande un professionnel.
+:::
+
+:::quiz
+? Quel est un avantage d'un outil en ligne ?
+- Un conseil sur la revente
+- Une présence physique
+* Un coût bien inférieur à un cabinet
+= C'est son principal intérêt pour un LMNP standard.
+:::`,
         },
         {
           id: 23,
           title: 'Les 7 étapes de la liasse sur décla.fr, expliquées une par une',
           duration: '15 min',
-          content: `## Avant de commencer : ce qu'il te faut sous la main
+          content: `:::bref
+- Prépare tes documents avant : SIRET, relevés des plateformes, factures, tableau d'amortissement.
+- Sept étapes guidées jusqu'à la liasse.
+- Déclare tes recettes brutes, puis les commissions en charges.
+:::
+
+## Avant de commencer : ce qu'il te faut sous la main
 
 Prépare ces documents avant d'ouvrir l'outil, ça t'évitera des allers-retours :
 
@@ -403,13 +577,35 @@ Prépare ces documents avant d'ouvrir l'outil, ça t'évitera des allers-retours
 
 Attention : la télétransmission de la liasse ne remplace **pas** ta déclaration de revenus personnelle. Il te reste à reporter le résultat fiscal calculé sur ton formulaire 2042-C-PRO, sur impots.gouv.fr, au moment de ta déclaration de revenus classique. La leçon suivante détaille ce point, qui est une source fréquente de confusion.
 
-**Exercice pratique :** Fais la liste des documents mentionnés en début de leçon et coche ceux que tu as déjà sous la main. Pour ceux qui manquent (typiquement le relevé annuel plateforme ou le tableau d'amortissement), va les récupérer avant ta prochaine session : ça te fera gagner un temps précieux le jour J.`,
+**Exercice pratique :** Fais la liste des documents mentionnés en début de leçon et coche ceux que tu as déjà sous la main. Pour ceux qui manquent (typiquement le relevé annuel plateforme ou le tableau d'amortissement), va les récupérer avant ta prochaine session : ça te fera gagner un temps précieux le jour J.
+
+:::quiz
+? Quel document préparer avant de commencer ?
+* Le relevé annuel de tes plateformes
+- Ta carte vitale
+- Tes avis voyageurs
+= Il donne tes revenus bruts et les commissions prélevées.
+:::
+
+:::quiz
+? Comment déclarer tes recettes ?
+* En brut, avant commissions
+- En net, après commissions
+- Seulement les nuits du week-end
+= Les commissions se déduisent ensuite comme charges.
+:::`,
         },
         {
           id: 24,
           title: 'Ce que décla.fr ne fait pas à ta place : le 2042-C-PRO et tes vérifications',
           duration: '13 min',
-          content: `## Deux déclarations, pas une seule
+          content: `:::bref
+- Deux déclarations distinctes : la liasse fiscale et ta déclaration de revenus.
+- La liasse est télétransmise par l'outil ; le 2042-C-PRO, c'est toi qui le remplis.
+- Vérifie toujours la cohérence des montants reportés.
+:::
+
+## Deux déclarations, pas une seule
 
 C'est le point de confusion le plus fréquent chez les hôtes qui découvrent le régime réel : il y a deux déclarations distinctes, pas une.
 
@@ -439,7 +635,30 @@ Un outil de production de liasse applique les règles fiscales que tu lui indiqu
 
 C'est le rôle d'un conseil humain (expert-comptable ou conseiller en gestion de patrimoine) quand ta situation le justifie. Ce n'est pas un défaut de l'outil, c'est simplement en dehors de son périmètre.
 
-**Exercice pratique :** La prochaine fois que tu déclares (ou en préparation de ta prochaine déclaration), prévois explicitement dans ton calendrier un créneau séparé, après la liasse, pour ta déclaration 2042-C-PRO : ne pars pas du principe que "c'est fait" une fois la liasse transmise.`,
+**Exercice pratique :** La prochaine fois que tu déclares (ou en préparation de ta prochaine déclaration), prévois explicitement dans ton calendrier un créneau séparé, après la liasse, pour ta déclaration 2042-C-PRO : ne pars pas du principe que "c'est fait" une fois la liasse transmise.
+
+:::quiz
+? Combien de déclarations au régime réel ?
+- Une seule
+- Aucune
+* Deux : la liasse et ta déclaration de revenus
+= La liasse calcule le résultat, la 2042-C-PRO l'intègre à tes revenus.
+:::
+
+:::quiz
+? Qui remplit la 2042-C-PRO ?
+* Toi, sur impots.gouv.fr
+- Décla.fr automatiquement
+- Airbnb
+= L'outil produit la liasse, pas ta déclaration personnelle.
+:::
+
+:::action
+titre: Rassemble tes relevés de l'année
+texte: Ajoute tes recettes et charges dans ton journal pour préparer la liasse.
+lien: /dashboard/finances/journal
+bouton: Ouvrir mon journal
+:::`,
         },
       ],
     },
@@ -452,7 +671,13 @@ C'est le rôle d'un conseil humain (expert-comptable ou conseiller en gestion de
           id: 31,
           title: 'Le calendrier fiscal LMNP 2026, date par date',
           duration: '15 min',
-          content: `## Trois échéances à ne pas confondre
+          content: `:::bref
+- Trois échéances à ne pas confondre : enregistrement en mairie, liasse fiscale, déclaration de revenus.
+- Certaines dates tombent la même semaine en mai.
+- Prépare tout dès le début de l'année.
+:::
+
+## Trois échéances à ne pas confondre
 
 Beaucoup d'hôtes confondent trois obligations qui n'ont rien à voir entre elles, alors que certaines dates tombent la même semaine.
 
@@ -480,13 +705,35 @@ Pour éviter le rush de mai, voici un enchaînement réaliste sur l'année :
 - **Début mai** : Vérifie, corrige, valide ta liasse. Télétransmets avant la date limite EDI.
 - **Mi-mai à début juin** : Reporte ton résultat fiscal sur ta déclaration 2042-C-PRO, selon la date limite de ton département.
 
-**Exercice pratique :** Ouvre ton agenda maintenant et pose 3 rappels espacés dans le temps (rassembler les documents, remplir la liasse, faire la déclaration de revenus) plutôt qu'un seul rappel la veille de la date limite. C'est la méthode la plus simple pour éviter l'erreur de saisie précipitée.`,
+**Exercice pratique :** Ouvre ton agenda maintenant et pose 3 rappels espacés dans le temps (rassembler les documents, remplir la liasse, faire la déclaration de revenus) plutôt qu'un seul rappel la veille de la date limite. C'est la méthode la plus simple pour éviter l'erreur de saisie précipitée.
+
+:::quiz
+? L'enregistrement en mairie concerne qui ?
+* Tous les hôtes, au micro-BIC comme au réel
+- Seulement le régime réel
+- Seulement les sociétés
+= C'est une obligation de la loi Le Meur, indépendante du régime fiscal.
+:::
+
+:::quiz
+? Pourquoi préparer tôt dans l'année ?
+- Pour payer plus d'impôts
+- Ce n'est pas utile
+* Plusieurs échéances tombent la même semaine en mai
+= Anticiper évite les oublis et les pénalités.
+:::`,
         },
         {
           id: 32,
           title: 'Les erreurs les plus fréquentes en déclaration LMNP seul',
           duration: '15 min',
-          content: `## 7 erreurs classiques, et comment les éviter
+          content: `:::bref
+- Erreur fréquente : déclarer des recettes nettes au lieu de brutes.
+- Le terrain ne s'amortit jamais.
+- Garde tes justificatifs et reprends ton tableau d'amortissement chaque année.
+:::
+
+## 7 erreurs classiques, et comment les éviter
 
 - **Confondre recettes brutes et nettes.** Tu dois toujours déclarer le montant brut de tes loyers/nuitées, avant déduction des commissions de plateforme. Les commissions se déduisent ensuite, en charge : jamais en les soustrayant directement de tes recettes avant saisie. C'est l'erreur la plus fréquente en première année de régime réel.
 - **Amortir le terrain.** Le terrain sur lequel est construit ton bien n'est jamais amortissable : seule la construction l'est. Si tu (ou un outil mal renseigné) amortis la valeur totale du bien sans exclure la quote-part de terrain, ton amortissement est surévalué, ce qui expose à un redressement.
@@ -500,13 +747,35 @@ Pour éviter le rush de mai, voici un enchaînement réaliste sur l'année :
 
 Aucune de ces erreurs n'est due à la négligence : elles viennent toutes d'un manque de repères sur ce qui est spécifique à la fiscalité LMNP, par rapport à une fiscalité "classique". C'est exactement pour ça que cette formation existe : te donner ces repères avant de te lancer dans la saisie, pas après un redressement.
 
-**Exercice pratique :** Relis cette liste de 7 erreurs et identifie celle(s) que tu aurais pu commettre sans cette formation. Note-les quelque part que tu consulteras au moment de ta prochaine déclaration.`,
+**Exercice pratique :** Relis cette liste de 7 erreurs et identifie celle(s) que tu aurais pu commettre sans cette formation. Note-les quelque part que tu consulteras au moment de ta prochaine déclaration.
+
+:::quiz
+? Quelle partie d'un bien ne s'amortit jamais ?
+- La construction
+* Le terrain
+- Les meubles
+= Seule la construction et le mobilier sont amortissables.
+:::
+
+:::quiz
+? Comment déclarer les commissions des plateformes ?
+- En les retirant des recettes
+- En ne les déclarant pas
+* En charges, après avoir déclaré les recettes brutes
+= C'est l'erreur la plus fréquente en première année au réel.
+:::`,
         },
         {
           id: 33,
           title: "Quand ce guide ne suffit plus : les situations où il te faut un vrai expert-comptable",
           duration: '15 min',
-          content: `## L'honnêteté avant tout
+          content: `:::bref
+- Déclarer seul convient aux situations standard.
+- Passage en LMP, revente, plusieurs biens ou contrôle : prends un expert-comptable.
+- Compare le coût d'un professionnel à ce qu'une erreur peut coûter.
+:::
+
+## L'honnêteté avant tout
 
 Cette formation t'a donné les moyens de déclarer seul ta LMNP dans une situation standard, avec un outil comme décla.fr. Ce n'est pas la même chose que dire que tout le monde devrait déclarer seul.
 
@@ -535,7 +804,30 @@ Pour une situation simple, l'écart de prix entre les deux options est souvent l
 
 Cette formation t'a donné le cadre. Pour la mise en musique concrète dans ta situation (choix définitif de régime, stratégie de revente, structuration patrimoniale), rien ne remplace un échange avec un professionnel qui voit l'ensemble de ton patrimoine : pas seulement ta LCD.
 
-**Exercice pratique :** Relis la liste des signaux d'alerte. Si tu n'en coches aucun, tu es probablement dans une situation adaptée à un outil comme décla.fr, en gardant les bons réflexes vus dans cette formation. Si tu en coches un seul, prends au moins un premier avis auprès d'un expert-comptable spécialisé LMNP avant de basculer définitivement au régime réel seul.`,
+**Exercice pratique :** Relis la liste des signaux d'alerte. Si tu n'en coches aucun, tu es probablement dans une situation adaptée à un outil comme décla.fr, en gardant les bons réflexes vus dans cette formation. Si tu en coches un seul, prends au moins un premier avis auprès d'un expert-comptable spécialisé LMNP avant de basculer définitivement au régime réel seul.
+
+:::quiz
+? Dans quel cas un expert-comptable est-il indispensable ?
+- Jamais
+* Quand tu bascules en LMP
+- Pour un seul logement au micro-BIC
+= Régime social et plus-values professionnelles changent toute la mécanique.
+:::
+
+:::quiz
+? Quel calcul faire avant de choisir ?
+* Comparer le coût d'un professionnel au coût d'une erreur
+- Comparer les logos
+- Comparer les avis Google uniquement
+= Une erreur fiscale peut coûter bien plus que des honoraires.
+:::
+
+:::action
+titre: Ajoute tes échéances fiscales au calendrier
+texte: Note la date de la liasse et de ta déclaration de revenus.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },

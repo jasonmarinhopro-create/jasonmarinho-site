@@ -6,8 +6,8 @@ import { parseLesson } from './blocks'
 // formation au nouveau format est vérifiée ici ; une NOUVELLE formation doit
 // l'être dès sa création. Les anciennes, en cours de conversion, sont listées
 // dans A_CONVERTIR : en retirer le slug une fois la formation convertie.
-const A_CONVERTIR = new Set([
-  'photographie-lcd-smartphone', 'gerer-incidents-litiges-lcd', 'declarer-lmnp-seul-decla-fr', ])
+const A_CONVERTIR = new Set<string>([
+  ])
 
 const slugs = Object.keys(FORMATION_CONTENT_MAP).filter(s => !A_CONVERTIR.has(s))
 

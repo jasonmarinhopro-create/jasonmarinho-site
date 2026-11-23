@@ -23,7 +23,13 @@ export const PHOTOGRAPHIE_LCD_FORMATION = {
           id: 1,
           title: `Pourquoi le clic se joue en quelques secondes`,
           duration: '7 min',
-          content: `## Le voyageur ne lit pas, il scanne
+          content: `:::bref
+- Le voyageur scanne : il regarde d'abord la photo de couverture, puis le prix et les avis.
+- Le titre et la description viennent bien après.
+- Teste ta couverture en tout petit : on doit comprendre le logement d'un coup d'œil.
+:::
+
+## Le voyageur ne lit pas, il scanne
 
 Quand un voyageur cherche un logement, il fait défiler des dizaines d'annonces en quelques minutes.
 
@@ -100,13 +106,35 @@ C'est le test que les designers Airbnb utilisent en interne quand ils auditent d
    - Nombre de réservations / mois
    - Taux de conversion *(réservations ÷ vues × 100)*
 
-> Ce sont les 3 chiffres que cette formation va faire **bouger**.`,
+> Ce sont les 3 chiffres que cette formation va faire **bouger**.
+
+:::quiz
+? Qu'est-ce qu'un voyageur regarde en premier dans les résultats ?
+- Le règlement intérieur
+* La photo de couverture
+- La description
+= C'est elle qui décide du clic, le reste vient après.
+:::
+
+:::quiz
+? À quoi sert le test de la miniature ?
+- Choisir un filtre
+* Vérifier que ta photo reste lisible en tout petit
+- Réduire le poids du fichier
+= Dans les résultats, ta photo s'affiche en petit, surtout sur téléphone.
+:::`,
         },
         {
           id: 2,
           title: `La photo de couverture : ton seul prospect en 1 image`,
           duration: '7 min',
-          content: `## Une seule photo a un job particulier
+          content: `:::bref
+- Une seule photo fait le clic : la couverture.
+- Trois critères : une promesse claire, une lumière naturelle douce, un angle large.
+- Choisis-la selon ce qui rend ton logement unique : vue, jardin, pièce de vie.
+:::
+
+## Une seule photo a un job particulier
 
 Sur les 20 ou 30 photos de ton annonce, **une seule** travaille vraiment.
 
@@ -199,13 +227,35 @@ Les défauts qui font passer une photo de couverture à côté du clic :
 1. **Liste les 3 photos** qui pourraient devenir ta nouvelle couverture *(un salon en grand-angle, ta plus belle vue, ton plus joli détail)*.
 2. Si tu n'en as **aucune** qui te plaise complètement, note-la en haut de ta liste de séances photo à refaire après cette formation.
 
-> Une couverture moyenne te coûte **chaque jour**.`,
+> Une couverture moyenne te coûte **chaque jour**.
+
+:::quiz
+? Tu as un appartement avec une belle vue sur la mer. Quelle couverture ?
+- La salle de bain
+- Le hall de l'immeuble
+* La pièce de vie avec la vue bien visible
+= La couverture doit montrer ta promesse la plus forte.
+:::
+
+:::quiz
+? Quelle lumière pour une photo de couverture ?
+- Une pièce dans le noir
+* Une lumière naturelle douce
+- Le flash
+= Elle rend le logement chaleureux et fidèle.
+:::`,
         },
         {
           id: 3,
           title: `Audit photo : repérer ce qui tue tes conversions`,
           duration: '6 min',
-          content: `## Le mode audit : regarder son annonce comme un étranger
+          content: `:::bref
+- Regarde ton annonce comme un étranger, en fenêtre privée.
+- Six erreurs fréquentes : photo plate, flash, bazar, contre-jour, lit mal fait, photo verticale.
+- Note chaque photo pour savoir lesquelles refaire en priorité.
+:::
+
+## Le mode audit : regarder son annonce comme un étranger
 
 Avant de refaire des photos, il faut savoir **ce qui ne va pas** dans celles que tu as.
 
@@ -286,7 +336,28 @@ Compte les erreurs que tu as identifiées sur tes photos actuelles :
 
 > **Indice :** commence par la pièce de vie principale et la photo de couverture.
 
-Garde cette liste, on s'en servira au **module 5**.`,
+Garde cette liste, on s'en servira au **module 5**.
+
+:::quiz
+? Pourquoi ouvrir ton annonce en fenêtre privée ?
+- Pour changer le prix
+* Pour la voir comme un voyageur qui ne te connaît pas
+- Pour gagner des points Airbnb
+= Tu ne vois plus les défauts d'un lieu que tu connais par cœur.
+:::
+
+:::quiz
+? Quelle photo est à refaire en priorité ?
+- Une pièce lumineuse en grand angle
+- Une terrasse à la golden hour
+* Une salle de bain prise au flash
+= Le flash donne une image plate aux ombres dures.
+:::
+
+:::action
+titre: Fais l'audit de tes photos
+texte: Ouvre ton annonce en fenêtre privée, note chaque photo et liste celles à refaire.
+:::`,
         },
       ],
     },
@@ -299,7 +370,13 @@ Garde cette liste, on s'en servira au **module 5**.`,
           id: 21,
           title: `Smartphone vs reflex : ce qui compte vraiment`,
           duration: '8 min',
-          content: `## La (bonne) nouvelle : ton smartphone suffit
+          content: `:::bref
+- Un smartphone récent suffit pour la plupart des logements.
+- Le reflex devient utile pour les très grands espaces ou une lumière très faible.
+- La lumière, l'angle et la préparation comptent plus que l'appareil.
+:::
+
+## La (bonne) nouvelle : ton smartphone suffit
 
 Si tu as acheté ton téléphone après 2020, tu as déjà un appareil photo qui **rivalise avec un reflex pro de 2015**.
 
@@ -377,13 +454,35 @@ Sauf à être photographe formé, **n'utilise pas ce mode**.
    - **iPhone :** Réglages → Appareil photo → Grille
    - **Android :** App photo → Paramètres → Grille
 
-> C'est tout pour le matériel. On passe aux **3 accessoires utiles à 50 €**.`,
+> C'est tout pour le matériel. On passe aux **3 accessoires utiles à 50 €**.
+
+:::quiz
+? Qu'est-ce qui compte le plus pour une bonne photo de logement ?
+* La lumière, l'angle et la préparation
+- Le prix du téléphone
+- Le nombre de mégapixels
+= Un bon appareil ne rattrape pas une pièce mal préparée.
+:::
+
+:::quiz
+? Dans quel cas un reflex peut-il valoir le coup ?
+* Un très grand gîte à photographier en entier
+- Un studio lumineux
+- Une chambre en ville
+= Pour les petits et moyens logements, le smartphone suffit.
+:::`,
         },
         {
           id: 22,
           title: `3 accessoires utiles à moins de 50 €`,
           duration: '7 min',
-          content: `## Accessoire 1, Le mini-trépied *(15-25 €)*
+          content: `:::bref
+- Trois accessoires suffisent : mini-trépied, lentille grand-angle, réflecteur.
+- Le trépied donne des photos nettes en basse lumière.
+- Évite les achats inutiles : éclairages de studio, cardans, drones.
+:::
+
+## Accessoire 1, Le mini-trépied *(15-25 €)*
 
 Un petit trépied de table avec rotule inclinable. Hauteur 20-30 cm dépliée, se range dans une poche.
 
@@ -473,7 +572,28 @@ Récap de ce que tu peux acheter pour démarrer :
 1. **Choisis ton kit** *(1 à 3 accessoires)* selon ton budget et la taille de ton logement.
 2. **Commande** maintenant *(2-3 jours de livraison)* pour qu'ils soient là quand tu attaqueras les sessions photo du module 5.
 
-> Pendant l'attente, le module 3 sera **100 % gratuit** à mettre en pratique : préparer ton logement.`,
+> Pendant l'attente, le module 3 sera **100 % gratuit** à mettre en pratique : préparer ton logement.
+
+:::quiz
+? À quoi sert le mini-trépied ?
+* Avoir des photos nettes et stables en basse lumière
+- Faire des selfies
+- Remplacer la lumière naturelle
+= Il évite le flou quand la pose s'allonge.
+:::
+
+:::quiz
+? Quel risque avec une lentille grand-angle ?
+- Supprimer les couleurs
+* Déformer la pièce si l'effet est trop fort
+- Rendre la photo noire
+= Un logement déformé déçoit à l'arrivée.
+:::
+
+:::action
+titre: Prépare ton kit photo
+texte: Vérifie ce que tu as déjà et commande seulement ce qui manque.
+:::`,
         },
       ],
     },
@@ -486,7 +606,13 @@ Récap de ce que tu peux acheter pour démarrer :
           id: 31,
           title: `Checklist home staging, 23 points à vérifier`,
           duration: '12 min',
-          content: `## Le secret des annonces qui font cliquer
+          content: `:::bref
+- Les belles annonces sont surtout mieux préparées.
+- Une trentaine de minutes de préparation par pièce change le résultat.
+- Suis la liste pièce par pièce : entrée, salon, cuisine, chambre, salle de bain.
+:::
+
+## Le secret des annonces qui font cliquer
 
 Les meilleures annonces LCD ne sont pas mieux **photographiées**. Elles sont mieux **préparées**.
 
@@ -547,13 +673,35 @@ Avant de prendre ta première photo :
 1. **Imprime cette checklist** *(ou note les 23 points sur ton téléphone)*.
 2. **Fais le tour** de ton logement, coche ce qui est OK, note ce qui manque.
 
-> Si tu coches **moins de 18 points sur 23**, tu sais déjà pourquoi tes photos sous-performent. Tu n'as même pas encore besoin de refaire les photos, **range** et **range encore** avant de cliquer.`,
+> Si tu coches **moins de 18 points sur 23**, tu sais déjà pourquoi tes photos sous-performent. Tu n'as même pas encore besoin de refaire les photos, **range** et **range encore** avant de cliquer.
+
+:::quiz
+? Qu'est-ce qui distingue les annonces qui font cliquer ?
+- Beaucoup de filtres
+* Une préparation soignée de chaque pièce
+- Un appareil très cher
+= Une pièce bien préparée paraît professionnelle même au smartphone.
+:::
+
+:::quiz
+? Que faire des chaussures et manteaux dans l'entrée ?
+- Les laisser tels quels
+* Les ranger hors du cadre
+- Les mettre en avant
+= Les objets personnels encombrent l'image.
+:::`,
         },
         {
           id: 32,
           title: `Le rangement façon "magazine"`,
           duration: '10 min',
-          content: `## La règle d'or : *« moins, mais mieux »*
+          content: `:::bref
+- Une pièce rangée n'est pas vide : chaque objet visible est choisi.
+- Trois catégories : meubles utiles, une à trois pièces fortes, un ou deux objets de vie.
+- Cache la technologie, l'hygiène et tout ce qui est personnel.
+:::
+
+## La règle d'or : *« moins, mais mieux »*
 
 Une pièce parfaitement rangée n'est pas une pièce **vide**. C'est une pièce où chaque objet visible a été **choisi** pour être là.
 
@@ -669,13 +817,35 @@ Si tu te souviens du **beau bouquet**, de la lumière qui entre, du livre ouvert
 2. **Fais le tour** de ton logement, range tout ce qui est dans la liste *« à cacher »*.
 3. **Mesure le temps** que ça t'a pris. La prochaine fois qu'un voyageur arrive, tu sauras combien de temps prévoir.
 
-> **Indice :** la première fois, c'est lent. À partir de la 3ème, ça devient un réflexe de **10 minutes**.`,
+> **Indice :** la première fois, c'est lent. À partir de la 3ème, ça devient un réflexe de **10 minutes**.
+
+:::quiz
+? Combien d'objets décoratifs « stars » par pièce ?
+* 1 à 3
+- Aucun
+- Le plus possible
+= Assez pour donner du caractère, pas trop pour garder de l'air.
+:::
+
+:::quiz
+? Que faut-il cacher avant de photographier ?
+* Les câbles, produits d'hygiène et objets personnels
+- Le canapé
+- Les plantes
+= Ils donnent une impression de désordre.
+:::`,
         },
         {
           id: 33,
           title: `Déco temporaire, 12 € pour transformer une pièce`,
           duration: '8 min',
-          content: `## Le principe : la déco "pour la photo"
+          content: `:::bref
+- Une déco temporaire peu coûteuse suffit pour la séance.
+- Fleurs, fruits, plaid et serviettes blanches transforment une pièce.
+- Mélange trois textures pour donner du relief.
+:::
+
+## Le principe : la déco "pour la photo"
 
 Tu n'as pas besoin de refaire toute ta déco. Tu as besoin de la déco visible **pendant les quelques secondes où le voyageur regarde**.
 
@@ -799,7 +969,28 @@ Tous ces objets sont rentables :
 2. **Va faire les achats** avant ta séance photo.
 3. Si tu n'as pas le temps maintenant, note tout sur ton téléphone et programme ta séance shopping pour ce week-end.
 
-> **Bonus :** prends quelqu'un avec toi. Une 2ème paire d'yeux te dira si tu choisis bien tes éléments déco. Souvent, on tombe sur du *"trop perso"* sans s'en rendre compte.`,
+> **Bonus :** prends quelqu'un avec toi. Une 2ème paire d'yeux te dira si tu choisis bien tes éléments déco. Souvent, on tombe sur du *"trop perso"* sans s'en rendre compte.
+
+:::quiz
+? Quelle déco temporaire pour la cuisine ?
+- Les sacs de courses
+- La vaisselle sale
+* Quelques fruits colorés dans un saladier
+= Une touche de couleur rend la pièce vivante.
+:::
+
+:::quiz
+? Pourquoi mélanger trois textures ?
+- Pour cacher la pièce
+- Pour faire baisser le prix
+* Pour donner du relief à la photo
+= Bois, tissu et végétal rendent l'image plus riche.
+:::
+
+:::action
+titre: Prépare ta liste de courses déco
+texte: Note pièce par pièce ce que tu achètes pour la séance photo.
+:::`,
         },
       ],
     },
@@ -812,7 +1003,13 @@ Tous ces objets sont rentables :
           id: 41,
           title: `La règle des tiers en 2 minutes`,
           duration: '8 min',
-          content: `## Pourquoi cette règle change tout
+          content: `:::bref
+- La règle des tiers place les éléments forts sur les lignes d'une grille.
+- Active la grille de ton appareil photo.
+- Évite de tout centrer.
+:::
+
+## Pourquoi cette règle change tout
 
 Si tu n'apprends qu'**une seule** notion technique de cette formation, c'est **celle-ci**.
 
@@ -890,13 +1087,35 @@ Au début, déplacer le sujet sur le tiers te semblera bizarre. Tu auras envie d
    - La même scène, sujet sur **tiers droit**
 3. **Compare les 3** sur ton écran. Note laquelle te fait le plus envie d'entrer dans la pièce.
 
-> **Spoiler :** ce sera celle où tu as appliqué la règle des tiers.`,
+> **Spoiler :** ce sera celle où tu as appliqué la règle des tiers.
+
+:::quiz
+? Comment appliquer la règle des tiers au salon ?
+- Mettre le canapé pile au milieu
+- Couper le canapé en deux
+* Placer le canapé sur une ligne du tiers, pas au centre
+= Une composition décentrée paraît plus naturelle.
+:::
+
+:::quiz
+? Quel réglage activer sur ton téléphone ?
+* La grille de l'appareil photo
+- Le flash
+- Le zoom numérique
+= Elle affiche les lignes des tiers en direct.
+:::`,
         },
         {
           id: 42,
           title: `La meilleure heure pour chaque pièce`,
           duration: '10 min',
-          content: `## La lumière naturelle est gratuite et imbattable
+          content: `:::bref
+- La lumière naturelle est gratuite et imbattable.
+- Chaque pièce a sa meilleure heure selon l'orientation de ses fenêtres.
+- Fenêtres ouvertes, lumières allumées.
+:::
+
+## La lumière naturelle est gratuite et imbattable
 
 Une pièce photographiée à la **mauvaise heure** peut sembler triste, sombre, jaune ou bleue.
 
@@ -1002,13 +1221,35 @@ Avant ton jour J :
 1. **Fais le tour** de ton logement avec une boussole *(ou Google Maps en satellite)*.
 2. **Note l'orientation** de chaque fenêtre.
 3. **Crée le planning** de ta séance avec les horaires optimaux pour chaque pièce.
-4. **Partage ce planning** avec quelqu'un *(conjoint, ami)* si tu as besoin d'aide pour tenir les angles ou les réflecteurs.`,
+4. **Partage ce planning** avec quelqu'un *(conjoint, ami)* si tu as besoin d'aide pour tenir les angles ou les réflecteurs.
+
+:::quiz
+? Ton salon est orienté plein ouest. Quand le photographier ?
+- La nuit sans lampe
+* En fin d'après-midi
+- À l'aube
+= La lumière y entre en fin de journée.
+:::
+
+:::quiz
+? Une retouche peut-elle sauver une mauvaise lumière ?
+- Oui, toujours
+- Oui, avec le flash
+* Non, la lumière de départ compte avant tout
+= Une retouche améliore, elle ne crée pas la lumière.
+:::`,
         },
         {
           id: 43,
           title: `Naturel vs flash, pourquoi le flash tue tes photos`,
           duration: '8 min',
-          content: `## La règle absolue de la photo LCD
+          content: `:::bref
+- Jamais de flash pour photographier une pièce.
+- Quand il fait sombre : allume tout, HDR, mode nuit, trépied.
+- Pour les fenêtres trop claires, le HDR équilibre la lumière.
+:::
+
+## La règle absolue de la photo LCD
 
 > **Tu n'utiliseras JAMAIS le flash de ton smartphone pour une photo LCD.**
 
@@ -1147,13 +1388,35 @@ Choisis ta pièce la plus difficile en lumière *(souvent : salle de bain ou cha
 
 Compare les 4. Note celle qui fait le plus envie d'entrer dans la pièce.
 
-> **Indice :** ce sera presque toujours la **D**.`,
+> **Indice :** ce sera presque toujours la **D**.
+
+:::quiz
+? Ta cuisine est sombre. Que fais-tu ?
+- J'active le flash
+- Je photographie quand même
+* J'allume tout, j'active le HDR et j'utilise un trépied
+= Le flash aplatit la pièce et durcit les ombres.
+:::
+
+:::quiz
+? La fenêtre est toute blanche sur ta photo. Quelle solution simple ?
+- Utiliser le flash
+* Activer le HDR
+- Fermer les volets
+= Le HDR équilibre les zones claires et sombres.
+:::`,
         },
         {
           id: 44,
           title: `Les angles qui agrandissent l'espace`,
           duration: '9 min',
-          content: `## Pourquoi tes pièces semblent toutes petites
+          content: `:::bref
+- Photographier debout à hauteur d'yeux rend la pièce plate.
+- Trois hauteurs : table basse, plan de travail, poitrine, selon la pièce.
+- Prends du recul au maximum et garde les verticales droites.
+:::
+
+## Pourquoi tes pièces semblent toutes petites
 
 Quand tu photographies **debout, à hauteur d'yeux**, ton appareil voit la pièce comme tu la vois : *plate, sans profondeur, ennuyeuse*.
 
@@ -1310,7 +1573,30 @@ Compare les 2 photos côte à côte.
 > Tu vas être **bluffé** par la différence. La photo B paraîtra souvent **nettement plus grande** alors que c'est la même pièce.
 
 C'est ce gain *« gratuit »* que tu vas appliquer dans le module 5 sur chaque pièce
-de ton logement.`,
+de ton logement.
+
+:::quiz
+? À quelle hauteur photographier un salon ?
+- Debout, bras levés
+- Allongé au sol
+* À hauteur de table basse
+= Cette hauteur donne de la profondeur à la pièce.
+:::
+
+:::quiz
+? Pourquoi se placer dans un coin de la pièce ?
+- Pour éviter la lumière
+* Pour prendre le plus de recul possible
+- Pour cacher le canapé
+= Plus de recul montre plus d'espace.
+:::
+
+:::action
+titre: Planifie ta séance photo
+texte: Note pour chaque pièce l'heure idéale et la hauteur de prise de vue, puis bloque un créneau sans voyageur.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },
@@ -1323,7 +1609,13 @@ de ton logement.`,
           id: 51,
           title: `Salon, cuisine, chambre, les angles types`,
           duration: '12 min',
-          content: `## Préparation avant chaque pièce
+          content: `:::bref
+- Avant chaque pièce : rangement, lampes, rideaux, bonne heure, grille, trépied.
+- Trois angles au moins par pièce : vue d'ensemble, détail, perspective.
+- Le détail « lifestyle » raconte la vie dans le logement.
+:::
+
+## Préparation avant chaque pièce
 
 Avant chaque photo, exécute ce **mini-rituel** :
 
@@ -1462,13 +1754,35 @@ Pour chaque pièce, planifie tes **3 angles** sur une feuille avant la séance :
 - Composition *(sujet sur quel tiers)*
 - Lumière et heure
 
-> Cette préparation prend **20 minutes max**, mais te fait gagner **1 heure** pendant la séance.`,
+> Cette préparation prend **20 minutes max**, mais te fait gagner **1 heure** pendant la séance.
+
+:::quiz
+? Combien d'angles au minimum par pièce ?
+* Trois
+- Un seul
+- Vingt
+= Une vue d'ensemble, un détail et une perspective.
+:::
+
+:::quiz
+? Que faire avant de déclencher ?
+- Activer le flash
+- Rien de particulier
+* Suivre le petit rituel de préparation
+= Sans préparation, la photo reste correcte mais ne fait pas cliquer.
+:::`,
         },
         {
           id: 52,
           title: `Salle de bain, la pièce la plus difficile`,
           duration: '8 min',
-          content: `## Pourquoi la salle de bain est si dure
+          content: `:::bref
+- La salle de bain est petite, sombre et pleine de reflets.
+- Ne photographie jamais face au miroir.
+- Photographie depuis le couloir, la vasque ou un détail.
+:::
+
+## Pourquoi la salle de bain est si dure
 
 Quasiment toutes les salles de bain ont au moins **3 défauts** qui rendent la photo difficile :
 
@@ -1592,13 +1906,35 @@ Si ta douche est moins glamour *(bac plastique standard, rideau de douche, flexi
 
 > **Note :** si ta SDB est vraiment moche *(années 80, carrelage daté, ambiance triste)*, c'est probablement le **seul élément** du logement où il vaut la peine d'investir 200-500 € en mini-rénovation cosmétique *(peinture du carrelage, robinetterie neuve, luminaire moderne, plantes)*.
 
-> **ROI très rapide** via les nouvelles photos.`,
+> **ROI très rapide** via les nouvelles photos.
+
+:::quiz
+? Pourquoi éviter le miroir ?
+- Il agrandit trop la pièce
+- Il est interdit par Airbnb
+* Il montre ton reflet et ton téléphone
+= Un reflet casse l'illusion d'une photo pro.
+:::
+
+:::quiz
+? Ta salle de bain n'a pas de fenêtre. Que faire ?
+- Utiliser le flash
+- Ne pas la montrer
+* Ouvrir la porte sur une pièce lumineuse et allumer toutes les lumières
+= La lumière d'une pièce voisine adoucit l'image.
+:::`,
         },
         {
           id: 53,
           title: `Extérieurs, valoriser vues, terrasses et jardins`,
           duration: '8 min',
-          content: `## Pourquoi les extérieurs convertissent
+          content: `:::bref
+- Les voyageurs choisissent aussi un lieu, pas seulement un logement.
+- Terrasse et jardin à la golden hour ; vue encadrée par une fenêtre.
+- Un drone n'est utile que pour une grande propriété ou un cadre exceptionnel.
+:::
+
+## Pourquoi les extérieurs convertissent
 
 Les voyageurs choisissent autant un **lieu** qu'un logement.
 
@@ -1742,13 +2078,35 @@ Les voyageurs adorent les photos qui leur montrent le **quartier** où ils dormi
 - Si tu as une **vue** → 1 photo *« fenêtre encadrée »*.
 - Si tu n'as rien de tout ça → 1 photo d'un **beau lieu à 5-10 min** de ton logement.
 
-> **Note l'heure idéale** pour chacune. Ajoute-les à ton planning de séance.`,
+> **Note l'heure idéale** pour chacune. Ajoute-les à ton planning de séance.
+
+:::quiz
+? Quand photographier une terrasse ?
+* À la golden hour, avant le coucher du soleil
+- En plein midi
+- La nuit
+= Lumière chaude et douce, ombres moins dures.
+:::
+
+:::quiz
+? Comment mettre en valeur une vue depuis l'intérieur ?
+- Zoomer au maximum
+- Photographier la fenêtre fermée
+* L'encadrer avec la fenêtre
+= La vue et le logement apparaissent ensemble.
+:::`,
         },
         {
           id: 54,
           title: `Lifestyle shots, créer l'envie en 1 photo`,
           duration: '7 min',
-          content: `## La différence entre "logement" et "expérience"
+          content: `:::bref
+- Le voyageur achète un moment, pas seulement un toit.
+- Quelques scènes de vie suffisent : petit-déjeuner, café face à la vue, livre et plaid.
+- Reste naturel : trop de mise en scène paraît faux.
+:::
+
+## La différence entre "logement" et "expérience"
 
 Un voyageur qui réserve un logement LCD **n'achète pas un toit**.
 
@@ -1878,7 +2236,28 @@ Sur les 20-30 photos de ton annonce, voici la répartition optimale :
 
 **Achète / prépare** les éléments nécessaires *(café, fleurs, bougies, vaisselle propre)* avant la séance.
 
-> **Rappel :** ces lifestyle shots prennent **10 min** chacune à mettre en place mais peuvent **doubler** ton tarif sur l'annonce.`,
+> **Rappel :** ces lifestyle shots prennent **10 min** chacune à mettre en place mais peuvent **doubler** ton tarif sur l'annonce.
+
+:::quiz
+? Qu'est-ce qu'une photo lifestyle ?
+- Un selfie de l'hôte
+- Une photo du plan
+* Une scène de vie qui donne envie de séjourner
+= Elle fait imaginer le séjour.
+:::
+
+:::quiz
+? Quel est le risque d'une mise en scène trop poussée ?
+- Aucun
+* Elle paraît fausse
+- Elle augmente la taxe de séjour
+= Le voyageur doit croire à ce qu'il voit.
+:::
+
+:::action
+titre: Fais ta séance photo
+texte: Suis ta liste pièce par pièce, trois angles au moins, et quelques scènes de vie.
+:::`,
         },
       ],
     },
@@ -1891,7 +2270,13 @@ Sur les 20-30 photos de ton annonce, voici la répartition optimale :
           id: 61,
           title: `Snapseed, les 5 réglages qui changent tout`,
           duration: '6 min',
-          content: `## Pourquoi Snapseed et pas autre chose
+          content: `:::bref
+- Snapseed est gratuit et suffit pour retoucher un logement.
+- Cinq réglages : luminosité, ambiance, ombres, hautes lumières, chaleur.
+- N'en fais pas trop : le voyageur doit retrouver le logement à l'arrivée.
+:::
+
+## Pourquoi Snapseed et pas autre chose
 
 Tu peux retoucher tes photos LCD avec :
 
@@ -2029,13 +2414,35 @@ Très utile pour **fixer une zone problématique** sans toucher au reste.
 - Si la différence est **trop forte** → réduis tes valeurs *(-30 % de chaque réglage)*.
 - Si la différence est **invisible** → tu n'as pas assez retouché.
 
-> **L'objectif :** la photo *« naturelle, mais mieux »*.`,
+> **L'objectif :** la photo *« naturelle, mais mieux »*.
+
+:::quiz
+? Quel est le danger d'une retouche trop forte ?
+- Aucun
+* Le voyageur est déçu à l'arrivée
+- La photo devient trop petite
+= Des photos fidèles évitent les mauvais avis.
+:::
+
+:::quiz
+? Ta photo est trop jaune. Quel réglage ?
+- La netteté
+- Le recadrage
+* La chaleur (balance des blancs)
+= Elle corrige la teinte de la lumière.
+:::`,
         },
         {
           id: 62,
           title: `Choisir l'ordre des photos, les 5 premières secondes`,
           duration: '5 min',
-          content: `## Pourquoi l'ordre est plus important que le nombre
+          content: `:::bref
+- L'ordre des photos compte plus que leur nombre.
+- Les 5 premières font l'essentiel : couverture, autre vue de la pièce de vie, signature, chambre, cuisine ou salle de bain.
+- Évite les photos répétitives.
+:::
+
+## Pourquoi l'ordre est plus important que le nombre
 
 Tu peux avoir **30 superbes photos**. Si la 1ère est mauvaise, le voyageur ne verra jamais les 29 autres.
 
@@ -2144,13 +2551,35 @@ Si tu hésites, retravaille la sélection. Réordonne, remplace 1 ou 2 photos pa
 
 1. Avant de publier tes nouvelles photos sur Airbnb, **écris ton ordre** sur papier *(photo 1, photo 2, etc.)* avec un bref descriptif de ce que chaque photo montre.
 2. **Si tu ne peux pas décrire chaque photo en 5 mots**, c'est qu'elle ne sait pas ce qu'elle vend. *Remplace-la.*
-3. **Charge tes photos** dans l'ordre exact. *Ne laisse pas Airbnb les ré-ordonner automatiquement.*`,
+3. **Charge tes photos** dans l'ordre exact. *Ne laisse pas Airbnb les ré-ordonner automatiquement.*
+
+:::quiz
+? Pourquoi l'ordre des photos est-il si important ?
+* Le voyageur regarde surtout les premières
+- Airbnb les trie au hasard
+- Il n'a pas d'importance
+= Si les premières déçoivent, il ne voit jamais les suivantes.
+:::
+
+:::quiz
+? Quelle photo en troisième position ?
+- Le compteur électrique
+* La vue, l'extérieur ou ce qui rend le logement unique
+- Les toilettes
+= Elle confirme la promesse de la couverture.
+:::`,
         },
         {
           id: 63,
           title: `Tester et mesurer, méthode A/B`,
           duration: '4 min',
-          content: `## La photo de couverture vaut un mois de tarif
+          content: `:::bref
+- Teste deux couvertures, chacune pendant 14 jours.
+- Compare les vues et les réservations dans les statistiques des plateformes.
+- Garde la gagnante et recommence quelques mois plus tard.
+:::
+
+## La photo de couverture vaut un mois de tarif
 
 On l'a vu au module 1 : ta photo de couverture fait **l'essentiel du clic**.
 
@@ -2293,9 +2722,31 @@ Tu sais maintenant :
 
 Bonne séance, et prends ton temps.
 
-> Tu as un retour à faire ou une question sur ton logement ? [Prends un appel avec Jason](/contact)
 
-**Formation Photographie LCD au Smartphone, fin.**`,
+**Formation Photographie LCD au Smartphone, fin.**
+
+:::quiz
+? Combien de temps garder chaque photo pendant un test ?
+* Environ 14 jours chacune
+- Une heure
+- Un an
+= Il faut assez de visites pour comparer.
+:::
+
+:::quiz
+? Que comparer entre les deux périodes ?
+- La météo
+* Les vues et les réservations
+- Le nombre de likes Instagram
+= Ce sont les statistiques de l'annonce qui disent laquelle convertit.
+:::
+
+:::action
+titre: Lance ton test de couverture
+texte: Choisis deux photos candidates et note la date de changement pour comparer tes résultats.
+lien: /dashboard/performances
+bouton: Voir mes performances
+:::`,
         },
       ],
     },

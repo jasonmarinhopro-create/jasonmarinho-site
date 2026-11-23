@@ -66,6 +66,10 @@ Maquettes de référence : artefact « Formations, maquettes complètes » (tél
 | Formation | Format |
 |---|---|
 | mettre-le-bon-prix-lcd | nouveau (pilote, 23/11/2026) |
-| les 21 autres | ancien, listées dans `A_CONVERTIR` de `gabarit.test.ts` |
+| les 21 autres | nouveau (converties le 23/11/2026) |
 
-Ordre conseillé : les plus ouvertes d'abord, puis celles qui citent les frais Airbnb (tarification-dynamique, annonce-directe, optimiser-annonce-airbnb, maitriser-booking-com-algorithme-genius, louer-en-direct-securise, creer-conciergerie-lcd).
+`A_CONVERTIR` est vide : toute nouvelle formation doit suivre le gabarit dès sa création.
+
+Conversion : « En bref » (3 points), 2 questions par leçon et une action en fin de module ajoutés au texte existant ; nettoyage (titres `#` en `##`, lignes `---`, émojis, tirets cadratins, mentions « Formation N » en fin de leçon, liens markdown). Le corps des leçons n'a pas été réécrit : les chiffres anciens non sourcés qu'il contient restent à revoir formation par formation.
+
+Identifiants en double corrigés (louer-en-direct-securise, photographie-lcd-smartphone, gerer-incidents-litiges-lcd : les modules 2 et suivants reprenaient 1, 2, 3) : leçons renumérotées 11, 21, 31… et migration `20261124_197_formations_lecons_renumerotees.sql` qui supprime les anciennes lignes de `formation_lessons`. La progression des membres sur le module 1 est conservée.
