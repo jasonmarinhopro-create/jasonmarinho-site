@@ -22,7 +22,13 @@ export const FISCALITE_LCD_FORMATION = {
           id: 1,
           title: 'La loi Le Meur expliquée simplement',
           duration: '15 min',
-          content: `## Pourquoi cette loi existe
+          content: `:::bref
+- La loi Le Meur du 19 novembre 2024 donne plus de pouvoirs aux communes et durcit la fiscalité.
+- Quatre piliers : enregistrement obligatoire, pouvoirs des maires, fiscalité, DPE.
+- Date clé : numéro d'enregistrement obligatoire au plus tard le 20 mai 2026.
+:::
+
+## Pourquoi cette loi existe
 Ces dernières années en France,
 le nombre de logements loués en meublé
 de tourisme a fortement augmenté.
@@ -129,13 +135,34 @@ Quelques idées reçues à corriger :
 
 - Si oui → vérifie que ton numéro figure bien sur toutes tes annonces (Airbnb, Booking, Driing...).
 - Si non → la leçon suivante t'explique exactement comment faire.
-`,
+
+:::quiz
+? Jusqu'où un maire peut-il réduire le plafond de location d'une résidence principale ?
+- Il ne peut rien changer
+* De 120 à 90 jours par an
+- De 120 à 30 jours
+= La loi Le Meur permet aux communes d'abaisser ce plafond à 90 jours.
+:::
+
+:::quiz
+? Quelle date retenir pour le numéro d'enregistrement ?
+* Au plus tard le 20 mai 2026
+- Le 1er janvier 2030
+- Il n'y a pas de date
+= Après cette date, il est obligatoire pour tout meublé de tourisme.
+:::`,
         },
         {
           id: 2,
           title: `Le numéro d'enregistrement : comment l'obtenir et pourquoi c'est urgent`,
           duration: '15 min',
-          content: `## Ce qu'est le numéro d'enregistrement
+          content: `:::bref
+- Le numéro d'enregistrement compte 13 caractères et identifie ton logement en mairie.
+- Il doit figurer sur toutes tes annonces et ton site.
+- Sans lui : amende jusqu'à 10 000 € et retrait de l'annonce.
+:::
+
+## Ce qu'est le numéro d'enregistrement
 C'est un numéro à 13 caractères
 délivré par ta mairie lors de la déclaration
 de ton logement en meublé de tourisme.
@@ -227,7 +254,29 @@ APRÈS LE 20 MAI 2026
 
 ## Exercice
 **Exercice pratique :** Va sur **service-public.fr** et cherche "déclaration meublé de tourisme". Ou appelle directement ta mairie pour connaître la procédure locale. La démarche prend 15 à 30 minutes. C'est la seule chose à faire après cette leçon.
-`,
+
+:::quiz
+? Où afficher ton numéro d'enregistrement ?
+- Uniquement sur ta porte
+- Nulle part, il reste en mairie
+* Sur toutes tes annonces et ton site de réservation
+= Les plateformes doivent l'afficher et peuvent retirer les annonces sans numéro.
+:::
+
+:::quiz
+? Quelle sanction en l'absence de numéro ?
+* Jusqu'à 10 000 € d'amende et le retrait de l'annonce
+- Un simple rappel
+- Aucune
+= C'est le montant prévu, et les plateformes peuvent désactiver l'annonce.
+:::
+
+:::action
+titre: Ajoute ton numéro d'enregistrement à ta fiche logement
+texte: Renseigne-le dans ton logement pour l'avoir sous la main sur toutes tes annonces.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -240,7 +289,13 @@ APRÈS LE 20 MAI 2026
           id: 11,
           title: 'Comprendre le statut LMNP et ses deux régimes',
           duration: '13 min',
-          content: `## LMNP : c'est quoi ?
+          content: `:::bref
+- Tu es loueur en meublé non professionnel (LMNP) si tes recettes restent sous 23 000 € ou sous tes autres revenus d'activité.
+- Les revenus de location meublée sont des BIC, pas des revenus fonciers.
+- Ils se déclarent sur le formulaire 2042 C PRO.
+:::
+
+## LMNP : c'est quoi ?
 LMNP = Loueur en Meublé Non Professionnel
 
 C'est le statut fiscal qui s'applique
@@ -326,13 +381,34 @@ Si tu n'es pas immatriculé :
 
 ## Exercice
 **Exercice pratique :** Vérifie si tu es immatriculé en tant que LMNP. Tu devrais avoir un numéro SIRET. Si ce n'est pas le cas, va sur **inpi.fr** et déclare ton activité. Ça prend 20 minutes et c'est gratuit.
-`,
+
+:::quiz
+? Dans quelle catégorie fiscale entrent tes revenus de location meublée ?
+- Les revenus fonciers
+- Les salaires
+* Les bénéfices industriels et commerciaux (BIC)
+= C'est pourquoi l'amortissement est possible au régime réel.
+:::
+
+:::quiz
+? Sur quel formulaire déclarer ces revenus ?
+- Aucun formulaire
+* Le 2042 C PRO
+- Le 2044
+= C'est la déclaration complémentaire des revenus professionnels.
+:::`,
         },
         {
           id: 12,
           title: 'Le micro-BIC en 2026 : qui est concerné et comment ça marche',
           duration: '14 min',
-          content: `## Les seuils micro-BIC (revenus 2026)
+          content: `:::bref
+- Meublé de tourisme non classé : abattement de 30 %, plafond de 15 000 €.
+- Meublé classé et chambres d'hôtes : abattement de 50 %, plafond de 83 600 €.
+- Au-dessus du plafond, le régime réel devient obligatoire.
+:::
+
+## Les seuils micro-BIC (revenus 2026)
 TYPE DE LOCATION          ABATTEMENT    PLAFOND
 Meublé longue durée           50%       83 600€
 (bail classique, étudiant,
@@ -424,13 +500,34 @@ Tenue obligatoire : un livre de recettes
 
 ## Exercice
 **Exercice pratique :** Calcule tes recettes brutes annuelles de location. Si tu dépasses 15 000€ et que ton logement n'est pas classé, note que tu dois soit le faire classer, soit passer au régime réel. La leçon suivante t'aide à décider.
-`,
+
+:::quiz
+? Meublé non classé, 12 000 € de recettes : quel montant imposable au micro-BIC ?
+- 6 000 €
+- 12 000 €
+* 8 400 €
+= Abattement de 30 % : 12 000 moins 3 600 = 8 400 €.
+:::
+
+:::quiz
+? Meublé non classé avec 18 000 € de recettes : quel régime ?
+- Aucune déclaration
+* Le régime réel, obligatoire au-dessus de 15 000 €
+- Le micro-BIC à 50 %
+= Le plafond du micro-BIC pour un meublé non classé est de 15 000 €.
+:::`,
         },
         {
           id: 13,
           title: `Le régime réel : quand et pourquoi c'est souvent plus avantageux`,
           duration: '13 min',
-          content: `## Ce qu'on peut déduire au régime réel
+          content: `:::bref
+- Au réel, tu déduis tes charges réelles : ménage, commissions, assurance, intérêts, taxe foncière.
+- L'amortissement du bien et des meubles réduit fortement le résultat imposable.
+- Avec un crédit ou beaucoup de charges, le réel est souvent plus avantageux.
+:::
+
+## Ce qu'on peut déduire au régime réel
 Au régime réel, tu déduis tes CHARGES RÉELLES :
 
 CHARGES D'EXPLOITATION
@@ -527,8 +624,29 @@ Le micro-BIC reste pertinent si :
 Attention : le régime réel implique une liasse fiscale à produire chaque année (formulaires 2031-SD et annexes 2033). Pour une situation simple, un outil en ligne dédié comme décla.fr peut suffire (environ 220€/an en 2026) sans passer par un expert-comptable (500€ à 1 200€/an selon les cas). Pour une situation plus complexe (SCI, plusieurs biens, revente prévue), un expert-comptable spécialisé LMNP reste recommandé. Voir la formation "Déclarer sa LMNP seul avec décla.fr" pour le détail.
 
 ## Exercice
-**Exercice pratique :** Si tu ne sais pas quel régime te convient, c'est normal, c'est une décision qui dépend de ta situation personnelle. L'action de cette leçon : [prends un appel découverte avec Jason](/contact) pour faire le point, ou consulte un expert-comptable spécialisé LMNP. Ne prends pas cette décision à l'aveugle.
-`,
+
+:::quiz
+? Qu'est-ce que l'amortissement ?
+- Une taxe supplémentaire
+* La déduction de la perte de valeur du bien et des meubles chaque année
+- Le remboursement du crédit
+= C'est le levier qui rend souvent le réel plus intéressant.
+:::
+
+:::quiz
+? Quelle charge peux-tu déduire au réel ?
+- Tes courses personnelles
+- Tes vacances
+* Les commissions des plateformes
+= Seules les dépenses liées à la location sont déductibles.
+:::
+
+:::action
+titre: Compare micro-BIC et régime réel
+texte: Saisis tes recettes et tes charges dans l'espace fiscalité pour voir le régime le plus favorable.
+lien: /dashboard/finances/fiscalite
+bouton: Ouvrir la fiscalité
+:::`,
         },
       ],
     },
@@ -541,7 +659,13 @@ Attention : le régime réel implique une liasse fiscale à produire chaque ann�
           id: 21,
           title: 'Le DPE obligatoire : qui est concerné et quand',
           duration: '13 min',
-          content: `## Le DPE : c'est quoi ?
+          content: `:::bref
+- Le DPE note le logement de A à G.
+- En zone tendue, pour les nouveaux meublés soumis à autorisation : F minimum, puis E en 2028, D en 2034.
+- Les logements déjà en activité ont jusqu'à fin 2034 pour se mettre en conformité.
+:::
+
+## Le DPE : c'est quoi ?
 DPE = Diagnostic de Performance Énergétique
 
 C'est un document officiel qui évalue
@@ -627,13 +751,34 @@ en courte durée jusqu'en 2028.
 
 ## Exercice
 **Exercice pratique :** Sais-tu quelle est la note DPE de ton logement ? Si tu ne l'as pas, contacte un diagnostiqueur certifié dans ta région. Le DPE est valable 10 ans. C'est un investissement de 100 à 250€ qui te donne une visibilité sur ta conformité jusqu'en 2034.
-`,
+
+:::quiz
+? Que mesure le DPE ?
+- La surface du logement
+- La qualité du ménage
+* La performance énergétique du logement, de A à G
+= C'est le diagnostic de performance énergétique.
+:::
+
+:::quiz
+? Quelle sanction en cas de non-conformité ?
+* Jusqu'à 5 000 € d'amende
+- Aucune
+- La saisie du logement
+= Le maire peut aussi demander le DPE et fixer une astreinte.
+:::`,
         },
         {
           id: 22,
           title: `Le classement meublé de tourisme : pourquoi c'est devenu stratégique`,
           duration: '12 min',
-          content: `## Qu'est-ce que le classement ?
+          content: `:::bref
+- Le classement de 1 à 5 étoiles est délivré par un organisme agréé.
+- Il fait passer l'abattement de 30 à 50 % et le plafond de 15 000 à 83 600 €.
+- Il peut éviter le passage obligatoire au régime réel.
+:::
+
+## Qu'est-ce que le classement ?
 Le classement meublé de tourisme est
 une certification officielle de 1 à 5 étoiles
 délivrée par un organisme agréé
@@ -731,7 +876,29 @@ l'économie fiscale annuelle peut atteindre
 
 ## Exercice
 **Exercice pratique :** Si tes recettes annuelles dépassent 12 000-15 000€ et que ton logement n'est pas classé, explore le classement maintenant. Va sur **atout-france.fr**, trouve un organisme agréé dans ta région, et demande un devis. L'investissement se rentabilise généralement en quelques mois.
-`,
+
+:::quiz
+? Quel avantage fiscal apporte le classement ?
+* Abattement de 50 % et plafond de 83 600 € au micro-BIC
+- Aucun impôt
+- Une baisse de la taxe de séjour à zéro
+= C'est le régime des meublés de tourisme classés.
+:::
+
+:::quiz
+? Qui délivre le classement ?
+- Airbnb
+- Ton voisin
+* Un organisme agréé
+= Une visite d'inspection attribue le nombre d'étoiles.
+:::
+
+:::action
+titre: Vérifie le classement de ton logement
+texte: Indique dans ton logement s'il est classé et combien d'étoiles il a : ça change ta fiscalité.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -744,7 +911,13 @@ l'économie fiscale annuelle peut atteindre
           id: 31,
           title: 'La taxe de séjour : qui la collecte et comment',
           duration: '12 min',
-          content: `## C'est quoi la taxe de séjour ?
+          content: `:::bref
+- La taxe de séjour est payée par le voyageur et collectée par l'hôte ou la plateforme.
+- Chaque commune fixe ses tarifs selon la catégorie du logement.
+- En réservation directe, c'est à toi de la collecter et de la reverser.
+:::
+
+## C'est quoi la taxe de séjour ?
 La taxe de séjour est un impôt local
 dû par les voyageurs qui séjournent
 dans un hébergement touristique.
@@ -837,13 +1010,34 @@ Pour Driing et la réservation directe :
 
 ## Exercice
 **Exercice pratique :** Vérifie maintenant dans ton tableau de bord Airbnb si la taxe de séjour est collectée automatiquement pour ta commune. Cherche "taxe de séjour" dans les paramètres. Si elle n'est pas collectée automatiquement, trouve le taux de ta commune sur taxesejour.impots.gouv.fr et configure-la.
-`,
+
+:::quiz
+? Qui paie la taxe de séjour ?
+- La plateforme
+* Le voyageur
+- L'hôte
+= L'hôte ou la plateforme la collecte, mais c'est le voyageur qui la doit.
+:::
+
+:::quiz
+? En réservation directe, qui collecte la taxe de séjour ?
+* Toi
+- Airbnb
+- Personne
+= Sans plateforme, la collecte et le reversement à la commune sont à ta charge.
+:::`,
         },
         {
           id: 32,
           title: 'Ce que les plateformes transmettent aux impôts depuis 2024',
           duration: '13 min',
-          content: `## La transmission automatique des données
+          content: `:::bref
+- Les plateformes transmettent chaque année tes recettes et nuits louées à l'administration fiscale.
+- La loi Le Meur leur fait aussi transmettre des données aux communes.
+- Tout revenu non déclaré peut être retrouvé et redressé.
+:::
+
+## La transmission automatique des données
 Depuis 2020, les plateformes de location
 (Airbnb, Booking, Abritel...)
 transmettent automatiquement à l'administration
@@ -933,7 +1127,29 @@ La meilleure protection :
 
 ## Exercice
 **Exercice pratique :** Vérification rapide : récupère tes relevés de versement Airbnb de l'année dernière. Compare le total reçu avec ce que tu as déclaré. Si tu n'as pas déclaré ces revenus ou si tu as omis les réservations directes, consulte un expert-comptable rapidement. Il est possible de régulariser avant un contrôle avec des pénalités réduites.
-`,
+
+:::quiz
+? Que transmettent les plateformes à l'administration fiscale ?
+* Ton identité, tes recettes et tes nuits louées
+- Rien du tout
+- Uniquement tes avis
+= L'administration peut donc croiser ces montants avec ta déclaration.
+:::
+
+:::quiz
+? Pourquoi les communes reçoivent-elles des données ?
+- Pour fixer ton prix
+* Pour vérifier le respect du plafond de jours et des règles locales
+- Pour noter les hôtes
+= Elles contrôlent notamment le plafond de 120 ou 90 jours.
+:::
+
+:::action
+titre: Vérifie le tarif de taxe de séjour de ta commune
+texte: Contrôle dans ton logement que la taxe de séjour est bien paramétrée.
+lien: /dashboard/logements
+bouton: Ouvrir mes logements
+:::`,
         },
       ],
     },
@@ -946,7 +1162,13 @@ La meilleure protection :
           id: 41,
           title: 'Le calendrier des obligations à ne pas rater',
           duration: '10 min',
-          content: `## Le calendrier administratif annuel
+          content: `:::bref
+- Début d'année : récupère tes relevés de versement de chaque plateforme.
+- Printemps : déclaration annuelle sur le 2042 C PRO.
+- Automne : avis de CFE, paiement en décembre.
+:::
+
+## Le calendrier administratif annuel
 JANVIER, FÉVRIER
 → Récupère tes relevés de versement
   annuels sur Airbnb, Booking, Driing
@@ -1019,13 +1241,34 @@ Comment la consulter :
 
 ## Exercice
 **Exercice pratique :** Crée un rappel dans ton téléphone ou agenda pour les 4 dates cruciales : janvier (récapitulatif recettes), mars-avril (liasse réel si applicable), mai-juin (déclaration revenus), décembre (CFE). Une alerte par an pour chaque date, c'est tout ce qu'il faut pour ne rien rater.
-`,
+
+:::quiz
+? Quel impôt les hôtes oublient-ils souvent ?
+* La CFE (cotisation foncière des entreprises)
+- La TVA sur le pain
+- La redevance télé
+= L'avis arrive à l'automne et se paie en décembre.
+:::
+
+:::quiz
+? Que faire en janvier et février ?
+- Rien
+* Récupérer tes relevés de versement annuels
+- Changer de plateforme
+= Ils servent à totaliser tes recettes pour la déclaration.
+:::`,
         },
         {
           id: 42,
           title: `Les documents à conserver et comment s'organiser`,
           duration: '10 min',
-          content: `## Les documents obligatoires à conserver 3 ans minimum
+          content: `:::bref
+- Garde tes justificatifs au moins 3 ans : relevés, factures, assurance, enregistrement.
+- Quinze minutes par mois suffisent pour tout classer.
+- Un classeur simple, papier ou numérique, fait l'affaire.
+:::
+
+## Les documents obligatoires à conserver 3 ans minimum
 REVENUS ET RECETTES
 □ Relevés de versement mensuels Airbnb / Booking
 □ Relevés de versement Driing
@@ -1097,13 +1340,34 @@ POUR CONSERVER LES DOCUMENTS
 
 ## Exercice
 **Exercice pratique :** Crée maintenant un dossier "LCD Fiscalité 2026" sur ton ordinateur ou Google Drive. Crée 4 sous-dossiers : Recettes, Charges, Administratif, Déclarations. Tu as maintenant un système. Il ne reste plus qu'à le remplir au fur et à mesure.
-`,
+
+:::quiz
+? Combien de temps conserver tes justificatifs ?
+- 3 mois
+- Inutile de les garder
+* Au moins 3 ans
+= C'est la durée pendant laquelle l'administration peut contrôler.
+:::
+
+:::quiz
+? Quelle routine adopter ?
+* 15 minutes par mois pour télécharger et classer
+- Tout faire la veille de la déclaration
+- Ne rien classer
+= Un petit rangement régulier évite la panique au moment de déclarer.
+:::`,
         },
         {
           id: 43,
           title: 'Quand consulter un expert-comptable spécialisé LMNP',
           duration: '10 min',
-          content: `## Quand tu peux t'en passer
+          content: `:::bref
+- Au micro-BIC, sans crédit et avec peu de charges, tu peux déclarer seul.
+- Au régime réel, avec un crédit ou plusieurs logements, un expert-comptable LMNP est recommandé.
+- Choisis un professionnel qui connaît la location meublée.
+:::
+
+## Quand tu peux t'en passer
 Tu peux gérer seul(e) si :
 
 ✓ Tu es au micro-BIC
@@ -1193,7 +1457,6 @@ Attention : ce que cette formation ne remplace pas :
   pour ta situation spécifique
 
 Tu as des doutes sur ta situation ?
-→ [Prends un appel découverte avec Jason](/contact)
 → Il peut t'orienter vers les bonnes ressources.
 
 
@@ -1207,7 +1470,7 @@ Fais le bilan de ta situation avec ces 5 questions :
 4. Tes recettes dépassent-elles 15 000€ sans classement ? → Si oui, à régulariser
 5. Déclares-tu TOUS tes revenus LCD, y compris les réservations directes ? → Si non, régulariser avec un expert-comptable
 
-# RÉCAPITULATIF, Ce que tu sais maintenant faire
+## RÉCAPITULATIF, Ce que tu sais maintenant faire
 
 MODULE 1, Loi Le Meur
 □ Comprendre pourquoi et comment elle change les règles
@@ -1231,7 +1494,7 @@ MODULE 5, Organisation
 □ Archiver tes documents efficacement
 □ Savoir quand consulter un expert-comptable
 
-# ANNEXE, Tableau récapitulatif des régimes fiscaux 2026
+## ANNEXE, Tableau récapitulatif des régimes fiscaux 2026
 
 MICRO-BIC           MICRO-BIC          RÉGIME RÉEL
                     Non classé          Classé
@@ -1247,7 +1510,7 @@ Idéal si            Faibles recettes,   Recettes           Crédit immobilier,
 
 Déclaration         2042 C PRO          2042 C PRO         2031 + annexes
 
-# ANNEXE, Contacts et ressources officielles
+## ANNEXE, Contacts et ressources officielles
 
 IMMATRICULATION
 → inpi.fr (guichet unique)
@@ -1280,7 +1543,30 @@ La fiscalité et la réglementation LCD évoluent.
 Pour ta situation personnelle,
 consulte un expert-comptable spécialisé LMNP.
 
-Formation suviante :`,
+Formation suviante :
+
+:::quiz
+? Dans quel cas un expert-comptable LMNP est-il fortement conseillé ?
+- Jamais
+* Au régime réel avec un crédit immobilier
+- Au micro-BIC avec 5 000 € de recettes
+= Les amortissements et la liasse fiscale demandent de la rigueur.
+:::
+
+:::quiz
+? Que faire si tu reçois un courrier de l'administration fiscale ?
+- Répondre au hasard
+* Consulter un professionnel
+- L'ignorer
+= Une réponse mal préparée peut aggraver la situation.
+:::
+
+:::action
+titre: Range tes justificatifs du mois
+texte: Ajoute tes recettes et charges du mois dans ton journal pour être prêt à déclarer.
+lien: /dashboard/finances/journal
+bouton: Ouvrir mon journal
+:::`,
         },
       ],
     },

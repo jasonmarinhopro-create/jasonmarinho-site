@@ -22,7 +22,13 @@ export const ECRIRE_AVIS_FORMATION = {
           id: 1,
           title: `L'impact direct des avis sur tes réservations`,
           duration: '12 min',
-          content: `## Les chiffres qui montrent tout
+          content: `:::bref
+- Les avis jouent sur ton classement, tes réservations et ton prix.
+- Les plateformes valorisent un bon volume d'avis récents.
+- Après le départ, hôte et voyageur ont 14 jours pour laisser leur avis sur Airbnb.
+:::
+
+## Les chiffres qui montrent tout
 Les avis influencent directement
 tes revenus, dans les deux sens.
 
@@ -130,13 +136,34 @@ Sur Google My Business :
 
 ## Exercice
 **Exercice pratique :** Regarde maintenant les 6 critères de ta dernière période de réservations sur Airbnb. Quel est ton critère le plus faible ? C'est là que tu dois concentrer tes efforts en premier, pas sur ce qui va déjà bien.
-`,
+
+:::quiz
+? Combien de temps dure la fenêtre pour laisser un avis sur Airbnb ?
+- 24 heures
+- Un an
+* 14 jours après le départ
+= Passé ce délai, l'avis ne peut plus être déposé.
+:::
+
+:::quiz
+? Pourquoi les avis récents comptent-ils autant ?
+* Les plateformes les valorisent dans le classement
+- Les anciens avis sont effacés chaque mois
+- Ils baissent la commission
+= Un flux régulier d'avis montre une activité et une qualité actuelles.
+:::`,
         },
         {
           id: 2,
           title: `Collecter plus d'avis sans violer les règles`,
           duration: '13 min',
-          content: `## Ce qui est strictement interdit
+          content: `:::bref
+- Interdit : récompense contre avis, faux avis, relances insistantes.
+- Autorisé : une demande courtoise au bon moment, un séjour réussi.
+- Le meilleur moment est le lendemain du départ.
+:::
+
+## Ce qui est strictement interdit
 Les plateformes sont très claires
 sur ce qui est INTERDIT :
 
@@ -230,7 +257,29 @@ Pour obtenir des avis détaillés :
 
 ## Exercice
 **Exercice pratique :** Vérifie que tu laisses bien un avis sur chaque voyageur dans les 48h après le départ. Si ce n'est pas fait systématiquement, crée un rappel dans ton téléphone déclenchant à J+1 après chaque check-out. C'est la première action pour augmenter ton volume d'avis reçus via la réciprocité.
-`,
+
+:::quiz
+? Laquelle de ces pratiques est interdite ?
+- Remercier le voyageur après son départ
+- Demander un avis une fois, poliment
+* Offrir une réduction en échange d'un bon avis
+= Conditionner un avantage à un avis viole les règles des plateformes.
+:::
+
+:::quiz
+? Quand demander un avis ?
+- Trois mois plus tard
+* Le lendemain du départ, avec un message de remerciement
+- Pendant la première nuit
+= Le souvenir est frais et le voyageur est disponible.
+:::
+
+:::action
+titre: Prépare ton message de remerciement
+texte: Pars d'un modèle pour remercier et inviter à laisser un avis, sans pression.
+lien: /dashboard/gabarits
+bouton: Ouvrir les modèles
+:::`,
         },
       ],
     },
@@ -243,7 +292,13 @@ Pour obtenir des avis détaillés :
           id: 11,
           title: `La structure d'un bon avis positif`,
           duration: '12 min',
-          content: `## Pourquoi tes avis sur les voyageurs comptent
+          content: `:::bref
+- Ton avis sur un voyageur aide les autres hôtes à décider.
+- Structure en 3 parties : contexte, comportement précis, recommandation.
+- La note privée sert aux remarques que tu ne veux pas rendre publiques.
+:::
+
+## Pourquoi tes avis sur les voyageurs comptent
 Quand tu laisses un avis sur un voyageur,
 tu contribues à la communauté.
 
@@ -342,13 +397,34 @@ Règle générale :
 
 ## Exercice
 **Exercice pratique :** Pense à ton dernier bon voyageur. Rédige son avis maintenant en 3 phrases en suivant la structure de la slide 3. Si le délai de 14 jours n'est pas dépassé, publie-le. Sinon, conserve ce template, tu t'en serviras pour le prochain.
-`,
+
+:::quiz
+? Qu'est-ce qui rend un avis voyageur utile ?
+* Des faits précis sur son comportement
+- « Super voyageur ! » sans détail
+- Un avis très long sur le logement
+= Les autres hôtes ont besoin d'éléments concrets pour décider.
+:::
+
+:::quiz
+? À quoi sert la note privée ?
+* Transmettre une remarque au voyageur sans la rendre publique
+- Noter la plateforme
+- Remplacer l'avis public
+= Elle permet un retour constructif sans le pénaliser publiquement.
+:::`,
         },
         {
           id: 12,
           title: 'Rédiger un avis négatif sur un voyageur sans se mettre à dos la plateforme',
           duration: '13 min',
-          content: `## Quand laisser un avis négatif
+          content: `:::bref
+- Laisse un avis négatif en cas de dégâts, de règles violées ou d'occupants non déclarés.
+- Reste factuel, jamais émotionnel.
+- Relis-toi avant de publier : pas d'insulte, pas de donnée personnelle.
+:::
+
+## Quand laisser un avis négatif
 Laisser un avis négatif est difficile.
 Mais ne pas le faire nuit à la communauté.
 
@@ -446,7 +522,29 @@ perd des réservations.
 
 ## Exercice
 **Exercice pratique :** Si tu as un voyageur difficile dont tu n'as pas encore laissé l'avis (et que le délai de 14 jours n'est pas dépassé) : rédige-le maintenant avec la structure de la slide 4. Factuel, court, professionnel. Pas plus de 5 lignes.
-`,
+
+:::quiz
+? Quelle formulation est la bonne ?
+* « Six personnes étaient présentes pour quatre déclarées »
+- « Voyageurs irrespectueux et menteurs »
+- « À fuir absolument »
+= Un fait vérifiable protège ta crédibilité et respecte les règles.
+:::
+
+:::quiz
+? Que vérifier avant de publier un avis négatif ?
+- Qu'il contient le nom complet du voyageur
+* Qu'il ne contient que des faits, sans émotion ni donnée personnelle
+- Qu'il est le plus long possible
+= Un avis factuel ne peut pas être retiré pour non-respect des règles.
+:::
+
+:::action
+titre: Laisse l'avis de ton dernier voyageur
+texte: Rédige-le avec la structure vue dans ce module : contexte, faits, recommandation. Retrouve ton dernier séjour dans tes voyageurs.
+lien: /dashboard/voyageurs
+bouton: Voir mes voyageurs
+:::`,
         },
       ],
     },
@@ -459,7 +557,13 @@ perd des réservations.
           id: 21,
           title: 'La psychologie derrière un avis négatif',
           duration: '11 min',
-          content: `## Ce que les futurs voyageurs cherchent vraiment
+          content: `:::bref
+- Un futur voyageur lit ta réponse pour savoir comment tu gères les problèmes.
+- Trois types d'avis négatifs : légitime, excessif, de mauvaise foi.
+- Réponds dans les 24 à 72 heures, à froid.
+:::
+
+## Ce que les futurs voyageurs cherchent vraiment
 Quand un futur voyageur lit un avis négatif,
 il ne cherche pas à savoir si ton logement
 est parfait.
@@ -556,13 +660,34 @@ Sur Google My Business :
 
 ## Exercice
 **Exercice pratique :** Pense au dernier avis négatif que tu as reçu. Dans quel type tombe-t-il : légitime, excessif, ou injuste ? Cette classification change complètement la façon dont tu dois répondre. On voit ça dans la leçon suivante.
-`,
+
+:::quiz
+? Que cherche un futur voyageur en lisant ta réponse à un avis négatif ?
+- Savoir si le logement est parfait
+- Connaître ton âge
+* Savoir si tu es un hôte de confiance quand il y a un problème
+= Ta réponse montre comment tu réagis, c'est ce qui rassure.
+:::
+
+:::quiz
+? Quand répondre à un avis négatif ?
+- Dans la minute, sous le coup de l'émotion
+- Jamais
+* Dans les 24 à 72 heures, une fois calmé
+= Une réponse à froid est plus mesurée et plus convaincante.
+:::`,
         },
         {
           id: 22,
           title: `La structure d'une réponse parfaite à un avis négatif`,
           duration: '13 min',
-          content: `## La structure en 4 étapes
+          content: `:::bref
+- Quatre étapes : remercier, reconnaître, expliquer, conclure.
+- Reconnaître un ressenti n'est pas admettre une faute.
+- Adapte le ton : avis légitime, excessif ou de mauvaise foi.
+:::
+
+## La structure en 4 étapes
 ÉTAPE 1, REMERCIER (1 phrase)
 Toujours. Même si ça fait mal.
 "Merci pour votre retour."
@@ -679,13 +804,34 @@ de la plateforme pour tout justificatif."
 
 ## Exercice
 **Exercice pratique :** Prends le dernier avis négatif reçu et rédige une réponse en suivant les 4 étapes. Remercier → Reconnaître → Agir/Expliquer → Conclure. Maximum 6 lignes. Soumets-la mentalement au test : "Est-ce que ce message rassure un futur voyageur qui hésite à réserver ?" Si oui : publie-la.
-`,
+
+:::quiz
+? Quelle est la première étape d'une réponse ?
+* Remercier pour le retour
+- Contester point par point
+- Citer le règlement
+= Remercier montre que tu prends tous les avis au sérieux.
+:::
+
+:::quiz
+? Que signifie « reconnaître » dans la réponse ?
+- Rembourser automatiquement
+* Reconnaître le ressenti du voyageur, sans forcément admettre une faute
+- Accepter tous les reproches
+= Tu montres de l'écoute sans te dévaloriser.
+:::`,
         },
         {
           id: 23,
           title: 'Contester un avis injuste : quand et comment',
           duration: '11 min',
-          content: `## Ce que les plateformes acceptent de supprimer
+          content: `:::bref
+- Les plateformes ne suppriment pas un avis seulement parce qu'il est négatif.
+- Peuvent être retirés : faits faux, propos discriminatoires, représailles, séjour non réalisé.
+- Si la contestation échoue, ta réponse publique devient ton meilleur outil.
+:::
+
+## Ce que les plateformes acceptent de supprimer
 NI AIRBNB NI BOOKING ne suppriment
 un avis simplement parce qu'il est négatif.
 
@@ -760,7 +906,29 @@ Si Airbnb refuse de supprimer l'avis
 
 ## Exercice
 **Exercice pratique :** As-tu un avis qui te semble vraiment injuste ou abusif ? Vérifie s'il correspond à l'un des critères de suppression d'Airbnb listés en slide 2. Si oui : prépare tes preuves et lance la contestation. Si non : concentre ton énergie sur la réponse publique et la collecte de nouveaux avis positifs. C'est plus efficace.
-`,
+
+:::quiz
+? Quel avis Airbnb peut-il retirer ?
+* Un avis discriminatoire
+- Un avis négatif mais honnête
+- Un avis qui ne te plaît pas
+= Les avis contraires aux règles peuvent être retirés, pas les critiques sincères.
+:::
+
+:::quiz
+? La plateforme refuse de retirer un avis injuste. Que faire ?
+- Supprimer ton annonce
+* Publier une réponse calme et factuelle
+- Insulter le voyageur
+= Les futurs voyageurs liront ta réponse et jugeront sur ton attitude.
+:::
+
+:::action
+titre: Prépare ta réponse type aux avis négatifs
+texte: Écris ton modèle en 4 étapes pour répondre vite et calmement.
+lien: /dashboard/gabarits
+bouton: Ouvrir les modèles
+:::`,
         },
       ],
     },
@@ -773,7 +941,13 @@ Si Airbnb refuse de supprimer l'avis
           id: 31,
           title: 'Lire entre les lignes : ce que tes avis révèlent vraiment',
           duration: '12 min',
-          content: `## Les mots qui reviennent = ce qui compte vraiment
+          content: `:::bref
+- Analyse tes 20 derniers avis : mots positifs et critiques qui reviennent.
+- Repère les critiques implicites, comme « un peu difficile à trouver ».
+- Transforme-les en liste d'améliorations prioritaires.
+:::
+
+## Les mots qui reviennent = ce qui compte vraiment
 Tes avis sont une mine d'informations.
 La plupart des hôtes les lisent une fois
 et passent à autre chose.
@@ -854,13 +1028,34 @@ NIVEAU 3, INVESTISSEMENTS LOURDS (> 500€)
 
 ## Exercice
 **Exercice pratique :** Prends tes 10 derniers avis. Note sur une feuille les 3 mots qui reviennent le plus en positif et les 3 qui reviennent en critique. Identifie une action concrète de niveau 1 (moins de 50€) que tu peux faire cette semaine pour répondre à la critique la plus fréquente.
-`,
+
+:::quiz
+? « Logement un peu difficile à trouver » : qu'est-ce que ça révèle ?
+- Rien d'important
+* Un problème d'indications d'accès à corriger
+- Un voyageur de mauvaise foi
+= Les critiques implicites pointent souvent une amélioration simple.
+:::
+
+:::quiz
+? Comment exploiter tes avis ?
+- Ne lire que les positifs
+* Repérer les mots qui reviennent et en faire une liste d'améliorations
+- Les lire une fois et oublier
+= Les répétitions montrent ce qui compte vraiment pour tes voyageurs.
+:::`,
         },
         {
           id: 32,
           title: 'Répondre aux avis positifs : oui, ça compte aussi',
           duration: '11 min',
-          content: `## Pourquoi répondre aux avis positifs
+          content: `:::bref
+- Répondre aux avis positifs envoie un signal d'activité et fidélise.
+- Remercie, cite un détail du séjour, invite à revenir.
+- Varie tes réponses : un copier-coller se voit.
+:::
+
+## Pourquoi répondre aux avis positifs
 La plupart des hôtes ne répondent
 qu'aux avis négatifs.
 
@@ -938,13 +1133,34 @@ OPTIONNEL :
 
 ## Exercice
 **Exercice pratique :** Identifie les 3 derniers avis positifs détaillés que tu as reçus. Rédige une réponse personnalisée pour chacun en moins de 3 lignes. Mentionne un élément spécifique de leur avis. Publie ces réponses aujourd'hui.
-`,
+
+:::quiz
+? Pourquoi répondre aussi aux avis positifs ?
+* Pour fidéliser et montrer une activité régulière
+- C'est obligatoire
+- Pour baisser ta note
+= Le voyageur s'en souvient et les futurs voyageurs voient ton attention.
+:::
+
+:::quiz
+? Que doit contenir une réponse à un avis positif ?
+* Un remerciement, un détail du séjour et une invitation à revenir
+- Le même texte pour tout le monde
+- Ton règlement intérieur
+= Un détail personnel rend la réponse sincère.
+:::`,
         },
         {
           id: 33,
           title: 'Construire une stratégie avis sur le long terme',
           duration: '12 min',
-          content: `## Le système complet en place
+          content: `:::bref
+- La stratégie avis s'organise avant, pendant et après le séjour.
+- Vise une note de 4,8 et plus.
+- N'oublie pas tes avis Google, qui comptent hors plateformes.
+:::
+
+## Le système complet en place
 Une stratégie avis efficace s'automatise.
 
 AVANT LE SÉJOUR
@@ -1044,8 +1260,6 @@ MODULE 4
   Ce sont un levier que tu contrôles
   bien plus que tu ne le crois.
 
-Des questions sur un avis spécifique ?
-[Prends un appel avec Jason](/contact)
 
 
 ## Exercice
@@ -1061,7 +1275,30 @@ Mets en place ces 3 automatismes cette semaine :
 
 Ces 3 habitudes suffisent pour construire une réputation solide en 6 mois.
 
-Formatio nsuviante :`,
+Formatio nsuviante :
+
+:::quiz
+? Quelle note viser ?
+- 4,0
+- 3,5
+* 4,8 et plus
+= C'est le niveau où ta note devient un argument de réservation.
+:::
+
+:::quiz
+? Comment éviter qu'un problème devienne un avis négatif ?
+- Ne pas répondre aux messages
+* Être disponible pendant le séjour pour le résoudre vite
+- Attendre la fin du séjour
+= Un problème résolu pendant le séjour se transforme rarement en critique.
+:::
+
+:::action
+titre: Programme ton message après le départ
+texte: Ajoute à tes modèles le message de remerciement du lendemain du départ.
+lien: /dashboard/gabarits
+bouton: Ouvrir les modèles
+:::`,
         },
       ],
     },
