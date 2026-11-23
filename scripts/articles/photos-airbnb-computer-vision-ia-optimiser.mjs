@@ -42,7 +42,7 @@ export default {
       content: [
         { type: 'p', text: 'Ces 5 actions peuvent améliorer significativement le score algorithmique de ton annonce sans nécessiter un photographe professionnel. L\'IA pénalise principalement les erreurs techniques corrigeables, pas le manque de matériel.' },
         { type: 'ul', items: [
-          '1. Refais toutes les photos en format paysage (horizontal) avec un smartphone récent en lumière naturelle',
+          '1. Refais toutes les photos en format paysage (horizontal) avec un smartphone récent en lumière naturelle (méthode complète : <a href="/services/formations/photographie-lcd-smartphone" style="color:var(--g);font-weight:500">la formation photo au smartphone</a>)',
           '2. Ajoute une photo dédiée pour chaque équipement mentionné dans la description (bureau, wifi, cuisine équipée)',
           '3. Teste plusieurs photos de couverture sur 2 semaines et garde celle qui génère le plus de clics (visible dans les stats Airbnb)',
           '4. Vise 25 à 30 photos minimum avec une photo par pièce et une photo contextuelle de chaque équipement clé',

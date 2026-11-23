@@ -96,6 +96,7 @@ ${neighbours.map(n => `        <tr><td><a href="${n.url}">${esc(n.ville)}</a></t
       </tbody>
     </table></div>
     <p class="src">Mêmes calculs pour chaque ville : T2 loué toute l'année, annonce correcte. Sources de chaque ville sur sa page.</p>
+    <p class="src"><a href="/services/simulateurs/comparer-villes?villes=${[city.ville, ...neighbours.slice(0, 3).map(n => n.ville)].map(v => encodeURIComponent(v)).join(',')}" style="color:var(--g);font-weight:600">Comparer ${esc(city.ville)} et ses voisines côte à côte</a> dans le comparateur de villes.</p>
   </div>
 </section>` : ''
 

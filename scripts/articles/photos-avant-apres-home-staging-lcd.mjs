@@ -66,7 +66,7 @@ export default {
       content: [
         { type: 'p', text: 'Absolument oui. Le home staging sans nouvelles photos = effort gâché.' },
         { type: 'ul', items: [
-          'Option 1 : photographier toi-même au smartphone récent en lumière naturelle de matinée (gratuit)',
+          'Option 1 : photographier toi-même <a href="/services/formations/photographie-lcd-smartphone" style="color:var(--g);font-weight:500">au smartphone</a> récent en lumière naturelle de matinée (gratuit)',
           'Option 2 : photographe pro à 300-500 € (encore mieux mais déjà bon avec smartphone)',
           'Re-uploader sur Airbnb : nouvelles photos = nouveau "boost" algorithmique. Test A/B silencieux Airbnb pendant 30 j',
           'Mesurer : taux de clic avant vs après = vérification du ROI',

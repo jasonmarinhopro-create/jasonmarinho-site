@@ -89,7 +89,7 @@ export default {
         { type: 'p', text: 'Un petit tableau ou cadre A5 affichant le WiFi (nom du réseau et mot de passe en gros caractères), le numéro de la clé de secours et le numéro d\'urgence de la conciergerie ou de l\'hôte règle immédiatement 80 % des messages d\'arrivée. Cette approche s\'intègre naturellement à la logique d\'un <a href="/blog/welcome-bag-lcd-12-idees-marquantes-budget" style="color:var(--g);font-weight:500">welcome bag LCD qui marque les voyageurs sans exploser le budget</a>, où l\'entrée devient le premier point de contact d\'une expérience pensée pour déclencher l\'avis 5 étoiles. Si tu bascules une partie de tes réservations en direct, cette qualité d\'accueil est aussi l\'argument principal que tu construis avec <a href="/services/annonce-directe" style="color:var(--g);font-weight:500">l\'accompagnement à la réservation directe proposé par la plateforme Jason Marinho</a>.' },
         { type: 'ul', items: [
           'Carte de bienvenue nominative posée sur la console d\'entrée',
-          'QR code vers le livret d\'accueil digital, en gros à côté de la carte',
+          '<a href="/services/qr-affiches" style="color:var(--g);font-weight:500">QR code</a> vers le livret d\'accueil digital, en gros à côté de la carte',
           'Cadre A5 avec nom du WiFi et mot de passe en gros caractères',
           'Numéro d\'urgence de l\'hôte ou de la conciergerie affiché',
           'Emplacement de la clé de secours indiqué au bon endroit du livret',

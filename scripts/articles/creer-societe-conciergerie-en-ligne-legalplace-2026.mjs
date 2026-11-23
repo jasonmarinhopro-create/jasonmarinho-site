@@ -62,7 +62,7 @@ export default {
       h2: '4. Ce que coûte vraiment une création de société en 2026',
       content: [
         { type: 'p', text: 'Quelle que soit la façon dont tu crées ta SASU, certains frais sont obligatoires : environ 195 € en 2026 d\'après LegalPlace, soit l\'annonce légale (142 € HT en métropole), l\'immatriculation (33,83 €) et la déclaration des bénéficiaires effectifs (19,33 €). À cela s\'ajoute le dépôt du capital social, qui reste à toi.' },
-        { type: 'p', text: 'Côté accompagnement, LegalPlace propose des formules qui vont de la simple génération des statuts à la prise en charge complète du dossier : relevés de septembre 2026, la rédaction des statuts d\'une SASU commence autour de 99 € HT hors frais obligatoires, et une création complète revient en général entre 350 et 400 € tout compris. Vérifie la grille officielle avant de choisir, les formules évoluent souvent.' },
+        { type: 'p', text: 'Côté accompagnement, LegalPlace propose des formules qui vont de la simple génération des statuts à la prise en charge complète du dossier : relevés de septembre 2026, la rédaction des statuts d\'une SASU commence autour de 99 € HT hors frais obligatoires, et une création complète revient en général entre 350 et 400 € tout compris. Vérifie la grille officielle avant de choisir, les formules évoluent souvent. Pour comparer, vois aussi <a href="/partenaires/legalstart" style="color:var(--g);font-weight:500">Legalstart</a>.' },
       ],
     },
     {

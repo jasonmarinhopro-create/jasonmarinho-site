@@ -38,7 +38,7 @@ export default {
         { type: 'p', text: 'Les photos dégradent le CTR (taux de clic) de 30-50 % par rapport à des photos professionnelles. C\'est la première chose que voit le voyageur : avant le prix, avant les avis.' },
         { type: 'ul', items: [
           'Option 1 : photographe pro : 300-500 €, ROI en 2-3 réservations supplémentaires',
-          'Option 2 : suivre une formation photo smartphone + photographier de 10h à 12h en lumière naturelle',
+          'Option 2 : suivre une <a href="/services/formations/photographie-lcd-smartphone" style="color:var(--g);font-weight:500">formation photo smartphone</a> + photographier de 10h à 12h en lumière naturelle',
           'Ne jamais uploader une photo prise au flash ou en intérieur sombre',
           'Minimum 20 photos en 2026 : en dessous l\'annonce est marquée "incomplète"',
         ]},

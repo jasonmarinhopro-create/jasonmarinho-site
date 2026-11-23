@@ -70,7 +70,7 @@ export default {
       h2: '5. Affiche le mot de passe au bon endroit et au bon moment',
       content: [
         { type: 'p', text: 'Le moment où le voyageur cherche le WiFi est toujours le même : juste après son arrivée, fatigué, parfois énervé par la route, le téléphone à 5 % de batterie. Si le mot de passe est planqué dans un livret de 30 pages au fond du tiroir, ou s\'il faut le demander par message, tu pars avec un mauvais point qui pèsera dans l\'avis. La règle de base est de le rendre disponible avant l\'arrivée et visible immédiatement dans le logement.' },
-        { type: 'p', text: 'Tu peux ajouter le nom du réseau et le mot de passe dans ton message de bienvenue automatique 24 heures avant le check-in, dans ton livret d\'accueil digital, et sur un cadre posé près de l\'entrée. Pour un cadre vraiment efficace, ajoute un QR code WiFi qui connecte automatiquement le téléphone du voyageur sans qu\'il ait à taper. Notre guide pour <a href="/blog/livret-accueil-digital-creer-location-courte-duree" style="color:var(--g);font-weight:500">créer un livret d\'accueil digital efficace</a> détaille les rubriques essentielles dont fait partie le bloc WiFi.' },
+        { type: 'p', text: 'Tu peux ajouter le nom du réseau et le mot de passe dans ton message de bienvenue automatique 24 heures avant le check-in, dans ton livret d\'accueil digital, et sur un cadre posé près de l\'entrée. Pour un cadre vraiment efficace, ajoute un <a href="/services/qr-affiches" style="color:var(--g);font-weight:500">QR code WiFi</a> qui connecte automatiquement le téléphone du voyageur sans qu\'il ait à taper. Notre guide pour <a href="/blog/livret-accueil-digital-creer-location-courte-duree" style="color:var(--g);font-weight:500">créer un livret d\'accueil digital efficace</a> détaille les rubriques essentielles dont fait partie le bloc WiFi.' },
         { type: 'ul', items: [
           'Cadre A5 posé sur la table d\'entrée avec nom du réseau, mot de passe et QR code',
           'Mot de passe répété dans le livret d\'accueil digital, section premier accueil',
@@ -89,7 +89,7 @@ export default {
           'Vérification du débit affiché dans l\'app Airbnb Host pour le badge',
           'Procédure de redémarrage de la box documentée dans le livret avec photos',
           'Numéro de l\'opérateur et numéro client à portée du voyageur en cas de panne longue',
-          'Routeur 4G de secours en zone rurale ou si l\'opérateur est connu pour ses coupures',
+          'Routeur 4G de secours en zone rurale ou si l\'opérateur est connu pour ses coupures ; pour tes voyageurs étrangers, <a href="/partenaires/orange-travel" style="color:var(--g);font-weight:500">une eSIM de voyage</a> garde internet hors du logement',
         ]},
         { type: 'p', text: 'Préviens aussi tes voyageurs en cas de travaux ou de coupure annoncée : un message proactif désamorce une grande partie du mécontentement. Pour les hôtes qui veulent industrialiser ce type de communication et échanger avec d\'autres hôtes sur les opérateurs les plus fiables zone par zone, la <a href="/services/communaute" style="color:var(--g);font-weight:500">communauté d\'hôtes Jason Marinho</a> regroupe ces bonnes pratiques et les retours terrain.' },
       ],

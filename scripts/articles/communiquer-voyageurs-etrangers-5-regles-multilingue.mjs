@@ -65,7 +65,7 @@ export default {
       content: [
         { type: 'p', text: 'Pour les voyageurs internationaux, envoyer les informations clés 48-72 h avant l\'arrivée est plus important encore que pour les voyageurs francophones. Un voyageur étranger qui atterrit à 22 h dans une ville qu\'il ne connaît pas a besoin d\'être hyper rassuré.' },
         { type: 'ul', items: [
-          'Message J-2 : code d\'accès + lien livret d\'accueil digital + ton numéro WhatsApp',
+          'Message J-2 : code d\'accès + lien livret d\'accueil digital + ton numéro WhatsApp (et, pour qui arrive sans forfait, <a href="/partenaires/orange-travel" style="color:var(--g);font-weight:500">une eSIM de voyage</a>)',
           'Message J-1 : "Tout est prêt pour votre arrivée. En cas de problème à [heure], appelez [numéro]"',
           'Lien Google Maps vers ton logement avec épingle exacte : indispensable pour les non-connaisseurs',
           'Indiquer la meilleure sortie de transport (aéroport → logement en 3 étapes simples)',

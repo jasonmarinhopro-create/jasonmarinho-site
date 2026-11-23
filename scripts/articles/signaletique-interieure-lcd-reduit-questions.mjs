@@ -50,7 +50,7 @@ export default {
           'Plan d\'évacuation incendie + emplacement extincteur',
           'Procédure check-out (clé, ménage, lumière, fenêtres, électroménager) : 1 page A4 affichée près de la porte',
         ]},
-        { type: 'p', text: 'Combine ces 12 affichages avec un livret d\'accueil digital (via QR code) pour avoir le meilleur des deux mondes : info immédiate visible + détails complets dans le livret. Tes voyageurs te poseront 3-5 questions au lieu de 10, ton délai de réponse moyen baisse, ton score de réactivité monte.' },
+        { type: 'p', text: 'Combine ces 12 affichages avec un livret d\'accueil digital (via <a href="/services/qr-affiches" style="color:var(--g);font-weight:500">QR code</a>) pour avoir le meilleur des deux mondes : info immédiate visible + détails complets dans le livret. Tes voyageurs te poseront 3-5 questions au lieu de 10, ton délai de réponse moyen baisse, ton score de réactivité monte.' },
         { type: 'cta', text: 'Tu veux créer un livret d\'accueil digital qui réduit les questions ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },
