@@ -30,8 +30,12 @@ let ecrites = 0
 const ecarts = []
 for (const [slug, [href, texte]] of Object.entries(LIENS)) {
   const file = path.join(ROOT, 'blog', slug, 'index.html')
-  if (!fs.existsSync(file)) throw new Error(`Article introuvable : ${slug}`)
-  if (!fs.existsSync(path.join(ROOT, href.slice(1), 'index.html'))) throw new Error(`Page introuvable : ${href}`)
+  // Article ou page supprimés depuis : signalé, jamais bloquant au build (--check échoue)
+  if (!fs.existsSync(file) || !fs.existsSync(path.join(ROOT, href.slice(1), 'index.html'))) {
+    console.error(`Lien service ignoré (article ou page introuvable) : ${slug} → ${href}`)
+    if (CHECK) process.exitCode = 1
+    continue
+  }
   const avant = fs.readFileSync(file, 'utf8')
   let html = avant.replace(/<!-- LIEN-SERVICE:START -->[\s\S]*?<!-- LIEN-SERVICE:END -->\n/, '')
   if (!html.includes(`href="${href}"`)) {

@@ -60,9 +60,11 @@ const ecrire = (file, avant, apres) => {
 // 1. Pages de formation : 3 articles
 for (const f of formations) {
   const choisis = FORMATIONS_BLOG[f.slug]
-  if (choisis) for (const sl of choisis) if (!arts.some(a => a.slug === sl)) throw new Error(`Article introuvable dans formations-blog.mjs : ${sl}`)
+  // Article supprimé depuis : signalé, jamais bloquant au build (--check échoue)
+  const absents = (choisis || []).filter(sl => !arts.some(a => a.slug === sl))
+  if (absents.length) { console.error(`Articles introuvables dans formations-blog.mjs : ${absents.join(', ')}`); if (CHECK) process.exitCode = 1 }
   const top = choisis
-    ? choisis.map(sl => ({ a: arts.find(a => a.slug === sl) }))
+    ? choisis.filter(sl => !absents.includes(sl)).map(sl => ({ a: arts.find(a => a.slug === sl) }))
     : arts.map(a => ({ a, s: score(f.sig, a.sig) })).filter(x => x.s >= SEUIL)
       .sort((x, y) => y.s - x.s || x.a.slug.localeCompare(y.a.slug)).slice(0, 3)
   const avant = fs.readFileSync(f.page, 'utf8')
