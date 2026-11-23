@@ -102,7 +102,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:50px;padding:0 16px;border:1.5px solid var(--bd);border-radius:13px;background:#fff;color:var(--g);font-weight:600;font-size:15px;cursor:pointer;text-decoration:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`
 
-const html = `${HEAD('Trouver un photographe, vidéaste ou ménage Airbnb', 'Décris ton besoin en 1 minute : tu vois tout de suite les photographes, vidéastes, équipes de ménage ou pros du dépannage de ta zone qui recevront ta demande. Gratuit, sans commission, ton contact n’est jamais vendu.', 'https://jasonmarinho.com/trouver-un-pro', 'index, follow')}
+const html = `${HEAD('Trouver un photographe, vidéaste ou ménage Airbnb', 'Décris ton besoin en 1 minute et vois les photographes, équipes de ménage ou pros du dépannage de ta zone. Gratuit, sans commission, contact jamais vendu.', 'https://jasonmarinho.com/trouver-un-pro', 'index, follow')}
 <style>
 ${BASE_CSS}
 .wrap{max-width:1160px;margin:-70px auto 60px;padding:0 clamp(16px,5vw,40px);display:grid;gap:20px;position:relative}

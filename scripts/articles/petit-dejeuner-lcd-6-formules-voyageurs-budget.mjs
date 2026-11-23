@@ -1,7 +1,7 @@
 export default {
   slug: 'petit-dejeuner-lcd-6-formules-voyageurs-budget',
   title: 'Petit-déjeuner en LCD : 6 formules à proposer à tes voyageurs sans plomber ton budget',
-  description: 'Panier essentiel, terroir régional, healthy, familial, gourmand ou pack à emporter : 6 formules concrètes de petit-déjeuner à tester en location courte durée, avec budget par personne et point de vigilance para-hôtellerie.',
+  description: 'Panier simple, terroir, sain, familial ou à emporter : 6 formules de petit-déjeuner en LCD, avec le budget par personne et le point sur la para-hôtellerie.',
   keywords: 'petit-déjeuner location courte durée, panier petit-déjeuner Airbnb, panier bienvenue LCD, produits locaux Airbnb, para-hôtellerie petit-déjeuner',
   date: '2026-07-22',
   categorySlug: 'experience',

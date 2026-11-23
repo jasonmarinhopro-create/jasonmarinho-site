@@ -2,7 +2,7 @@ export default {
   slug: 'reception-colis-voyageurs-lcd-6-regles-livraisons-sejour',
 
   title: 'Réception de colis voyageurs en LCD : 6 règles pour gérer les livraisons pendant un séjour sans galère',
-  description: 'Amazon, courses, valise perdue par la compagnie aérienne : 6 règles concrètes pour organiser la réception de colis pour tes voyageurs en location courte durée sans t\'y épuiser.',
+  description: 'Commandes en ligne, courses, valise retardée : 6 règles pour organiser la réception des colis de tes voyageurs en LCD sans t\'y épuiser.',
   keywords: 'colis voyageur airbnb, livraison location courte durée, amazon voyageur lcd, gestion colis hote, boite aux lettres airbnb, point relais lcd, réception paquet voyageur',
   date: '2026-08-31',
 

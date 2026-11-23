@@ -114,7 +114,7 @@ export const ANNUAIRES = {
     villesIntro: 'Les bons réflexes en cas de panne et les questions à poser, ville par ville.',
     prepareTitle: 'Ce qui fait gagner du temps <em>au pro</em>',
     title: 'Dépannage Airbnb : plombier, électricien près de toi',
-    desc: 'Plombiers, électriciens, serruriers et multiservices pour la location courte durée : spécialités, délai d’intervention, villes couvertes. Contact direct, sans commission.',
+    desc: 'Plombiers, électriciens, serruriers et multiservices pour la location courte durée : spécialités, délais, villes couvertes. Contact direct et gratuit.',
     h1: 'Un pro du dépannage <em>entre deux voyageurs</em>',
     lead: 'Plombiers, électriciens, serruriers, multiservices : des pros qui savent qu’un logement doit être prêt pour le prochain voyageur. Regarde leurs spécialités, leur délai d’intervention et les villes où ils se déplacent, puis écris-leur directement. Sans commission, sans intermédiaire.',
     icon: 'ph-wrench',

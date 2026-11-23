@@ -1,7 +1,7 @@
 export default {
   slug: 'securite-incendie-lcd-6-equipements-obligatoires-2026',
   title: 'Sécurité incendie en LCD : 6 équipements à installer pour protéger ton logement et tes voyageurs',
-  description: 'Détecteur de fumée, extincteur, couverture anti-feu, détecteur de CO : les 6 équipements à installer dans ton logement de location courte durée pour respecter la loi et rassurer tes voyageurs en 2026.',
+  description: 'Détecteur de fumée, extincteur, couverture anti-feu, détecteur de CO : les 6 équipements de sécurité incendie pour ta location courte durée en 2026.',
   keywords: 'sécurité incendie lcd, détecteur de fumée location courte durée, daaf airbnb, extincteur meublé tourisme, détecteur monoxyde carbone, obligations sécurité location saisonnière',
   date: '2026-05-13',
   categorySlug: 'reglementation',

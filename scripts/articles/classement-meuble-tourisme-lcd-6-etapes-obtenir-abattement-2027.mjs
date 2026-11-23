@@ -2,7 +2,7 @@ export default {
   slug: 'classement-meuble-tourisme-lcd-6-etapes-obtenir-abattement-2027',
   title: "Classement meublé de tourisme en 2027 : 6 étapes pour l'obtenir et passer à 50 % d'abattement micro-BIC",
   seoTitle: 'Classement meublé de tourisme : 6 étapes pour 2027',
-  description: "Référentiel étoiles, organisme accrédité, visite, mairie, panonceau : 6 étapes pour faire classer ton meublé de tourisme en 2027 et passer ton abattement de 30 à 50 %.",
+  description: 'Référentiel, organisme accrédité, visite, mairie, panonceau : 6 étapes pour faire classer ton meublé de tourisme et passer ton abattement de 30 à 50 %.',
   keywords: 'classement meuble de tourisme, abattement micro-bic 50%, loi Le Meur 2026, Atout France, meuble classé étoiles, LMNP 2027, hote airbnb',
   date: '2026-11-14',
   categorySlug: 'fiscalite',

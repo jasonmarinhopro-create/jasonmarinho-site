@@ -1,7 +1,7 @@
 export default {
   slug: 'chauffage-lcd-7-regles-maitriser-facture-energie-hiver-avis',
   title: 'Chauffage en LCD : 7 règles pour maîtriser ta facture énergie sans dégrader tes avis voyageurs cet hiver',
-  description: 'Thermostat, contrat énergie, consignes, isolation, livret d\'accueil, forfait chauffage : 7 règles concrètes pour piloter ta facture énergie en location courte durée sans risquer d\'avis négatifs sur le confort thermique.',
+  description: 'Thermostat, contrat, consignes, isolation, forfait chauffage : 7 règles pour maîtriser ta facture d\'énergie en LCD sans avis négatif sur le confort.',
   keywords: 'chauffage location courte durée, facture énergie lcd, thermostat connecté airbnb, consommation chauffage location, hiver lcd, forfait chauffage séjour long, isolation location saisonnière',
   date: '2026-07-31',
   categorySlug: 'revenus',

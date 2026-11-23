@@ -22,7 +22,7 @@ const VILLES_MENAGE = nbVilles('menage-lcd-')
 const PHOTO = {
   key: 'photographe', dir: 'photographes', k: 'photo',
   title: 'Photographe ou vidéaste Airbnb : rejoins l’annuaire',
-  desc: 'Photographe ou vidéaste location courte durée ? Une fiche vue par les hôtes de ta ville : site vitrine sur Google, ta vidéo, les demandes en direct, tes statistiques. Sans commission.',
+  desc: 'Photographe ou vidéaste en location courte durée ? Une fiche vue par les hôtes de ta ville, vitrine sur Google, demandes en direct. Sans commission.',
   crumb: 'Photographes et vidéastes',
   eye: 'Pour les photographes et vidéastes immobiliers et d’hébergement',
   h1: 'Les hôtes de ta ville cherchent un photographe ou un vidéaste. <em>Sois celui qu’ils trouvent.</em>',
@@ -79,7 +79,7 @@ const PHOTO = {
 const MENAGE = {
   key: 'menage', dir: 'menage', k: 'menage',
   title: 'Ménage Airbnb : rejoins l’annuaire des hôtes LCD',
-  desc: 'Équipe de ménage location courte durée ? Une fiche vue par les hôtes de ta ville, les demandes en direct, le planning de tes clients calculé depuis Airbnb et Booking. Sans commission.',
+  desc: 'Équipe de ménage en LCD ? Une fiche vue par les hôtes de ta ville, leurs demandes en direct et le planning de tes clients. Sans commission.',
   crumb: 'Équipes de ménage',
   eye: 'Pour les équipes de ménage et de conciergerie',
   h1: 'Les hôtes de ta ville cherchent une équipe fiable. <em>Sois celle qu’ils trouvent.</em>',
@@ -140,7 +140,7 @@ const MENAGE = {
 const DEPANNAGE = {
   key: 'depannage', dir: 'depannage', k: 'depannage',
   title: 'Dépannage Airbnb : rejoins l’annuaire des hôtes LCD',
-  desc: 'Plombier, électricien, serrurier ou multiservice ? Une fiche vue par les hôtes Airbnb de ta ville, leurs demandes par spécialité, même urgentes. Sans commission.',
+  desc: 'Plombier, électricien, serrurier ou multiservice ? Une fiche vue par les hôtes Airbnb de ta ville et leurs demandes, même urgentes. Sans commission.',
   crumb: 'Dépannage et maintenance',
   eye: 'Pour les artisans du dépannage et de la maintenance',
   h1: 'Une fuite, une panne, une serrure bloquée entre deux voyageurs. <em>Sois le pro qu’ils appellent.</em>',

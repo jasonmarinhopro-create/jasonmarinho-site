@@ -18,7 +18,7 @@ const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').re
 
 const URL = 'https://jasonmarinho.com/photographe-hotel'
 const TITLE = 'Photographe hôtel et conciergerie haut de gamme'
-const DESC = 'Trouve un photographe ou un vidéaste pour ton hôtel, ta résidence, ta conciergerie haut de gamme ou ton gîte : décris ton besoin, les pros de ta zone te répondent. Gratuit.'
+const DESC = 'Un photographe ou un vidéaste pour ton hôtel, ta résidence, ta conciergerie haut de gamme ou ton gîte : décris ton besoin, les pros te répondent. Gratuit.'
 const LEGIFRANCE_L131_3 = 'https://www.legifrance.gouv.fr/codes/id/LEGIARTI000006278959/2006-08-03'
 
 const PUBLICS = [

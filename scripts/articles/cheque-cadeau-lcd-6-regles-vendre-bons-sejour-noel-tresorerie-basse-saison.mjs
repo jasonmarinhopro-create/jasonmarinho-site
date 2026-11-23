@@ -2,7 +2,7 @@ export default {
   slug: 'cheque-cadeau-lcd-6-regles-vendre-bons-sejour-noel-tresorerie-basse-saison',
   title: 'Chèque cadeau LCD : 6 règles pour vendre des bons séjour avant Noël et débloquer ta trésorerie de basse saison',
   seoTitle: 'Chèque cadeau LCD : 6 règles avant Noël',
-  description: 'Format, prix, validité, visuel, canaux de vente, fiscalité : 6 règles concrètes pour vendre des chèques cadeaux séjour avant Noël en location courte durée et encaisser de la trésorerie en basse saison.',
+  description: 'Format, prix, validité, canaux de vente, fiscalité : 6 règles pour vendre des chèques cadeaux séjour avant Noël et encaisser en basse saison.',
   keywords: 'chèque cadeau LCD, bon cadeau séjour, offrir week-end Airbnb, trésorerie basse saison, cadeau Noël location courte durée, carte cadeau hôte',
   date: '2026-10-12',
   categorySlug: 'revenus',

@@ -20,7 +20,7 @@ export default {
   slug: 'creer-societe-conciergerie-en-ligne-legalplace-2026',
   title: 'Créer la structure de ta conciergerie en ligne : micro-entreprise, SASU ou EURL, et comment faire avec LegalPlace (2026)',
   seoTitle: 'Créer sa société de conciergerie en ligne en 2026',
-  description: 'Micro-entreprise, SASU ou EURL pour ta conciergerie LCD : le bon statut selon ton activité, la carte G, le vrai coût en 2026 et la création en ligne avec LegalPlace.',
+  description: 'Micro-entreprise, SASU ou EURL pour ta conciergerie : le bon statut, la carte professionnelle, le vrai coût en 2026 et la création en ligne.',
   keywords: 'créer conciergerie Airbnb, statut conciergerie, SASU conciergerie, micro-entreprise conciergerie, LegalPlace avis, création société en ligne, carte G conciergerie, domiciliation',
   date: '2026-09-30',
   categorySlug: 'conciergerie',

@@ -2,7 +2,7 @@ export default {
   slug: 'photographe-hotel-conciergerie-7-points-avant-shooting',
   title: 'Photographe pour hôtel ou conciergerie : les 7 points à caler avant le shooting',
   seoTitle: 'Photographe hôtel : 7 points à caler avant le shooting',
-  description: 'Hôtel, résidence, conciergerie haut de gamme ou gîte : chambres, espaces, vidéo, drone, retouche, droits d’utilisation. Ce qu’il faut préciser au photographe avant la séance.',
+  description: 'Hôtel, résidence, conciergerie ou gîte : chambres, espaces, vidéo, drone, retouche, droits. Ce qu\'il faut préciser au photographe avant la séance.',
   keywords: 'photographe hôtel, photographe hôtellerie, shooting hôtel, photographe conciergerie, photos chambre d’hôtel, droits photos hôtel',
   date: '2026-10-24',
   categorySlug: 'visibilite',

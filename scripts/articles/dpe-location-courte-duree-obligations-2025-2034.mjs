@@ -1,7 +1,7 @@
 export default {
   slug: 'dpe-location-courte-duree-obligations-2025-2034',
   title: 'DPE en location courte durée : ce qui est déjà interdit et l\'horizon 2034 que tu ne peux pas ignorer',
-  description: 'DPE F et G interdits en LCD depuis 2025, obligation ≥E pour les nouvelles autorisations, seuil ≥D en 2034. Ce que chaque hôte doit faire maintenant pour rester dans les clous.',
+  description: 'DPE en location courte durée : les classes autorisées selon les dates jusqu\'en 2034, et ce que chaque hôte doit faire dès maintenant pour rester en règle.',
   keywords: 'DPE location courte durée, passoire thermique LCD, diagnostic performance énergétique Airbnb, obligation DPE meublé tourisme 2025 2034',
   date: '2026-04-24',
   categorySlug: 'reglementation',

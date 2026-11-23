@@ -2,7 +2,7 @@ export default {
   slug: 'reseau-wifi-invite-lcd-6-etapes-isoler-securiser',
 
   title: 'Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs',
-  description: 'SSID invité, WPA3, isolation IoT, blocage P2P, communication au voyageur : 6 étapes concrètes pour créer un Wi-Fi invité sécurisé en location courte durée et te protéger juridiquement.',
+  description: 'Réseau invité, WPA3, objets connectés isolés, partage bloqué : 6 étapes pour un Wi-Fi invité sécurisé en LCD qui te protège aussi juridiquement.',
   keywords: 'wifi invité airbnb, réseau invité LCD, SSID invité box, isoler wifi voyageurs, sécurité wifi location courte durée, responsabilité hôte téléchargement illégal, WPA3 wifi',
   date: '2026-08-21',
 

@@ -1,7 +1,7 @@
 export default {
   slug: 'mots-cles-titre-annonce-airbnb-eviter-spam-detection',
   title: 'Titre Airbnb 2026 : 9 mots-clés à éviter qui déclenchent le filtre anti-spam',
-  description: 'L\'algo Airbnb pénalise certains mots dans les titres depuis 2025. Voici les 9 mots à bannir un par un, pourquoi ils plombent ta visibilité et par quoi les remplacer.',
+  description: 'Les mots à éviter dans le titre de ton annonce Airbnb, pourquoi ils nuisent à ta visibilité et par quoi les remplacer.',
   keywords: 'titre Airbnb 2026, mots-clés titre Airbnb, anti-spam Airbnb, optimiser titre annonce, structure titre LCD',
   date: '2026-04-25',
   categorySlug: 'visibilite',

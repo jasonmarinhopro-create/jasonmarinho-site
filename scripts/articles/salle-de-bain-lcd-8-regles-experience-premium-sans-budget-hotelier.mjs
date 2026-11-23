@@ -1,7 +1,7 @@
 export default {
   slug: 'salle-de-bain-lcd-8-regles-experience-premium-sans-budget-hotelier',
   title: 'Salle de bain en LCD : 8 règles pour offrir une expérience premium sans budget hôtelier',
-  description: 'Propreté, douche, linge de toilette, produits d\'accueil, ventilation : 8 règles concrètes pour transformer la salle de bain de ta location courte durée en argument différenciant sans exploser ton budget.',
+  description: 'Propreté, douche, serviettes, produits d\'accueil, aération : 8 règles pour une salle de bain qui fait la différence en LCD sans budget d\'hôtel.',
   keywords: 'salle de bain location courte durée, salle de bain airbnb, produits accueil airbnb, linge de toilette lcd, équipement salle de bain location saisonnière, salle de bain meublé de tourisme',
   date: '2026-08-05',
   categorySlug: 'experience',

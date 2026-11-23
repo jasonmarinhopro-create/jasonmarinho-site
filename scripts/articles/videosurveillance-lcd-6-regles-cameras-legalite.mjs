@@ -1,7 +1,7 @@
 export default {
   slug: 'videosurveillance-lcd-6-regles-cameras-legalite',
   title: 'Vidéosurveillance en LCD : 6 règles pour protéger ton logement sans enfreindre la loi',
-  description: 'Caméras intérieures interdites par Airbnb, caméras extérieures encadrées, RGPD, sanctions pénales : 6 règles claires pour sécuriser ta location courte durée légalement.',
+  description: 'Caméras intérieures interdites par Airbnb, extérieures encadrées, RGPD, sanctions : 6 règles pour surveiller ta location courte durée dans la loi.',
   keywords: 'caméra airbnb, vidéosurveillance location courte durée, caméra extérieure lcd, interdiction caméra airbnb, rgpd caméra location, sanction caméra cachée airbnb',
   date: '2026-05-27',
   categorySlug: 'reglementation',

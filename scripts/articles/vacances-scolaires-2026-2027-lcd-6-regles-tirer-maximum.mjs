@@ -2,7 +2,7 @@ export default {
   slug: 'vacances-scolaires-2026-2027-lcd-6-regles-tirer-maximum',
   title: 'Vacances scolaires 2026-2027 en LCD : 6 règles pour tirer le maximum du calendrier',
   seoTitle: 'Vacances scolaires 2026-2027 LCD : 6 règles',
-  description: 'Toussaint, Noël, hiver, printemps, grandes vacances : les dates officielles 2026-2027 par zone A, B, C et 6 règles concrètes pour caler tes tarifs, tes durées minimales et ton calendrier d\'ouverture en LCD.',
+  description: 'Vacances scolaires 2026-2027 par zone A, B et C, et 6 règles pour caler tes tarifs, tes durées minimales et ton calendrier d\'ouverture en LCD.',
   keywords: 'vacances scolaires 2026-2027 LCD, calendrier zones A B C, tarifs Toussaint 2026, prix Noël LCD, vacances hiver 2027 location, printemps 2027 Airbnb, grandes vacances été 2027',
   date: '2026-10-14',
   categorySlug: 'revenus',

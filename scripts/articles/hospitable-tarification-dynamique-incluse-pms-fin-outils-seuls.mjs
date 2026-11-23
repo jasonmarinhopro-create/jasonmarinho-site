@@ -1,7 +1,7 @@
 export default {
   slug: 'hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls',
   title: 'Hospitable intègre la tarification dynamique : la fin des outils de pricing séparés pour les petits hôtes ?',
-  description: 'Hospitable inclut désormais la tarification dynamique native dans son PMS. Ce que ça change pour les hôtes LCD qui utilisaient PriceLabs ou Wheelhouse séparément : et si le tout-en-un vaut vraiment le coup.',
+  description: 'Hospitable intègre la tarification dynamique à son logiciel : ce que ça change si tu payais PriceLabs ou Wheelhouse à part, et si le tout-en-un suffit.',
   keywords: 'Hospitable tarification dynamique, PMS location courte durée tout en un, Hospitable vs PriceLabs 2026, automatisation LCD hôte, outils gestion Airbnb 2026',
   date: '2026-04-24',
   categorySlug: 'automatisation',

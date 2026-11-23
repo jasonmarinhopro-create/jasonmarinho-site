@@ -1,7 +1,7 @@
 export default {
   slug: 'barbecue-plancha-lcd-7-regles-autoriser-securite-voisins',
   title: 'Barbecue et plancha en LCD : 7 règles pour autoriser sans risque incendie ni litige voisins',
-  description: 'Type d\'équipement, règlement de copropriété, arrêtés préfectoraux, assurance, règles voyageurs : 7 règles concrètes pour autoriser le barbecue en location courte durée sans incident.',
+  description: 'Équipement, copropriété, arrêtés préfectoraux, assurance, règles pour les voyageurs : 7 règles pour autoriser le barbecue en LCD sans incident.',
   keywords: 'barbecue lcd, plancha airbnb, reglement copropriete barbecue, autoriser barbecue location courte duree, arrete prefectoral barbecue, assurance incendie lcd',
   date: '2026-06-19',
   categorySlug: 'experience',

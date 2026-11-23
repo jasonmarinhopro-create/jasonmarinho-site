@@ -1,7 +1,7 @@
 export default {
   slug: 'machine-a-cafe-lcd-6-modeles-ravir-voyageurs-sans-exploser-budget',
   title: 'Machine à café en LCD : 6 modèles à comparer pour ravir tes voyageurs sans exploser ton budget',
-  description: 'Cafetière filtre, Nespresso, machine à grains, dosettes : 6 modèles testés en location courte durée avec coût réel, entretien et impact sur les avis voyageurs en 2026.',
+  description: 'Filtre, capsules, grains, dosettes : 6 machines à café comparées pour ta location courte durée, avec leur coût, leur entretien et l\'effet sur les avis.',
   keywords: 'machine café airbnb, cafetière location courte durée, nespresso airbnb, machine à grains lcd, café hôte airbnb, équipement cuisine location saisonnière',
   date: '2026-07-27',
   categorySlug: 'experience',

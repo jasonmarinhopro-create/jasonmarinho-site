@@ -2,7 +2,7 @@ export default {
   slug: 'noel-nouvel-an-lcd-7-actions-pic-revenus-fin-annee',
   title: 'Noël et Nouvel An en LCD : 7 actions à mener dès octobre pour transformer la fin d\'année en pic de revenus',
   seoTitle: 'Noël et Nouvel An LCD : 7 actions clés',
-  description: 'Tarifs, durée de séjour, décoration, livret d\'accueil, canaux directs, ménage : 7 actions concrètes à mener dès octobre pour transformer Noël et le Nouvel An en pic de revenus en LCD.',
+  description: 'Tarifs, durée de séjour, décoration, livret, canaux directs, ménage : 7 actions à lancer dès octobre pour faire de Noël et du Nouvel An un pic de revenus.',
   keywords: 'Noël LCD, Nouvel An location courte durée, fêtes fin d\'année Airbnb, tarif Noël LCD, décoration logement hiver, pic de revenus décembre',
   date: '2026-10-02',
   categorySlug: 'revenus',

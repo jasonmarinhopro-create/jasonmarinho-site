@@ -2,7 +2,7 @@ export default {
   slug: 'voyageurs-vehicule-electrique-lcd-7-actions-accueillir',
 
   title: 'Voyageurs en véhicule électrique : 7 actions pour les accueillir et te démarquer en LCD',
-  description: 'Prise renforcée, Wallbox, crédit d\'impôt IRVE, affichage Airbnb et GMB, tarification : 7 actions concrètes pour accueillir un voyageur en véhicule électrique en location courte durée.',
+  description: 'Prise renforcée, borne, crédit d\'impôt, affichage sur Airbnb et Google, tarif : 7 actions pour accueillir les voyageurs en voiture électrique.',
   keywords: 'borne de recharge LCD, voyageur véhicule électrique Airbnb, Wallbox location courte durée, prise renforcée locataire, crédit impôt IRVE, recharge VE Airbnb',
   date: '2026-06-03',
 

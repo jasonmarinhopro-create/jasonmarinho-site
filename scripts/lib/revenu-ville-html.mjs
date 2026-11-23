@@ -57,7 +57,8 @@ export function buildRevenuVille(city, ctx) {
   const source = bench.source
   const calcUrl = `/services/simulateurs/revenus-lcd?pays=${city.pays}&ville=${encodeURIComponent(city.ville)}`
   const title = `Louer en courte durée à ${city.ville} : revenus 2026`
-  const description = `${city.ville} : ${bench.occ} % d'occupation, ${bench.adr} € la nuit en moyenne (${source}). Revenus par type de logement, saisons, règles locales et tendances 2026.`
+  // 155 caractères au plus (23/11/2026) : la source reste sur la page, pas dans la description
+  const description = `${city.ville} en location courte durée : ${bench.occ} % d'occupation, ${bench.adr} € la nuit en moyenne. Revenus par logement, saisons, règles locales, sources citées.`
   const max = Math.max(...base.monthly.map(m => m.revenu))
   const months = base.monthly.map((m, i) => `<span class="${m.isHigh ? 'h' : ''}" style="height:${Math.max(6, Math.round(m.revenu / max * 100))}%" tabindex="0" role="img" aria-label="${MONTHS[i]} : ${eur(m.revenu)}" data-bt="${eur(m.revenu)}" data-bs="${MONTHS[i]}${m.isHigh ? ', haute saison' : ''}"></span>`).join('')
 

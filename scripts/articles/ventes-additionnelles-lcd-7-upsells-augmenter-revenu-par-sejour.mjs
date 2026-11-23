@@ -2,7 +2,7 @@ export default {
   slug: 'ventes-additionnelles-lcd-7-upsells-augmenter-revenu-par-sejour',
   title: 'Ventes additionnelles en LCD : 7 upsells rentables pour augmenter ton revenu par séjour sans toucher au prix de la nuit',
   seoTitle: 'Ventes additionnelles LCD : 7 upsells rentables',
-  description: 'Early check-in, panier d\'accueil, ménage intermédiaire, location d\'équipement, transfert, petit-déjeuner, activités en commission : 7 ventes additionnelles concrètes pour augmenter ton revenu par séjour en location courte durée.',
+  description: 'Arrivée anticipée, panier d\'accueil, ménage, équipement, transfert, petit-déjeuner : 7 ventes additionnelles pour gagner plus par séjour en LCD.',
   keywords: 'ventes additionnelles LCD, upsell Airbnb, revenu par séjour, services payants location courte durée, panier accueil, early check-in payant, ménage intermédiaire',
   date: '2026-10-05',
   categorySlug: 'revenus',

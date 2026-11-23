@@ -1,7 +1,7 @@
 export default {
   slug: 'gmb-questions-reponses-hotes-lcd-optimiser',
   title: 'Google My Business : la section Questions/Réponses sous-utilisée par 90% des hôtes LCD',
-  description: 'La section Q&A de Google My Business est un levier SEO local sous-exploité. Comment l\'utiliser pour booster ta visibilité locale et capter les voyageurs en phase de recherche.',
+  description: 'Les questions-réponses de ta fiche Google : comment t\'en servir pour être plus visible localement et rassurer les voyageurs qui comparent.',
   keywords: 'Google My Business Q&R, questions réponses GMB hôtes, optimiser GMB LCD, SEO local Airbnb, Google Business Profile FAQ',
   date: '2026-04-25',
   categorySlug: 'visibilite',

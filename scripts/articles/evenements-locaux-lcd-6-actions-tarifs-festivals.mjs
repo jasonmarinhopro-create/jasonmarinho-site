@@ -2,7 +2,7 @@ export default {
   slug: 'evenements-locaux-lcd-6-actions-tarifs-festivals',
 
   title: 'Événements locaux en LCD : 6 actions pour transformer un festival en pic de revenus',
-  description: 'Festival, concert, salon, étape du Tour : 6 actions concrètes pour anticiper la demande, ajuster tes tarifs et capter les voyageurs qui inondent les recherches Airbnb autour d\'un événement local.',
+  description: 'Festival, concert, salon, étape du Tour : 6 actions pour anticiper la demande, ajuster tes tarifs et capter les voyageurs d\'un événement local.',
   keywords: 'événement local LCD, tarification festival Airbnb, salon professionnel location courte durée, Tour de France hôte Airbnb, pic de demande Airbnb, calendrier événements LCD',
   date: '2026-06-08',
 

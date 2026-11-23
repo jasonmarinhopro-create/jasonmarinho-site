@@ -1,7 +1,7 @@
 export default {
   slug: 'communiquer-voyageurs-etrangers-5-regles-multilingue',
   title: 'Communiquer avec des voyageurs étrangers en LCD : 5 règles qui changent les avis',
-  description: 'En LCD, 30-50% de tes voyageurs sont étrangers. Voici les 5 règles concrètes pour les rassurer, les guider et obtenir des avis 5 étoiles malgré la barrière linguistique.',
+  description: 'Voyageurs étrangers en LCD : 5 règles pour les rassurer, les guider et obtenir de bons avis malgré la barrière de la langue.',
   keywords: 'voyageurs étrangers Airbnb, multilingue LCD, communication internationale Airbnb, langue voyageur',
   date: '2026-04-25',
   categorySlug: 'experience',

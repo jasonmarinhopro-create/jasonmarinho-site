@@ -2,7 +2,7 @@ export default {
   slug: 'adaptateurs-prises-usb-lcd-voyageurs-etrangers-2026',
   title: 'Adaptateurs de prises et chargeurs USB en LCD : 7 essentiels à fournir à tes voyageurs étrangers en 2026',
   seoTitle: 'Adaptateurs prises USB LCD : 7 essentiels 2026',
-  description: 'Prises internationales, USB-C obligatoire, multiprise, chargeur sans fil, transformateur : 7 essentiels pour équiper ta location courte durée et rassurer les voyageurs étrangers en 2026.',
+  description: 'Prises internationales, USB-C, multiprise, chargeur sans fil : 7 essentiels pour équiper ta location courte durée et rassurer tes voyageurs étrangers.',
   keywords: 'adaptateur prise LCD, chargeur USB-C Airbnb, voyageurs étrangers location courte durée, multiprise Airbnb, prise internationale LCD, équipement électrique location courte durée',
   date: '2026-09-28',
   categorySlug: 'experience',

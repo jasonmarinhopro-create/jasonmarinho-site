@@ -2,7 +2,7 @@ export default {
   slug: 'toussaint-2026-lcd-6-actions-remplir-calendrier-vacances-automne',
   title: 'Toussaint 2026 en LCD : 6 actions à mener cette semaine pour remplir ton calendrier des vacances d\'automne',
   seoTitle: 'Toussaint 2026 LCD : 6 actions pour remplir',
-  description: 'Tarifs, séjours courts, activités automne, chauffage, canaux directs, ménage : 6 actions concrètes à mener cette semaine pour remplir ton calendrier LCD sur les vacances de Toussaint 2026.',
+  description: 'Tarifs, séjours courts, activités d\'automne, chauffage, canaux directs : 6 actions pour remplir ton calendrier LCD aux vacances de la Toussaint 2026.',
   keywords: 'Toussaint 2026 LCD, vacances automne location courte durée, tarif Toussaint Airbnb, remplir calendrier basse saison, Halloween LCD, séjours familles automne',
   date: '2026-10-07',
   categorySlug: 'revenus',

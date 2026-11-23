@@ -2,7 +2,7 @@ export default {
   slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail',
   title: 'TVA et petit-déjeuner en LCD : le vrai seuil en 2026 (85 000 €, pas 37 500 €)',
   seoTitle: 'TVA et petit-déjeuner en LCD : le vrai seuil 2026',
-  description: 'Petit-déjeuner, linge, ménage, accueil : quand ta location devient para-hôtelière, quel seuil de TVA s\'applique (85 000 € en 2026) et ce qui change en 2027. Sources officielles.',
+  description: 'Petit-déjeuner, linge, ménage, accueil : quand ta location devient para-hôtelière, quel seuil de TVA s\'applique en 2026 et ce qui change en 2027.',
   keywords: 'TVA LCD petit-déjeuner, prestations para-hôtelières seuil 2026, TVA chambres d\'hôtes 2026, franchise TVA 85 000 € hébergement, TVA Airbnb para-hôtellerie',
   date: '2026-04-25',
   categorySlug: 'fiscalite',

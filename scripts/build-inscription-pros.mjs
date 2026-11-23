@@ -121,7 +121,7 @@ const DEPANNAGE = {
   key: 'depannage',
   dir: 'depannage',
   title: 'Inscription dépannage Airbnb : crée ta fiche pro',
-  desc: 'Plombier, électricien, serrurier, multiservice : crée ta fiche location courte durée. Site vitrine sur Google, demandes d’hôtes en direct, devis en ligne. Sans commission.',
+  desc: 'Plombier, électricien, serrurier ou multiservice : crée ta fiche location courte durée. Vitrine sur Google, demandes d\'hôtes, devis. Sans commission.',
   metier: 'Dépannage',
   eye: 'Annuaire · dépannage et maintenance location courte durée',
   h1: 'Les hôtes de ta ville <em>ont besoin de toi</em>',

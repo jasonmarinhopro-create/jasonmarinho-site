@@ -1,7 +1,7 @@
 export default {
   slug: 'chatgpt-booking-com-impact-hotes-lcd',
   title: 'Booking.com x ChatGPT : ce que l\'intégration IA change concrètement pour ton annonce',
-  description: 'Depuis octobre 2025, les voyageurs réservent via ChatGPT sans quitter l\'IA. Ce que ça change pour ta visibilité sur Booking, comment optimiser ton annonce et les nouvelles attentes voyageurs 2026.',
+  description: 'Réserver un séjour Booking depuis ChatGPT : ce que ça change pour ta visibilité, comment adapter ton annonce et ce qu\'attendent ces voyageurs.',
   keywords: 'ChatGPT Booking.com réservation, IA voyage 2026, visibilité annonce Booking IA, hyper-personnalisation voyageurs, optimiser annonce Booking.com',
   date: '2026-04-24',
   categorySlug: 'visibilite',

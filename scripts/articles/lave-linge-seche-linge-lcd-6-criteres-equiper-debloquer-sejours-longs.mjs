@@ -1,7 +1,7 @@
 export default {
   slug: 'lave-linge-seche-linge-lcd-6-criteres-equiper-debloquer-sejours-longs',
   title: 'Lave-linge et sèche-linge en LCD : 6 critères pour équiper ton logement et débloquer les séjours longs',
-  description: 'Type d\'appareil, capacité, cycles courts, emplacement, règles d\'usage, rentabilité : 6 critères concrets pour intégrer un lave-linge ou un sèche-linge en location courte durée et capter les séjours longs.',
+  description: 'Type, capacité, cycles courts, emplacement, règles d\'usage : 6 critères pour installer un lave-linge ou un sèche-linge et attirer les séjours longs.',
   keywords: 'lave-linge Airbnb, sèche-linge location courte durée, équipement LCD séjour long, buanderie meublé tourisme, machine à laver location saisonnière',
   date: '2026-09-07',
   categorySlug: 'experience',

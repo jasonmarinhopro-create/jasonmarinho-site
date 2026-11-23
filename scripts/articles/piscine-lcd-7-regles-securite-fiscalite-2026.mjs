@@ -2,7 +2,7 @@ export default {
   slug: 'piscine-lcd-7-regles-securite-fiscalite-2026',
 
   title: 'Piscine en LCD : 7 règles à connaître pour louer en sécurité et en règle en 2026',
-  description: 'Dispositif de sécurité NF, déclaration cadastrale, taxe foncière, assurance, règlement voyageur : les 7 règles concrètes pour louer ton logement avec piscine en location courte durée sans risque légal ni mauvaise surprise fiscale.',
+  description: 'Dispositif de sécurité, déclaration, taxe foncière, assurance, règlement : 7 règles pour louer en courte durée avec piscine sans risque légal ou fiscal.',
   keywords: 'piscine location courte durée, piscine Airbnb obligations, norme NF P90 piscine, déclaration piscine impôts, assurance piscine LCD, règlement piscine voyageur, sécurité piscine location saisonnière',
   date: '2026-06-05',
 

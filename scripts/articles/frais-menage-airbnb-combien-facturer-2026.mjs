@@ -1,7 +1,7 @@
 export default {
   slug: 'frais-menage-airbnb-combien-facturer-2026',
   title: 'Frais de ménage Airbnb : combien facturer en 2026 sans pénaliser ses réservations',
-  description: 'Les frais de ménage influencent directement ton classement et ton taux de conversion. Voici les fourchettes 2026 par type de logement et la méthode pour ne pas faire fuir les voyageurs.',
+  description: 'Frais de ménage Airbnb en 2026 : leur effet sur le classement et les réservations, des fourchettes par logement et la méthode pour les fixer.',
   keywords: 'frais ménage Airbnb, tarif ménage location courte durée, cleaning fee 2026, conversion frais ménage Airbnb',
   date: '2026-04-25',
   categorySlug: 'revenus',

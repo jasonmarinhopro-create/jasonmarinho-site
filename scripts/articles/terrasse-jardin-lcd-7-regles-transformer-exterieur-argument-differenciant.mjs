@@ -1,7 +1,7 @@
 export default {
   slug: 'terrasse-jardin-lcd-7-regles-transformer-exterieur-argument-differenciant',
   title: 'Terrasse et jardin en LCD : 7 règles pour transformer ton extérieur en argument différenciant',
-  description: 'Mobilier, éclairage, ombrage, sécurité, photos : 7 règles concrètes pour transformer la terrasse ou le jardin de ta location courte durée en argument de réservation qui fait grimper ton tarif et tes avis.',
+  description: 'Mobilier, éclairage, ombre, sécurité, photos : 7 règles pour faire de ta terrasse ou de ton jardin un vrai argument de réservation en LCD.',
   keywords: 'terrasse location courte durée, jardin airbnb, balcon lcd, extérieur meublé de tourisme, mobilier jardin location saisonnière, éclairage terrasse airbnb',
   date: '2026-08-07',
   categorySlug: 'experience',

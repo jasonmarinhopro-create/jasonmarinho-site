@@ -1,7 +1,7 @@
 export default {
   slug: 'cybevasion-rachetee-holidu-impact-hotes-alternatives',
   title: 'Cybevasion rachetée par Holidu : ce que ça change pour les hôtes et les meilleures alternatives',
-  description: 'Holidu a racheté Cybevasion en 2025. Visibilité, commissions, interface : ce qui change concrètement pour les hôtes LCD français et les plateformes alternatives à connaître en 2026.',
+  description: 'Holidu a racheté Cybevasion : visibilité, commissions, interface. Ce qui change pour les hôtes LCD français et les plateformes alternatives en 2026.',
   keywords: 'Cybevasion Holidu rachat, alternatives Cybevasion 2026, plateforme location vacances France, diversifier plateformes LCD, Holidu hôtes avis',
   date: '2026-04-24',
   categorySlug: 'revenus',

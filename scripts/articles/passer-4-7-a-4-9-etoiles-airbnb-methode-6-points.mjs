@@ -1,7 +1,7 @@
 export default {
   slug: 'passer-4-7-a-4-9-etoiles-airbnb-methode-6-points',
   title: 'Passer de 4,7 à 4,9 étoiles sur Airbnb : la méthode en 6 points pour gagner 0,2 étoile',
-  description: 'Zéro à zéro deux étoile change ton classement, ta conversion et l\'accès à Superhost et Guest Favorites. Voici la méthode concrète en 6 points pour la gagner en une saison.',
+  description: 'Passer de 4,7 à 4,9 étoiles sur Airbnb change ton classement, tes réservations et l\'accès à Superhost. La méthode en 6 points pour y arriver en une saison.',
   keywords: 'note airbnb 4.9, passer 4.7 4.9 airbnb, améliorer note airbnb, gagner étoile airbnb, moyenne avis airbnb',
   date: '2026-07-06',
   categorySlug: 'visibilite',

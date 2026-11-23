@@ -1,7 +1,7 @@
 export default {
   slug: 'gerer-lcd-distance-7-piliers-hote-absent',
   title: 'Gérer sa LCD à distance : les 7 piliers pour héberger sans habiter sur place',
-  description: 'Tu loues un logement situé à plusieurs heures de chez toi ? Voici les 7 piliers pour gérer ta location courte durée à distance sans perdre en qualité ni en sérénité.',
+  description: 'Ton logement est à plusieurs heures de chez toi ? Les 7 piliers pour gérer ta location courte durée à distance sans perdre en qualité.',
   keywords: 'gestion lcd à distance, hôte absent airbnb, automatiser location courte durée, gérer airbnb à distance, autogestion lcd, serrure connectée airbnb',
   date: '2026-05-11',
   categorySlug: 'automatisation',

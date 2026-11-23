@@ -16,7 +16,7 @@ const style = src.slice(src.indexOf('<link rel="shortcut icon"'), src.indexOf('<
 
 const URL_ = 'https://jasonmarinho.com/photographe-lcd-quebec'
 const TITLE = 'Photographe &amp; vidéaste Airbnb à Québec'
-const DESC = "Trouver un photographe ou un vidéaste pour votre location Airbnb à Québec : enregistrement CITQ, photos d'hiver et d'été, drone et Transports Canada, annuaire sans commission."
+const DESC = "Photographe ou vidéaste pour ta location Airbnb à Québec : enregistrement CITQ, photos d'hiver et d'été, drone et Transports Canada. Sans commission."
 
 const FAQ = [
   ["Faut-il un numéro d'enregistrement pour louer en courte durée à Québec ?",

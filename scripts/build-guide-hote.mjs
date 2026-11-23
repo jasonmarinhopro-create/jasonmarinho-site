@@ -40,7 +40,7 @@ export function buildGuideHote(c, L, today = new Date().toISOString().slice(0, 1
   const a = aVille(v), de = deVille(v)
   const url = `https://jasonmarinho.com/devenir-hote-airbnb-${c.slug}`
   const title = [`Devenir hôte Airbnb ${a} : guide et règles 2026`, `Devenir hôte Airbnb ${a} : guide 2026`, `Devenir hôte Airbnb ${a}`].find(t => t.length <= 60)
-  const desc = `Se lancer en location courte durée ${a} en 2026 : réglementation, taxe de séjour, saisons, fiscalité, photos et ménage. Faits vérifiés et sources.`
+  const desc = `Se lancer en location courte durée ${a} en 2026 : taxe de séjour, réglementation, saisons, fiscalité, photos et ménage. Faits vérifiés.`
   const nc = F.microBic.nonClasse, cl = F.microBic.classe
   const reg = L.reglementation ?? []
   const marche = L.marche ?? {}

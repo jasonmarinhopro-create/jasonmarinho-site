@@ -1,7 +1,7 @@
 export default {
   slug: 'workation-lcd-logement-equiper-louer-cher-hors-saison',
   title: 'Workation en LCD : les 5 équipements qui te permettent de louer 30 % plus cher hors saison',
-  description: 'Les télétravailleurs représentent jusqu\'à 40 % du CA des locations hors saison. Voici exactement comment équiper ton logement pour attirer ce profil et augmenter ton prix.',
+  description: 'Attirer les télétravailleurs hors saison : bureau, connexion, confort et annonce, pour équiper ton logement LCD et mieux le louer.',
   keywords: 'workation location courte durée, équiper logement télétravailleur, nomade digital LCD, louer hors saison télétravailleurs, bureau ergonomique Airbnb',
   date: '2026-04-24',
   categorySlug: 'revenus',

@@ -2,7 +2,7 @@ export default {
   slug: 'cloture-comptable-lcd-2026-7-actions-avant-31-decembre',
   title: 'Clôture comptable LCD 2026 : 7 actions à faire avant le 31 décembre pour sécuriser ta déclaration',
   seoTitle: 'Clôture comptable LCD 2026 : 7 actions à faire',
-  description: 'Relevés de recettes, justificatifs, amortissements, TVA, taxe de séjour, facture électronique, choix du régime : 7 actions concrètes à mener d\'ici au 31 décembre pour fermer proprement ton exercice 2026 en LCD.',
+  description: 'Recettes, justificatifs, amortissements, TVA, taxe de séjour, régime : 7 actions avant le 31 décembre pour clôturer proprement ton année 2026 en LCD.',
   keywords: 'clôture comptable LCD, bilan annuel location courte durée, déclaration LMNP 2026, fin d\'exercice fiscal Airbnb, préparer déclaration 2027, micro-BIC vs réel, amortissement LMNP',
   date: '2026-10-09',
   categorySlug: 'fiscalite',

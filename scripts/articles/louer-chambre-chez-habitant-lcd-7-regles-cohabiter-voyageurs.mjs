@@ -1,7 +1,7 @@
 export default {
   slug: 'louer-chambre-chez-habitant-lcd-7-regles-cohabiter-voyageurs',
   title: 'Louer une chambre chez toi en LCD : 7 règles pour cohabiter avec tes voyageurs sans stress',
-  description: 'Résidence principale, espaces communs, règles de vie, fiscalité, plafond 120 jours : les 7 règles concrètes pour louer une chambre chez toi en location courte durée sans transformer ton quotidien en cauchemar.',
+  description: 'Résidence principale, espaces communs, règles de vie, fiscalité, plafond de 120 jours : 7 règles pour louer une chambre chez toi en courte durée.',
   keywords: 'chambre chez l\'habitant, louer une chambre Airbnb, location chez soi LCD, résidence principale Airbnb, exonération fiscale 760 euros, plafond 120 jours',
   date: '2026-07-17',
   categorySlug: 'experience',

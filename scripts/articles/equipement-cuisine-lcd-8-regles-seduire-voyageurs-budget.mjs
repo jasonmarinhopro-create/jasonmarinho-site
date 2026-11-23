@@ -1,7 +1,7 @@
 export default {
   slug: 'equipement-cuisine-lcd-8-regles-seduire-voyageurs-budget',
   title: 'Équipement cuisine en LCD : 8 règles pour séduire tes voyageurs sans exploser ton budget',
-  description: 'Vaisselle, couteaux, machine à café, ustensiles, épices : 8 règles concrètes pour équiper la cuisine de ta location courte durée et transformer un point faible classique en argument à 5 étoiles.',
+  description: 'Vaisselle, couteaux, machine à café, ustensiles, épices : 8 règles pour équiper la cuisine de ta location courte durée et en faire un point fort.',
   keywords: 'équipement cuisine location courte durée, ustensiles cuisine airbnb, vaisselle lcd, kit cuisine location saisonnière, équiper cuisine airbnb, matériel cuisine location vacances',
   date: '2026-08-03',
   categorySlug: 'experience',

@@ -1,7 +1,7 @@
 export default {
   slug: 'voyageurs-mobilite-reduite-lcd-6-amenagements-accessibilite-pmr',
   title: 'Voyageurs PMR en LCD : 6 aménagements pour ouvrir ton logement à la clientèle à mobilité réduite',
-  description: 'Rampe amovible, portes élargies, douche à l\'italienne, signalétique, filtres Airbnb : 6 aménagements concrets pour rendre ton logement de location courte durée accessible aux voyageurs à mobilité réduite en 2026.',
+  description: 'Rampe, portes, douche à l\'italienne, signalétique, filtres Airbnb : 6 aménagements pour accueillir les voyageurs à mobilité réduite en LCD.',
   keywords: 'lcd accessibilité, voyageurs pmr airbnb, logement accessible mobilité réduite, tourisme et handicap, airbnb accessible, aménagement pmr location, filtre accessibilité airbnb, rampe amovible location',
   date: '2026-07-03',
   categorySlug: 'experience',

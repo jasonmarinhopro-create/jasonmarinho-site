@@ -1,7 +1,7 @@
 export default {
   slug: 'panne-courant-eau-internet-lcd-7-reflexes-coupure-sejour',
   title: 'Panne courant, eau ou internet en LCD : 7 réflexes pour gérer une coupure pendant un séjour sans avis négatif',
-  description: 'Coupure électrique, panne de box, fuite ou chauffe-eau HS pendant un séjour : 7 réflexes concrets pour préserver ton voyageur, ton logement et tes avis en location courte durée.',
+  description: 'Coupure de courant, box en panne, fuite ou chauffe-eau en panne pendant un séjour : 7 réflexes pour protéger ton voyageur, ton logement et tes avis.',
   keywords: 'panne courant LCD, panne internet Airbnb, coupure eau location courte durée, box internet Airbnb, gestion incident LCD, compensation voyageur, dépannage location saisonnière',
   date: '2026-09-11',
   categorySlug: 'experience',

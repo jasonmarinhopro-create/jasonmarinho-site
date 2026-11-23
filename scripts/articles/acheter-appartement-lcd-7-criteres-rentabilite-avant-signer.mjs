@@ -1,7 +1,7 @@
 export default {
   slug: 'acheter-appartement-lcd-7-criteres-rentabilite-avant-signer',
   title: 'Acheter un appartement pour la LCD : 7 critères de rentabilité à vérifier avant de signer',
-  description: 'Tu veux acheter un appartement pour le louer en courte durée ? Voici 7 critères concrets à vérifier avant de signer le compromis pour éviter d\'acheter un bien qui ne sera jamais rentable en LCD.',
+  description: 'Acheter un appartement pour la location courte durée : 7 critères à vérifier avant le compromis pour éviter un bien qui ne sera jamais rentable.',
   keywords: 'investir LCD, acheter appartement location courte durée, rentabilité LCD, investissement Airbnb, critères achat LCD, projet LCD',
   date: '2026-05-20',
   categorySlug: 'revenus',

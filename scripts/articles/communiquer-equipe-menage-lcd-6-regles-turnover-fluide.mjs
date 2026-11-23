@@ -2,7 +2,7 @@ export default {
   slug: 'communiquer-equipe-menage-lcd-6-regles-turnover-fluide',
   title: "Communiquer avec ton équipe de ménage LCD : 6 règles pour un turnover fluide sans appels de dernière minute",
   seoTitle: "Équipe de ménage LCD : 6 règles de communication",
-  description: "Canal unique, fiche de passage, planning iCal, signalement photo, point post-turnover, bilan mensuel : 6 règles pour cadrer les échanges avec ton équipe de ménage LCD.",
+  description: 'Canal unique, fiche de passage, planning iCal, photos, bilan mensuel : 6 règles pour cadrer les échanges avec ton équipe de ménage en LCD.',
   keywords: 'équipe de ménage LCD, communication équipe ménage, turnover airbnb, planning ménage location courte durée, fiche de passage ménage, signaler casse voyageur, hôte Airbnb',
   date: '2026-11-11',
   categorySlug: 'experience',

@@ -1,7 +1,7 @@
 export default {
   slug: 'fin-ete-lcd-2026-7-actions-aout-septembre-basse-saison',
   title: 'Fin d\'été LCD 2026 : 7 actions à mener en août et septembre pour ne pas subir la basse saison',
-  description: 'Audit des avis, ajustement tarifaire, séjours longs, Google My Business, relance carnet voyageurs, Toussaint 2026, fiscalité : 7 actions concrètes à mener maintenant pour ne pas subir la basse saison en location courte durée.',
+  description: 'Avis, tarifs, séjours longs, fiche Google, relance des anciens voyageurs, Toussaint : 7 actions en fin d\'été pour ne pas subir la basse saison.',
   keywords: 'fin d\'été lcd, basse saison location courte durée, rentrée hôte airbnb, septembre lcd, actions août septembre, toussaint 2026 airbnb, tarif automne lcd',
   date: '2026-07-29',
   categorySlug: 'revenus',

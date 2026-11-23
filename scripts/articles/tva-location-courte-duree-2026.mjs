@@ -2,7 +2,7 @@ export default {
   slug: 'tva-location-courte-duree-2026',
   title: 'TVA en location courte durée : qui est concerné en 2026 (et qui ne l\'est pas)',
   seoTitle: 'TVA location courte durée 2026 : qui est concerné',
-  description: 'Meublé sans services, para-hôtellerie, conciergerie : qui paie la TVA en LCD en 2026, avec les vrais seuils (85 000 € et 37 500 €) et ce qui change en 2027. Sources officielles.',
+  description: 'TVA en location courte durée en 2026 : meublé sans services, para-hôtellerie, conciergerie, les seuils officiels et ce qui change en 2027.',
   keywords: 'TVA location courte durée 2026, seuil TVA meublé tourisme, para-hôtelier LCD, TVA Airbnb France, TVA conciergerie 37 500 €, franchise TVA 85 000 €',
   date: '2026-04-24',
   categorySlug: 'fiscalite',

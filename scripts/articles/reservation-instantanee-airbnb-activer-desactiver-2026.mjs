@@ -1,7 +1,7 @@
 export default {
   slug: 'reservation-instantanee-airbnb-activer-desactiver-2026',
   title: 'Réservation instantanée Airbnb : 6 critères pour trancher entre l\'activer ou la désactiver en 2026',
-  description: 'Visibilité, contrôle voyageur, statut Superhost, réactivité : 6 critères concrets pour décider si tu dois activer ou couper la réservation instantanée Airbnb en 2026.',
+  description: 'Visibilité, contrôle des voyageurs, statut Superhost, réactivité : 6 critères pour décider d\'activer ou non la réservation instantanée Airbnb en 2026.',
   keywords: 'réservation instantanée airbnb, instant book airbnb, activer réservation instantanée, désactiver instant book, paramètres airbnb hôte, exigences voyageur airbnb',
   date: '2026-08-19',
   categorySlug: 'visibilite',

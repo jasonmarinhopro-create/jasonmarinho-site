@@ -2,7 +2,7 @@ export default {
   slug: 'synchronisation-ical-lcd-6-regles-eviter-double-reservation-airbnb-booking',
   title: 'Synchronisation iCal en LCD : 6 règles pour éviter la double réservation entre Airbnb, Booking et ton canal direct',
   seoTitle: 'Synchronisation iCal LCD : 6 règles anti double résa',
-  description: 'Flux iCal, hub central, buffer entre séjours, rafraîchissement manuel : 6 règles concrètes pour synchroniser tes calendriers LCD sans double réservation en 2026.',
+  description: 'Flux iCal, calendrier central, battement entre séjours, synchronisation à la main : 6 règles pour éviter la double réservation entre Airbnb et Booking.',
   keywords: 'synchronisation iCal LCD, calendrier Airbnb Booking, double réservation location courte durée, flux iCal, PMS synchronisation, hub calendrier hôte',
   date: '2026-09-30',
   categorySlug: 'automatisation',

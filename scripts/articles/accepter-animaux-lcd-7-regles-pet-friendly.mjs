@@ -1,7 +1,7 @@
 export default {
   slug: 'accepter-animaux-lcd-7-regles-pet-friendly',
   title: 'Accepter les animaux en LCD : les 7 règles pour louer pet-friendly sans abîmer ton logement',
-  description: 'Près d\'un foyer français sur deux a un animal. Voici les 7 règles concrètes pour ouvrir ta location courte durée aux voyageurs avec animaux sans risque pour ton logement.',
+  description: 'Accepter les animaux dans ta location courte durée : 7 règles pour accueillir chiens et chats sans risque pour ton logement ni pour tes avis.',
   keywords: 'animaux acceptés location courte durée, lcd pet friendly, airbnb chien autorisé, supplément animaux airbnb, caution animaux lcd',
   date: '2026-05-06',
   categorySlug: 'experience',

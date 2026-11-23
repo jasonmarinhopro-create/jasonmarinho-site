@@ -1,7 +1,7 @@
 export default {
   slug: 'compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026',
   title: 'Compte bancaire pro pour hôte LCD : 6 raisons de le séparer et comment le choisir en 2026',
-  description: 'Statut LMNP, seuil TVA, régime réel, suivi de rentabilité : 6 raisons concrètes de ne plus mélanger tes finances perso et LCD, et comment choisir ta banque pro en 2026.',
+  description: 'LMNP, seuil de TVA, régime réel, suivi de rentabilité : 6 raisons de séparer tes finances perso et LCD, et comment choisir ta banque pro en 2026.',
   keywords: 'compte bancaire pro location courte durée, banque pro hôte Airbnb, néobanque LMNP, compte séparé LCD fiscalité, comparatif banque pro LCD 2026',
   date: '2026-07-10',
   categorySlug: 'fiscalite',

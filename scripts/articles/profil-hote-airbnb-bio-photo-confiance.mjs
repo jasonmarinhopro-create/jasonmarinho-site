@@ -1,7 +1,7 @@
 export default {
   slug: 'profil-hote-airbnb-bio-photo-confiance',
   title: 'Profil hôte Airbnb : photo et bio qui inspirent confiance et augmentent les réservations',
-  description: 'Le profil hôte est lu par 70% des voyageurs avant de réserver. Photo, bio, badge : comment l\'optimiser pour inspirer confiance et booster ton taux de conversion.',
+  description: 'Ton profil hôte Airbnb : photo, présentation, badges. Comment l\'optimiser pour inspirer confiance aux voyageurs avant qu\'ils réservent.',
   keywords: 'profil hôte Airbnb, bio Airbnb, photo de profil hôte, superhost confiance voyageur',
   date: '2026-04-25',
   categorySlug: 'visibilite',

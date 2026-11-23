@@ -24,7 +24,7 @@ const PAGES = [
   {
     slug: 'fiscalite-micro-bic',
     title: 'Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 50 %, plafonds 2026',
-    metaDesc: 'Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 50 % (classé Atout France), plafonds 15 k€ et 83,6 k€, économie potentielle. Gratuit.',
+    metaDesc: 'Calcule ton impôt en micro-BIC selon ton chiffre d\'affaires LCD : abattement de 30 % non classé ou 50 % classé, plafonds 15 000 € et 83 600 €. Gratuit.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic',
     appPath: '/dashboard/simulateurs?tab=fiscal',
     heroLabel: 'Outil gratuit · Fiscalité LCD',
@@ -154,7 +154,7 @@ const PAGES = [
   {
     slug: 'choisir-statut-ei-sasu',
     title: 'Simulateur EI vs SASU pour la LCD : net en poche, cotisations, dividendes',
-    metaDesc: 'Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 31,4 %). Avec les points de vigilance sur la protection sociale et la retraite. Pour hôtes LCD jusqu\'à 150 k€ de bénéfice.',
+    metaDesc: 'EI au réel ou SASU pour ta LCD : compare ce qui te reste en poche après cotisations, impôt et dividendes, et ce que ça change pour ta protection sociale.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu',
     appPath: '/dashboard/simulateurs?tab=statut',
     heroLabel: 'Outil gratuit · Statut juridique',
@@ -278,7 +278,7 @@ const PAGES = [
   {
     slug: 'rentabilite-location-courte-duree',
     title: 'Simulateur rentabilité LCD : cash-flow, rentabilité brute et nette',
-    metaDesc: "Calcule la rentabilité d'un logement en location courte durée : revenu net mensuel, cash-flow après crédit, rentabilité brute et nette. Mode opérationnel ou investissement, avec commission plateforme et charges incluses.",
+    metaDesc: "Calcule la rentabilité d'un logement en location courte durée : revenu net mensuel, cash-flow après crédit, rentabilité brute et nette. Gratuit.",
     canonical: 'https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree',
     appPath: '/dashboard/simulateurs?tab=rentabilite',
     heroLabel: 'Outil gratuit · Rentabilité LCD',
@@ -408,7 +408,7 @@ const PAGES = [
   {
     slug: 'taxe-de-sejour',
     title: 'Simulateur taxe de séjour LCD : barème 2026, classement, durée',
-    metaDesc: 'Calcule la taxe de séjour à collecter sur tes voyageurs selon le tarif de ta commune, le classement de ton meublé, le nombre d\'adultes et la durée. Plafonds 2026 officiels, mineurs exonérés, taxes additionnelles départementale et Île-de-France.',
+    metaDesc: 'Calcule la taxe de séjour à collecter selon ta commune, le classement de ton meublé, les adultes et la durée. Plafonds 2026 et taxes additionnelles.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/taxe-de-sejour',
     appPath: '/dashboard/simulateurs?tab=taxe',
     heroLabel: 'Outil gratuit · Taxe de séjour',
@@ -534,7 +534,7 @@ const PAGES = [
   {
     slug: 'franchise-tva-lcd',
     title: 'Simulateur franchise TVA LCD : seuils 2026, services para-hôteliers',
-    metaDesc: "Vérifie ta franchise en base de TVA selon ton CA LCD et tes services. Seuils 2026 (85 000 € / 93 500 €), distinction location meublée exonérée vs LCD para-hôtelière, alerte automatique. Gratuit.",
+    metaDesc: "Vérifie si ta LCD reste en franchise de TVA : seuils 2026, meublé sans services ou para-hôtellerie, et alerte avant le dépassement. Gratuit.",
     canonical: 'https://jasonmarinho.com/services/simulateurs/franchise-tva-lcd',
     appPath: '/dashboard/simulateurs#tva',
     heroLabel: 'Outil gratuit · Franchise TVA',

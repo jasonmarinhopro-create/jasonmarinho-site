@@ -1,7 +1,7 @@
 export default {
   slug: 'caution-lcd-5-regles-juridiques-2026-prelever-sans-risque',
   title: 'Caution en LCD : les 5 règles juridiques à respecter en 2026 pour la prélever sans risque',
-  description: 'Montant, justification, prélèvement, restitution, retenue : les 5 règles juridiques à connaître avant de demander une caution en location courte durée en France en 2026.',
+  description: 'Montant, justification, prélèvement, restitution, retenue : les 5 règles juridiques avant de demander une caution en location courte durée en 2026.',
   keywords: 'caution location courte durée, dépôt de garantie LCD, caution Airbnb France, retenue caution voyageur, règles juridiques caution meublé tourisme',
   date: '2026-07-15',
   categorySlug: 'reglementation',

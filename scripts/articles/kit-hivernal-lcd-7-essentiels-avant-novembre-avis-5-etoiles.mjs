@@ -1,7 +1,7 @@
 export default {
   slug: 'kit-hivernal-lcd-7-essentiels-avant-novembre-avis-5-etoiles',
   title: 'Kit hivernal en LCD : 7 essentiels à ajouter avant novembre pour transformer tes séjours d\'hiver en avis 5 étoiles',
-  description: 'Plaids, tapis d\'entrée, kit dégivrage, bougies, boissons chaudes, bouillottes, guide indoor : 7 essentiels concrets à ajouter à ton logement LCD avant novembre pour soigner les séjours d\'hiver et faire grimper tes avis.',
+  description: 'Plaids, tapis d\'entrée, kit dégivrage, boissons chaudes, idées d\'activités : 7 essentiels à prévoir avant novembre pour des séjours d\'hiver réussis.',
   keywords: 'kit hivernal lcd, location courte durée hiver, préparer logement airbnb hiver, plaid airbnb, dégivrage voyageurs, kit accueil hiver',
   date: '2026-09-23',
   categorySlug: 'experience',

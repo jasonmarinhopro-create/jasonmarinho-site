@@ -2,7 +2,7 @@ export default {
   slug: 'consommables-lcd-7-regles-eviter-rupture-voyageur',
 
   title: 'Consommables en LCD : 7 règles pour ne plus jamais tomber en rupture chez ton voyageur',
-  description: 'Papier toilette, savon, café, dosettes, produits ménage : 7 règles concrètes pour piloter tes consommables en location courte durée sans rupture ni marge écrasée.',
+  description: 'Papier toilette, savon, café, produits ménagers : 7 règles pour gérer tes consommables en location courte durée sans rupture ni marge écrasée.',
   keywords: 'consommables airbnb, réapprovisionnement lcd, gestion stock location courte durée, papier toilette airbnb, café dosettes lcd, produits ménage airbnb, ravitaillement location saisonnière',
   date: '2026-08-28',
 

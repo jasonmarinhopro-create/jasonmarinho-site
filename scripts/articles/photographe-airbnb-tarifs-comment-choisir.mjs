@@ -1,7 +1,7 @@
 export default {
   slug: 'photographe-airbnb-tarifs-comment-choisir',
   title: 'Photographe Airbnb : combien ça coûte et comment bien le choisir en 2026',
-  description: "Tarifs constatés (150 à 500 €), retour sur investissement réel, critères pour choisir un photographe spécialisé LCD et erreurs à éviter. Guide complet par Jason Marinho.",
+  description: 'Photographe Airbnb : fourchettes de prix indicatives, ce que comprend une séance, critères pour choisir un pro de la LCD et erreurs à éviter.',
   keywords: 'photographe Airbnb, photographe location courte durée, tarif photographe immobilier, photos annonce Airbnb, photographe LCD',
   date: '2026-07-05',
   categorySlug: 'visibilite',

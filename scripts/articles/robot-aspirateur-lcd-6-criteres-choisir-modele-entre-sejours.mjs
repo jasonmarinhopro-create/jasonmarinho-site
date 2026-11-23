@@ -2,7 +2,7 @@ export default {
   slug: 'robot-aspirateur-lcd-6-criteres-choisir-modele-entre-sejours',
 
   title: 'Robot aspirateur en location courte durée : 6 critères pour choisir un modèle qui tient entre 2 séjours',
-  description: 'Autonomie, station de vidage, cartographie, cheveux longs, bruit, SAV : 6 critères concrets pour choisir un robot aspirateur qui tient vraiment le rythme d\'un turnover LCD sans finir bloqué sous un canapé.',
+  description: 'Autonomie, station de vidage, cartographie, cheveux, bruit, SAV : 6 critères pour choisir un robot aspirateur qui suit le rythme de tes turnovers.',
   keywords: 'robot aspirateur location courte durée, robot aspirateur airbnb, meilleur robot aspirateur lcd, roborock airbnb, aspirateur automatique menage lcd, robot menage turnover',
   date: '2026-09-04',
 
