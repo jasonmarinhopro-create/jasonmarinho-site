@@ -33,6 +33,9 @@ export function nettoyer(md) {
   // Regroupe chaque intertitre, puce ou paragraphe avec ses lignes de suite
   // (texte coupé à la main dans les leçons), puis ponctue intertitres et puces.
   const unites = []
+  // Blocs riches des leçons (docs/claude/formations.md) : questions, actions et
+  // chiffres retirés de l'aperçu, marqueurs « :::nom » et « ::: » enlevés
+  md = md.replace(/^:::(quiz|action|chiffres)\s*\n[\s\S]*?^:::\s*$/gm, '').replace(/^:::[a-z]*\s*$/gm, '')
   for (const brut of md.split('\n')) {
     const l = brut.trim()
     if (!l || /^[-─━=_*]{3,}$/.test(l) || /^(MODULE|LEÇON)\b/i.test(l) || /^\|/.test(l)) { unites.push(null); continue }
