@@ -28,6 +28,9 @@ export interface PageStatus {
   url: string
   path: string
   lastmod: string | null
+  // Famille du sitemap : pages du site, ou fiches des pros (photographes,
+  // ménage, dépannage), suivies depuis le 24/11/2026
+  famille: 'site' | 'pros'
   httpStatus: number | null
   coverageState: string | null
   indexed: boolean
@@ -37,11 +40,12 @@ export interface PageStatus {
   lastCheckedAt: string | null
   // Demande d'indexation faite à la main dans Search Console (Google n'a pas
   // d'API d'écriture pour ça) — coché par l'admin via "C'est fait" pour
-  // garder le fil sur ~500 pages, cf. le même bouton chez Driing.
+  // garder le fil sur ~1 000 pages, cf. le même bouton chez Driing.
   submittedAt: string | null
   error: string | null
 }
 
+type Famille = 'tout' | 'site' | 'pros'
 type Tab = 'a_soumettre' | 'jamais' | 'pas_indexees' | 'indexees' | 'erreurs' | 'toutes'
 
 function fmtDate(d: string | null): string {
@@ -121,7 +125,7 @@ export default function IndexationUI({ pages: serverPages, fetchError, lastCheck
   // (sans recharger toute la page, qui retélécharge le sitemap)
   const [checked, setChecked] = useState<Record<string, Partial<PageStatus>>>({})
   const [checking, setChecking] = useState<Set<string>>(new Set())
-  const pages = useMemo(() => serverPages.map(p => (checked[p.url] ? { ...p, ...checked[p.url] } : p)), [serverPages, checked])
+  const allPages = useMemo(() => serverPages.map(p => (checked[p.url] ? { ...p, ...checked[p.url] } : p)), [serverPages, checked])
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -146,6 +150,9 @@ export default function IndexationUI({ pages: serverPages, fetchError, lastCheck
     }).catch(() => {})
   }
 
+  const [famille, setFamille] = useState<Famille>('tout')
+  const nbPros = useMemo(() => allPages.filter(p => p.famille === 'pros').length, [allPages])
+  const pages = useMemo(() => famille === 'tout' ? allPages : allPages.filter(p => p.famille === famille), [allPages, famille])
   const notPublished = useMemo(() => pages.filter(p => p.httpStatus && p.httpStatus >= 400), [pages])
   const live = useMemo(() => pages.filter(p => !p.httpStatus || p.httpStatus < 400), [pages])
   const neverChecked = useMemo(() => live.filter(p => !p.lastCheckedAt), [live])
@@ -290,7 +297,7 @@ export default function IndexationUI({ pages: serverPages, fetchError, lastCheck
         desc={<>Repère les pages du site que Google n&apos;a pas encore indexées et demande leur indexation dans Search Console. Dernière vérification : <span suppressHydrationWarning>{lastChecked ? fmtDateTime(lastChecked) : 'jamais'}</span>.</>}
         aside={
           <div style={adminAsideCard}>
-            <span style={s.asideTitle}>Sur {live.length} pages en ligne</span>
+            <span style={s.asideTitle}>Sur {live.length} pages en ligne{famille === 'tout' && nbPros > 0 ? `, dont ${live.filter(p => p.famille === 'pros').length} fiches des pros` : ''}</span>
             {[
               { label: 'Indexées', n: indexed.length, color: 'var(--accent-text)' },
               { label: 'À soumettre', n: aSoumettre.length, color: 'var(--text)' },
@@ -308,7 +315,7 @@ export default function IndexationUI({ pages: serverPages, fetchError, lastCheck
                 <GoogleLogo size={13} weight="bold" /> Reconnecter Google Search Console
               </a>
             )}
-            <span style={s.asideNote}>Pages de sitemap.xml. Search Console compte en plus les fiches des pros (4 autres sitemaps) et tout le domaine : ses totaux sont plus élevés.</span>
+            <span style={s.asideNote}>Pages des 5 sitemaps du site, fiches des pros comprises. Search Console compte en plus tout le domaine (variantes d&apos;adresse, sous-domaine app) : ses totaux restent un peu plus élevés.</span>
           </div>
         }
       >
@@ -407,6 +414,18 @@ export default function IndexationUI({ pages: serverPages, fetchError, lastCheck
           )}
         </div>
       )}
+
+      <div style={s.familles} role="group" aria-label="Pages suivies">
+        {([
+          { id: 'tout' as const, label: 'Tout', n: allPages.length },
+          { id: 'site' as const, label: 'Pages du site', n: allPages.length - nbPros },
+          { id: 'pros' as const, label: 'Fiches des pros', n: nbPros },
+        ]).map(f => (
+          <button key={f.id} type="button" onClick={() => setFamille(f.id)} aria-pressed={famille === f.id} style={{ ...s.famille, ...(famille === f.id ? s.familleActive : {}) }}>
+            {f.label} <span style={{ opacity: 0.7 }}>{f.n}</span>
+          </button>
+        ))}
+      </div>
 
       <div style={s.tabs}>
         {([
@@ -590,6 +609,9 @@ const s: Record<string, React.CSSProperties> = {
   // onglets se confondait visuellement avec le soulignement coloré de
   // l'onglet actif, laissant croire que tous étaient sélectionnés. Seul le
   // vrai soulignement (2px, coloré) de l'onglet actif doit être visible.
+  familles: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
+  famille: { padding: '6px 12px', borderRadius: '999px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
+  familleActive: { border: '1px solid var(--accent-text)', background: 'var(--accent-bg-2)', color: 'var(--accent-text)' },
   tabs: { display: 'flex', gap: '6px', flexWrap: 'wrap', paddingBottom: '2px' },
   tab: {
     display: 'flex', alignItems: 'center', gap: '7px',

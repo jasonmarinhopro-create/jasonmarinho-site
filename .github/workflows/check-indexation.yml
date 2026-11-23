@@ -3,7 +3,9 @@ name: SEO indexation check
 on:
   schedule:
     # 30/10/2026 : rien entre 6 h et 9 h 30 UTC, la base (offre gratuite) y décroche trois matins de suite
-    - cron: '13 12 * * *'
+    # 24/11/2026 : 4 passes par jour (~1 000 pages avec les fiches des pros, environ 30 par passe ;
+    # les pages non indexées passent en premier), toujours hors de 6 h à 9 h 30 UTC
+    - cron: '13 2,12,16,21 * * *'
   workflow_dispatch: # déclenchement manuel pour tester
 
 jobs:

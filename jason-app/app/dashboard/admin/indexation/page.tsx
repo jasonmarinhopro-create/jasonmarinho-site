@@ -8,8 +8,8 @@ import IndexationUI, { type PageStatus } from './IndexationUI'
 
 export const metadata = { title: 'Indexation, Jason Marinho' }
 export const dynamic = 'force-dynamic'
-// Le bouton "Vérifier l'indexation" (action serveur) peut interroger ~500
-// URLs — s'exécute dans la même fonction que cette page, même budget que le
+// Le bouton "Vérifier l'indexation" (action serveur) peut interroger ~1 000
+// URLs (5 sitemaps depuis le 24/11/2026) — s'exécute dans la même fonction que cette page, même budget que le
 // cron (60s).
 export const maxDuration = 60
 
@@ -39,6 +39,7 @@ export default async function IndexationPage() {
       url: e.url,
       path: e.url.replace('https://jasonmarinho.com', '') || '/',
       lastmod: e.lastmod,
+      famille: e.famille,
       httpStatus: s?.http_status ?? null,
       coverageState: s?.coverage_state ?? null,
       indexed: s?.indexed ?? false,
