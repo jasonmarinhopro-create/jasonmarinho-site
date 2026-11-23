@@ -13,6 +13,8 @@ node scripts/build-trouver-un-pro.mjs
 node scripts/build-derniers-articles.mjs
 # Bloc « À lire aussi » : relie chaque nouvel article depuis ses voisins (23/11/2026)
 node scripts/inject-a-lire-aussi.mjs
+# Données Course des formations, tirées du contenu de l'app (24/11/2026)
+node scripts/inject-course-formations.mjs
 node scripts/build-accueil-annuaire.mjs
 node scripts/inject-photos-villes.mjs
 node scripts/inject-blog-covers.mjs

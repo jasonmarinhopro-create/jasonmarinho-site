@@ -17,10 +17,11 @@ const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&
 
 /** Titre et texte de la première leçon (premier `content:` du fichier) */
 export function premiereLecon(src) {
-  const i = src.search(/\n\s*content:\s*`/)
+  // `content:` peut suivre le titre sur la même ligne (formation Booking)
+  const i = src.search(/\bcontent:\s*`/)
   if (i < 0) return null
   const avant = src.slice(0, i)
-  const titre = [...avant.matchAll(/\n\s*title:\s*(['`"])((?:\\.|(?!\1).)*)\1/g)].pop()?.[2]?.replace(/\\'/g, "'")
+  const titre = [...avant.matchAll(/\btitle:\s*(['`"])((?:\\.|(?!\1).)*)\1/g)].pop()?.[2]?.replace(/\\'/g, "'")
   const debut = src.indexOf('`', i) + 1
   let fin = debut
   while (fin < src.length && !(src[fin] === '`' && src[fin - 1] !== '\\')) fin++
