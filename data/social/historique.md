@@ -4,8 +4,9 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-23 00:48 UTC.
+Mis à jour le 2026-11-23 10:39 UTC.
 
+- 2026-11-24 · stories (4 écrans) · stories-menage-messages-turnover · FB - · IG - · stories FB pending IG pending · « Stories : Moins d’appels, plus de ménages bien faits / Trois messages suffisent / La photo avant le nettoyage  »
 - 2026-11-23 · photo · calendrier-fetes-ouvert · FB pending · IG pending · stories FB pending IG pending · « Ton 24, ton 25 et ton 31 décembre sont vraiment ouverts à la réservation ? »
 - 2026-11-22 · reel · depannage-demandes-viennent-a-toi · FB published 0 j'aime 0 comm. · IG published 2 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Une fuite à 15 h, des voyageurs à 17 h : l’hôte n’a pas le temps de chercher un annuaire. »
 - 2026-11-21 · stories (4 écrans) · stories-deco-noel-dosage · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Décorer pour Noël, sans alourdir tes ménages / Moins, mais bien placé / Bougies LED, jamais de flamm »
