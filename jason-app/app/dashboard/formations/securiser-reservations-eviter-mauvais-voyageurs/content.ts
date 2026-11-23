@@ -1240,8 +1240,6 @@ MODULE 4
   une question de chance.
   C'est un système que tu construis.
 
-Des questions sur la sécurité de ton logement ?
-[Prends un appel avec Jason](/contact)
 Ou découvre le service de vérification voyageurs :
 [/services/securite]
 

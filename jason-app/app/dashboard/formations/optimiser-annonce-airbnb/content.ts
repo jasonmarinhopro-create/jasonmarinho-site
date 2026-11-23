@@ -1356,8 +1356,6 @@ MODULE 5
   tes réservations par 1,5 à 2
   en quelques semaines.
 
-Des questions sur ton annonce spécifique ?
-[Prends un appel avec Jason](/contact)
 
 
 ## Exercice

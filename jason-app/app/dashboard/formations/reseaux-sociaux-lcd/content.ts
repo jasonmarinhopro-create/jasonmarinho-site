@@ -1052,8 +1052,6 @@ MODULE 4
   30 minutes par semaine pendant 1 an
   valent mieux que 10 heures pendant 3 semaines.
 
-Des questions sur ta stratégie réseaux ?
-[Prends un appel avec Jason](/contact)
 Crée ton lien de réservation directe :
 → driing.co/deposer-annonce
 

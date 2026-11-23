@@ -7,7 +7,6 @@ import { parseLesson } from './blocks'
 // l'être dès sa création. Les anciennes, en cours de conversion, sont listées
 // dans A_CONVERTIR : en retirer le slug une fois la formation convertie.
 const A_CONVERTIR = new Set([
-  'livret-accueil-digital', 'lcd-basse-saison', 'gerer-lcd-automatisation',
   'fiscalite-reglementation-lcd-france-2026', 'ecrire-avis-repondre-voyageurs', 'decorer-amenager-logement-lcd',
   'creer-conciergerie-lcd', 'fiscalite-statut-conciergerie-tourisme', 'maitriser-booking-com-algorithme-genius',
   'photographie-lcd-smartphone', 'gerer-incidents-litiges-lcd', 'annonce-360', 'audit-annonce',

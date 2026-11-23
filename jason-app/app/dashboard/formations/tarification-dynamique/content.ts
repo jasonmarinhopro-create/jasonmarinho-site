@@ -1210,8 +1210,6 @@ MODULE 4
   d'amélioration continue.
   Commence, mesure, ajuste.
 
-Des questions sur ta stratégie tarifaire ?
-[Prends un appel avec Jason](/contact)
 
 
 ## Exercice

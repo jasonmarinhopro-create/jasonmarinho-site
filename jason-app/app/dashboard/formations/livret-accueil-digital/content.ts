@@ -22,7 +22,13 @@ export const LIVRET_ACCUEIL_FORMATION = {
           id: 1,
           title: `Ce que coûte vraiment l'absence de livret`,
           duration: '12 min',
-          content: `## Le calcul que personne ne fait
+          content: `:::bref
+- Sans livret, tu réponds aux mêmes questions à chaque séjour : Wi-Fi, chauffage, poubelles, départ.
+- Un voyageur qui trouve seul ses réponses est plus serein et laisse de meilleurs avis.
+- Le livret digital se met à jour en un instant, le papier non.
+:::
+
+## Le calcul que personne ne fait
 Sans livret d'accueil, un hôte reçoit
 à chaque séjour les mêmes questions,
 identiques et répétitives.
@@ -127,13 +133,34 @@ Le livret Driing est structuré en 6 blocs :
 
 ## Exercice
 **Exercice pratique :** Compte les messages reçus sur ton dernier séjour. Combien auraient pu être évités avec un livret bien fait ? Note ce chiffre, c'est le temps que tu vas récupérer après cette formation.
-`,
+
+:::quiz
+? 6 questions par séjour, 20 séjours par an, 4 minutes par réponse : combien de temps perdu ?
+- Environ 40 heures
+* Environ 8 heures par an
+- Environ 30 minutes
+= 6 × 20 × 4 = 480 minutes, soit 8 heures de réponses répétitives.
+:::
+
+:::quiz
+? Quel est l'avantage principal du livret digital sur le papier ?
+- Il n'a pas besoin d'informations
+- Il remplace le ménage
+* Une modification s'applique tout de suite à tous les voyageurs
+= Nouveau code Wi-Fi ou nouvelle règle : un seul changement suffit.
+:::`,
         },
         {
           id: 2,
           title: `Anatomie d'un livret qui fonctionne vraiment`,
           duration: '13 min',
-          content: `## La règle des 3 étapes
+          content: `:::bref
+- Trois temps qui suivent le voyageur : arrivée, séjour, départ.
+- L'arrivée contient l'essentiel : accès, Wi-Fi, stationnement, chauffage.
+- Tes recommandations locales sont ta vraie valeur ajoutée.
+:::
+
+## La règle des 3 étapes
 Le livret Driing est organisé en 3 temps
 qui correspondent au parcours naturel
 du voyageur :
@@ -244,7 +271,29 @@ Pourquoi c'est puissant :
 
 ## Exercice
 **Exercice pratique :** Avant de créer ton livret, note sur une feuille tes 5 recommandations locales préférées, restaurants, cafés, activités, spots. Ce sont tes contenus les plus précieux et les plus personnels. Ils feront la différence entre un livret générique et un livret mémorable.
-`,
+
+:::quiz
+? Quelle information doit figurer dans la partie « À votre arrivée » ?
+- L'heure de départ
+- L'historique de l'immeuble
+* Le code d'accès et le Wi-Fi
+= C'est ce dont le voyageur a besoin dès qu'il arrive.
+:::
+
+:::quiz
+? Pourquoi soigner la partie activités ?
+- Pour allonger le livret
+- Pour remplacer le règlement
+* C'est ce que le voyageur ne trouve pas ailleurs
+= Tes adresses personnelles font la différence avec un guide générique.
+:::
+
+:::action
+titre: Liste les questions que tes voyageurs posent
+texte: Relis tes derniers échanges et note les questions qui reviennent : ce sera le plan de ton livret.
+lien: /dashboard/voyageurs
+bouton: Voir mes voyageurs
+:::`,
         },
       ],
     },
@@ -257,7 +306,13 @@ Pourquoi c'est puissant :
           id: 11,
           title: 'Créer son compte et configurer les bases',
           duration: '12 min',
-          content: `## Créer son compte Driing
+          content: `:::bref
+- Crée ton compte Driing (je suis co-fondateur), gratuit pour commencer.
+- Donne à ton logement un nom mémorable plutôt qu'une adresse.
+- Ajoute une vraie photo de toi et un message de bienvenue chaleureux.
+:::
+
+## Créer son compte Driing
 Rends-toi sur app.driing.co
 
 ÉTAPE 1, Créer ton compte
@@ -342,13 +397,34 @@ Mauvais exemples :
 
 ## Exercice
 **Exercice pratique :** Va sur app.driing.co et crée ton compte maintenant. Rédige ton message de bienvenue selon la structure de la slide 3. Ne passe pas à la leçon suivante sans avoir complété ces deux étapes, c'est la base sur laquelle tout le reste est construit.
-`,
+
+:::quiz
+? Quel nom de logement est le plus marquant ?
+* « Le Loft du Canal »
+- « Appartement Paris 11 »
+- « Logement 3 »
+= Un nom évocateur donne une identité et se retient.
+:::
+
+:::quiz
+? Pourquoi ajouter une vraie photo de toi ?
+- C'est obligatoire légalement
+- Pour remplacer les photos du logement
+* Le voyageur sait à qui il a affaire, ça rassure
+= Un visage crée un lien de confiance avant même l'arrivée.
+:::`,
         },
         {
           id: 12,
           title: 'Remplir les 3 sections essentielles',
           duration: '15 min',
-          content: `## Section "À votre arrivée" : le script complet
+          content: `:::bref
+- Arrivée : accès, Wi-Fi, stationnement, chauffage, règles essentielles.
+- Séjour : équipements, tri des déchets, machine à laver, télévision.
+- Départ : heure, clés, ménage attendu, sans ambiguïté.
+:::
+
+## Section "À votre arrivée" : le script complet
 Voici exactement ce que cette section
 doit contenir pour être parfaite :
 
@@ -439,13 +515,34 @@ dans ce livret ou sur [Plateforme]."
 
 ## Exercice
 **Exercice pratique :** Complète maintenant les 3 sections dans Driing. Prends 20 minutes. Chaque section doit tenir sur un écran de smartphone sans qu'on ait à scroller excessivement. Si une section est trop longue : supprime le superflu. Le voyageur lit vite, sur son téléphone, entre deux activités.
-`,
+
+:::quiz
+? Comment rédiger l'information d'accès ?
+* Le moyen d'accès, le code et l'emplacement précis
+- « Je vous expliquerai sur place »
+- Seulement l'adresse
+= Le voyageur doit pouvoir entrer seul, sans t'appeler.
+:::
+
+:::quiz
+? Que doit préciser la partie départ ?
+* L'heure limite et ce que le voyageur doit faire avant de partir
+- Le prix de la prochaine réservation
+- Rien, c'est évident
+= Des consignes claires évitent les retards et les malentendus.
+:::`,
         },
         {
           id: 13,
           title: 'Ajouter ses recommandations locales et configurer la carte',
           duration: '13 min',
-          content: `## Pourquoi tes recommandations ont plus de valeur que TripAdvisor
+          content: `:::bref
+- Tes recommandations valent plus qu'un classement en ligne : ce sont tes adresses.
+- Une bonne recommandation : le lieu, pourquoi, et un conseil pratique.
+- Une quinzaine d'adresses bien choisies suffit.
+:::
+
+## Pourquoi tes recommandations ont plus de valeur que TripAdvisor
 Un voyageur peut trouver les "meilleurs
 restaurants de Paris" sur TripAdvisor
 en 10 secondes.
@@ -544,7 +641,27 @@ Pour la configurer :
 
 ## Exercice
 **Exercice pratique :** Ajoute maintenant tes 5 meilleures recommandations locales dans Driing. Pour chacune : nom, description personnelle de 2 lignes, lien Maps. Ce contenu est ce qui va différencier ton livret d'un livret générique, prends le temps de bien le rédiger.
-`,
+
+:::quiz
+? Qu'est-ce qu'une bonne recommandation ?
+- Une liste de 50 restaurants sans détail
+- Le lien d'un site de classement
+* Le lieu, pourquoi tu l'aimes et un conseil pratique
+= C'est le conseil personnel qui crée la valeur.
+:::
+
+:::quiz
+? Combien de recommandations prévoir ?
+- Une seule
+- Plus de cent
+* Une quinzaine, bien choisies
+= Assez pour varier, pas trop pour rester lisible.
+:::
+
+:::action
+titre: Crée ton livret et ajoute 10 adresses
+texte: Remplis les trois sections et tes recommandations, puis reviens cocher l'action.
+:::`,
         },
       ],
     },
@@ -557,7 +674,13 @@ Pour la configurer :
           id: 21,
           title: 'Partager son livret aux bons moments',
           duration: '12 min',
-          content: `## Les 4 moments clés pour partager le livret
+          content: `:::bref
+- Partage le livret à quatre moments : veille de l'arrivée, jour J, QR code dans le logement, avant le départ.
+- Intègre le lien dans tes messages automatiques.
+- Un QR code encadré fait professionnel et sert à chaque voyageur.
+:::
+
+## Les 4 moments clés pour partager le livret
 01. DANS LE MESSAGE DE CHECK-IN (J-1)
     → Intègre le lien Driing directement
       dans ton message d'arrivée.
@@ -655,13 +778,34 @@ et le bouton "Laisser un avis".
 
 ## Exercice
 **Exercice pratique :** Copie le lien de ton livret Driing. Ajoute-le maintenant dans ton gabarit de message check-in et ton message de bienvenue. Imprime le QR code et encadre-le pour la prochaine rotation. Ces 3 actions prennent 15 minutes et changent immédiatement l'expérience de tes voyageurs.
-`,
+
+:::quiz
+? Quand envoyer le lien du livret pour la première fois ?
+- Après le départ
+- Jamais, le voyageur le trouvera
+* La veille de l'arrivée, avec le message d'accès
+= Il arrive en sachant déjà le code, le Wi-Fi et le stationnement.
+:::
+
+:::quiz
+? À quoi sert le QR code dans le logement ?
+- Remplacer la clé
+* Ouvrir le livret sur le téléphone en un geste
+- Payer le séjour
+= Le voyageur retrouve les infos à tout moment pendant le séjour.
+:::`,
         },
         {
           id: 22,
           title: `Utiliser le livre d'or pour préparer les avis publics`,
           duration: '13 min',
-          content: `## Pourquoi le livre d'or est stratégique
+          content: `:::bref
+- Beaucoup de voyageurs satisfaits ne laissent pas d'avis faute de déclencheur.
+- Le livre d'or capte leur enthousiasme pendant le séjour.
+- Invite sans pression, et ne conditionne jamais un avantage à un avis.
+:::
+
+## Pourquoi le livre d'or est stratégique
 Le livre d'or Driing est une fonctionnalité
 souvent sous-utilisée par les hôtes.
 
@@ -737,7 +881,29 @@ PREUVE SOCIALE PENDANT LE SÉJOUR
 
 ## Exercice
 **Exercice pratique :** Ajoute une phrase d'invitation au livre d'or dans ta section "À votre départ" dans Driing. Puis ajoute la même invitation dans ton gabarit de message de check-out (disponible dans la plateforme). C'est tout, le système fait le reste automatiquement.
-`,
+
+:::quiz
+? Pourquoi le livre d'or aide-t-il à obtenir des avis ?
+* Il recueille l'enthousiasme du voyageur au bon moment
+- Il remplace les avis Airbnb
+- Il oblige à laisser 5 étoiles
+= Un voyageur qui a écrit un mot est plus enclin à laisser un avis ensuite.
+:::
+
+:::quiz
+? Que ne faut-il jamais faire pour obtenir un avis ?
+* Offrir une réduction en échange d'un avis positif
+- Remercier le voyageur
+- Envoyer un rappel courtois
+= Les avis contre récompense sont interdits par les plateformes.
+:::
+
+:::action
+titre: Imprime ton QR code de livret
+texte: Crée une affiche avec le QR code de ton livret à poser dans le logement.
+lien: /dashboard/outils-impression
+bouton: Créer mon affiche
+:::`,
         },
       ],
     },
@@ -750,7 +916,13 @@ PREUVE SOCIALE PENDANT LE SÉJOUR
           id: 31,
           title: 'Mettre à jour son livret sans effort',
           duration: '7 min',
-          content: `## Quand mettre à jour son livret
+          content: `:::bref
+- Mise à jour immédiate dès qu'une info change : code, contact, règle.
+- Mise à jour saisonnière deux fois par an pour les recommandations.
+- Chaque question reçue montre ce qui manque au livret.
+:::
+
+## Quand mettre à jour son livret
 La force du livret digital :
 une modification s'applique instantanément
 à tous les voyageurs actuels et futurs.
@@ -805,13 +977,34 @@ Exemples :
 
 ## Exercice
 **Exercice pratique :** Regarde les messages reçus sur tes 3 derniers séjours. Note les 3 questions les plus fréquentes. Ajoute les réponses dans ton livret maintenant. Voilà tes premières mises à jour basées sur les données réelles de tes voyageurs.
-`,
+
+:::quiz
+? Un voyageur te demande où est le fer à repasser. Que faire ?
+- Répondre sans rien changer
+- Ignorer la question
+* Répondre puis ajouter l'info dans le livret
+= Chaque question est une info qui manquait : le livret s'améliore à chaque séjour.
+:::
+
+:::quiz
+? À quelle fréquence revoir tes recommandations ?
+* Deux fois par an, selon la saison
+- Jamais
+- Tous les jours
+= Terrasses en été, adresses chaleureuses en hiver : le livret reste utile.
+:::`,
         },
         {
           id: 32,
           title: `Mesurer l'impact du livret sur ses avis et ses revenus`,
           duration: '8 min',
-          content: `## Les 3 indicateurs à suivre
+          content: `:::bref
+- Trois indicateurs : messages par séjour, note de communication, mentions dans les avis.
+- Compare 3 séjours avant et 3 séjours après le livret.
+- Un voyageur bien informé juge l'hôte plus communicant.
+:::
+
+## Les 3 indicateurs à suivre
 01. VOLUME DE MESSAGES PAR SÉJOUR
     Avant livret : note le nombre
     de messages de questions reçus
@@ -887,8 +1080,6 @@ MODULE 4
 → Un livret bien conçu se crée en 1 heure.
   Il travaille pour toi 365 jours par an.
 
-Des questions sur ton livret ?
-[Prends un appel avec Jason](/contact)
 
 
 ## Exercice
@@ -899,9 +1090,32 @@ Si tu n'as pas encore créé ton livret pendant cette formation : bloque 1 heure
 Si ton livret est déjà créé : envoie-le à ton prochain voyageur et note combien de questions tu reçois pendant ce séjour. Compare avec le séjour précédent. Les résultats te convaincront mieux que n'importe quelle formation.
 
 → Crée ton livret Driing : **app.driing.co**
-\`\`\`
 
-Fromation 7`,
+
+Fromation 7
+
+:::quiz
+? Comment mesurer l'effet du livret ?
+- Compter tes abonnés
+- Regarder la météo
+* Compter les messages de questions avant et après
+= Moins de questions répétitives, c'est du temps gagné et des voyageurs autonomes.
+:::
+
+:::quiz
+? Quelle note d'avis le livret améliore-t-il souvent ?
+* La communication
+- L'emplacement
+- Le prix
+= Les voyageurs ont les réponses avant même de les demander.
+:::
+
+:::action
+titre: Ajoute le lien du livret à tes messages
+texte: Mets le lien dans tes modèles de messages d'arrivée et de bienvenue.
+lien: /dashboard/gabarits
+bouton: Ouvrir les modèles
+:::`,
         },
       ],
     },
