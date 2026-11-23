@@ -45,6 +45,16 @@ export default async function AttestationPage({ params }: { params: { slug: stri
   const date = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', day: 'numeric', month: 'long', year: 'numeric' })
     .format(new Date(uf.completed_at ?? new Date().toISOString()))
   const ref = `JM-${String(uf.id).replace(/-/g, '').slice(0, 8).toUpperCase()}`
+  // Ajout de la formation dans « Licences et certifications » du profil LinkedIn
+  const done = new Date(uf.completed_at ?? new Date().toISOString())
+  const linkedin = 'https://www.linkedin.com/profile/add?' + new URLSearchParams({
+    startTask: 'CERTIFICATION_NAME',
+    name: formation.title,
+    organizationName: 'Jason Marinho',
+    issueYear: String(done.getUTCFullYear()),
+    issueMonth: String(done.getUTCMonth() + 1),
+    certId: ref,
+  }).toString()
 
   return (
     <div className="att-page" style={{ padding: 'clamp(20px,4vw,48px)', display: 'flex', flexDirection: 'column', gap: '18px', alignItems: 'center' }}>
@@ -52,7 +62,17 @@ export default async function AttestationPage({ params }: { params: { slug: stri
       <InlineStyle css={ATTESTATION_CSS} />
       <div style={{ width: 'min(880px, 100%)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
         <Link href={back} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--text-3)', fontSize: '13px', textDecoration: 'none' }}><ArrowLeft size={15} /> Retour à la formation</Link>
-        <PrintButton />
+        <span style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <a
+            href={linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '11px 18px', borderRadius: '12px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: '14px', fontWeight: 600, textDecoration: 'none' }}
+          >
+            Ajouter à mon profil LinkedIn
+          </a>
+          <PrintButton />
+        </span>
       </div>
 
       <section className="att" aria-label="Attestation de formation">

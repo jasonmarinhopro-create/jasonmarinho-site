@@ -1,46 +1,57 @@
 'use client'
 
-// Lecteur de formation (refonte du 23/11/2026, docs/claude/formations.md).
-// - Chaque leçon a son adresse (?lecon=<id>) : actualiser ou partager garde la leçon.
-// - Une leçon avec questions se termine en y répondant ; sans question
-//   (format d'avant), le bouton « Marquer comme terminé » reste.
-// - Fin de module : action dans l'app, faite ou prévue avec rappel.
-// - Fin de formation : bilan, score, attestation, formation suivante.
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+// Lecteur de formation (refonte du 23/11/2026, maquettes validées par Jason,
+// docs/claude/formations.md). Trois écrans :
+// - la fiche (sans ?lecon) : couverture, promesse, programme, bouton collé en bas ;
+// - la leçon (?lecon=<id>&etape=<n>) : étapes plein écran, « Continuer » au pouce,
+//   questions avec panneau vert ou rouge, action de fin de module ;
+// - la fin (?fin=1) : médaille, score, actions, attestation, suite.
+// Une leçon avec questions se termine en y répondant ; sans question (ancien
+// format), le bouton de la dernière étape la termine.
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import {
-  ArrowLeft, ArrowRight, Clock, BookOpen, CheckCircle, GraduationCap,
-  CaretDown, CaretRight, Check, List, X, BookmarkSimple, ArrowSquareOut,
-  Certificate, Trophy, ArrowCounterClockwise, NotePencil, Target,
+  ArrowLeft, ArrowRight, X, Clock, BookOpen, Target, Check, CheckCircle, XCircle,
+  BookmarkSimple, NotePencil, ChatCircle, Certificate, CaretDown, Lightning, Trophy,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark,
-  voteLesson, answerLessonQuestion, planModuleAction, saveFormationBilan,
+  voteLesson, answerLessonQuestion, planModuleAction, saveFormationBilan, toggleFormationFavorite,
 } from '@/app/dashboard/formations/actions'
 import LessonComments from './LessonComments'
-import LessonContent, { type QuizState, type ActionWhen } from './LessonContent'
+import LessonContent, { formatInline, type ActionWhen } from './LessonContent'
+import InlineStyle from '@/components/ui/InlineStyle'
 import { parseLesson, type Block } from '@/lib/formations/blocks'
+import { lessonSteps, stepLabel, type Step } from '@/lib/formations/steps'
 import { flatLessons, firstIncomplete, lessonFromParam, percent, quizScore } from '@/lib/formations/progress'
+import { coverBackground, objectifLabel } from '@/lib/formations/objectifs'
 
 interface Lesson { id: number; title: string; duration: string; content: string }
 interface Module { id: number; title: string; duration: string; lessons: Lesson[] }
-interface Formation {
-  title: string
-  description: string
-  duration: string
-  level: string
-  objectifs: string[]
-  modules: Module[]
-}
+interface Formation { title: string; description: string; duration: string; level: string; objectifs: string[]; modules: Module[] }
 
 export interface InitialAnswer { lesson_id: number; question: number; correct: boolean }
 export interface InitialAction { module_id: number; done_at: string | null; due_at: string | null }
 
+type QuizState = Record<number, { picked: number; correct: boolean }>
+type ActionState = { when: ActionWhen; dueLabel?: string }
+type View = { kind: 'fiche' } | { kind: 'lesson'; id: number; step: number } | { kind: 'fin' } | { kind: 'bilan'; step: 0 | 1 }
+
 const WHEN_TEXT: Record<Exclude<ActionWhen, 'done'>, string> = { 'ce-soir': 'ce soir', demain: 'demain', 'week-end': 'ce week-end' }
+const BUTS = ['Démarrer sur de bonnes bases', 'Gagner plus avec ce que j\'ai déjà', 'Régler un problème précis']
+const NIVEAUX: Array<[string, string]> = [['debut', 'Pas du tout, je découvre'], ['un-peu', 'Un peu'], ['bien', 'Bien, je veux aller plus loin']]
 
 function dueLabel(iso: string | null): string | undefined {
   if (!iso) return undefined
   return new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', hour: '2-digit', minute: '2-digit' }).format(new Date(iso))
+}
+
+function readView(all: ReturnType<typeof flatLessons>): View {
+  const sp = new URLSearchParams(window.location.search)
+  if (sp.get('fin') === '1') return { kind: 'fin' }
+  const ref = lessonFromParam(all, sp.get('lecon'))
+  if (ref) return { kind: 'lesson', id: ref.lessonId, step: Math.max(0, Number(sp.get('etape') ?? '1') - 1) || 0 }
+  return { kind: 'fiche' }
 }
 
 export default function FormationView({
@@ -53,7 +64,9 @@ export default function FormationView({
   initialAnswers = [],
   initialActions = [],
   initialObjectif = null,
-  formationSlug,
+  initialFavorite = false,
+  firstLogementId = null,
+  formationSlug = '',
   relatedArticles = [],
   recommendedNext = [],
   currentUserId,
@@ -68,8 +81,9 @@ export default function FormationView({
   initialVotes?: Record<string, 1 | -1>
   initialAnswers?: InitialAnswer[]
   initialActions?: InitialAction[]
-  /** Objectif posé au bilan de départ (null = pas encore). */
   initialObjectif?: string | null
+  initialFavorite?: boolean
+  firstLogementId?: string | null
   formationSlug?: string
   relatedArticles?: Array<{ label: string; slug: string }>
   recommendedNext?: Array<{ slug: string; title: string; reason?: string }>
@@ -77,7 +91,7 @@ export default function FormationView({
   currentUserName?: string | null
 }) {
   const all = useMemo(() => flatLessons(formation.modules), [formation.modules])
-  const totalLessons = all.length
+  const total = all.length
   const lessonById = useMemo(() => {
     const m = new Map<number, { lesson: Lesson; module: Module }>()
     formation.modules.forEach(mod => mod.lessons.forEach(l => m.set(l.id, { lesson: l, module: mod })))
@@ -88,733 +102,782 @@ export default function FormationView({
     formation.modules.forEach(mod => mod.lessons.forEach(l => m.set(l.id, parseLesson(l.content))))
     return m
   }, [formation.modules])
+  const stepsById = useMemo(() => {
+    const m = new Map<number, Step[]>()
+    blocksById.forEach((b, id) => m.set(id, lessonSteps(b)))
+    return m
+  }, [blocksById])
   const quizCount = useCallback((id: number) => (blocksById.get(id) ?? []).filter(b => b.type === 'quiz').length, [blocksById])
-
-  const [activeId, setActiveId] = useState<number | null>(null)
-  const [openModules, setOpenModules] = useState<number[]>([formation.modules[0]?.id ?? 1])
-  const [isMobile, setIsMobile] = useState(false)
-  const [isMidScreen, setIsMidScreen] = useState(false)
-  const [navOpen, setNavOpen] = useState(false)
-  const [completed, setCompleted] = useState<number[]>(initialCompletedLessons)
-  const [justFinished, setJustFinished] = useState(false)
-  const [objectif, setObjectif] = useState<string | null>(initialObjectif)
-  const [niveau, setNiveau] = useState<string | null>(null)
-
-  // Réponses : { lessonId: { questionIndex: { picked, correct } } }
-  const [answers, setAnswers] = useState<Record<number, QuizState>>(() => {
-    const out: Record<number, QuizState> = {}
-    for (const a of initialAnswers) {
-      const blocks = blocksById.get(a.lesson_id) ?? []
-      const q = blocks.find(b => b.type === 'quiz' && b.index === a.question)
-      const correctIdx = q && q.type === 'quiz' ? q.options.findIndex(o => o.correct) : -1
-      out[a.lesson_id] = { ...(out[a.lesson_id] ?? {}), [a.question]: { picked: a.correct ? correctIdx : -1, correct: a.correct } }
-    }
-    return out
-  })
-  const [actions, setActions] = useState<Record<number, { when: ActionWhen; dueLabel?: string }>>(() => {
-    const out: Record<number, { when: ActionWhen; dueLabel?: string }> = {}
-    for (const a of initialActions) {
-      out[a.module_id] = a.done_at ? { when: 'done' } : { when: 'demain', dueLabel: dueLabel(a.due_at) }
-    }
-    return out
-  })
-
-  // ─── Adresse de la leçon ──────────────────────────────────────────
-  useEffect(() => {
-    const read = () => {
-      const ref = lessonFromParam(all, new URLSearchParams(window.location.search).get('lecon'))
-      setActiveId(ref?.lessonId ?? null)
-      if (ref) setOpenModules(prev => prev.includes(ref.moduleId) ? prev : [...prev, ref.moduleId])
-    }
-    read()
-    window.addEventListener('popstate', read)
-    return () => window.removeEventListener('popstate', read)
-  }, [all])
-
-  useEffect(() => {
-    const check = () => { setIsMobile(window.innerWidth < 768); setIsMidScreen(window.innerWidth < 1100) }
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
-
-  const mainRef = useRef<HTMLElement>(null)
-  useEffect(() => {
-    if (mainRef.current) mainRef.current.scrollTop = 0
-    window.scrollTo({ top: 0 })
-  }, [activeId])
-
-  function go(lessonId: number | null) {
-    const url = new URL(window.location.href)
-    if (lessonId === null) url.searchParams.delete('lecon')
-    else url.searchParams.set('lecon', String(lessonId))
-    window.history.pushState({}, '', url.pathname + url.search)
-    setActiveId(lessonId)
-    if (lessonId !== null) {
-      const mod = lessonById.get(lessonId)?.module.id
-      if (mod) setOpenModules(prev => prev.includes(mod) ? prev : [...prev, mod])
-    }
-    if (isMobile) setNavOpen(false)
-  }
-
-  const progress = percent(completed, totalLessons)
-  const resume = firstIncomplete(all, completed)
-  const current = activeId !== null ? lessonById.get(activeId) ?? null : null
-  const idx = activeId !== null ? all.findIndex(l => l.lessonId === activeId) : -1
-  const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null
-  const prev = idx > 0 ? all[idx - 1] : null
-
-  function markComplete(lessonId: number) {
-    if (completed.includes(lessonId)) return
-    const updated = [...completed, lessonId]
-    setCompleted(updated)
-    const pct = percent(updated, totalLessons)
-    if (pct === 100) setJustFinished(true)
-    if (formationId) updateFormationProgress(formationId, pct, updated, lessonId)
-  }
-
-  function onAnswer(lessonId: number, index: number, picked: number, correct: boolean) {
-    const nextState = { ...(answers[lessonId] ?? {}), [index]: { picked, correct } }
-    setAnswers(prev => ({ ...prev, [lessonId]: nextState }))
-    if (formationId) answerLessonQuestion({ formationId, lessonId, question: index, correct }).catch(() => null)
-    if (Object.keys(nextState).length >= quizCount(lessonId)) markComplete(lessonId)
-  }
-
-  function onAction(moduleId: number, title: string, href: string | null, when: ActionWhen) {
-    setActions(prev => ({ ...prev, [moduleId]: when === 'done' ? { when } : { when, dueLabel: WHEN_TEXT[when] } }))
-    if (formationId) {
-      planModuleAction({ formationId, moduleId, title, href, when }).then(r => {
-        if (r?.dueAt) setActions(prev => ({ ...prev, [moduleId]: { when, dueLabel: dueLabel(r.dueAt!) } }))
-      }).catch(() => null)
-    }
-  }
-
-  // ─── Notes, favoris, avis ─────────────────────────────────────────
-  const [notes, setNotes] = useState<Record<string, string>>(initialNotes)
-  const [noteSaved, setNoteSaved] = useState(false)
-  const noteTimer = useRef<NodeJS.Timeout | null>(null)
-  function updateNote(lessonId: number, moduleId: number, content: string) {
-    setNotes(p => ({ ...p, [String(lessonId)]: content }))
-    setNoteSaved(false)
-    if (noteTimer.current) clearTimeout(noteTimer.current)
-    if (!formationId) return
-    noteTimer.current = setTimeout(async () => {
-      await saveLessonNote({ formationId, moduleId, lessonId, content })
-      setNoteSaved(true)
-      setTimeout(() => setNoteSaved(false), 1600)
-    }, 700)
-  }
-  const [bookmarks, setBookmarks] = useState<number[]>(initialBookmarks)
-  function toggleBookmark(lessonId: number, moduleId: number, lessonTitle: string) {
-    const add = !bookmarks.includes(lessonId)
-    setBookmarks(p => add ? [...p, lessonId] : p.filter(x => x !== lessonId))
-    if (!formationId || !formationSlug) return
-    toggleLessonBookmark({ formationId, formationSlug, formationTitle: formation.title, moduleId, lessonId, lessonTitle, add })
-      .catch(() => setBookmarks(p => add ? p.filter(x => x !== lessonId) : [...p, lessonId]))
-  }
-  const [votes, setVotes] = useState<Record<string, 1 | -1>>(initialVotes)
-  function vote(lessonId: number, value: 1 | -1) {
-    const nextVote: 1 | -1 | 0 = votes[String(lessonId)] === value ? 0 : value
-    setVotes(p => { const o = { ...p }; if (nextVote === 0) delete o[String(lessonId)]; else o[String(lessonId)] = nextVote; return o })
-    if (formationId) voteLesson({ formationId, lessonId, vote: nextVote }).catch(() => null)
-  }
-
-  // ─── Bilan de fin ────────────────────────────────────────────────
-  const allAnswers = Object.values(answers).flatMap(q => Object.values(q))
-  const score = quizScore(allAnswers)
-  const actionsDone = Object.values(actions).filter(a => a.when === 'done').length
   const actionsTotal = useMemo(() => {
     let n = 0
     blocksById.forEach(bs => { n += bs.filter(b => b.type === 'action').length })
     return n
   }, [blocksById])
 
-  const toc = (current ? blocksById.get(current.lesson.id) ?? [] : [])
-    .filter((b): b is Extract<Block, { type: 'h2' | 'h3' }> => b.type === 'h2' || b.type === 'h3')
+  const [view, setView] = useState<View>({ kind: 'fiche' })
+  const [completed, setCompleted] = useState<number[]>(initialCompletedLessons)
+  const [justFinished, setJustFinished] = useState(false)
+  const [objectif, setObjectif] = useState<string | null>(initialObjectif)
+  const [niveau, setNiveau] = useState<string | null>(null)
+  const [favorite, setFavorite] = useState(initialFavorite)
+  const [answers, setAnswers] = useState<Record<number, QuizState>>(() => {
+    const out: Record<number, QuizState> = {}
+    for (const a of initialAnswers) {
+      const q = (blocksById.get(a.lesson_id) ?? []).find(b => b.type === 'quiz' && b.index === a.question)
+      const correctIdx = q && q.type === 'quiz' ? q.options.findIndex(o => o.correct) : -1
+      out[a.lesson_id] = { ...(out[a.lesson_id] ?? {}), [a.question]: { picked: a.correct ? correctIdx : -1, correct: a.correct } }
+    }
+    return out
+  })
+  const [actions, setActions] = useState<Record<number, ActionState>>(() => {
+    const out: Record<number, ActionState> = {}
+    for (const a of initialActions) out[a.module_id] = a.done_at ? { when: 'done' } : { when: 'demain', dueLabel: dueLabel(a.due_at) }
+    return out
+  })
 
-  function toggleModule(id: number) {
-    setOpenModules(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id])
+  // ─── Adresse ──────────────────────────────────────────────────────
+  useEffect(() => {
+    const read = () => setView(readView(all))
+    read()
+    window.addEventListener('popstate', read)
+    return () => window.removeEventListener('popstate', read)
+  }, [all])
+
+  const go = useCallback((v: View, replace = false) => {
+    const url = new URL(window.location.href)
+    url.searchParams.delete('lecon'); url.searchParams.delete('etape'); url.searchParams.delete('fin')
+    if (v.kind === 'lesson') {
+      url.searchParams.set('lecon', String(v.id))
+      if (v.step > 0) url.searchParams.set('etape', String(v.step + 1))
+    }
+    if (v.kind === 'fin') url.searchParams.set('fin', '1')
+    const href = url.pathname + url.search
+    if (replace) window.history.replaceState({}, '', href)
+    else window.history.pushState({}, '', href)
+    setView(v)
+    window.scrollTo({ top: 0 })
+  }, [])
+
+  const progress = percent(completed, total)
+  const finished = progress === 100
+  const resume = firstIncomplete(all, completed)
+
+  function markComplete(lessonId: number) {
+    if (completed.includes(lessonId)) return
+    const updated = [...completed, lessonId]
+    setCompleted(updated)
+    const pct = percent(updated, total)
+    if (pct === 100) setJustFinished(true)
+    if (formationId) updateFormationProgress(formationId, pct, updated, lessonId)
   }
 
-  // ─── Sommaire (barre de gauche et tiroir mobile) ─────────────────
-  const NavContent = () => (
-    <>
-      <div style={st.navHeader}>
-        {!isMobile && (
-          <Link href="/dashboard/formations" style={st.backLink}><ArrowLeft size={15} /> Toutes les formations</Link>
-        )}
-        <button type="button" onClick={() => go(null)} style={st.navTitleBtn}>{formation.title}</button>
-        <div style={st.navStats}>
-          <span style={st.inline}><Clock size={12} /> {formation.duration}</span>
-          <span style={st.inline}><BookOpen size={12} /> {totalLessons} leçons</span>
+  function onAnswer(lessonId: number, index: number, picked: number, correct: boolean) {
+    if (answers[lessonId]?.[index]) return
+    const next = { ...(answers[lessonId] ?? {}), [index]: { picked, correct } }
+    setAnswers(prev => ({ ...prev, [lessonId]: next }))
+    if (formationId) answerLessonQuestion({ formationId, lessonId, question: index, correct }).catch(() => null)
+    if (Object.keys(next).length >= quizCount(lessonId)) markComplete(lessonId)
+  }
+
+  function onAction(moduleId: number, title: string, href: string | null, when: ActionWhen) {
+    setActions(prev => ({ ...prev, [moduleId]: when === 'done' ? { when } : { when, dueLabel: WHEN_TEXT[when] } }))
+    if (formationId) {
+      planModuleAction({ formationId, moduleId, title, href, when })
+        .then(r => { if (r?.dueAt) setActions(prev => ({ ...prev, [moduleId]: { when, dueLabel: dueLabel(r.dueAt!) } })) })
+        .catch(() => null)
+    }
+  }
+
+  function startOrResume() {
+    if (formationId && completed.length === 0) enrollInFormation(formationId)
+    if (!objectif && completed.length === 0) { go({ kind: 'bilan', step: 0 }); return }
+    const target = resume ?? all[0]
+    if (target) go({ kind: 'lesson', id: target.lessonId, step: 0 })
+  }
+
+  function toggleFav() {
+    const add = !favorite
+    setFavorite(add)
+    if (formationId) toggleFormationFavorite({ formationId, formationSlug, formationTitle: formation.title, add }).catch(() => setFavorite(!add))
+  }
+
+  const score = quizScore(Object.values(answers).flatMap(q => Object.values(q)))
+  const actionsDone = Object.values(actions).filter(a => a.when === 'done').length
+  const cover = coverBackground(formationSlug)
+
+  return (
+    <div className="fv">
+      <InlineStyle css={CSS} />
+      {view.kind === 'fiche' && (
+        <Fiche
+          formation={formation} slug={formationSlug} cover={cover} completed={completed} progress={progress} finished={finished}
+          objectif={objectif} favorite={favorite} onFav={toggleFav} resume={resume} total={total} actionsTotal={actionsTotal}
+          actionsDone={actionsDone} score={score} actions={actions} onStart={startOrResume}
+          onLesson={id => go({ kind: 'lesson', id, step: 0 })} onFin={() => go({ kind: 'fin' })}
+          recommendedNext={recommendedNext}
+        />
+      )}
+      {view.kind === 'bilan' && (
+        <Bilan
+          step={view.step}
+          onClose={() => go({ kind: 'fiche' })}
+          onDone={(obj, lvl) => {
+            setObjectif(obj); setNiveau(lvl)
+            if (formationId) saveFormationBilan({ formationId, objectif: obj, bilan: { niveau: lvl } }).catch(() => null)
+            if (all[0]) go({ kind: 'lesson', id: all[0].lessonId, step: 0 }, true)
+          }}
+          onSkip={() => all[0] && go({ kind: 'lesson', id: all[0].lessonId, step: 0 }, true)}
+        />
+      )}
+      {view.kind === 'lesson' && lessonById.get(view.id) && (
+        <LessonPlayer
+          key={view.id}
+          formationTitle={formation.title}
+          entry={lessonById.get(view.id)!}
+          steps={stepsById.get(view.id) ?? []}
+          step={Math.min(view.step, Math.max(0, (stepsById.get(view.id) ?? []).length - 1))}
+          setStep={s => go({ kind: 'lesson', id: view.id, step: s }, true)}
+          lessonIndex={all.findIndex(l => l.lessonId === view.id)}
+          totalLessons={total}
+          done={completed.includes(view.id)}
+          quizCount={quizCount(view.id)}
+          quiz={answers[view.id] ?? {}}
+          onAnswer={(i, p, c) => onAnswer(view.id, i, p, c)}
+          action={actions[lessonById.get(view.id)!.module.id] ?? null}
+          onAction={(t, h, w) => onAction(lessonById.get(view.id)!.module.id, t, h, w)}
+          logementId={firstLogementId}
+          onComplete={() => markComplete(view.id)}
+          onClose={() => go({ kind: 'fiche' })}
+          onNext={() => {
+            // La leçon courante compte comme faite (le bouton ou la dernière réponse vient de la terminer)
+            const doneNow = completed.includes(view.id) ? completed : [...completed, view.id]
+            if (percent(doneNow, total) === 100) { go({ kind: 'fin' }); return }
+            const after = all.slice(all.findIndex(l => l.lessonId === view.id) + 1).find(l => !doneNow.includes(l.lessonId))
+              ?? all.find(l => !doneNow.includes(l.lessonId))
+            if (after) go({ kind: 'lesson', id: after.lessonId, step: 0 })
+            else go({ kind: 'fiche' })
+          }}
+          objectif={objectif}
+          niveau={niveau}
+          notes={initialNotes}
+          bookmarked={initialBookmarks.includes(view.id)}
+          vote={initialVotes[String(view.id)] ?? null}
+          formationId={formationId ?? null}
+          formationSlug={formationSlug}
+          relatedArticles={relatedArticles}
+          currentUserId={currentUserId ?? null}
+          currentUserName={currentUserName ?? null}
+        />
+      )}
+      {view.kind === 'fin' && (
+        <Fin
+          title={formation.title} objectifs={formation.objectifs} objectif={objectif} celebrate={justFinished}
+          score={score} actionsDone={actionsDone} actionsTotal={actionsTotal} finished={finished}
+          attestationHref={formationSlug ? `/dashboard/formations/attestation/${formationSlug}` : null}
+          next={recommendedNext[0] ?? null} onClose={() => go({ kind: 'fiche' })}
+        />
+      )}
+    </div>
+  )
+}
+
+/* ─────────────────────────── Fiche ─────────────────────────── */
+
+function Fiche(p: {
+  formation: Formation; slug: string; cover: string; completed: number[]; progress: number; finished: boolean
+  objectif: string | null; favorite: boolean; onFav: () => void; resume: ReturnType<typeof firstIncomplete>
+  total: number; actionsTotal: number; actionsDone: number; score: { good: number; total: number }
+  actions: Record<number, ActionState>; onStart: () => void; onLesson: (id: number) => void; onFin: () => void
+  recommendedNext: Array<{ slug: string; title: string; reason?: string }>
+}) {
+  const { formation: f } = p
+  const [open, setOpen] = useState<number | null>(null)
+  const started = p.completed.length > 0
+  const ctaLabel = p.finished ? 'Revoir les leçons' : started ? 'Reprendre' : 'Commencer'
+  const ctaSub = p.finished ? null : p.resume ? (started ? p.resume.title : `Première leçon : ${p.resume.title}`) : null
+  const nextDur = p.resume ? f.modules.flatMap(m => m.lessons).find(l => l.id === p.resume!.lessonId)?.duration : null
+  const curModule = p.resume ? f.modules.find(m => m.lessons.some(l => l.id === p.resume!.lessonId))?.id : null
+
+  const cta = (
+    <button type="button" className="fv-btn" onClick={() => (p.finished ? p.onLesson(f.modules[0].lessons[0].id) : p.onStart())}>
+      {ctaLabel}{nextDur && !p.finished ? ` · ${nextDur}` : ''}
+    </button>
+  )
+
+  return (
+    <div className="fv-fiche">
+      <div className="fv-cover" style={{ background: p.cover }}>
+        <div className="fv-cover-nav">
+          <Link href="/dashboard/formations" className="fv-round" aria-label="Toutes les formations"><ArrowLeft size={17} weight="bold" /></Link>
+          <button type="button" className={`fv-round${p.favorite ? ' on' : ''}`} onClick={p.onFav} aria-label={p.favorite ? 'Retirer des favoris' : 'Garder en favori'} aria-pressed={p.favorite}>
+            <BookmarkSimple size={17} weight={p.favorite ? 'fill' : 'bold'} />
+          </button>
         </div>
-        <ModuleBar modules={formation.modules} completed={completed} activeId={activeId} />
-        <div style={st.navPct}><span>{completed.length} / {totalLessons} leçons</span><strong>{progress} %</strong></div>
+        <span className="fv-cover-tag">{objectifLabel(p.slug)} · {f.level}</span>
+        <h1 className="fv-cover-t">{f.title}</h1>
       </div>
-      <nav style={st.navModules} aria-label="Sommaire de la formation">
-        {formation.modules.map(mod => {
-          const isOpen = openModules.includes(mod.id)
-          const doneCount = mod.lessons.filter(l => completed.includes(l.id)).length
-          const allDone = doneCount === mod.lessons.length
-          return (
-            <div key={mod.id}>
-              <button type="button" onClick={() => toggleModule(mod.id)} style={st.moduleBtn} aria-expanded={isOpen}>
-                <span style={st.moduleLeft}>
-                  {allDone
-                    ? <CheckCircle size={18} weight="fill" color="var(--success-1)" style={{ flexShrink: 0 }} />
-                    : <span style={st.moduleNum}>{mod.id}</span>}
-                  <span style={{ display: 'flex', flexDirection: 'column', gap: '1px', minWidth: 0 }}>
-                    <span style={st.moduleLabel}>{mod.title}</span>
-                    <span style={st.moduleMeta}>{doneCount}/{mod.lessons.length} · {mod.duration}</span>
-                  </span>
-                </span>
-                {isOpen ? <CaretDown size={14} /> : <CaretRight size={14} />}
-              </button>
-              {isOpen && (
-                <div style={st.lessonList}>
-                  {mod.lessons.map(l => {
-                    const active = activeId === l.id
-                    const done = completed.includes(l.id)
+
+      <div className="fv-fiche-grid">
+        <div className="fv-fiche-main">
+          <h1 className="fv-mobile-t">{f.title}</h1>
+          <div className="fv-metas">
+            <span><Clock size={14} /> {f.duration}</span>
+            <span><BookOpen size={14} /> {p.total} leçons</span>
+            {p.actionsTotal > 0 && <span><Target size={14} /> {p.actionsTotal} actions</span>}
+          </div>
+          <p className="fv-promise">{f.description}</p>
+
+          {p.finished && (
+            <button type="button" className="fv-done-banner" onClick={p.onFin}>
+              <span className="fv-medal-s"><Trophy size={18} weight="fill" /></span>
+              <span><b>Formation terminée</b><small>{p.score.total > 0 ? `${p.score.good}/${p.score.total} bonnes réponses · ` : ''}Voir le bilan et l&apos;attestation</small></span>
+              <ArrowRight size={16} weight="bold" />
+            </button>
+          )}
+
+          {started && !p.finished && (
+            <div className="fv-goalcard">
+              <div className="fv-goalrow"><span>{p.objectif ? `Ton objectif : ${p.objectif}` : 'Ta progression'}</span><b>{p.progress} %</b></div>
+              <span className="fv-mini"><i style={{ width: `${p.progress}%` }} /></span>
+            </div>
+          )}
+
+          <span className="fv-sec">Tu sauras</span>
+          <ul className="fv-can">{f.objectifs.map((o, i) => <li key={i}><CheckCircle size={19} weight="fill" />{o}</li>)}</ul>
+
+          <span className="fv-sec">Programme · {f.modules.length} modules</span>
+          <div className="fv-mods">
+            {f.modules.map(m => {
+              const doneN = m.lessons.filter(l => p.completed.includes(l.id)).length
+              const allDone = doneN === m.lessons.length
+              const isCur = m.id === curModule && !p.finished
+              const isOpen = open === m.id
+              return (
+                <div key={m.id} className={`fv-mod${isCur ? ' cur' : ''}`}>
+                  <button type="button" className="fv-mod-h" onClick={() => setOpen(isOpen ? null : m.id)} aria-expanded={isOpen}>
+                    <span className={`fv-nd${allDone ? ' d' : isCur ? ' n' : ''}`}>{allDone ? <Check size={13} weight="bold" /> : m.id}</span>
+                    <span className="fv-mod-m">
+                      <b>{m.title}</b>
+                      <small>
+                        {allDone ? `${m.lessons.length} sur ${m.lessons.length}` : isCur ? `Leçon ${doneN + 1} sur ${m.lessons.length} · en cours` : `${m.lessons.length} leçon${m.lessons.length > 1 ? 's' : ''} · ${m.duration}`}
+                        {p.actions[m.id]?.when === 'done' ? ' · action faite' : ''}
+                      </small>
+                    </span>
+                    <CaretDown size={14} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s', flexShrink: 0 }} />
+                  </button>
+                  {isOpen && (
+                    <div className="fv-mod-l">
+                      {m.lessons.map(l => (
+                        <button key={l.id} type="button" onClick={() => p.onLesson(l.id)} className="fv-mod-lesson">
+                          <span className={`fv-dot${p.completed.includes(l.id) ? ' d' : ''}`}>{p.completed.includes(l.id) && <Check size={9} weight="bold" />}</span>
+                          <span style={{ flex: 1 }}>{l.title}</span>
+                          <small>{l.duration}</small>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {p.finished && p.recommendedNext.length > 0 && (
+            <>
+              <span className="fv-sec">Pour aller plus loin</span>
+              <div className="fv-mods">
+                {p.recommendedNext.map(r => (
+                  <Link key={r.slug} href={`/dashboard/formations/${r.slug}`} className="fv-mod-h" style={{ textDecoration: 'none' }}>
+                    <span className="fv-cov" style={{ background: coverBackground(r.slug, 0.22) }} />
+                    <span className="fv-mod-m"><b>{r.title}</b>{r.reason && <small>{r.reason}</small>}</span>
+                    <ArrowRight size={15} />
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <aside className="fv-fiche-side">
+          <div className="fv-panel">
+            {started && <div className="fv-goalrow"><span>{p.objectif ? `Objectif : ${p.objectif}` : 'Progression'}</span><b>{p.progress} %</b></div>}
+            {started && <span className="fv-mini"><i style={{ width: `${p.progress}%` }} /></span>}
+            {cta}
+            {ctaSub && <small className="fv-muted" style={{ textAlign: 'center' }}>{ctaSub}</small>}
+            <div className="fv-metas small">
+              {p.actionsTotal > 0 && <span><Target size={13} /> {p.actionsDone} action{p.actionsDone > 1 ? 's' : ''} sur {p.actionsTotal}</span>}
+              {p.score.total > 0 && <span><Check size={13} /> {p.score.good} bonne{p.score.good > 1 ? 's' : ''} réponse{p.score.good > 1 ? 's' : ''} sur {p.score.total}</span>}
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div className="fv-sticky">
+        {cta}
+        {ctaSub && <small>{ctaSub}</small>}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────── Bilan de départ ─────────────────────────── */
+
+function Bilan({ step, onClose, onDone, onSkip }: { step: 0 | 1; onClose: () => void; onDone: (o: string, n: string) => void; onSkip: () => void }) {
+  const [s, setS] = useState<0 | 1>(step)
+  const [but, setBut] = useState<string | null>(null)
+  const [libre, setLibre] = useState('')
+  const [autre, setAutre] = useState(false)
+  const [lvl, setLvl] = useState<string | null>(null)
+  const obj = autre ? libre.trim() : but
+  return (
+    <div className="fv-full">
+      <div className="fv-top">
+        <button type="button" className="fv-x" onClick={onClose} aria-label="Fermer"><X size={20} /></button>
+        <span className="fv-prog"><i className="d" /><i className={s === 1 ? 'd' : ''} /></span>
+        <span className="fv-count">{s + 1}/2</span>
+      </div>
+      <div className="fv-stage">
+        <div className="fv-stage-in">
+          <span className="fv-k">Avant de commencer</span>
+          {s === 0 ? (
+            <>
+              <h2 className="fv-h">Qu&apos;est-ce que tu veux réussir avec cette formation ?</h2>
+              <div className="fv-opts">
+                {BUTS.map(b => (
+                  <button key={b} type="button" className={`fv-opt${!autre && but === b ? ' sel' : ''}`} onClick={() => { setBut(b); setAutre(false) }}>{b}</button>
+                ))}
+                <button type="button" className={`fv-opt${autre ? ' sel' : ''}`} onClick={() => setAutre(true)}>Autre, je l&apos;écris</button>
+                {autre && <input id="bilan-libre" className="fv-input" autoFocus value={libre} maxLength={200} onChange={e => setLibre(e.target.value)} placeholder="En une phrase" />}
+              </div>
+              <p className="fv-muted">Ton objectif s&apos;affichera sur la fiche et à la fin, pour mesurer le chemin parcouru.</p>
+            </>
+          ) : (
+            <>
+              <h2 className="fv-h">Tu connais déjà ce sujet ?</h2>
+              <div className="fv-opts">
+                {NIVEAUX.map(([k, l]) => <button key={k} type="button" className={`fv-opt${lvl === k ? ' sel' : ''}`} onClick={() => setLvl(k)}>{l}</button>)}
+              </div>
+              {lvl === 'bien' && <p className="fv-muted">Tu pourras ouvrir directement les leçons qui t&apos;intéressent depuis le programme : les questions te diront ce que tu sais déjà.</p>}
+            </>
+          )}
+        </div>
+      </div>
+      <div className="fv-foot">
+        <div className="fv-foot-in">
+          <button type="button" className="fv-ghost" onClick={onSkip}>Passer</button>
+          {s === 0
+            ? <button type="button" className="fv-btn" disabled={!obj} onClick={() => setS(1)}>Continuer</button>
+            : <button type="button" className="fv-btn" disabled={!lvl} onClick={() => obj && lvl && onDone(obj, lvl)}>C&apos;est parti</button>}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────── Leçon en étapes ─────────────────────────── */
+
+function LessonPlayer(p: {
+  formationTitle: string; entry: { lesson: Lesson; module: Module }; steps: Step[]; step: number; setStep: (s: number) => void
+  lessonIndex: number; totalLessons: number; done: boolean; quizCount: number; quiz: QuizState
+  onAnswer: (i: number, picked: number, correct: boolean) => void; action: ActionState | null
+  onAction: (title: string, href: string | null, when: ActionWhen) => void; logementId: string | null
+  onComplete: () => void; onClose: () => void; onNext: () => void; objectif: string | null; niveau: string | null
+  notes: Record<string, string>; bookmarked: boolean; vote: 1 | -1 | null; formationId: string | null; formationSlug: string
+  relatedArticles: Array<{ label: string; slug: string }>; currentUserId: string | null; currentUserName: string | null
+}) {
+  const { lesson, module } = p.entry
+  const steps = p.steps.length ? p.steps : [{ kind: 'content', title: null, blocks: [] } as Step]
+  const s = steps[p.step]
+  const last = p.step === steps.length - 1
+  const [tools, setTools] = useState<null | 'notes' | 'question'>(null)
+  const [note, setNote] = useState(p.notes[String(lesson.id)] ?? '')
+  const [saved, setSaved] = useState(false)
+  const [bm, setBm] = useState(p.bookmarked)
+  const [vote, setVote] = useState<1 | -1 | null>(p.vote)
+  const timer = useRef<NodeJS.Timeout | null>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => { stageRef.current?.scrollTo({ top: 0 }); window.scrollTo({ top: 0 }) }, [p.step])
+
+  // Lien d'action vers Mes prix : le logement de l'hôte déjà choisi
+  const actionHref = (href: string | null) => {
+    if (!href || !p.logementId || !href.startsWith('/dashboard/calculateurs')) return href
+    const [path, hash] = href.split('#')
+    return `${path}${path.includes('?') ? '&' : '?'}logement=${p.logementId}${hash ? `#${hash}` : ''}`
+  }
+
+  function updateNote(v: string) {
+    setNote(v); setSaved(false)
+    if (timer.current) clearTimeout(timer.current)
+    if (!p.formationId) return
+    timer.current = setTimeout(async () => {
+      await saveLessonNote({ formationId: p.formationId!, moduleId: module.id, lessonId: lesson.id, content: v })
+      setSaved(true)
+    }, 700)
+  }
+  function toggleBm() {
+    const add = !bm
+    setBm(add)
+    if (p.formationId) toggleLessonBookmark({ formationId: p.formationId, formationSlug: p.formationSlug, formationTitle: p.formationTitle, moduleId: module.id, lessonId: lesson.id, lessonTitle: lesson.title, add }).catch(() => setBm(!add))
+  }
+  function setV(v: 1 | -1) {
+    const next = vote === v ? null : v
+    setVote(next)
+    if (p.formationId) voteLesson({ formationId: p.formationId, lessonId: lesson.id, vote: next ?? 0 }).catch(() => null)
+  }
+
+  const answered = s.kind === 'quiz' ? p.quiz[s.quiz.index] : undefined
+  const canContinue = s.kind !== 'quiz' || !!answered
+
+  function next() {
+    if (!last) { p.setStep(p.step + 1); return }
+    if (p.quizCount === 0) p.onComplete()
+    p.onNext()
+  }
+
+  const nextLabel = last ? (p.lessonIndex + 1 >= p.totalLessons ? 'Terminer la formation' : 'Leçon suivante') : 'Continuer'
+
+  return (
+    <div className="fv-full fv-lesson">
+      <div className="fv-top">
+        <button type="button" className="fv-x" onClick={p.onClose} aria-label="Fermer la leçon"><X size={20} /></button>
+        <span className="fv-prog" aria-label={`Étape ${p.step + 1} sur ${steps.length}`}>
+          {steps.map((_, i) => <i key={i} className={i < p.step ? 'd' : i === p.step ? 'n' : ''} />)}
+        </span>
+        <span className="fv-count">{p.step + 1}/{steps.length}</span>
+        <button type="button" className={`fv-x${bm ? ' on' : ''}`} onClick={toggleBm} aria-label={bm ? 'Retirer des favoris' : 'Garder en favori'} aria-pressed={bm}>
+          <BookmarkSimple size={19} weight={bm ? 'fill' : 'regular'} />
+        </button>
+      </div>
+
+      <div className="fv-lesson-grid">
+        <div className="fv-stage" ref={stageRef}>
+          <div className="fv-stage-in" key={p.step}>
+            {s.kind === 'content' && (
+              <>
+                <span className="fv-k">{p.step === 0 ? `Module ${module.id} · Leçon ${p.lessonIndex + 1} sur ${p.totalLessons}` : lesson.title}</span>
+                <h2 className="fv-h">{p.step === 0 ? lesson.title : (s.title ?? lesson.title)}</h2>
+                {p.step === 0 && <span className="fv-meta"><Clock size={13} /> {lesson.duration} · {steps.length} étapes{p.quizCount > 0 ? ` · ${p.quizCount} questions` : ''}</span>}
+                <LessonContent blocks={s.blocks} quiz={{}} onAnswer={() => {}} action={null} onAction={() => {}} />
+              </>
+            )}
+
+            {s.kind === 'quiz' && (
+              <>
+                <span className="fv-k"><Target size={13} weight="fill" /> Vérifie</span>
+                <h2 className="fv-h fv-h-q">{s.quiz.question}</h2>
+                <div className="fv-opts">
+                  {s.quiz.options.map((o, j) => {
+                    const cls = !answered ? '' : o.correct ? ' good' : answered.picked === j ? ' bad' : ' dim'
                     return (
-                      <button key={l.id} type="button" onClick={() => go(l.id)} style={{ ...st.lessonBtn, ...(active ? st.lessonBtnActive : {}) }} aria-current={active ? 'page' : undefined}>
-                        <span style={{ ...st.lessonDot, ...(done ? st.lessonDotDone : active ? st.lessonDotActive : {}) }}>
-                          {done && <Check size={9} weight="bold" color="var(--bg)" />}
-                        </span>
-                        <span style={{ flex: 1, textAlign: 'left' }}>{l.title}</span>
-                        <span style={st.lessonDur}>{l.duration}</span>
+                      <button key={j} type="button" className={`fv-opt${cls}`} disabled={!!answered} onClick={() => p.onAnswer(s.quiz.index, j, o.correct)}>
+                        {answered && o.correct && <CheckCircle size={20} weight="fill" className="fv-mk g" />}
+                        {answered && !o.correct && answered.picked === j && <XCircle size={20} weight="fill" className="fv-mk b" />}
+                        <span>{o.text}</span>
                       </button>
                     )
                   })}
                 </div>
-              )}
-            </div>
-          )
-        })}
-      </nav>
-    </>
-  )
+              </>
+            )}
 
-  const finished = progress === 100
-  const finishPanel = finished ? (
-    <FinishPanel
-      celebrate={justFinished}
-      objectif={objectif}
-      title={formation.title}
-      objectifs={formation.objectifs}
-      score={score}
-      actionsDone={actionsDone}
-      actionsTotal={actionsTotal}
-      next={recommendedNext[0] ?? null}
-      attestationHref={formationSlug ? `/dashboard/formations/attestation/${formationSlug}` : null}
-    />
-  ) : null
+            {s.kind === 'action' && (
+              <>
+                <span className="fv-act-ic"><Lightning size={26} weight="fill" /></span>
+                <LessonContent
+                  blocks={[{ ...s.action, href: actionHref(s.action.href) }]}
+                  quiz={{}} onAnswer={() => {}}
+                  action={p.action}
+                  onAction={(t, h, w) => p.onAction(t, h, w)}
+                />
+              </>
+            )}
 
-  return (
-    <div style={{ ...st.root, flexDirection: isMobile ? 'column' : 'row' }} className="dash-page fv">
-      <style>{`
-        .fv-in { animation: fvIn .35s ease both; }
-        @keyframes fvIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-        @media (prefers-reduced-motion: reduce) { .fv-in { animation: none; } }
-        .fv button:focus-visible, .fv a:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
-      `}</style>
+            {last && (
+              <div className="fv-tools">
+                {p.done && <span className="fv-done"><CheckCircle size={18} weight="fill" /> Leçon terminée</span>}
+                <div className="fv-tools-row">
+                  <span className="fv-muted">Cette leçon était claire ?</span>
+                  <button type="button" className={`fv-chip${vote === 1 ? ' on' : ''}`} onClick={() => setV(1)}>Oui</button>
+                  <button type="button" className={`fv-chip${vote === -1 ? ' on' : ''}`} onClick={() => setV(-1)}>Pas assez</button>
+                </div>
+                <div className="fv-tools-row">
+                  <button type="button" className={`fv-chip${tools === 'notes' ? ' on' : ''}`} onClick={() => setTools(tools === 'notes' ? null : 'notes')}><NotePencil size={14} /> Mes notes</button>
+                  <button type="button" className={`fv-chip${tools === 'question' ? ' on' : ''}`} onClick={() => setTools(tools === 'question' ? null : 'question')}><ChatCircle size={14} /> Poser une question</button>
+                </div>
+                {tools === 'notes' && (
+                  <div className="fv-notes">
+                    <textarea id={`note-${lesson.id}`} value={note} onChange={e => updateNote(e.target.value)} rows={4} placeholder="Une idée à retenir, une chose à faire pour ton logement…" />
+                    {saved && <small className="fv-saved"><Check size={12} weight="bold" /> Enregistré</small>}
+                  </div>
+                )}
+                {tools === 'question' && p.formationId && (
+                  <LessonComments formationId={p.formationId} lessonId={lesson.id} currentUserId={p.currentUserId} defaultDisplayName={p.currentUserName ?? undefined} />
+                )}
+              </div>
+            )}
+          </div>
+        </div>
 
-      {isMobile && (
-        <>
-          <div style={st.mobileBar}>
-            <Link href="/dashboard/formations" style={st.mobileBack} aria-label="Toutes les formations"><ArrowLeft size={18} /></Link>
-            <div style={st.mobileBarCenter}>
-              <span style={st.mobileBarTitle}>{formation.title}</span>
-              <ModuleBar modules={formation.modules} completed={completed} activeId={activeId} compact />
-            </div>
-            <button type="button" onClick={() => setNavOpen(v => !v)} style={st.mobileNavToggle} aria-label="Sommaire" aria-expanded={navOpen}>
-              {navOpen ? <X size={20} color="var(--text)" /> : <List size={20} color="var(--text)" />}
+        <aside className="fv-rail">
+          <span className="fv-sec">Cette leçon</span>
+          {steps.map((st, i) => (
+            <button key={i} type="button" className={`fv-rail-i${i === p.step ? ' on' : ''}${i < p.step ? ' d' : ''}`} onClick={() => p.setStep(i)}>
+              <i />{stepLabel(st)}
             </button>
-          </div>
-          <div style={st.mobileBarSpacer} />
-        </>
-      )}
-      {isMobile && navOpen && <div style={st.mobileDrawer}><NavContent /></div>}
-      {!isMobile && <aside style={st.navPanel}><NavContent /></aside>}
-
-      <main ref={mainRef} style={{ ...st.main, ...(isMobile ? { overflowY: 'visible' } : {}) }}>
-        {!current ? (
-          <div style={{ ...st.overview, ...(isMobile ? st.overviewMobile : {}) }} className="fv-in" key="overview">
-            {finishPanel}
-            <span style={st.levelBadge}><GraduationCap size={13} weight="fill" /> {formation.level}</span>
-            <h1 style={st.overviewTitle}>{formation.title}</h1>
-            <p style={st.overviewDesc}>{formation.description}</p>
-
-            <div style={{ ...st.metaRow, ...(isMobile ? st.metaRowMobile : {}) }}>
-              <Meta icon={<Clock size={16} />} value={formation.duration} label="durée totale" />
-              <Meta icon={<BookOpen size={16} />} value={`${formation.modules.length} modules`} label={`${totalLessons} leçons`} />
-              <Meta icon={<Target size={16} />} value={progress > 0 ? `${progress} %` : 'À toi de jouer'} label={progress > 0 ? 'déjà fait' : 'questions et actions dans chaque module'} />
-            </div>
-
-            {objectif ? (
-              <div style={st.goalSet}>
-                <CheckCircle size={18} weight="fill" color="var(--success-1)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <span>
-                  <span style={st.goalLbl}>Ton objectif</span>
-                  <span style={{ color: 'var(--text)' }}>{objectif}</span>
-                  {niveau === 'bien' && <span style={st.goalTip}>Tu connais déjà le sujet : ouvre dans le sommaire les leçons qui t&apos;intéressent et réponds aux questions pour vérifier ce que tu sais.</span>}
-                </span>
-              </div>
-            ) : !finished && (
-              <BilanDepart
-                onSave={(obj, lvl) => {
-                  setObjectif(obj)
-                  setNiveau(lvl)
-                  if (formationId) saveFormationBilan({ formationId, objectif: obj, bilan: { niveau: lvl } }).catch(() => null)
-                }}
-              />
-            )}
-
-            <div style={st.objBox}>
-              <div style={st.objTitle}>Ce que tu sauras faire</div>
-              <ul style={st.objList}>
-                {formation.objectifs.map((o, i) => (
-                  <li key={i} style={st.objItem}>
-                    <CheckCircle size={17} weight="fill" color="var(--success-1)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                    <span>{o}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-              {resume && progress > 0 ? (
-                <>
-                  <button type="button" className="btn-primary" onClick={() => go(resume.lessonId)} style={{ ...st.bigBtn, width: isMobile ? '100%' : 'auto' }}>
-                    Reprendre : {resume.title} <ArrowRight size={16} />
-                  </button>
-                  <button type="button" onClick={() => go(all[0].lessonId)} style={st.ghostBtn}><ArrowCounterClockwise size={14} /> Revoir depuis le début</button>
-                </>
-              ) : !finished ? (
-                <button
-                  type="button"
-                  className="btn-primary"
-                  onClick={() => { if (formationId) enrollInFormation(formationId); go(all[0]?.lessonId ?? null) }}
-                  style={{ ...st.bigBtn, width: isMobile ? '100%' : 'auto' }}
-                >
-                  Commencer la formation <ArrowRight size={16} />
-                </button>
-              ) : (
-                <button type="button" onClick={() => go(all[0].lessonId)} style={st.ghostBtn}><ArrowCounterClockwise size={14} /> Revoir les leçons</button>
-              )}
-            </div>
-
-            {recommendedNext.length > 0 && !finished && (
-              <div style={st.recoBlock}>
-                <h3 style={st.recoTitle}>Pour aller plus loin</h3>
-                <div style={st.recoList}>
-                  {recommendedNext.map(r => (
-                    <Link key={r.slug} href={`/dashboard/formations/${r.slug}`} style={st.recoCard}>
-                      <span style={{ flex: 1, minWidth: 0 }}>
-                        <span style={st.recoCardTitle}>{r.title}</span>
-                        {r.reason && <span style={st.recoCardReason}>{r.reason}</span>}
-                      </span>
-                      <ArrowRight size={14} weight="bold" color="var(--accent-text)" style={{ flexShrink: 0 }} />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <article style={{ ...st.lesson, ...(isMobile ? st.lessonMobile : {}) }} className="fv-in" key={current.lesson.id}>
-            <div style={st.crumb}>
-              <span>Module {current.module.id} · {current.module.title}</span>
-            </div>
-            <LessonSteps module={current.module} completed={completed} activeId={current.lesson.id} onPick={go} />
-            <h1 style={st.lessonTitle}>{current.lesson.title}</h1>
-            <div style={st.lessonMeta}>
-              <span style={st.inline}><Clock size={13} /> {current.lesson.duration}</span>
-              {quizCount(current.lesson.id) > 0 && (
-                <span style={st.inline}><Target size={13} /> {quizCount(current.lesson.id)} question{quizCount(current.lesson.id) > 1 ? 's' : ''} à la fin</span>
-              )}
-            </div>
-
-            <LessonContent
-              blocks={blocksById.get(current.lesson.id) ?? []}
-              quiz={answers[current.lesson.id] ?? {}}
-              onAnswer={(i, picked, correct) => onAnswer(current.lesson.id, i, picked, correct)}
-              action={actions[current.module.id] ?? null}
-              onAction={(title, href, when) => onAction(current.module.id, title, href, when)}
-            />
-
-            <div style={st.endBar}>
-              {completed.includes(current.lesson.id) ? (
-                <span style={st.doneMsg}><CheckCircle size={18} weight="fill" /> Leçon terminée</span>
-              ) : quizCount(current.lesson.id) > 0 ? (
-                <span style={st.todoMsg}><Target size={16} /> Réponds aux questions pour terminer la leçon</span>
-              ) : (
-                <button type="button" className="btn-primary" onClick={() => markComplete(current.lesson.id)} style={st.midBtn}>
-                  <Check size={16} weight="bold" /> Marquer comme terminé
-                </button>
-              )}
-              <span style={{ flex: 1 }} />
-              {prev && (
-                <button type="button" onClick={() => go(prev.lessonId)} style={st.ghostBtn}><ArrowLeft size={14} /> Précédente</button>
-              )}
-              {next && (
-                <button
-                  type="button"
-                  className={completed.includes(current.lesson.id) ? 'btn-primary' : undefined}
-                  onClick={() => go(next.lessonId)}
-                  style={completed.includes(current.lesson.id) ? st.midBtn : st.ghostBtn}
-                >
-                  Leçon suivante <ArrowRight size={14} />
-                </button>
-              )}
-            </div>
-
-            {!next && finishPanel}
-
-            <div style={st.clear}>
-              <span>Cette leçon était claire ?</span>
-              <button type="button" onClick={() => vote(current.lesson.id, 1)} style={{ ...st.chip, ...(votes[String(current.lesson.id)] === 1 ? st.chipOn : {}) }}>Oui</button>
-              <button type="button" onClick={() => vote(current.lesson.id, -1)} style={{ ...st.chip, ...(votes[String(current.lesson.id)] === -1 ? st.chipOn : {}) }}>Pas assez</button>
-              <button type="button" onClick={() => toggleBookmark(current.lesson.id, current.module.id, current.lesson.title)} style={{ ...st.chip, ...(bookmarks.includes(current.lesson.id) ? st.chipOn : {}) }}>
-                <BookmarkSimple size={13} weight={bookmarks.includes(current.lesson.id) ? 'fill' : 'regular'} /> {bookmarks.includes(current.lesson.id) ? 'Dans mes favoris' : 'Garder en favori'}
-              </button>
-            </div>
-
-            <details style={st.notes} open={!!notes[String(current.lesson.id)]}>
-              <summary style={st.notesSum}><NotePencil size={15} /> Mes notes sur cette leçon {noteSaved && <span style={st.saved}><Check size={12} weight="bold" /> Enregistré</span>}</summary>
-              <textarea
-                id={`note-${current.lesson.id}`}
-                placeholder="Une idée à retenir, une chose à faire pour ton logement..."
-                value={notes[String(current.lesson.id)] ?? ''}
-                onChange={e => updateNote(current.lesson.id, current.module.id, e.target.value)}
-                rows={4}
-                style={st.noteArea}
-              />
-            </details>
-
-            {formationId && (
-              <LessonComments
-                formationId={formationId}
-                lessonId={current.lesson.id}
-                currentUserId={currentUserId ?? null}
-                defaultDisplayName={currentUserName ?? undefined}
-              />
-            )}
-          </article>
-        )}
-      </main>
-
-      {!isMobile && !isMidScreen && (
-        <aside style={st.rail}>
-          <div style={st.railSection}>
-            <div style={st.railLabel}>Ta progression</div>
-            {formation.modules.map(mod => {
-              const d = mod.lessons.filter(l => completed.includes(l.id)).length
-              return (
-                <div key={mod.id} style={st.railMod}>
-                  <span style={st.railModT}>{mod.id}. {mod.title}</span>
-                  <span style={st.railBar}><span style={{ ...st.railFill, width: `${Math.round((d / mod.lessons.length) * 100)}%` }} /></span>
-                </div>
-              )
-            })}
-            {score.total > 0 && <div style={st.railNote}>{score.good} bonne{score.good > 1 ? 's' : ''} réponse{score.good > 1 ? 's' : ''} sur {score.total}</div>}
-            {actionsTotal > 0 && <div style={st.railNote}>{actionsDone} action{actionsDone > 1 ? 's' : ''} faite{actionsDone > 1 ? 's' : ''} sur {actionsTotal}</div>}
-          </div>
-
-          {toc.length > 0 && (
-            <div style={st.railSection}>
-              <div style={st.railLabel}>Sur cette page</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                {toc.map(t => (
-                  <a
-                    key={t.id}
-                    href={`#${t.id}`}
-                    onClick={e => {
-                      e.preventDefault()
-                      const el = document.getElementById(t.id)
-                      const main = mainRef.current
-                      if (el && main) {
-                        const top = main.scrollTop + (el.getBoundingClientRect().top - main.getBoundingClientRect().top) - 24
-                        main.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
-                      }
-                    }}
-                    style={{ ...st.tocLink, paddingLeft: t.type === 'h3' ? '18px' : '8px' }}
-                  >
-                    {t.text}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {relatedArticles.length > 0 && (
-            <div style={{ ...st.railSection, borderBottom: 'none' }}>
-              <div style={st.railLabel}>Approfondir</div>
-              {relatedArticles.map(a => (
-                <a key={a.slug} href={`https://jasonmarinho.com/blog/${a.slug}`} target="_blank" rel="noopener noreferrer" style={{ ...st.tocLink, display: 'flex', gap: '6px', alignItems: 'center' }}>
-                  <span style={{ flex: 1 }}>{a.label}</span><ArrowSquareOut size={11} />
-                </a>
-              ))}
-            </div>
+          ))}
+          {p.objectif && <><span className="fv-sec" style={{ marginTop: '14px' }}>Ton objectif</span><span className="fv-rail-goal">{p.objectif}</span></>}
+          {p.relatedArticles.length > 0 && (
+            <>
+              <span className="fv-sec" style={{ marginTop: '14px' }}>Approfondir</span>
+              {p.relatedArticles.map(a => <a key={a.slug} href={`https://jasonmarinho.com/blog/${a.slug}`} target="_blank" rel="noopener noreferrer" className="fv-rail-i">{a.label}</a>)}
+            </>
           )}
         </aside>
+      </div>
+
+      {s.kind === 'quiz' && answered ? (
+        <div className={`fv-sheet ${answered.correct ? 'ok' : 'ko'}`} role="status" aria-live="polite">
+          <div className="fv-sheet-in">
+            <span className="fv-sheet-t">{answered.correct ? <><CheckCircle size={24} weight="fill" /> Exact !</> : <><XCircle size={24} weight="fill" /> Pas tout à fait</>}</span>
+            {s.quiz.explanation && <p dangerouslySetInnerHTML={{ __html: formatInline(s.quiz.explanation) }} />}
+            {!answered.correct && <small>Cette question reviendra dans ta révision, dans 7 jours.</small>}
+            <button type="button" className="fv-btn" onClick={next}>{answered.correct ? nextLabel === 'Continuer' ? 'Continuer' : nextLabel : 'J\'ai compris'}</button>
+          </div>
+        </div>
+      ) : (
+        <div className="fv-foot">
+          <div className="fv-foot-in">
+            {p.step > 0 && <button type="button" className="fv-ghost fv-prev" onClick={() => p.setStep(p.step - 1)} aria-label="Étape précédente"><ArrowLeft size={18} /></button>}
+            <button type="button" className="fv-btn" disabled={!canContinue} onClick={next}>
+              {s.kind === 'quiz' ? 'Choisis une réponse' : nextLabel} {canContinue && <ArrowRight size={17} weight="bold" />}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )
 }
 
-function Meta({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
-  return (
-    <div style={st.metaChip}>
-      <span style={{ color: 'var(--accent-text)', display: 'flex' }}>{icon}</span>
-      <span><span style={st.metaVal}>{value}</span><span style={st.metaLbl}>{label}</span></span>
-    </div>
-  )
-}
+/* ─────────────────────────── Fin ─────────────────────────── */
 
-/** Barre découpée par module : on voit la fin du module approcher. */
-function ModuleBar({ modules, completed, activeId, compact = false }: { modules: Module[]; completed: number[]; activeId: number | null; compact?: boolean }) {
-  return (
-    <div style={{ display: 'flex', gap: '3px', margin: compact ? 0 : '12px 0 6px' }} aria-hidden="true">
-      {modules.map(m => {
-        const d = m.lessons.filter(l => completed.includes(l.id)).length
-        const pct = Math.round((d / Math.max(1, m.lessons.length)) * 100)
-        const here = m.lessons.some(l => l.id === activeId)
-        return (
-          <span key={m.id} style={{ flex: m.lessons.length, height: compact ? '5px' : '6px', borderRadius: '99px', background: 'var(--surface-2)', overflow: 'hidden', outline: here ? '1px solid var(--accent-border)' : 'none' }}>
-            <span style={{ display: 'block', height: '100%', width: `${pct}%`, background: 'var(--accent-text)', borderRadius: '99px', transition: 'width .4s' }} />
-          </span>
-        )
-      })}
-    </div>
-  )
-}
-
-/** Leçons du module en pastilles, en haut de la leçon. */
-function LessonSteps({ module, completed, activeId, onPick }: { module: Module; completed: number[]; activeId: number; onPick: (id: number) => void }) {
-  const pos = module.lessons.findIndex(l => l.id === activeId) + 1
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '10px 0 18px', flexWrap: 'wrap' }}>
-      <div style={{ display: 'flex', gap: '4px', flex: '1 1 160px', maxWidth: '320px' }}>
-        {module.lessons.map(l => {
-          const done = completed.includes(l.id)
-          const here = l.id === activeId
-          return (
-            <button
-              key={l.id}
-              type="button"
-              onClick={() => onPick(l.id)}
-              title={l.title}
-              aria-label={l.title}
-              style={{ flex: 1, height: '7px', borderRadius: '99px', border: 0, padding: 0, cursor: 'pointer', background: done ? 'var(--accent-text)' : here ? 'var(--accent-border)' : 'var(--surface-2)' }}
-            />
-          )
-        })}
-      </div>
-      <span style={{ fontSize: '12.5px', color: 'var(--text-3)' }}>Leçon {pos} sur {module.lessons.length}</span>
-    </div>
-  )
-}
-
-const BUTS = ['Démarrer sur de bonnes bases', 'Gagner plus avec ce que j\'ai déjà', 'Régler un problème précis']
-const NIVEAUX: Array<[string, string]> = [['debut', 'Pas du tout'], ['un-peu', 'Un peu'], ['bien', 'Bien']]
-
-/** Bilan de départ (1 minute) : dire ce qu'on veut réussir aide à aller au bout. */
-function BilanDepart({ onSave }: { onSave: (objectif: string, niveau: string) => void }) {
-  const [but, setBut] = useState<string | null>(null)
-  const [libre, setLibre] = useState('')
-  const [lvl, setLvl] = useState<string | null>(null)
-  const obj = libre.trim() || but
-  return (
-    <section style={st.bilan} aria-label="Bilan de départ">
-      <span style={st.goalLbl}>Avant de commencer · 1 minute</span>
-      <div style={st.bilanQ}>Qu&apos;est-ce que tu veux réussir avec cette formation ?</div>
-      <div style={st.chips}>
-        {BUTS.map(b => (
-          <button key={b} type="button" onClick={() => { setBut(b); setLibre('') }} style={{ ...st.chip, ...(but === b && !libre.trim() ? st.chipOn : {}) }}>{b}</button>
-        ))}
-      </div>
-      <input
-        id="bilan-objectif"
-        value={libre}
-        onChange={e => setLibre(e.target.value)}
-        placeholder="Ou écris-le en une phrase"
-        maxLength={200}
-        style={st.bilanInput}
-      />
-      <div style={st.bilanQ}>Tu connais déjà ce sujet ?</div>
-      <div style={st.chips}>
-        {NIVEAUX.map(([k, l]) => (
-          <button key={k} type="button" onClick={() => setLvl(k)} style={{ ...st.chip, ...(lvl === k ? st.chipOn : {}) }}>{l}</button>
-        ))}
-      </div>
-      <button type="button" className="btn-primary" disabled={!obj || !lvl} onClick={() => obj && lvl && onSave(obj, lvl)} style={{ ...st.midBtn, alignSelf: 'flex-start', opacity: !obj || !lvl ? 0.5 : 1 }}>
-        <Target size={15} weight="fill" /> Poser mon objectif
-      </button>
-    </section>
-  )
-}
-
-function FinishPanel({ celebrate, objectif, title, objectifs, score, actionsDone, actionsTotal, next, attestationHref }: {
-  celebrate: boolean
-  objectif: string | null
-  title: string
-  objectifs: string[]
-  score: { good: number; total: number }
-  actionsDone: number
-  actionsTotal: number
-  next: { slug: string; title: string } | null
-  attestationHref: string | null
+function Fin(p: {
+  title: string; objectifs: string[]; objectif: string | null; celebrate: boolean; finished: boolean
+  score: { good: number; total: number }; actionsDone: number; actionsTotal: number
+  attestationHref: string | null; next: { slug: string; title: string } | null; onClose: () => void
 }) {
+  if (!p.finished) {
+    return (
+      <div className="fv-full">
+        <div className="fv-top"><button type="button" className="fv-x" onClick={p.onClose} aria-label="Fermer"><X size={20} /></button></div>
+        <div className="fv-stage"><div className="fv-stage-in"><h2 className="fv-h">Termine toutes les leçons pour voir ton bilan.</h2></div></div>
+      </div>
+    )
+  }
   return (
-    <section style={st.finish} className={celebrate ? 'fv-finish fv-celebrate' : 'fv-finish'} aria-label="Formation terminée">
-      <style>{`
-        .fv-finish { position: relative; overflow: hidden; }
-        .fv-medal { animation: fvMedal .7s cubic-bezier(.2,1.4,.4,1) both; }
-        .fv-celebrate .fv-spark { position: absolute; width: 8px; height: 8px; border-radius: 2px; opacity: 0; animation: fvSpark 1.4s ease-out both; }
-        @keyframes fvMedal { from { transform: scale(.4) rotate(-12deg); opacity: 0; } to { transform: none; opacity: 1; } }
-        @keyframes fvSpark { 0% { opacity: 1; transform: translate(0,0) rotate(0); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(220deg); } }
-        @media (prefers-reduced-motion: reduce) { .fv-medal, .fv-celebrate .fv-spark { animation: none; } .fv-celebrate .fv-spark { display: none; } }
-      `}</style>
-      {celebrate && Array.from({ length: 18 }).map((_, i) => (
-        <span
-          key={i}
-          className="fv-spark"
-          style={{
-            left: '62px', top: '58px',
-            background: i % 3 === 0 ? '#FFD56B' : i % 3 === 1 ? 'var(--accent-text)' : 'var(--success-1)',
-            animationDelay: `${(i % 6) * 40}ms`,
-            ['--dx' as string]: `${Math.round(Math.cos((i / 18) * Math.PI * 2) * (90 + (i % 4) * 30))}px`,
-            ['--dy' as string]: `${Math.round(Math.sin((i / 18) * Math.PI * 2) * (70 + (i % 3) * 25))}px`,
-          } as React.CSSProperties}
-        />
-      ))}
-      <div style={{ display: 'flex', gap: '18px', alignItems: 'center', flexWrap: 'wrap' }}>
-        <span className="fv-medal" style={st.medal}><Trophy size={34} weight="fill" /></span>
-        <span style={{ display: 'flex', flexDirection: 'column', gap: '3px', minWidth: 0, flex: '1 1 220px' }}>
-          <span style={st.finishEyebrow}>Formation terminée</span>
-          <span style={st.finishTitle}>Bravo, tu as terminé « {title} »</span>
-        </span>
+    <div className="fv-full fv-fin">
+      <div className="fv-top"><button type="button" className="fv-x" onClick={p.onClose} aria-label="Fermer"><X size={20} /></button></div>
+      <div className="fv-stage">
+        <div className="fv-stage-in fv-fin-in">
+          <div className={`fv-burst${p.celebrate ? ' go' : ''}`} aria-hidden="true">
+            {Array.from({ length: 22 }).map((_, i) => (
+              <i key={i} style={{
+                background: i % 3 === 0 ? '#FFD56B' : i % 3 === 1 ? 'var(--accent-text)' : 'var(--success-1)',
+                ['--dx' as string]: `${Math.round(Math.cos((i / 22) * Math.PI * 2) * (110 + (i % 4) * 34))}px`,
+                ['--dy' as string]: `${Math.round(Math.sin((i / 22) * Math.PI * 2) * (90 + (i % 3) * 30))}px`,
+                animationDelay: `${(i % 6) * 45}ms`,
+              } as React.CSSProperties} />
+            ))}
+          </div>
+          <span className="fv-medal"><Trophy size={42} weight="fill" /></span>
+          <span className="fv-k" style={{ justifyContent: 'center' }}>Formation terminée</span>
+          <h2 className="fv-h" style={{ textAlign: 'center' }}>Bravo, tu as terminé « {p.title} »</h2>
+          <div className="fv-score">
+            {p.score.total > 0 && <div><b>{p.score.good}/{p.score.total}</b><small>bonnes réponses</small></div>}
+            {p.actionsTotal > 0 && <div><b>{p.actionsDone}/{p.actionsTotal}</b><small>actions faites</small></div>}
+          </div>
+          {p.objectif && <p className="fv-fin-goal">Tu voulais : <b>{p.objectif}</b>. Les outils sont maintenant entre tes mains.</p>}
+          <span className="fv-sec">Ce que tu sais faire maintenant</span>
+          <ul className="fv-can">{p.objectifs.map((o, i) => <li key={i}><CheckCircle size={19} weight="fill" />{o}</li>)}</ul>
+        </div>
       </div>
-      {objectif && <div style={{ fontSize: '14px', color: 'var(--text-2)' }}>Tu voulais : <b style={{ color: 'var(--text)' }}>{objectif}</b>. Les outils sont maintenant entre tes mains.</div>}
-      <div style={st.finishStats}>
-        {score.total > 0 && <span style={st.finishStat}><strong>{score.good}/{score.total}</strong> bonnes réponses</span>}
-        {actionsTotal > 0 && <span style={st.finishStat}><strong>{actionsDone}/{actionsTotal}</strong> actions faites</span>}
+      <div className="fv-foot">
+        <div className="fv-foot-in col">
+          {p.attestationHref && <Link prefetch={false} href={p.attestationHref} className="fv-btn"><Certificate size={18} weight="fill" /> Voir mon attestation</Link>}
+          {p.next && <Link href={`/dashboard/formations/${p.next.slug}`} className="fv-ghost wide">Suite : {p.next.title} <ArrowRight size={15} /></Link>}
+        </div>
       </div>
-      <div>
-        <div style={st.objTitle}>Ce que tu sais faire maintenant</div>
-        <ul style={st.objList}>
-          {objectifs.map((o, i) => (
-            <li key={i} style={st.objItem}><CheckCircle size={17} weight="fill" color="var(--success-1)" style={{ flexShrink: 0, marginTop: '2px' }} /><span>{o}</span></li>
-          ))}
-        </ul>
-      </div>
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-        {attestationHref && (
-          <Link prefetch={false} href={attestationHref} className="btn-primary" style={st.midBtn}><Certificate size={16} weight="fill" /> Mon attestation</Link>
-        )}
-        {next && (
-          <Link href={`/dashboard/formations/${next.slug}`} style={st.ghostBtn}>Formation suivante : {next.title} <ArrowRight size={14} /></Link>
-        )}
-      </div>
-    </section>
+    </div>
   )
 }
 
-const st: Record<string, React.CSSProperties> = {
-  root: { display: 'flex', minHeight: 'calc(100svh - var(--header-h))', padding: 0 },
-  inline: { display: 'inline-flex', alignItems: 'center', gap: '5px' },
+const CSS = `
+.fv { min-height: calc(100svh - var(--header-h)); }
+.fv-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 20px; border-radius: 15px; border: 0; background: var(--accent-text); color: var(--bg); font: inherit; font-size: 15.5px; font-weight: 700; cursor: pointer; text-decoration: none; transition: transform .12s, opacity .15s; }
+.fv-btn:active { transform: scale(.98); }
+.fv-btn:disabled { opacity: .45; cursor: default; }
+.fv-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 13px 16px; border-radius: 15px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+.fv-ghost.wide { width: 100%; }
+.fv-muted { font-size: 13px; color: var(--text-3); line-height: 1.5; margin: 0; }
+.fv-sec { display: block; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; color: var(--text-muted); }
+.fv-mini { display: block; height: 7px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.fv-mini i { display: block; height: 100%; border-radius: 99px; background: var(--accent-text); transition: width .4s; }
+.fv a:focus-visible, .fv button:focus-visible, .fv input:focus-visible, .fv textarea:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
 
-  mobileBar: { display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', borderBottom: '1px solid var(--border)', background: 'var(--bg)', position: 'fixed', top: 'var(--header-h)', left: 0, right: 0, zIndex: 20 },
-  mobileBarSpacer: { height: '60px', flexShrink: 0 },
-  mobileBack: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '10px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', flexShrink: 0 },
-  mobileBarCenter: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '6px' },
-  mobileBarTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  mobileNavToggle: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0, background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer' },
-  mobileDrawer: { position: 'fixed', top: 'calc(var(--header-h) + 60px)', left: 0, right: 0, zIndex: 19, borderBottom: '1px solid var(--border)', background: 'var(--bg)', maxHeight: '65svh', overflowY: 'auto' },
+/* Fiche */
+.fv-fiche { padding: clamp(16px, 3vw, 28px); display: flex; flex-direction: column; gap: 20px; }
+.fv-cover { position: relative; border-radius: 26px; min-height: 230px; padding: 18px 26px 26px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; overflow: hidden; }
+.fv-cover-nav { display: flex; justify-content: space-between; }
+.fv-round { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.92); color: #13201B; border: 0; cursor: pointer; text-decoration: none; }
+.fv-round.on { background: #FFD56B; }
+.fv-cover-tag { align-self: flex-start; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: rgba(0,0,0,.24); padding: 5px 11px; border-radius: 99px; }
+.fv-cover-t { font-family: var(--font-fraunces), serif; font-weight: 400; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.08; color: #fff; margin: 0; max-width: 18ch; text-shadow: 0 2px 18px rgba(0,0,0,.18); }
+.fv-mobile-t { display: none; }
+.fv-fiche-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.fv-fiche-main { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.fv-fiche-side { position: sticky; top: calc(var(--header-h) + 16px); }
+.fv-panel { display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); }
+.fv-metas { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--text-3); }
+.fv-metas span { display: inline-flex; align-items: center; gap: 5px; }
+.fv-metas.small { font-size: 12px; gap: 10px; }
+.fv-promise { font-size: 16.5px; line-height: 1.6; color: var(--text-2); margin: 0; max-width: 62ch; }
+.fv-goalcard { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); }
+.fv-goalrow { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; color: var(--text-2); }
+.fv-goalrow b { color: var(--text); }
+.fv-done-banner { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.fv-done-banner b { display: block; font-size: 15px; }
+.fv-done-banner small { display: block; font-size: 12.5px; color: var(--text-2); }
+.fv-done-banner > span:nth-child(2) { flex: 1; }
+.fv-medal-s { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; color: #3A2A00; background: radial-gradient(circle at 35% 30%, #FFF1C4, #FFD56B 55%, #E5B53F); }
+.fv-can { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.fv-can li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: var(--text-2); line-height: 1.45; }
+.fv-can li svg { flex-shrink: 0; margin-top: 1px; color: var(--success-1); }
+.fv-mods { display: flex; flex-direction: column; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); overflow: hidden; }
+.fv-mod { border-bottom: 1px solid var(--border); }
+.fv-mod:last-child { border-bottom: 0; }
+.fv-mod.cur { background: var(--accent-bg); }
+.fv-mod-h { width: 100%; display: flex; align-items: center; gap: 12px; padding: 13px 14px; border: 0; background: none; font: inherit; color: var(--text-2); text-align: left; cursor: pointer; }
+.fv-mod-m { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.fv-mod-m b { font-size: 14.5px; color: var(--text); line-height: 1.3; }
+.fv-mod-m small { font-size: 12px; color: var(--text-3); }
+.fv-nd { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-weight: 700; font-size: 12.5px; color: var(--text-3); box-shadow: inset 0 0 0 2px var(--border); }
+.fv-nd.d { background: var(--accent-text); color: var(--bg); box-shadow: none; }
+.fv-nd.n { color: var(--accent-text); box-shadow: inset 0 0 0 2px var(--accent-text); }
+.fv-mod-l { display: flex; flex-direction: column; padding: 0 12px 10px 54px; }
+.fv-mod-lesson { display: flex; gap: 10px; align-items: center; padding: 9px 4px; border: 0; background: none; font: inherit; font-size: 13.5px; color: var(--text-2); text-align: left; cursor: pointer; border-radius: 9px; }
+.fv-mod-lesson small { font-size: 11.5px; color: var(--text-muted); }
+.fv-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; box-shadow: inset 0 0 0 1.5px var(--border); color: var(--bg); }
+.fv-dot.d { background: var(--success-1); box-shadow: none; }
+.fv-cov { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; }
+.fv-sticky { display: none; }
 
-  navPanel: { width: '290px', flexShrink: 0, borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', position: 'sticky', top: 'var(--header-h)', height: 'calc(100svh - var(--header-h))', overflowY: 'auto' },
-  navHeader: { padding: '20px 16px 14px', borderBottom: '1px solid var(--border)' },
-  backLink: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-3)', textDecoration: 'none', marginBottom: '14px' },
-  navTitleBtn: { display: 'block', textAlign: 'left', background: 'none', border: 0, padding: 0, cursor: 'pointer', fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', color: 'var(--text)', lineHeight: 1.3, marginBottom: '8px' },
-  navStats: { display: 'flex', gap: '12px', fontSize: '12px', color: 'var(--text-3)' },
-  navPct: { display: 'flex', justifyContent: 'space-between', fontSize: '11.5px', color: 'var(--text-3)' },
-  navModules: { flex: 1, padding: '8px', display: 'flex', flexDirection: 'column', gap: '2px' },
-  moduleBtn: { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '10px', minHeight: '48px', borderRadius: '10px', background: 'none', border: 0, cursor: 'pointer', color: 'var(--text-2)', textAlign: 'left', fontFamily: 'inherit' },
-  moduleLeft: { display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 },
-  moduleNum: { width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0, background: 'var(--surface-2)', border: '1px solid var(--border)', display: 'grid', placeItems: 'center', fontSize: '10.5px', fontWeight: 700, color: 'var(--text-2)' },
-  moduleLabel: { fontSize: '13px', fontWeight: 600, lineHeight: 1.3, color: 'var(--text)' },
-  moduleMeta: { fontSize: '11px', color: 'var(--text-muted)' },
-  lessonList: { paddingLeft: '8px', paddingBottom: '4px', display: 'flex', flexDirection: 'column', gap: '1px' },
-  lessonBtn: { width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 10px', minHeight: '44px', borderRadius: '9px', background: 'none', border: 0, cursor: 'pointer', fontSize: '12.5px', color: 'var(--text-3)', textAlign: 'left', fontFamily: 'inherit', lineHeight: 1.35 },
-  lessonBtnActive: { background: 'var(--accent-bg)', color: 'var(--accent-text)', fontWeight: 600 },
-  lessonDot: { width: '16px', height: '16px', borderRadius: '50%', flexShrink: 0, background: 'var(--surface-2)', border: '1px solid var(--border)', display: 'grid', placeItems: 'center' },
-  lessonDotDone: { background: 'var(--success-1)', border: '1px solid var(--success-1)' },
-  lessonDotActive: { background: 'var(--accent-text)', border: '1px solid var(--accent-text)' },
-  lessonDur: { fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 },
+/* Plein écran (bilan, leçon, fin) */
+.fv-full { display: flex; flex-direction: column; min-height: calc(100svh - var(--header-h)); background: var(--bg); }
+.fv-top { position: sticky; top: var(--header-h); z-index: 5; display: flex; align-items: center; gap: 12px; padding: 12px clamp(16px, 3vw, 32px); background: var(--bg); border-bottom: 1px solid var(--border); }
+.fv-x { width: 38px; height: 38px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; border: 0; background: none; color: var(--text-2); cursor: pointer; }
+.fv-x.on { color: var(--accent-text); }
+.fv-prog { flex: 1; display: flex; gap: 4px; max-width: 620px; }
+.fv-prog i { flex: 1; height: 7px; border-radius: 99px; background: var(--surface-2); transition: background .3s; }
+.fv-prog i.d { background: var(--accent-text); }
+.fv-prog i.n { background: linear-gradient(90deg, var(--accent-text) 50%, var(--surface-2) 50%); }
+.fv-count { font-size: 12.5px; font-weight: 700; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.fv-lesson-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 24px; padding: 0 clamp(16px, 3vw, 32px); }
+.fv-stage { flex: 1; display: flex; justify-content: center; padding: 32px 0 24px; }
+.fv-full > .fv-stage { padding: 32px clamp(16px, 3vw, 32px) 24px; }
+.fv-stage-in { width: 100%; max-width: 660px; display: flex; flex-direction: column; gap: 16px; animation: fvStep .3s ease both; }
+@keyframes fvStep { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+.fv-k { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; color: var(--accent-text); }
+.fv-h { font-family: var(--font-fraunces), serif; font-weight: 400; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.15; color: var(--text); margin: 0; }
+.fv-h-q { font-size: clamp(22px, 2.6vw, 28px); }
+.fv-meta { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-3); }
+.fv-opts { display: flex; flex-direction: column; gap: 10px; }
+.fv-opt { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 15px 16px; border-radius: 16px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: 15.5px; line-height: 1.4; cursor: pointer; transition: border .15s, background .15s, transform .12s; }
+.fv-opt:hover:not(:disabled) { border: 1.5px solid var(--accent-border); }
+.fv-opt:active:not(:disabled) { transform: scale(.99); }
+.fv-opt.sel { border: 2px solid var(--accent-text); background: var(--accent-bg); font-weight: 600; }
+.fv-opt.good { border: 2px solid var(--success-1); background: var(--success-bg); font-weight: 600; }
+.fv-opt.bad { border: 2px solid var(--danger); background: var(--danger-bg); }
+.fv-opt.dim { opacity: .45; }
+.fv-opt:disabled { cursor: default; }
+.fv-mk { flex-shrink: 0; }
+.fv-mk.g { color: var(--success-1); }
+.fv-mk.b { color: var(--danger); }
+.fv-input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: 15px; }
+.fv-act-ic { width: 54px; height: 54px; border-radius: 17px; display: grid; place-items: center; background: rgba(255,213,107,.18); color: #FFD56B; }
+[data-theme=light] .fv-act-ic { color: #8A6A10; }
+.fv-foot { position: sticky; bottom: 0; z-index: 5; padding: 14px clamp(16px, 3vw, 32px) calc(14px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, var(--bg) 26%); }
+.fv-foot-in { max-width: 660px; margin: 0 auto; display: flex; gap: 10px; }
+.fv-foot-in.col { flex-direction: column; }
+.fv-prev { width: 52px; flex-shrink: 0; padding: 0; }
+.fv-sheet { position: sticky; bottom: 0; z-index: 6; border-radius: 26px 26px 0 0; padding: 20px clamp(16px, 3vw, 32px) calc(18px + env(safe-area-inset-bottom)); animation: fvSheet .28s cubic-bezier(.2,.9,.3,1) both; }
+.fv-sheet.ok { background: var(--success-bg); border-top: 2px solid var(--success-border); }
+.fv-sheet.ko { background: var(--danger-bg); border-top: 2px solid var(--danger-border); }
+.fv-sheet-in { max-width: 660px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.fv-sheet-t { display: flex; align-items: center; gap: 9px; font-family: var(--font-fraunces), serif; font-size: 22px; }
+.fv-sheet.ok .fv-sheet-t { color: var(--success-1); }
+.fv-sheet.ko .fv-sheet-t { color: var(--danger); }
+.fv-sheet p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--text); }
+.fv-sheet small { font-size: 12.5px; color: var(--text-2); }
+.fv-sheet.ok .fv-btn { background: var(--success-1); }
+.fv-sheet.ko .fv-btn { background: var(--danger); }
+@keyframes fvSheet { from { transform: translateY(100%); } to { transform: none; } }
+.fv-tools { margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+.fv-tools-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.fv-done { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: var(--success-1); }
+.fv-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font: inherit; font-size: 13px; cursor: pointer; }
+.fv-chip.on { border: 1px solid var(--accent-border); background: var(--accent-bg); color: var(--accent-text); font-weight: 600; }
+.fv-notes { display: flex; flex-direction: column; gap: 6px; }
+.fv-notes textarea { width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-size: 14px; line-height: 1.55; resize: vertical; }
+.fv-saved { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--success-1); font-weight: 600; }
+.fv-rail { display: flex; flex-direction: column; gap: 4px; padding: 32px 0 24px 20px; border-left: 1px solid var(--border); align-self: start; position: sticky; top: calc(var(--header-h) + 64px); }
+.fv-rail .fv-sec { margin-bottom: 6px; }
+.fv-rail-i { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 10px; border: 0; background: none; font: inherit; font-size: 13px; color: var(--text-2); text-align: left; cursor: pointer; text-decoration: none; }
+.fv-rail-i i { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.fv-rail-i.d i { background: var(--accent-text); }
+.fv-rail-i.on { background: var(--accent-bg); color: var(--accent-text); font-weight: 600; }
+.fv-rail-i.on i { background: var(--accent-text); }
+.fv-rail-goal { font-size: 13px; color: var(--text); padding: 0 10px; }
 
-  main: { flex: 1, overflowY: 'auto', minWidth: 0 },
+/* Fin */
+.fv-fin-in { align-items: center; text-align: center; position: relative; }
+.fv-fin-in .fv-can { align-self: stretch; text-align: left; }
+.fv-fin-in .fv-sec { align-self: stretch; text-align: left; margin-top: 6px; }
+.fv-medal { width: 104px; height: 104px; border-radius: 50%; display: grid; place-items: center; color: #3A2A00; background: radial-gradient(circle at 35% 30%, #FFF4CF, #FFD56B 55%, #E2AE36); box-shadow: 0 14px 34px -12px rgba(226,174,54,.8), 0 0 0 12px rgba(255,213,107,.16); animation: fvMedal .75s cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes fvMedal { from { transform: scale(.35) rotate(-14deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.fv-burst { position: absolute; left: 50%; top: 52px; width: 0; height: 0; pointer-events: none; }
+.fv-burst i { position: absolute; width: 8px; height: 12px; border-radius: 2px; opacity: 0; }
+.fv-burst.go i { animation: fvBurst 1.5s ease-out both; }
+@keyframes fvBurst { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(260deg); } }
+.fv-score { display: flex; gap: 10px; justify-content: center; width: 100%; }
+.fv-score div { flex: 1; max-width: 200px; padding: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); }
+.fv-score b { display: block; font-family: var(--font-fraunces), serif; font-weight: 500; font-size: 28px; color: var(--text); }
+.fv-score small { font-size: 12px; color: var(--text-3); }
+.fv-fin-goal { margin: 0; font-size: 15px; color: var(--text-2); }
+.fv-fin-goal b { color: var(--text); }
 
-  overview: { padding: 'clamp(28px,4vw,52px)', maxWidth: '860px', display: 'flex', flexDirection: 'column', gap: '22px' },
-  overviewMobile: { padding: '20px 16px' },
-  levelBadge: { display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start', fontSize: '12px', fontWeight: 700, padding: '4px 11px', borderRadius: '99px', background: 'rgba(255,213,107,0.14)', color: 'var(--accent-text)', border: '1px solid rgba(255,213,107,0.3)' },
-  overviewTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3.2vw,42px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1.15, margin: 0 },
-  overviewDesc: { fontSize: '16px', color: 'var(--text-2)', lineHeight: 1.7, margin: 0, maxWidth: '68ch' },
-  metaRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' },
-  metaRowMobile: { display: 'grid', gridTemplateColumns: '1fr', gap: '8px' },
-  metaChip: { display: 'flex', alignItems: 'center', gap: '12px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '14px', padding: '13px 16px', flex: '1 1 180px' },
-  metaVal: { display: 'block', fontSize: '14.5px', fontWeight: 600, color: 'var(--text)' },
-  metaLbl: { display: 'block', fontSize: '12px', color: 'var(--text-3)', marginTop: '1px' },
-  objBox: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '16px', padding: '18px 20px' },
-  objTitle: { fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent-text)', marginBottom: '12px' },
-  objList: { listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '9px' },
-  objItem: { display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '15px', color: 'var(--text-2)', lineHeight: 1.5 },
-  bigBtn: { fontSize: '15px', padding: '13px 24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
-  midBtn: { fontSize: '14px', padding: '11px 20px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' },
-  ghostBtn: { display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '10px 16px', borderRadius: '12px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: '14px', fontWeight: 500, cursor: 'pointer', textDecoration: 'none', fontFamily: 'inherit' },
-  recoBlock: { padding: '18px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '10px' },
-  recoTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 500, color: 'var(--text)', margin: 0 },
-  recoList: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  recoCard: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', textDecoration: 'none' },
-  recoCardTitle: { display: 'block', fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
-  recoCardReason: { display: 'block', fontSize: '12.5px', color: 'var(--text-muted)', marginTop: '2px' },
-
-  lesson: { padding: 'clamp(24px,4vw,52px)', maxWidth: '780px', margin: '0 auto' },
-  lessonMobile: { padding: '18px 16px 40px' },
-  crumb: { fontSize: '12.5px', color: 'var(--text-muted)' },
-  lessonTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,36px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1.15, margin: '0 0 10px' },
-  lessonMeta: { display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '12.5px', color: 'var(--text-3)', marginBottom: '26px' },
-  endBar: { marginTop: '36px', paddingTop: '20px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
-  doneMsg: { display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14.5px', color: 'var(--success-1)', fontWeight: 600 },
-  todoMsg: { display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--text-3)' },
-  clear: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '26px', fontSize: '13.5px', color: 'var(--text-3)' },
-  chip: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 13px', borderRadius: '99px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit' },
-  chipOn: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontWeight: 600 },
-  notes: { marginTop: '18px', border: '1px solid var(--border)', borderRadius: '14px', padding: '12px 16px', background: 'var(--surface)' },
-  notesSum: { cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 600, color: 'var(--text-2)' },
-  saved: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: 'var(--success-1)', fontWeight: 600 },
-  noteArea: { width: '100%', boxSizing: 'border-box', marginTop: '10px', padding: '10px 12px', fontSize: '14px', fontFamily: 'inherit', color: 'var(--text)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', outline: 'none', resize: 'vertical', lineHeight: 1.55 },
-
-  goalSet: { display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '14px 16px', borderRadius: '14px', border: '1px solid var(--success-border)', background: 'var(--success-bg)', fontSize: '15px', lineHeight: 1.5 },
-  goalLbl: { display: 'block', fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent-text)', marginBottom: '2px' },
-  goalTip: { display: 'block', fontSize: '13.5px', color: 'var(--text-2)', marginTop: '6px' },
-  bilan: { display: 'flex', flexDirection: 'column', gap: '10px', padding: '18px 20px', borderRadius: '16px', border: '1.5px dashed var(--accent-border)', background: 'var(--surface)' },
-  bilanQ: { fontSize: '15px', fontWeight: 600, color: 'var(--text)' },
-  bilanInput: { width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: '14px', fontFamily: 'inherit' },
-  chips: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
-  finish: { border: '1px solid var(--accent-border)', borderRadius: '20px', padding: '22px 24px', background: 'linear-gradient(160deg, var(--accent-bg), var(--surface))', display: 'flex', flexDirection: 'column', gap: '18px', marginTop: '26px' },
-  medal: { width: '72px', height: '72px', borderRadius: '50%', flexShrink: 0, display: 'grid', placeItems: 'center', color: '#3A2A00', background: 'radial-gradient(circle at 35% 30%, #FFF1C4, #FFD56B 55%, #E5B53F)', boxShadow: '0 10px 30px -12px rgba(255,213,107,0.8)' },
-  finishEyebrow: { fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent-text)' },
-  finishTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,2.4vw,26px)', color: 'var(--text)', lineHeight: 1.25 },
-  finishStats: { display: 'flex', gap: '10px', flexWrap: 'wrap' },
-  finishStat: { padding: '10px 14px', borderRadius: '12px', background: 'var(--bg)', border: '1px solid var(--border)', fontSize: '13.5px', color: 'var(--text-2)', display: 'inline-flex', alignItems: 'baseline', gap: '6px' },
-
-  rail: { width: '290px', flexShrink: 0, borderLeft: '1px solid var(--border)', display: 'flex', flexDirection: 'column', position: 'sticky', top: 'var(--header-h)', height: 'calc(100svh - var(--header-h))', overflowY: 'auto', padding: '24px 18px', gap: '22px', background: 'var(--bg)' },
-  railSection: { display: 'flex', flexDirection: 'column', gap: '9px', paddingBottom: '18px', borderBottom: '1px solid var(--border)' },
-  railLabel: { fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)' },
-  railMod: { display: 'flex', flexDirection: 'column', gap: '4px' },
-  railModT: { fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.35 },
-  railBar: { display: 'block', height: '5px', borderRadius: '99px', background: 'var(--surface-2)', overflow: 'hidden' },
-  railFill: { display: 'block', height: '100%', background: 'var(--accent-text)', borderRadius: '99px', transition: 'width .4s' },
-  railNote: { fontSize: '12.5px', color: 'var(--text-2)' },
-  tocLink: { padding: '5px 8px', fontSize: '12.5px', color: 'var(--text-2)', textDecoration: 'none', borderRadius: '7px', lineHeight: 1.4 },
+@media (max-width: 1000px) {
+  .fv-fiche-grid { grid-template-columns: minmax(0, 1fr); }
+  .fv-lesson-grid { grid-template-columns: minmax(0, 1fr); }
+  .fv-rail { display: none; }
 }
+@media (max-width: 767px) {
+  .fv-fiche { padding: 0 0 calc(110px + env(safe-area-inset-bottom)); gap: 0; }
+  .fv-cover { border-radius: 0; min-height: 200px; padding: 14px 16px 34px; }
+  .fv-cover-t { display: none; }
+  .fv-fiche-grid { display: block; margin-top: -20px; position: relative; background: var(--bg); border-radius: 22px 22px 0 0; padding: 18px 16px 0; }
+  .fv-mobile-t { display: block; font-family: var(--font-fraunces), serif; font-weight: 400; font-size: 27px; line-height: 1.12; color: var(--text); margin: 0; }
+  .fv-fiche-side { display: none; }
+  .fv-sticky { display: flex; flex-direction: column; gap: 6px; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, var(--bg) 30%); }
+  .fv-sticky small { text-align: center; font-size: 12px; color: var(--text-3); }
+  .fv-full { position: fixed; inset: 0; z-index: 120; min-height: 0; overflow-y: auto; }
+  .fv-top { top: 0; padding-top: calc(10px + env(safe-area-inset-top)); border-bottom: 0; }
+  .fv-lesson-grid { padding: 0 20px; }
+  .fv-full > .fv-stage { padding: 12px 20px 24px; }
+  .fv-stage { padding: 12px 0 24px; }
+  .fv-foot { margin-top: auto; }
+  .fv-sheet { margin-top: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fv-stage-in, .fv-sheet, .fv-medal { animation: none; }
+  .fv-burst { display: none; }
+}
+`

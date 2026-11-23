@@ -39,6 +39,22 @@ Principes retenus (sources dans la page de propositions publiée le 23/11) : se 
 - Chiffres vérifiés par recherche web, sourcés (`> Source : …`) et datés ; aucun chiffre sans source. Pas de tiret cadratin, pas d'émoji, tutoiement. Driing présenté avec « je suis co-fondateur ».
 - Après modification d'un `content.ts` : workflow « Publier le contenu des formations » (aperçu, puis « Écrire en base »), sinon l'app continue d'afficher la version en base. Le script publie aussi objectifs, description et durée totale (23/11/2026).
 
+## Espace et lecteur refaits (23/11/2026, maquettes validées : « Je valide tout »)
+
+Maquettes de référence : artefact « Formations, maquettes complètes » (téléphone d'abord).
+
+- **Espace Formations** (`app/dashboard/formations/page.tsx` + `hub/FormationsHub.tsx`, données typées `hub/types.ts`) : une page, 4 onglets `?onglet=aujourdhui|parcours|catalogue|moi`. Téléphone : barre d'onglets fixe en bas ; ordinateur : onglets en haut. Changer d'onglet ne recharge pas (adresse mise à jour sur place).
+  - **Aujourd'hui** : prochaine leçon (formation en cours la plus avancée, sinon la 1re recommandée), « Repéré dans ton activité » (`lib/formations/signals.ts`, testé : prix non renseignés, 30 prochains jours remplis à moins de 35 % ou à 90 % et plus, seulement si l'hôte a au moins 3 séjours dans l'app ; une seule à la fois, rien si la leçon est déjà faite), révision (`RevisionCard`), actions prévues, semaine, aperçu du parcours.
+  - **Parcours** : les 5 parcours de `lib/formations/parcours.ts` deviennent des objectifs (puces), chemin vertical (fait, en cours avec la prochaine leçon, à venir, verrouillé). `?objectif=<slug>` choisit le parcours.
+  - **Catalogue** : recherche, puces (Toutes, En cours, objectifs de `lib/formations/objectifs.ts`), « Pour toi », liste compacte avec couverture, état (terminée, %, nouveau, Standard), formulaire de suggestion.
+  - **Moi** : leçons faites, actions faites, % de bonnes réponses ; réussites (actions faites, formations terminées) ; attestations ; enregistré (leçons en favori, formations en favori, notes).
+  - Anciennes pages redirigées : `/formations/parcours` (et `/parcours/<slug>`), `/formations/profil-apprenant`, `/formations/favoris`. `FormationsGrid`, `FormationsHighlights`, `ProfilApprenantUI` supprimés.
+- **Couvertures** : `coverBackground(slug, scale)` (motif CSS par objectif, tailles en pixels pour des bords nets ; 1 = grande couverture, 0,25 = vignette). Nouvelle formation : l'ajouter à `SLUG_OBJECTIF` (vérifié par `catalogue-sync.test.ts`).
+- **Fiche d'une formation** (`FormationView`, sans `?lecon`) : couverture, objectif et niveau, durée, leçons, actions, promesse, progression et objectif du membre, « Tu sauras », programme dépliable par module (module en cours surligné, action faite signalée), bouton collé en bas sur téléphone (colonne de droite sur ordinateur), favori de la formation.
+- **Bilan de départ** : 2 écrans plein écran (objectif, niveau) au 1er « Commencer », « Passer » possible.
+- **Leçon en étapes** (`?lecon=<id>&etape=<n>`, `lib/formations/steps.ts` testé) : chaque `##` = une étape, « En bref » en 1re étape, questions puis action à la fin. Plein écran sur téléphone (au-dessus de l'en-tête de l'app), barre de progression des étapes, « Continuer » en bas, réponse en panneau vert ou rouge, sommaire des étapes à droite sur ordinateur. Dernière étape : « Leçon terminée », « Cette leçon était claire ? », notes, question (commentaires). Les actions qui mènent à Mes prix ouvrent le 1er logement de l'hôte (`?logement=`).
+- **Fin** (`?fin=1`) : médaille et éclats (sans animation si mouvement réduit), score, actions, objectif, « Ce que tu sais faire », attestation, formation suivante. L'attestation propose « Ajouter à mon profil LinkedIn » (lien officiel « Licences et certifications »).
+
 ## Faits vérifiés le 23/11/2026 (à réutiliser dans les autres formations)
 
 - **Airbnb** : frais uniques à la charge de l'hôte, 15,5 %, pour tous les hôtes de l'UE depuis le 13/10/2026 (plus de frais voyageur à part ; avant : environ 3 % hôte + frais voyageur). Sans numéro de TVA, la TVA de 20 % s'ajoute aux frais : 18,6 % ; 100 € affichés = 81,40 € reçus (84,50 € avec un numéro de TVA). Une autre session avait déjà corrigé les autres formations sur ce point le 23/11 (commit « commission Airbnb à jour »). Toute formation qui parle de « 3 % » ou « 4 % hôte » ou de « frais de service voyageur 14 % » est à corriger. Sources : Airbnb « Simplifying Airbnb service fees », Hostfully, Smoobu.

@@ -1,45 +1,44 @@
+// Espace Formations (refonte du 23/11/2026, maquettes validées par Jason,
+// docs/claude/formations.md) : une page, 4 onglets (?onglet=aujourdhui |
+// parcours | catalogue | moi). Remplace l'ancien catalogue et les pages
+// Parcours, Profil apprenant et Favoris (redirigées ici).
+import { Suspense } from 'react'
+import type { Metadata } from 'next'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import FormationsSuggestForm from './FormationsSuggestForm'
-import FormationsGrid from './FormationsGrid'
-import FormationsHighlights, { type HighlightFormation } from './FormationsHighlights'
-import Link from 'next/link'
-import { ArrowRight, Compass, GraduationCap, Lightbulb } from '@phosphor-icons/react/dist/ssr'
-import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
+import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
+import { getCachedPublishedFormations } from '@/lib/queries/cache'
 import { recommendFormations } from '@/lib/formations/recommend'
 import { isNouvelleFormation } from '@/lib/formations/nouveau'
 import { weekStartParis, WEEKLY_GOAL } from '@/lib/formations/revision'
-import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
-import { getCachedPublishedFormations } from '@/lib/queries/cache'
-import type { Metadata } from 'next'
+import { parseLesson } from '@/lib/formations/blocks'
+import { lessonSteps } from '@/lib/formations/steps'
+import { computeSignals } from '@/lib/formations/signals'
+import { coverBackground, objectifLabel } from '@/lib/formations/objectifs'
+import { PARCOURS } from '@/lib/formations/parcours'
+import { FORMATION_CONTENT_MAP } from '@/app/dashboard/admin/formations/[slug]/contentMap'
+import TitleSetter from '@/components/layout/TitleSetter'
+import RevisionCard from '@/components/formations/RevisionCard'
+import FormationsHub from './hub/FormationsHub'
+import FormationsSuggestForm from './FormationsSuggestForm'
+import type { HubData, HubFormation, HubResume, HubSaved, HubTab } from './hub/types'
 
 export const metadata: Metadata = {
   title: 'Tes formations LCD, Jason Marinho',
-  description: 'Des parcours concrets pour optimiser ta location courte durée. Visibilité, revenus, fiscalité, conciergerie, accessibles à vie, à ton rythme.',
-  openGraph: {
-    type: 'website',
-    title: 'Formations LCD pour hôtes & conciergeries · Jason Marinho',
-    description: 'GMB, tarification dynamique, fiscalité 2026, créer sa conciergerie, optimiser son annonce Airbnb… 22 formations pratiques pour la location courte durée.',
-    siteName: 'Jason Marinho, Plateforme LCD',
-    locale: 'fr_FR',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Formations LCD pour hôtes & conciergeries',
-    description: '22 formations pratiques pour la location courte durée.',
-  },
+  description: 'Des formations courtes et concrètes pour ta location courte durée : prix, visibilité, fiscalité, accueil. Questions, actions et attestation.',
   robots: { index: false, follow: false },
 }
 
-// Toutes les formations disponibles avec une page dashboard
+// Ordre du catalogue (et liste des formations actives, vérifiée par
+// lib/formations/catalogue-sync.test.ts)
 const ACTIVE_SLUGS = [
+  'mettre-le-bon-prix-lcd',
   'google-my-business-lcd',
   'annonce-directe',
   'tarification-dynamique',
   'securiser-reservations-eviter-mauvais-voyageurs',
   'reseaux-sociaux-lcd',
   'optimiser-annonce-airbnb',
-  'mettre-le-bon-prix-lcd',
   'livret-accueil-digital',
   'lcd-basse-saison',
   'gerer-lcd-automatisation',
@@ -57,188 +56,174 @@ const ACTIVE_SLUGS = [
   'louer-en-direct-securise',
 ]
 
-// Formations à venir, hardcodées, pas encore en DB
-const COMING_SOON: never[] = []
+const TABS: HubTab[] = ['aujourdhui', 'parcours', 'catalogue', 'moi']
 
-export default async function FormationsPage() {
+function parisToday(): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date())
+}
+
+export default async function FormationsPage({ searchParams }: { searchParams: { onglet?: string; objectif?: string } }) {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
-  const userId = profile?.userId ?? ''
+  if (!profile) return null
+  const userId = profile.userId
+  const plan = profile.plan ?? 'decouverte'
+  const today = parisToday()
+  const in30 = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10)
+  const weekStart = weekStartParis(new Date())
 
-  const plan = profile?.plan ?? 'decouverte'
-
-  const [allCachedFormations, { data: userFormations }, { data: favorites }, unlockedSlugs, { data: logementsPays }, { count: contractsCount }, { count: weekLessons }] = await Promise.all([
-    // Catalogue public partagé entre tous les users (caché 10 min).
+  const [
+    cached, ufRes, favRes, unlockedSlugs, logRes, logementsRes, contractsRes,
+    sejoursNextRes, sejoursCountRes, answersRes, actionsRes, bookmarksRes, notesRes, totalLessonsRes,
+  ] = await Promise.all([
     getCachedPublishedFormations(),
-    supabase.from('user_formations').select('formation_id, progress').eq('user_id', userId),
+    supabase.from('user_formations').select('formation_id, progress, completed_lessons, completed_at').eq('user_id', userId),
     supabase.from('user_formation_favorites').select('formation_id').eq('user_id', userId),
     getUnlockedFormationSlugs(supabase, userId, plan),
-    // Recommandations « Pour toi » : pays des logements + réservations directes
-    supabase.from('logements').select('pays').eq('user_id', userId),
+    supabase.from('user_lesson_completion_log').select('completed_at').eq('user_id', userId).gte('completed_at', weekStart).limit(200),
+    supabase.from('logements').select('id, pays, prix_airbnb_nuit, prix_booking_nuit, prix_direct_nuit').eq('user_id', userId),
     supabase.from('contracts').select('id', { count: 'exact', head: true }).eq('user_id', userId),
-    // Objectif de la semaine (2 leçons, sans série de jours qui culpabilise)
-    supabase.from('user_lesson_completion_log').select('id', { count: 'exact', head: true }).eq('user_id', userId).gte('completed_at', weekStartParis(new Date())),
+    supabase.from('sejours').select('date_arrivee, date_depart').eq('user_id', userId).is('annule_at', null).lt('date_arrivee', in30).or(`date_depart.gte.${today},date_depart.is.null`).limit(300),
+    supabase.from('sejours').select('id', { count: 'exact', head: true }).eq('user_id', userId).is('annule_at', null),
+    supabase.from('formation_answers').select('correct').eq('user_id', userId).limit(2000),
+    supabase.from('formation_action_plans').select('title, href, due_at, done_at, formation_id').eq('user_id', userId).order('created_at', { ascending: false }).limit(30),
+    supabase.from('user_lesson_bookmarks').select('formation_slug, formation_title, lesson_id, lesson_title').eq('user_id', userId).order('created_at', { ascending: false }).limit(20),
+    supabase.from('user_lesson_notes').select('formation_id, lesson_id, content, updated_at').eq('user_id', userId).neq('content', '').order('updated_at', { ascending: false }).limit(5),
+    supabase.from('user_lesson_completion_log').select('id', { count: 'exact', head: true }).eq('user_id', userId),
   ])
-  const weekDone = Math.min(weekLessons ?? 0, 99)
 
-  // Filtre côté JS sur ACTIVE_SLUGS : la liste est petite et la donnée
-  // cachée, donc moins coûteux que de re-querier la DB par utilisateur.
-  const activeSet = new Set(ACTIVE_SLUGS)
-  const formations = allCachedFormations.filter(f => activeSet.has(f.slug))
-
-  const newSlugs = formations.filter(f => isNouvelleFormation(f.created_at)).map(f => f.slug)
-
-  const progressMap = Object.fromEntries(
-    (userFormations ?? []).map(uf => [uf.formation_id, uf.progress])
-  )
-  const favoriteIds = new Set((favorites ?? []).map((f: { formation_id: string }) => f.formation_id))
-
-  const startedCount = formations.filter(f => progressMap[f.id] !== undefined).length
-  const doneCount = formations.filter(f => progressMap[f.id] === 100).length
-
-  // « Reprendre » : la formation commencée la plus avancée (hors terminées).
-  const inProgress = formations
-    .filter(f => (progressMap[f.id] ?? 0) > 0 && (progressMap[f.id] ?? 0) < 100)
-    .sort((a, b) => (progressMap[b.id] ?? 0) - (progressMap[a.id] ?? 0))[0]
-  const resume: HighlightFormation | null = inProgress
-    ? { slug: inProgress.slug, title: inProgress.title, duration: inProgress.duration, progress: progressMap[inProgress.id] }
-    : null
-
-  // « Pour toi » : formations accessibles (Découverte : 2 accès gratuits)
-  // non commencées, choisies d'après la situation de l'hôte.
+  const active = new Set(ACTIVE_SLUGS)
+  const order = new Map(ACTIVE_SLUGS.map((s, i) => [s, i]))
+  const published = cached.filter(f => active.has(f.slug)).sort((a, b) => (order.get(a.slug)! - order.get(b.slug)!))
+  const bySlug = new Map(published.map(f => [f.slug, f]))
+  const byId = new Map(published.map(f => [f.id, f]))
+  const ufs = (ufRes.data ?? []) as Array<{ formation_id: string; progress: number | null; completed_lessons: number[] | null; completed_at: string | null }>
+  const ufById = new Map(ufs.map(u => [u.formation_id, u]))
   const slotsFull = unlockedSlugs !== null && unlockedSlugs.length >= 2
-  const accessible = formations.filter(f => !slotsFull || unlockedSlugs!.includes(f.slug))
-  const bySlug = new Map(formations.map(f => [f.slug, f]))
-  const recommended: HighlightFormation[] = recommendFormations({
-    countries: Array.from(new Set((logementsPays ?? []).map(l => (l as { pays: string | null }).pays ?? 'FR'))),
-    logementsCount: (logementsPays ?? []).length,
-    hasContracts: (contractsCount ?? 0) > 0,
-    month: new Date().getMonth() + 1,
-    startedSlugs: new Set(formations.filter(f => progressMap[f.id] !== undefined).map(f => f.slug)),
-    availableSlugs: new Set(accessible.map(f => f.slug)),
-  }).map(r => {
-    const f = bySlug.get(r.slug)!
-    return { slug: f.slug, title: f.title, duration: f.duration, reason: r.reason }
+
+  // Formations avec leur prochaine leçon (contenu des content.ts)
+  const formations: HubFormation[] = published.map(f => {
+    const content = FORMATION_CONTENT_MAP[f.slug]
+    const uf = ufById.get(f.id)
+    const done = new Set((uf?.completed_lessons ?? []) as number[])
+    const all = content ? content.modules.flatMap(m => m.lessons) : []
+    const nextLesson = all.find(l => !done.has(l.id)) ?? null
+    return {
+      id: f.id,
+      slug: f.slug,
+      title: content?.title ?? f.title,
+      duration: content?.duration ?? f.duration ?? '',
+      lessons: all.length || (f.lessons_count ?? 0),
+      progress: uf ? (uf.progress ?? 0) : -1,
+      locked: slotsFull && !unlockedSlugs!.includes(f.slug),
+      isNew: isNouvelleFormation(f.created_at),
+      objectif: objectifLabel(f.slug),
+      cover: coverBackground(f.slug, 0.25),
+      next: nextLesson ? { id: nextLesson.id, title: nextLesson.title, duration: nextLesson.duration, steps: lessonSteps(parseLesson(nextLesson.content)).length } : null,
+    }
   })
+  const fBySlug = new Map(formations.map(f => [f.slug, f]))
+
+  // Reprendre : la formation en cours la plus avancée
+  const inProgress = formations.filter(f => f.progress > 0 && f.progress < 100).sort((a, b) => b.progress - a.progress)[0]
+  const logements = (logementsRes.data ?? []) as Array<{ id: string; pays: string | null; prix_airbnb_nuit: number | null; prix_booking_nuit: number | null; prix_direct_nuit: number | null }>
+  const recommended = recommendFormations({
+    countries: Array.from(new Set(logements.map(l => l.pays ?? 'FR'))),
+    logementsCount: logements.length,
+    hasContracts: (contractsRes.count ?? 0) > 0,
+    month: new Date().getMonth() + 1,
+    startedSlugs: new Set(formations.filter(f => f.progress >= 0).map(f => f.slug)),
+    availableSlugs: new Set(formations.filter(f => !f.locked).map(f => f.slug)),
+  }, 3)
+
+  function resumeOf(f: HubFormation, isStart: boolean): HubResume | null {
+    const content = FORMATION_CONTENT_MAP[f.slug]
+    if (!content || !f.next) return null
+    const mod = content.modules.find(m => m.lessons.some(l => l.id === f.next!.id))!
+    const uf = ufById.get(f.id)
+    const done = new Set((uf?.completed_lessons ?? []) as number[])
+    return {
+      slug: f.slug, title: f.title, lessonId: f.next.id, lessonTitle: f.next.title,
+      moduleLabel: `Module ${mod.id}`, steps: f.next.steps, duration: f.next.duration,
+      moduleBars: { done: mod.lessons.filter(l => done.has(l.id)).length, total: mod.lessons.length },
+      isStart,
+    }
+  }
+  const startCandidate = recommended[0] ? fBySlug.get(recommended[0].slug) : formations.find(f => f.progress < 0 && !f.locked)
+  const resume = inProgress ? resumeOf(inProgress, false) : startCandidate ? resumeOf(startCandidate, true) : null
+
+  // Repéré dans ton activité
+  const leconsFaites = new Set<string>()
+  for (const u of ufs) {
+    const f = byId.get(u.formation_id)
+    if (f) for (const id of (u.completed_lessons ?? []) as number[]) leconsFaites.add(`${f.slug}:${id}`)
+  }
+  const signal = computeSignals({
+    today,
+    logementsCount: logements.length,
+    prixRenseignes: logements.some(l => l.prix_airbnb_nuit != null || l.prix_booking_nuit != null || l.prix_direct_nuit != null),
+    sejoursTotal: sejoursCountRes.count ?? 0,
+    sejoursProchains: ((sejoursNextRes.data ?? []) as Array<{ date_arrivee: string; date_depart: string | null }>).map(s => ({ arrivee: s.date_arrivee, depart: s.date_depart })),
+    leconsFaites,
+  })[0] ?? null
+
+  // Semaine (lundi à dimanche, heure de Paris)
+  const dayIdx = (iso: string) => (new Date(iso).getTime() - new Date(weekStart).getTime()) / 86400000
+  const weekDays = [false, false, false, false, false, false, false]
+  for (const r of (logRes.data ?? []) as Array<{ completed_at: string }>) {
+    const i = Math.floor(dayIdx(r.completed_at))
+    if (i >= 0 && i < 7) weekDays[i] = true
+  }
+  const todayIndex = Math.min(6, Math.max(0, Math.floor(dayIdx(new Date().toISOString()))))
+
+  // Moi
+  const answers = (answersRes.data ?? []) as Array<{ correct: boolean }>
+  const actionsRaw = (actionsRes.data ?? []) as Array<{ title: string; href: string | null; due_at: string | null; done_at: string | null; formation_id: string }>
+  const saved: HubSaved[] = []
+  for (const b of (bookmarksRes.data ?? []) as Array<{ formation_slug: string; formation_title: string; lesson_id: number; lesson_title: string }>) {
+    saved.push({ kind: 'lecon', label: b.lesson_title, sub: b.formation_title, href: `/dashboard/formations/${b.formation_slug}?lecon=${b.lesson_id}` })
+  }
+  for (const fv of (favRes.data ?? []) as Array<{ formation_id: string }>) {
+    const f = byId.get(fv.formation_id)
+    if (f) saved.push({ kind: 'formation', label: fBySlug.get(f.slug)?.title ?? f.title, sub: objectifLabel(f.slug), href: `/dashboard/formations/${f.slug}` })
+  }
+  for (const n of (notesRes.data ?? []) as Array<{ formation_id: string; lesson_id: number; content: string }>) {
+    const f = byId.get(n.formation_id)
+    if (f) saved.push({ kind: 'note', label: n.content.slice(0, 90), sub: fBySlug.get(f.slug)?.title ?? f.title, href: `/dashboard/formations/${f.slug}?lecon=${n.lesson_id}` })
+  }
+
+  const data: HubData = {
+    firstName: profile.full_name?.split(' ')[0] ?? '',
+    plan,
+    formations,
+    resume,
+    signal,
+    recommended,
+    parcours: PARCOURS.map(p => ({ slug: p.slug, title: p.title, forWho: p.forWho, duration: p.duration, icon: p.icon, formations: p.formations.filter(s => bySlug.has(s)) })),
+    weekDone: (logRes.data ?? []).length,
+    weekGoal: WEEKLY_GOAL,
+    weekDays,
+    todayIndex,
+    actions: actionsRaw.map(a => ({ title: a.title, href: a.href, dueAt: a.due_at, doneAt: a.done_at, formationTitle: byId.get(a.formation_id)?.title ?? '' })),
+    stats: {
+      lessons: totalLessonsRes.count ?? 0,
+      actionsDone: actionsRaw.filter(a => a.done_at).length,
+      goodPct: answers.length ? Math.round((answers.filter(a => a.correct).length / answers.length) * 100) : null,
+    },
+    saved,
+  }
+
+  const tab = (TABS as string[]).includes(searchParams.onglet ?? '') ? searchParams.onglet as HubTab : 'aujourdhui'
 
   return (
     <>
-
-      <div style={styles.page} className="formations-no-fade">
-        {/* Hero (sept. 2026, même gabarit vert que Trouver des voyageurs) :
-            la promesse, 3 étapes, une action, et à droite la reprise ou les chiffres.
-            Remplace le titre + la bannière Parcours + les compteurs + les barres
-            profil/favoris qui s'empilaient avant le catalogue. */}
-        <HubHero
-          eyebrowIcon={<GraduationCap size={14} weight="fill" />}
-          eyebrow="Formations"
-          title={<>Progresse à ton rythme, <HeroEm>une leçon à la fois</HeroEm></>}
-          desc={`${formations.length} formations concrètes et à jour (visibilité, prix, fiscalité, réservation directe), accessibles à vie.`}
-          steps={[
-            ['Choisis', 'une formation ou un parcours'],
-            ['Avance', 'leçon par leçon'],
-            ['Applique', 'directement dans ton espace'],
-          ]}
-          aside={
-            <div style={{ ...heroCard, flex: '1 1 260px' }}>
-              {resume ? (
-                <>
-                  <span style={styles.asideLabel}>Reprendre</span>
-                  <span style={styles.asideTitle}>{resume.title}</span>
-                  <span style={styles.asideBar}><span style={{ ...styles.asideFill, width: `${resume.progress ?? 0}%` }} /></span>
-                  <span style={styles.asideMeta}>{resume.progress ?? 0} % terminé</span>
-                  <Link href={`/dashboard/formations/${resume.slug}`} style={{ ...heroCta, justifyContent: 'center', marginTop: '6px' }}>
-                    Continuer <ArrowRight size={14} weight="bold" />
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <span style={styles.asideLabel}>Ta progression</span>
-                  <span style={styles.asideStat}>{startedCount}<span style={styles.asideStatOf}> / {formations.length}</span></span>
-                  <span style={styles.asideMeta}>formations commencées · {doneCount} terminée{doneCount > 1 ? 's' : ''}</span>
-                </>
-              )}
-              <span style={styles.weekGoal}>
-                <span style={styles.weekRow}>
-                  <span>Objectif de la semaine</span>
-                  <strong>{Math.min(weekDone, WEEKLY_GOAL)} / {WEEKLY_GOAL} leçons</strong>
-                </span>
-                <span style={styles.asideBar}><span style={{ ...styles.asideFill, width: `${Math.min(100, (weekDone / WEEKLY_GOAL) * 100)}%` }} /></span>
-                <span style={styles.asideMeta}>{weekDone >= WEEKLY_GOAL ? 'Objectif atteint, bravo.' : 'Deux leçons par semaine suffisent pour avancer sans y penser.'}</span>
-              </span>
-              <span style={styles.asideLinks}>
-                <Link href="/dashboard/formations/profil-apprenant" style={heroLink}>Mon profil apprenant</Link>
-                <Link href="/dashboard/formations/favoris" style={heroLink}>Mes favoris</Link>
-              </span>
-            </div>
-          }
-        >
-          <div style={styles.ctaRow}>
-            <Link href="/dashboard/formations/parcours" style={heroCta}>
-              <Compass size={16} weight="fill" /> Suivre un parcours guidé
-            </Link>
-            <a href="#catalogue" style={heroLink}>Voir tout le catalogue</a>
-          </div>
-        </HubHero>
-
-        <FormationsHighlights resume={null} recommended={recommended} />
-
-        <div id="catalogue" style={{ scrollMarginTop: '80px' }} />
-        <div style={styles.section} className="fade-up d1">
-          <FormationsGrid
-            formations={formations as unknown as import('@/types').Formation[]}
-            progressMap={progressMap}
-            comingSoon={COMING_SOON}
-            unlockedSlugs={unlockedSlugs}
-            plan={plan}
-            initialFavoriteIds={Array.from(favoriteIds) as string[]}
-            newSlugs={newSlugs}
-            hideHeader
-          />
-        </div>
-
-        {/* Suggestion de formation */}
-        <div style={styles.suggestSection} className="fade-up d3">
-          <div style={styles.suggestBox} className="glass-card">
-            <div style={styles.suggestLeft}>
-              <div style={styles.suggestEmoji}><Lightbulb size={26} weight="duotone" color="var(--accent-text)" /></div>
-              <div>
-                <h3 style={styles.suggestTitle}>
-                  Tu voudrais une formation sur un autre sujet ?
-                </h3>
-                <p style={styles.suggestDesc}>
-                  Dis-nous ce qui t'aiderait le plus dans ton activité, on construit les prochaines formations en fonction de tes besoins.
-                </p>
-              </div>
-            </div>
-            <FormationsSuggestForm />
-          </div>
-        </div>
-      </div>
+      <TitleSetter title="Formations" />
+      <FormationsHub
+        data={data}
+        initialTab={tab}
+        initialParcours={searchParams.objectif ?? null}
+        revision={<Suspense fallback={null}><RevisionCard userId={userId} /></Suspense>}
+        suggest={<FormationsSuggestForm />}
+      />
     </>
   )
-}
-
-const styles: Record<string, React.CSSProperties> = {
-  weekGoal: { display: 'flex', flexDirection: 'column', gap: '6px', paddingTop: '10px', borderTop: '1px solid var(--border)' },
-  weekRow: { display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '12.5px', color: 'var(--text-2)' },
-  page: { padding: 'clamp(16px,3vw,44px)', width: '100%' },
-  ctaRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' },
-  asideLabel: { fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.5px' },
-  asideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '19px', color: 'var(--text)', lineHeight: 1.3 },
-  asideBar: { display: 'block', height: '6px', borderRadius: '999px', background: 'var(--bg)', overflow: 'hidden' },
-  asideFill: { display: 'block', height: '100%', borderRadius: '999px', background: 'var(--accent-text)' },
-  asideMeta: { fontSize: '12.5px', color: 'var(--text-3)' },
-  asideStat: { fontFamily: 'var(--font-fraunces), serif', fontSize: '40px', lineHeight: 1, color: 'var(--accent-text)' },
-  asideStatOf: { fontSize: '18px', color: 'var(--text-3)' },
-  asideLinks: { display: 'flex', flexWrap: 'wrap', gap: '6px 14px', marginTop: '6px', paddingTop: '10px', borderTop: '1px solid var(--border)' },
-  section: { marginBottom: '32px' },
-  suggestSection: { marginTop: '8px' },
-  suggestBox: {
-    display: 'flex', alignItems: 'flex-start', gap: '24px',
-    padding: 'clamp(16px,3vw,32px)', borderRadius: '20px', flexWrap: 'wrap',
-  },
-  suggestLeft: { display: 'flex', alignItems: 'flex-start', gap: '14px', flex: 1, minWidth: '220px' },
-  suggestEmoji: { fontSize: '26px', flexShrink: 0, marginTop: '3px' },
-  suggestTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(17px,2vw,20px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px', lineHeight: 1.3 },
-  suggestDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.6 },
 }

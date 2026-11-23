@@ -96,7 +96,7 @@ export async function toggleLessonBookmark(input: {
         { onConflict: 'user_id,formation_id,lesson_id', ignoreDuplicates: true }
       )
     if (error) return { error: error.message }
-    revalidatePath('/dashboard/formations/favoris')
+    revalidatePath('/dashboard/formations')
     return { bookmarked: true }
   } else {
     const { error } = await supabase
@@ -106,7 +106,7 @@ export async function toggleLessonBookmark(input: {
       .eq('formation_id', input.formationId)
       .eq('lesson_id', input.lessonId)
     if (error) return { error: error.message }
-    revalidatePath('/dashboard/formations/favoris')
+    revalidatePath('/dashboard/formations')
     return { bookmarked: false }
   }
 }
@@ -333,7 +333,7 @@ export async function toggleFormationFavorite(input: {
       )
     if (error) return { error: error.message }
     revalidatePath('/dashboard/formations')
-    revalidatePath('/dashboard/formations/favoris')
+    revalidatePath('/dashboard/formations')
     return { favorited: true }
   } else {
     const { error } = await supabase
@@ -343,7 +343,7 @@ export async function toggleFormationFavorite(input: {
       .eq('formation_id', input.formationId)
     if (error) return { error: error.message }
     revalidatePath('/dashboard/formations')
-    revalidatePath('/dashboard/formations/favoris')
+    revalidatePath('/dashboard/formations')
     return { favorited: false }
   }
 }

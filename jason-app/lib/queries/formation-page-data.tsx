@@ -127,8 +127,10 @@ export async function buildFormationPage({
   let initialAnswers: InitialAnswer[] = []
   let initialActions: InitialAction[] = []
   let initialObjectif: string | null = null
+  let initialFavorite = false
+  let firstLogementId: string | null = null
   if (formationId && profile?.userId) {
-    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }, answersRes, actionsRes, bilanRes] = await Promise.all([
+    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }, answersRes, actionsRes, bilanRes, favRes, logRes] = await Promise.all([
       supabase
         .from('user_formations')
         .select('progress, completed_lessons')
@@ -169,8 +171,24 @@ export async function buildFormationPage({
         .eq('user_id', profile.userId)
         .eq('formation_id', formationId)
         .maybeSingle(),
+      supabase
+        .from('user_formation_favorites')
+        .select('formation_id')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId)
+        .maybeSingle(),
+      // Logement de l'hôte, choisi d'avance dans les actions qui mènent à Mes prix
+      supabase
+        .from('logements')
+        .select('id')
+        .eq('user_id', profile.userId)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle(),
     ])
     initialObjectif = (bilanRes.data as { objectif?: string | null } | null)?.objectif ?? null
+    initialFavorite = !!favRes.data
+    firstLogementId = (logRes.data as { id: string } | null)?.id ?? null
     initialAnswers = (answersRes.data ?? []) as InitialAnswer[]
     initialActions = (actionsRes.data ?? []) as InitialAction[]
     initialProgress = uf?.progress ?? null
@@ -231,6 +249,8 @@ export async function buildFormationPage({
         initialAnswers={initialAnswers}
         initialActions={initialActions}
         initialObjectif={initialObjectif}
+        initialFavorite={initialFavorite}
+        firstLogementId={firstLogementId}
         relatedArticles={relations.articles}
         recommendedNext={nextFormationsData}
         currentUserId={profile?.userId ?? null}

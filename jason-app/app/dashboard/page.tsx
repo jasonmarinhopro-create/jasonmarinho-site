@@ -1007,7 +1007,7 @@ export default async function DashboardPage() {
 
             {/* Mon apprentissage (niveaux) */}
             {(learnerLevel || formationInProgressData) && (
-              <Link href="/dashboard/formations/profil-apprenant" style={{ ...s.card, textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <Link href="/dashboard/formations?onglet=moi" prefetch={false} style={{ ...s.card, textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <div style={s.cardHead}>
                   <h3 style={s.cardTitle}><GraduationCap size={16} weight="fill" color="var(--accent-text)" style={{ verticalAlign: '-2px', marginRight: 6 }} />Mon apprentissage</h3>
                   <ArrowRight size={13} weight="bold" color="var(--text-3)" />
