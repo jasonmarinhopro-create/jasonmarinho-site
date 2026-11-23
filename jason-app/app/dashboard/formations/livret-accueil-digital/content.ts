@@ -1,7 +1,7 @@
 export const LIVRET_ACCUEIL_FORMATION = {
   slug: 'livret-accueil-digital',
   title: `Créer un livret d'accueil digital qui réduit les questions et améliore les avis`,
-  description: `Un livret d'accueil bien conçu réduit de 80% les questions des voyageurs, améliore vos avis et vous fait gagner des heures chaque semaine. Créez le vôtre avec Driing en moins d'une heure.`,
+  description: `Un livret d'accueil bien conçu répond aux questions de tes voyageurs avant qu'ils les posent et soigne tes avis. Crée le tien avec Driing en moins d'une heure.`,
   duration: '1h45',
   level: 'Débutant',
   objectifs: [
@@ -23,9 +23,9 @@ export const LIVRET_ACCUEIL_FORMATION = {
           title: `Ce que coûte vraiment l'absence de livret`,
           duration: '12 min',
           content: `## Le calcul que personne ne fait
-En moyenne, un hôte sans livret d'accueil
-reçoit 5 à 8 messages par séjour
-avec des questions identiques et répétitives.
+Sans livret d'accueil, un hôte reçoit
+à chaque séjour les mêmes questions,
+identiques et répétitives.
 
 Les questions les plus fréquentes :
 → "C'est quoi le mot de passe Wi-Fi ?"

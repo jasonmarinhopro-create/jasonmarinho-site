@@ -1,11 +1,11 @@
 export const PHOTOGRAPHIE_LCD_FORMATION = {
   slug: 'photographie-lcd-smartphone',
   title: 'Faire des photos qui font cliquer : la photographie LCD avec un smartphone',
-  description: `Les photos décident à elles seules de 60 % du clic et 40 % du prix qu'un voyageur est prêt à payer. Cette formation t'apprend à transformer ton annonce en quelques heures, avec ton seul smartphone, composition, lumière, mise en scène, retouche, mise en ligne. Aucun matériel pro requis.`,
+  description: `Les photos sont la première chose que voit un voyageur, avant le prix et la description. Cette formation t'apprend à transformer ton annonce en quelques heures, avec ton seul smartphone, composition, lumière, mise en scène, retouche, mise en ligne. Aucun matériel pro requis.`,
   duration: '2h30',
   level: 'Débutant',
   objectifs: [
-    `Comprendre pourquoi les photos sont le facteur n°1 de conversion en LCD`,
+    `Comprendre pourquoi les photos pèsent autant sur les clics et les réservations`,
     `Maîtriser la composition et la lumière naturelle pour photographier ton logement`,
     `Préparer chaque pièce avec une logique "home staging" professionnelle`,
     `Tirer le meilleur de ton smartphone, sans matériel coûteux`,
@@ -21,19 +21,19 @@ export const PHOTOGRAPHIE_LCD_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: `Pourquoi 60 % du clic se joue en 2 secondes`,
+          title: `Pourquoi le clic se joue en quelques secondes`,
           duration: '7 min',
           content: `## Le voyageur ne lit pas, il scanne
 
 Quand un voyageur cherche un logement, il fait défiler des dizaines d'annonces en quelques minutes.
 
-Sur Airbnb, le temps moyen passé à décider de cliquer ou non sur une annonce est de **1,7 seconde**.
+Sur Airbnb, le voyageur décide **en quelques secondes** de cliquer ou non sur une annonce.
 
-> 1,7 seconde pour gagner ce voyageur ou le perdre à jamais.
+> Quelques secondes pour gagner ce voyageur ou le perdre.
 
-Pendant ces 1,7 seconde, il regarde :
+Pendant ces quelques secondes, il regarde :
 
-1. **La photo de couverture** (95 % de l'attention)
+1. **La photo de couverture** (presque toute l'attention)
 2. Le **prix par nuit**
 3. Les **étoiles** et le nombre d'avis
 4. *(Et seulement après)* le titre
@@ -42,14 +42,9 @@ Le titre vient en **dernier**. La description ? Il ne la lira pas si la photo ne
 
 > **Conclusion :** ta photo de couverture fait à elle seule 60 % du travail.
 
-## Les chiffres qu'Airbnb ne crie pas
+## Ce qu'une photo médiocre te coûte
 
-Une étude interne Airbnb publiée en 2022 a mesuré l'impact d'une photo professionnelle sur les annonces ayant moins de 5 réservations :
-
-- **+24 %** de réservations
-- **+26 %** de revenu mensuel
-- **+9 %** de prix moyen accepté
-- Vitesse de réservation **x 2**
+Sur une page de résultats, le voyageur compare des vignettes. Une photo sombre, de travers ou encombrée le fait passer à l'annonce suivante avant même d'avoir vu ton prix.
 
 Une photo médiocre te coûte chaque mois plus que tu ne le penses.
 
@@ -682,7 +677,7 @@ Si tu te souviens du **beau bouquet**, de la lumière qui entre, du livre ouvert
           duration: '8 min',
           content: `## Le principe : la déco "pour la photo"
 
-Tu n'as pas besoin de refaire toute ta déco. Tu as besoin de la déco visible **pendant les 1,7 seconde où le voyageur regarde**.
+Tu n'as pas besoin de refaire toute ta déco. Tu as besoin de la déco visible **pendant les quelques secondes où le voyageur regarde**.
 
 Cette déco peut être achetée juste pour la séance photo, et rangée ensuite.
 
@@ -2157,7 +2152,7 @@ Si tu hésites, retravaille la sélection. Réordonne, remplace 1 ou 2 photos pa
           duration: '4 min',
           content: `## La photo de couverture vaut un mois de tarif
 
-On l'a vu au module 1 : ta photo de couverture fait **60 % du clic**.
+On l'a vu au module 1 : ta photo de couverture fait **l'essentiel du clic**.
 
 Ce qu'on n'a pas dit :
 

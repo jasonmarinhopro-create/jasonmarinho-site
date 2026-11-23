@@ -1,7 +1,7 @@
 export const GERER_LCD_FORMATION = {
   slug: 'gerer-lcd-automatisation',
   title: 'Gérer sa LCD comme un pro : automatisation et gain de temps',
-  description: `Les hôtes qui automatisent leur LCD gagnent jusqu'à 12 heures par semaine. Messages, accès, ménage, tarification : la méthode complète pour construire un système qui tourne sans vous.`,
+  description: `Messages, accès, ménage, tarification : la méthode complète pour construire un système qui fait tourner ta location courte durée sans toi au quotidien.`,
   duration: '2h00',
   level: 'Intermédiaire',
   objectifs: [
@@ -22,25 +22,19 @@ export const GERER_LCD_FORMATION = {
           id: 1,
           title: `L'audit de vos tâches : trouver les heures perdues`,
           duration: '12 min',
-          content: `## Le chiffre qui change tout
-Les propriétaires qui automatisent
-leur gestion LCD gagnent jusqu'à
-12 heures par semaine.
+          content: `## Le temps que tu récupères
+Messages, codes d'accès, planning
+du ménage, prix : chaque tâche
+automatisée te rend du temps,
+chaque semaine.
 
-> Source : moncercleimmo.com, 2026
-
-Ce que représentent 12 heures/semaine :
-→ 624 heures par an
-→ 26 jours de travail récupérés
-→ Réinvestis dans : d'autres logements,
+Ce que tu peux en faire :
+→ Réinvestir ce temps dans : d'autres logements,
   votre vie personnelle, d'autres activités
 
-Une conciergerie de 30 logements
-qui fait encore ses rapports sur Excel
-consacre entre 40 et 48 heures par an
-à cette seule tâche.
-
-> Source : Tweelo / hostnlib, 2026
+Une conciergerie qui fait encore
+ses rapports à la main sur Excel
+y passe des dizaines d'heures par an.
 
 → L'automatisation n'est pas un confort.
   En 2026, c'est une nécessité
@@ -639,12 +633,11 @@ Ce que l'outil analyse en temps réel :
   (prix monte quand la date approche
    et que les logements se remplissent)
 
-Impact moyen observé :
-→ +15 à +25% de revenus
-  pour les hôtes qui passent
-  à la tarification dynamique
-
-> Source : moncercleimmo.com, 2026
+Ce qu'on en attend :
+→ un prix qui suit la demande,
+  donc des revenus mieux tenus
+  qu'avec un prix fixe
+  (le gain varie selon ton marché)
 
 → Sans tarification dynamique :
   vous laissez de l'argent sur la table
@@ -864,7 +857,7 @@ NOTIFICATIONS À DÉSACTIVER
 
 ## Ce que vous faites avec les heures récupérées
 Une fois votre système en place,
-vous avez récupéré 8 à 12 heures par semaine.
+vous avez récupéré plusieurs heures par semaine.
 
 Ce que font les hôtes performants
 avec ce temps :

@@ -24,7 +24,7 @@ export const ANNONCE_DIRECTE_FORMATION = {
           duration: '15 min',
           content: `## La réalité que personne ne veut voir
 
-En 2025, 73% des hôtes LCD génèrent 100% de leurs revenus via Airbnb ou Booking. C'est pratique. C'est dangereux.
+Beaucoup d'hôtes LCD tirent la totalité de leurs revenus d'Airbnb ou de Booking. C'est pratique. C'est dangereux.
 
 Une modification d'algorithme, une suspension de compte, une augmentation des commissions, et ton chiffre d'affaires s'effondre du jour au lendemain. Ça arrive. Ça arrive souvent.
 

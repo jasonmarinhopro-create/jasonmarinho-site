@@ -23,10 +23,9 @@ export const FISCALITE_LCD_FORMATION = {
           title: 'La loi Le Meur expliquée simplement',
           duration: '15 min',
           content: `## Pourquoi cette loi existe
-Entre 2015 et 2023 en France :
-
-Le nombre de logements en location
-meublée touristique a été multiplié par 5.
+Ces dernières années en France,
+le nombre de logements loués en meublé
+de tourisme a fortement augmenté.
 
 Dans les zones touristiques et tendues,
 des milliers de logements ont quitté
@@ -336,7 +335,6 @@ Si tu n'es pas immatriculé :
           duration: '14 min',
           content: `## Les nouveaux seuils micro-BIC (applicables aux revenus 2025)
 TYPE DE LOCATION          ABATTEMENT    PLAFOND
-─────────────────────────────────────────────────
 Meublé longue durée           50%       77 700€
 (bail classique, étudiant,
  mobilité)
@@ -352,7 +350,6 @@ Meublé tourisme CLASSÉ        50%       77 700€
 Chambres d'hôtes              71%       77 700€
 (accueil chez l'habitant
  avec petit-déjeuner)
-─────────────────────────────────────────────────
 
 ## Ce que ça veut dire en pratique
 Exemple concret, meublé NON classé :

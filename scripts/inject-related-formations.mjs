@@ -24,7 +24,7 @@ const FORMATIONS = {
   },
   'decorer-amenager-logement-lcd': {
     title: 'Décorer & aménager son logement',
-    short: 'Un logement bien décoré génère 20 à 30 % de réservations en plus.',
+    short: 'Couleurs, literie, équipements : un logement qui se démarque, sans te ruiner.',
     icon: 'ph-paint-brush',
   },
   'ecrire-avis-repondre-voyageurs': {
@@ -44,7 +44,7 @@ const FORMATIONS = {
   },
   'gerer-lcd-automatisation': {
     title: 'Gérer sa LCD par automatisation',
-    short: 'Messages, accès, ménage, tarification : 12 h/semaine gagnées.',
+    short: 'Messages, accès, ménage, tarification : un système qui tourne sans toi.',
     icon: 'ph-lightning',
   },
   'google-my-business-lcd': {
@@ -59,7 +59,7 @@ const FORMATIONS = {
   },
   'livret-accueil-digital': {
     title: 'Livret d\'accueil digital',
-    short: 'Réduire de 80 % les questions voyageurs et améliorer tes avis.',
+    short: 'Répondre aux questions avant qu\'elles arrivent et soigner tes avis.',
     icon: 'ph-book-open',
   },
   'mettre-le-bon-prix-lcd': {
@@ -84,7 +84,7 @@ const FORMATIONS = {
   },
   'tarification-dynamique': {
     title: 'Tarification dynamique',
-    short: '45 % des hôtes perdent 15 à 25 % de revenus sur leur prix : corrige-le.',
+    short: 'Prix de base, minimum, saisons : le bon prix chaque nuit, automatiquement.',
     icon: 'ph-chart-line-up',
   },
   'maitriser-booking-com-algorithme-genius': {

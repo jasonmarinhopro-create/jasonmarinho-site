@@ -20,7 +20,7 @@ export const AUDIT_ANNONCE_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: 'Pourquoi un diagnostic au feeling rate 8 fois sur 10',
+          title: 'Pourquoi un diagnostic au feeling passe à côté de l\'essentiel',
           duration: '10 min',
           content: `## "Je trouve que ça va" n'est pas un diagnostic
 

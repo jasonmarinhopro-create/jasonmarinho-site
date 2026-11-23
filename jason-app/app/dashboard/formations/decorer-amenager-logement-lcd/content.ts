@@ -1,7 +1,7 @@
 export const DECORER_AMENAGER_FORMATION = {
   slug: 'decorer-amenager-logement-lcd',
   title: 'Décorer et aménager son logement pour maximiser les avis',
-  description: `Un logement bien décoré peut générer 20 à 30% de réservations supplémentaires. Couleurs, literie, cuisine, équipements, l'effet waouh, les erreurs à éviter : la méthode complète pour transformer votre logement sans vous ruiner.`,
+  description: `Un logement bien décoré se remarque dans les résultats et dans les avis. Couleurs, literie, cuisine, équipements, l'effet waouh, les erreurs à éviter : la méthode complète pour transformer votre logement sans vous ruiner.`,
   duration: '2h00',
   level: 'Débutant',
   objectifs: [
@@ -22,12 +22,10 @@ export const DECORER_AMENAGER_FORMATION = {
           id: 1,
           title: 'Pourquoi la décoration impacte directement vos avis',
           duration: '12 min',
-          content: `## Les chiffres qui changent tout
+          content: `## Ce qui change tout
 Un logement bien pensé et bien équipé
-peut générer jusqu'à 20 à 30%
-de réservations supplémentaires.
-
-> Source : RentaPlus, 2026
+se remarque dans les résultats
+et dans les avis.
 
 Pourquoi ?
 
@@ -930,8 +928,8 @@ MODULE 4
   selon leur retour sur expérience
 
 → Un logement bien décoré et aménagé
-  peut générer 20 à 30% de réservations
-  supplémentaires, sans changer
+  se remarque davantage et récolte
+  de meilleurs avis, sans changer
   de logement ni de prix.
 
 Des questions sur votre logement spécifique ?

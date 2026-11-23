@@ -145,7 +145,7 @@ En dessous de 4,7 : visibilité impactée.
           title: 'Les erreurs qui font descendre votre annonce',
           duration: '15 min',
           content: `## Erreur 1 : Le calendrier mal géré
-C'est la cause n°1 de déclassement
+C'est une cause fréquente de déclassement
 chez les hôtes expérimentés.
 
 Ce que l'algorithme punit :
@@ -415,7 +415,7 @@ Photos 21+ : Quartier, environnement proche
   ou une vue attrayante.
 → L'ordre crée une histoire, racontez-la bien.
 
-## Les photos que 90% des hôtes n'ont pas (et devraient avoir)
+## Les photos que la plupart des hôtes n'ont pas (et devraient avoir)
 Ces photos font la différence entre
 une annonce correcte et une annonce
 mémorable :
@@ -646,7 +646,7 @@ Séjours groupe bienvenue"
           title: `La structure d'une description qui convertit`,
           duration: '12 min',
           content: `## Ce que la plupart des hôtes écrivent (et pourquoi ça ne convertit pas)
-Description type de 90% des hôtes :
+Description type de la plupart des hôtes :
 
 "Bel appartement de 55m², 2 pièces,
 au 3ème étage sans ascenseur.

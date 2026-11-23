@@ -68,5 +68,7 @@ jobs:
         run: node scripts/inject-quartiers-villes.mjs --check
       - name: FAQ des pages photographe et ménage à jour
         run: node scripts/inject-faq-villes.mjs --check
+      - name: Aperçus des formations alignés sur la leçon 1 de l'app
+        run: node scripts/build-apercus-formations.mjs --check
       - name: Fil d'Ariane (relevé, sans échec)
         run: node scripts/audit-fil-ariane.mjs

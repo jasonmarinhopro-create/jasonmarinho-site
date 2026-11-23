@@ -1,7 +1,7 @@
 export const ECRIRE_AVIS_FORMATION = {
   slug: 'ecrire-avis-repondre-voyageurs',
   title: 'Écrire des avis et répondre aux voyageurs',
-  description: 'Les avis sont le moteur n°1 de vos réservations. Apprenez à les collecter, à rédiger les vôtres, à répondre aux négatifs sans jamais perdre de clients, et à transformer chaque commentaire en levier de croissance.',
+  description: 'Les avis pèsent sur chaque réservation. Apprends à les obtenir, à écrire les tiens, à répondre aux négatifs sans perdre de voyageurs et à en faire un argument.',
   duration: '2h00',
   level: 'Débutant',
   objectifs: [
@@ -26,10 +26,9 @@ export const ECRIRE_AVIS_FORMATION = {
 Les avis influencent directement
 vos revenus, dans les deux sens.
 
-→ Une note de 4,8+ sur Airbnb permet
-  de pratiquer des tarifs 12 à 18%
-  au-dessus de la moyenne locale.
-  Source : AirDNA, 2026
+→ Une note élevée rassure les voyageurs
+  et t'aide à défendre ton prix face
+  aux annonces voisines.
 
 → Les plateformes valorisent les logements
   avec un bon volume d'avis récents :

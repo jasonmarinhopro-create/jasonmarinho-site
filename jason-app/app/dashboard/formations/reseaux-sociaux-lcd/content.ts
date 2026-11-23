@@ -1,7 +1,7 @@
 export const RESEAUX_SOCIAUX_FORMATION = {
   slug: 'reseaux-sociaux-lcd',
   title: 'Développer sa présence sur les réseaux sociaux pour attirer des voyageurs',
-  description: '81% des voyageurs utilisent Instagram pour chercher leur hébergement. Apprenez à créer une page qui attire, quel contenu publier, quand publier, et comment transformer vos abonnés en réservations directes via Driing, sans y passer des heures.',
+  description: 'Instagram peut t\'apporter des réservations directes. Crée une page qui attire, sache quoi et quand publier, et transforme tes abonnés en voyageurs via Driing, sans y passer des heures.',
   duration: '1h45',
   level: 'Débutant',
   objectifs: [
@@ -22,16 +22,14 @@ export const RESEAUX_SOCIAUX_FORMATION = {
           id: 1,
           title: 'Les réseaux sociaux comme levier de réservation directe',
           duration: '12 min',
-          content: `## Les chiffres qui justifient d'y être
-81% des utilisateurs d'Instagram
-se servent de la plateforme pour
-chercher des hébergements avant de réserver.
+          content: `## Pourquoi y être
+Beaucoup de voyageurs découvrent
+des lieux et des hébergements
+sur Instagram avant de réserver.
 
-> Source : jecreemongite.com, 2025
-
-Les publications avec des visuels attractifs
-génèrent jusqu'à 38% d'engagement en plus,
-ce qui booste directement votre visibilité.
+Des visuels soignés font réagir
+davantage, et chaque réaction
+augmente ta visibilité.
 
 Ce que ça signifie pour vous :
 → Vos futurs voyageurs sont sur Instagram

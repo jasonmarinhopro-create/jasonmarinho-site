@@ -279,7 +279,7 @@ Le metasearch n'est pas un canal sur lequel investir du temps de rédaction ou d
           duration: '20 min',
           content: `## Le contenu immersif a un impact mesuré, pas juste théorique
 
-Contrairement au metasearch, la vidéo et la visite virtuelle 3D sont des leviers directement actionnables par un hôte indépendant, avec un impact chiffré. Le cas documenté le plus solide vient de Vacasa, opérateur qui gère plusieurs dizaines de milliers de logements : le déploiement de visites 3D Matterport a fait grimper le taux de conversion de près de 12 %, avec un temps de consultation des annonces multiplié par 3 sur les logements équipés.
+Contrairement au metasearch, la vidéo et la visite virtuelle 3D sont des leviers directement actionnables par un hôte indépendant, avec un effet visible sur le temps passé sur l'annonce et sur la confiance du voyageur. Matterport met en avant le cas de Vacasa, opérateur qui gère des dizaines de milliers de logements, avec plus de réservations sur les logements équipés de visites 3D : un chiffre d'éditeur, à prendre comme tel.
 
 ### Pourquoi ça marche : la friction de confiance
 
@@ -321,7 +321,7 @@ La logique métier derrière ce choix : un logement avec des avis anciens n'a pe
 
 ### Le badge Coup de Cœur Voyageurs, un signal renforcé
 
-Ce badge, couvert en détail dans la formation Optimiser son annonce Airbnb, s'appuie sur une moyenne de 4,9 et plus, et représenterait aujourd'hui environ 25 % du poids de classement, davantage que l'ancien badge Superhost qu'il a largement supplanté comme signal de qualité dominant. Or ce badge se recalcule en continu sur une fenêtre glissante, ce qui veut dire qu'un ralentissement du rythme d'avis récents peut le faire perdre, même sans aucune baisse de la qualité réelle du séjour.
+Ce badge, couvert en détail dans la formation Optimiser son annonce Airbnb, s'appuie sur une moyenne de 4,9 et plus, et pèserait aujourd'hui beaucoup dans le classement, davantage que l'ancien badge Superhost qu'il a largement supplanté comme signal de qualité dominant. Or ce badge se recalcule en continu sur une fenêtre glissante, ce qui veut dire qu'un ralentissement du rythme d'avis récents peut le faire perdre, même sans aucune baisse de la qualité réelle du séjour.
 
 ### Ce que ça implique concrètement
 

@@ -1,7 +1,7 @@
 export const GERER_INCIDENTS_LITIGES_FORMATION = {
   slug: 'gerer-incidents-litiges-lcd',
   title: 'Gérer les incidents et litiges en LCD : la formation pour ne plus jamais être pris au dépourvu',
-  description: `100 % des hôtes vivent au moins 1 incident par an : linge taché, dégât matériel, plainte voisin, voyageur qui ne respecte pas les règles, caution à récupérer. Cette formation t'apprend à anticiper, gérer et facturer chaque incident avec méthode, sans paniquer, sans y laisser ta sérénité. Procédures Airbnb 2026, Booking, Stripe, contrats, tout est dedans.`,
+  description: `Tôt ou tard, tout hôte vit un incident : linge taché, dégât matériel, plainte voisin, voyageur qui ne respecte pas les règles, caution à récupérer. Cette formation t'apprend à anticiper, gérer et facturer chaque incident avec méthode, sans paniquer, sans y laisser ta sérénité. Procédures Airbnb 2026, Booking, Stripe, contrats, tout est dedans.`,
   duration: '2h30',
   level: 'Intermédiaire',
   objectifs: [

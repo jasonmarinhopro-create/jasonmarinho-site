@@ -35,7 +35,7 @@ chutent fortement hors saison :
 > Source : AirDNA, données France 2025-2026
 
 Ces chiffres sont des moyennes.
-Certains hôtes font 60% en janvier.
+Certains hôtes remplissent bien janvier.
 D'autres font 20%.
 
 La différence ? Pas la chance.

@@ -1,7 +1,7 @@
 export const TARIFICATION_DYNAMIQUE_FORMATION = {
   slug: 'tarification-dynamique',
   title: 'Comprendre et utiliser la tarification dynamique',
-  description: '45% des hôtes sous-évaluent ou surévaluent leur logement, perdant 15 à 25% de revenus. Tarif de base, prix minimum, saisonnalité, événements locaux, outils : la méthode complète pour mettre le bon prix, automatiquement.',
+  description: 'Un prix fixe laisse de l\'argent sur la table en haute saison et fait fuir en basse saison. Tarif de base, prix minimum, saisonnalité, événements locaux, outils : la méthode complète pour mettre le bon prix, automatiquement.',
   duration: '2h00',
   level: 'Intermédiaire',
   objectifs: [
@@ -22,20 +22,18 @@ export const TARIFICATION_DYNAMIQUE_FORMATION = {
           id: 1,
           title: `Pourquoi votre prix fixe vous coûte de l'argent`,
           duration: '12 min',
-          content: `## Le chiffre qui fait mal
-45% des propriétaires LCD
-sous-évaluent ou surévaluent leurs tarifs,
-perdant ainsi entre 15 et 25%
-de revenus potentiels.
-
-> Source : PriceLabs / hello.pricelabs.co, 2026
+          content: `## Ce que coûte un prix fixe
+Un prix qui ne bouge jamais est
+forcément faux une bonne partie
+de l'année : trop bas quand la demande
+est forte, trop haut quand elle est faible.
 
 En pratique, un prix fixe :
 
 → EST TROP BAS en haute saison
   → Vous remplissez facilement
     mais laissez de l'argent sur la table.
-  → Des voyageurs auraient payé 30-50% de plus.
+  → Des voyageurs auraient payé plus cher.
 
 → EST TROP HAUT en basse saison
   → Votre calendrier reste vide.
@@ -43,7 +41,7 @@ En pratique, un prix fixe :
     et d'encaisser quelque chose.
 
 → NE RÉAGIT PAS AUX ÉVÉNEMENTS
-  → Un salon pro à 2 km = demande ×3.
+  → Un salon pro à 2 km fait bondir la demande.
     Votre prix ne bouge pas.
     Vous louez à prix normal
     pendant une nuit qui valait le triple.
@@ -281,11 +279,10 @@ CE QU'IL FAIT :
 → Donne accès aux données de marché
   (ce que font vos concurrents)
 
-IMPACT OBSERVÉ :
-→ +15 à +25% de revenus en moyenne
-  pour les hôtes qui l'adoptent
-
-> Source : moncercleimmo.com, 2026
+CE QU'ON EN ATTEND :
+→ un prix qui suit la demande ;
+  le gain varie selon ton marché
+  et ton point de départ
 
 PRIX : à partir de 19,99$/mois par logement
 

@@ -20,19 +20,14 @@ export const METTRE_BON_PRIX_FORMATION = {
       lessons: [
         {
           id: 1,
-          title: 'Pourquoi 45% des hôtes travaillent à perte sans le savoir',
+          title: 'Pourquoi tant d\'hôtes travaillent à perte sans le savoir',
           duration: '15 min',
           content: `## La réalité que personne ne dit
-45% des propriétaires sous-évaluent
-ou surévaluent leurs tarifs.
+Beaucoup d'hôtes fixent un prix trop bas
+ou trop haut sans le savoir, et perdent
+des revenus chaque année.
 
-Ils perdent entre 15 et 25%
-de revenus potentiels chaque année.
-
-
-> Source : étude marché LCD France, 2026
-
-La cause n°1 : fixer un prix "à l'oeil"
+La cause la plus fréquente : fixer un prix "à l'oeil"
 en regardant les voisins sur Airbnb.
 
 C'est la pire méthode qui soit.
@@ -132,7 +127,6 @@ Conséquence directe sur ton prix minimum :
 
 [Charges fixes mensuelles] ÷ [Nuits estimées] = ___€
 + [Coût ménage] + [Consommables] + [Commission %] = ___€
-─────────────────────────────────────────────────────
 Mon prix minimum absolu = ___€
 
 Note ce chiffre quelque part. C'est le seul nombre qui ne bougera jamais quelles que soient les stratégies appliquées ensuite.
@@ -176,9 +170,8 @@ Observe :
 → Leur taux d'occupation (calendrier rempli ?
    = bon indicateur de prix correct)
 
-→ Les annonces notées 4,8+ étoiles pratiquent
-  12 à 18% au-dessus de la moyenne locale.
-  Source : AirDNA, 2026
+→ Les annonces très bien notées peuvent
+  afficher un prix plus élevé que leurs voisines.
 
 ## Méthode 2 : La règle du 1% par semaine
 Une heuristique simple pour valider ton prix :
@@ -1126,7 +1119,6 @@ Canal          Réservations  Revenus bruts  Commission  Revenu net
 Airbnb         ___           ___€           ___€        ___€
 Booking        ___           ___€           ___€        ___€
 Driing/Direct  ___           ___€           0€          ___€
-─────────────────────────────────────────────────────────────────
 TOTAL          ___           ___€           ___€        ___€
 
 → Ce tableau te dit où optimiser :
