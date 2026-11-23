@@ -22,7 +22,13 @@ export const TARIFICATION_DYNAMIQUE_FORMATION = {
           id: 1,
           title: `Pourquoi ton prix fixe te coûte de l'argent`,
           duration: '12 min',
-          content: `## Ce que coûte un prix fixe
+          content: `:::bref
+- Un prix fixe est trop bas quand la demande est forte et trop haut quand elle est faible.
+- La tarification dynamique ajuste ton prix à la demande : saison, jour, événement, délai.
+- Trois chiffres à suivre : taux d'occupation, prix moyen par nuit louée, revenu par nuit disponible.
+:::
+
+## Ce que coûte un prix fixe
 Un prix qui ne bouge jamais est
 forcément faux une bonne partie
 de l'année : trop bas quand la demande
@@ -125,13 +131,34 @@ La bonne question est :
 
 ## Exercice
 **Exercice pratique :** Calcule ton RevPAN actuel. Prends tes revenus bruts des 3 derniers mois et divise par le nombre de nuits disponibles (pas seulement louées). C'est ton point de départ. Dans 3 mois avec une stratégie de tarification dynamique, ce chiffre doit être en hausse.
-`,
+
+:::quiz
+? Que se passe-t-il avec un prix fixe pendant un grand salon près de chez toi ?
+* Tu loues au prix normal une nuit qui valait bien plus
+- Ton prix monte automatiquement
+- Les voyageurs ne viennent pas
+= Un prix fixe ne réagit pas aux pics de demande : tu laisses de l'argent sur la table.
+:::
+
+:::quiz
+? Quel indicateur résume le mieux prix et remplissage ensemble ?
+* Le revenu par nuit disponible
+- Le nombre d'avis
+- Le prix le plus haut de l'année
+= Il combine le prix et le taux d'occupation : s'il monte, ta stratégie progresse.
+:::`,
         },
         {
           id: 2,
           title: 'Calculer son prix minimum et son prix de base',
           duration: '13 min',
-          content: `## Le prix minimum : ton plancher absolu
+          content: `:::bref
+- Le prix minimum est le plancher sous lequel tu ne loues jamais.
+- Il couvre tes charges fixes ramenées à la nuit, le coût d'un séjour et une petite marge.
+- Le prix de base est ton prix d'une nuit ordinaire, point de départ des ajustements.
+:::
+
+## Le prix minimum : ton plancher absolu
 Le prix minimum est le prix en dessous duquel
 tu ne loues JAMAIS, même la veille pour demain.
 
@@ -221,7 +248,29 @@ FACTEURS QUI FONT BAISSER LES PRIX :
 
 ## Exercice
 **Exercice pratique :** Calcule ton prix minimum maintenant avec la formule de la slide 2. Puis recherche 5 logements comparables sur Airbnb dans ta zone et note leur prix moyen. Ces deux chiffres sont tes premières configurations dans tout outil de tarification dynamique.
-`,
+
+:::quiz
+? 800 € de charges, 20 nuits louées et 60 € de ménage par séjour d'une nuit : quel plancher ?
+* 100 €
+- 40 €
+- 60 €
+= 800 / 20 = 40 €, plus 60 € de ménage = 100 € par nuit avant marge.
+:::
+
+:::quiz
+? À quoi sert le prix de base ?
+- C'est le prix le plus bas autorisé
+- C'est le prix affiché le week-end
+* C'est le point de départ des majorations et remises
+= Les outils appliquent saisons, week-ends et événements à partir de ce prix ordinaire.
+:::
+
+:::action
+titre: Calcule ton prix minimum et ton prix de base
+texte: Renseigne-les dans Mes prix pour ton logement, ils serviront dans toute la formation.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Ouvrir Mes prix
+:::`,
         },
       ],
     },
@@ -234,7 +283,13 @@ FACTEURS QUI FONT BAISSER LES PRIX :
           id: 11,
           title: 'Airbnb Smart Pricing vs outils spécialisés',
           duration: '12 min',
-          content: `## La tarification intelligente Airbnb : le point de départ gratuit
+          content: `:::bref
+- La tarification intelligente d'Airbnb est gratuite mais moins précise et limitée à Airbnb.
+- PriceLabs et Beyond analysent le marché local et gèrent plusieurs plateformes.
+- Quel que soit l'outil, règle toujours ton prix minimum toi-même.
+:::
+
+## La tarification intelligente Airbnb : le point de départ gratuit
 Airbnb propose un outil de tarification
 dynamique intégré et gratuit.
 
@@ -337,13 +392,34 @@ Idéal pour      Débutants,      Optimisateurs,  Conciergeries,
 
 ## Exercice
 **Exercice pratique :** Si tu n'as pas encore activé de tarification dynamique : active la tarification intelligente Airbnb aujourd'hui avec ton prix minimum configuré. C'est gratuit et ça améliore déjà les revenus. Si tu veux aller plus loin : inscris-toi à l'essai gratuit de Pricelabs (hello.pricelabs.co) cette semaine.
-`,
+
+:::quiz
+? Quelle est la principale limite de la tarification intelligente d'Airbnb ?
+- Elle est payante
+- Elle ne change jamais les prix
+* Elle ne gère qu'Airbnb et peut descendre très bas sans prix minimum
+= Gratuite et pratique pour démarrer, elle reste moins fine et ne pilote pas Booking ni le direct.
+:::
+
+:::quiz
+? Quand un outil spécialisé devient-il intéressant ?
+- Dès la première nuit, pour tout le monde
+- Seulement pour les chambres d'hôtes
+* Avec plusieurs logements ou plusieurs plateformes
+= Son coût par logement se justifie quand le gain dépasse l'abonnement.
+:::`,
         },
         {
           id: 12,
           title: 'Configurer son outil en 5 étapes',
           duration: '13 min',
-          content: `## ÉTAPE 1 : Connecter ses plateformes
+          content: `:::bref
+- Connecte un seul outil de prix par plateforme pour éviter les conflits.
+- Règle d'abord prix minimum et prix de base, puis les saisons.
+- Ajoute les événements locaux et vérifie les résultats chaque semaine au début.
+:::
+
+## ÉTAPE 1 : Connecter ses plateformes
 La première étape : connecter ton outil
 à toutes tes plateformes de réservation.
 
@@ -449,7 +525,29 @@ Comment ajouter un événement manuellement :
 
 ## Exercice
 **Exercice pratique :** Si tu utilises déjà Pricelabs ou Beyond : vérifie que ton prix minimum est bien configuré et correct. Si tu démarres : configure le prix minimum ET le prix de base cette semaine. C'est la configuration minimale qui protège ta rentabilité dès le premier jour d'utilisation.
-`,
+
+:::quiz
+? Tu es sur Airbnb et Booking. Comment connecter tes outils de prix ?
+- Un outil différent par plateforme
+- Les deux outils sur les deux plateformes
+* Les deux plateformes au même outil
+= Deux outils qui modifient les mêmes prix se contredisent et créent des erreurs.
+:::
+
+:::quiz
+? Quel réglage faire dès la connexion de l'outil ?
+* Le prix minimum
+- La photo de couverture
+- La politique d'annulation la plus stricte
+= Sans plancher, l'outil peut proposer des nuits qui ne couvrent pas tes coûts.
+:::
+
+:::action
+titre: Règle tes saisons pour ton logement
+texte: Indique tes pourcentages de basse et de haute saison dans Mes prix, puis reporte-les dans ton outil.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Régler mes saisons
+:::`,
         },
       ],
     },
@@ -462,7 +560,13 @@ Comment ajouter un événement manuellement :
           id: 21,
           title: 'La durée minimale de séjour : le levier méconnu',
           duration: '12 min',
-          content: `## Pourquoi la durée minimale impacte tes revenus
+          content: `:::bref
+- La durée minimale de séjour se règle par période, pas une fois pour toute l'année.
+- Plusieurs nuits minimum en haute saison réduisent les ménages et augmentent le revenu par séjour.
+- Une nuit orpheline entre deux réservations doit rester réservable.
+:::
+
+## Pourquoi la durée minimale impacte tes revenus
 La durée minimale de séjour est souvent
 réglée une fois et oubliée.
 
@@ -539,13 +643,34 @@ DERNIÈRE MINUTE (J-3 à J-7)
 
 ## Exercice
 **Exercice pratique :** Regarde ton calendrier des 3 prochains mois. Identifie les nuits orphelines actuelles, des nuits vides entre deux réservations. Si ton outil de pricing ne les gère pas automatiquement, configure dès maintenant un minimum de 1 nuit pour ces dates spécifiques. Chaque nuit orpheline récupérée = revenu pur.
-`,
+
+:::quiz
+? Une nuit libre est coincée entre deux réservations, avec 3 nuits minimum. Que faire ?
+- Laisser la nuit vide
+- Passer à 5 nuits minimum
+* Autoriser une nuit pour cette date précise
+= Sinon personne ne peut la réserver : la règle des nuits orphelines la rend vendable.
+:::
+
+:::quiz
+? Quel séjour minimum en basse saison ?
+- 7 nuits
+- Le même qu'en haute saison
+* 1 nuit, pour capter les voyageurs de dernière minute
+= En période calme, la souplesse remplit les trous du calendrier.
+:::`,
         },
         {
           id: 22,
           title: 'Événements et saisonnalité : ne jamais rater un pic de demande',
           duration: '12 min',
-          content: `## Les événements qui multiplient la demande
+          content: `:::bref
+- Certains événements multiplient la demande dans ta zone.
+- Salons, congrès, festivals, matchs, remises de diplômes : repère-les des mois à l'avance.
+- Majore dès que tu connais la date et impose plusieurs nuits minimum.
+:::
+
+## Les événements qui multiplient la demande
 Certains événements peuvent multiplier
 la demande par 3 à 10 dans ta zone.
 
@@ -626,13 +751,34 @@ CE QUE VOUS POUVEZ VOIR :
 
 ## Exercice
 **Exercice pratique :** Cette semaine : cherche sur Google les 5 événements les plus importants de ta ville pour les 3 prochains mois. Pour chacun : configure une majoration manuelle dans ton outil de pricing (ou dans ton calendrier Airbnb si tu n'as pas encore d'outil). Ne laisse plus jamais passer un pic de demande au prix normal.
-`,
+
+:::quiz
+? Où repérer les salons professionnels de ta ville ?
+* Sur le site du parc des expositions ou du palais des congrès
+- Dans les avis Airbnb
+- Sur ton relevé bancaire
+= Les calendriers officiels des lieux d'événements sont publiés longtemps à l'avance.
+:::
+
+:::quiz
+? Quand majorer une date d'événement ?
+- La veille
+- Jamais, pour rester compétitif
+* Dès que tu la connais
+= Les premières réservations partent vite : si ton prix n'a pas bougé, elles partent au prix normal.
+:::`,
         },
         {
           id: 23,
           title: 'Les remises intelligentes : early booking et last-minute',
           duration: '11 min',
-          content: `## La remise early booking : inciter à réserver tôt
+          content: `:::bref
+- Une remise pour réservation anticipée sécurise ton calendrier tôt.
+- Une remise de dernière minute évite les nuits vides.
+- Aucune remise ne doit passer sous ton prix minimum.
+:::
+
+## La remise early booking : inciter à réserver tôt
 Une réservation confirmée 60 jours à l'avance
 te donne de la visibilité et de la sécurité.
 
@@ -720,7 +866,29 @@ SOLUTION :
 
 ## Exercice
 **Exercice pratique :** Configure maintenant les remises last-minute dans ton outil (ou dans les Promotions Airbnb si tu n'as pas encore de Pricelabs/Beyond). Utilise les taux de la slide 3 : -5% à J-7, -10% à J-3, -15% à J-1. Garde ton prix minimum comme plancher absolu. Ces règles tournent seules et récupèrent des revenus que tu perds actuellement.
-`,
+
+:::quiz
+? Pourquoi offrir une remise de 5 à 10 % pour une réservation 60 jours à l'avance ?
+- Parce que c'est obligatoire
+* Pour sécuriser des revenus et mieux planifier
+- Pour attirer uniquement des voyageurs d'une nuit
+= Tu échanges un petit rabais contre de la visibilité et de la sécurité.
+:::
+
+:::quiz
+? Quelle est la limite d'une remise de dernière minute ?
+- Aucune limite
+* Ton prix minimum
+- Le prix des voisins
+= Une nuit vendue sous ton plancher te coûte de l'argent.
+:::
+
+:::action
+titre: Note les événements des 3 prochains mois
+texte: Repère-les dans ton calendrier et bloque ou majore ces dates dès maintenant.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },
@@ -733,7 +901,13 @@ SOLUTION :
           id: 31,
           title: 'Les indicateurs à suivre chaque mois',
           duration: '12 min',
-          content: `## Les 4 chiffres du tableau de bord mensuel
+          content: `:::bref
+- Quinze minutes par mois suffisent : occupation, prix moyen, revenu par nuit disponible, délai de réservation.
+- Occupation sous 60 % deux mois de suite : baisse ton prix de base de 10 %.
+- Au-dessus de 85 % deux mois de suite : monte-le de 10 à 15 %.
+:::
+
+## Les 4 chiffres du tableau de bord mensuel
 Une fois par mois, 15 minutes suffisent
 pour évaluer ta stratégie tarifaire.
 
@@ -818,13 +992,34 @@ MÉTHODE MANUELLE (gratuite)
 
 ## Exercice
 **Exercice pratique :** Crée maintenant dans ton Google Sheet de pilotage (formation Automatisation) un onglet "Tarification" avec 4 colonnes : Mois | Taux occupation | ADR | RevPAN. Remplis-le avec les 3 derniers mois. Ce tableau simple, mis à jour chaque mois en 5 minutes, te donne tout ce qu'il faut pour piloter ta stratégie.
-`,
+
+:::quiz
+? Ton occupation dépasse 85 % deux mois de suite. Que faire ?
+* Monter ton prix de base de 10 à 15 %
+- Le baisser de 10 %
+- Ne rien changer
+= Un calendrier toujours plein montre que ton prix est sous ce que les voyageurs acceptent.
+:::
+
+:::quiz
+? Ton prix moyen baisse alors que l'occupation monte. Qu'est-ce que ça signifie ?
+- Ton annonce est cachée
+* Tu brades trop
+- Tu vends parfaitement
+= Plus de nuits mais moins chères : le revenu par nuit disponible stagne ou baisse.
+:::`,
         },
         {
           id: 32,
           title: 'Les erreurs de tarification les plus fréquentes',
           duration: '12 min',
-          content: `## Erreur 1 : Ne pas configurer de prix minimum
+          content: `:::bref
+- Erreur numéro un : activer un outil sans prix minimum.
+- Un outil ne se laisse pas tourner sans contrôle.
+- Copier les prix des concurrents sans stratégie mène à travailler à perte.
+:::
+
+## Erreur 1 : Ne pas configurer de prix minimum
 C'est l'erreur la plus dangereuse
 et la plus fréquente.
 
@@ -901,13 +1096,34 @@ La bonne approche :
 
 ## Exercice
 **Exercice pratique :** Vérification rapide : ouvre ton outil de pricing ou ton tableau de bord Airbnb. Est-ce que tu as un prix minimum configuré ? Est-il au bon niveau (charges + ménage + marge) ? Si ce n'est pas le cas ou si tu n'es pas sûr : recalcule-le avec la formule de la leçon 1.2 et mets-le à jour maintenant.
-`,
+
+:::quiz
+? Un outil propose 28 € la nuit alors que ton ménage coûte 50 €. Quelle erreur a été faite ?
+- L'outil est en panne
+* Aucun prix minimum n'était réglé
+- Le ménage est trop cher
+= Sans plancher, l'outil descend pour remplir, même sous tes coûts.
+:::
+
+:::quiz
+? À quelle fréquence vérifier ton outil de prix ?
+- Jamais, il est automatique
+- Une fois par an
+* Régulièrement, au moins une fois par mois
+= Un outil amplifie ta stratégie : un mauvais réglage se répète tous les jours.
+:::`,
         },
         {
           id: 33,
           title: `Le récapitulatif et le plan d'action`,
           duration: '11 min',
-          content: `## Le plan sur 4 semaines
+          content: `:::bref
+- Quatre semaines : fondations, configuration, stratégie avancée, suivi.
+- Commence par le prix minimum et le prix de base, finis par le suivi mensuel.
+- Mesure ton revenu par nuit disponible avant et après.
+:::
+
+## Le plan sur 4 semaines
 SEMAINE 1, LES FONDATIONS
 □ Calculer son prix minimum
 □ Identifier son prix de base
@@ -1006,7 +1222,30 @@ Une seule action aujourd'hui : calcule ton prix minimum exact avec la formule du
 Tout le reste peut attendre demain.
 Ce chiffre, non.
 
-Formation 2`,
+Formation 2
+
+:::quiz
+? Par quoi commence le plan de 4 semaines ?
+- Changer toutes tes photos
+* Calculer ton prix minimum et ton prix de base
+- Acheter l'outil le plus cher
+= Tout le reste s'appuie sur ces deux chiffres.
+:::
+
+:::quiz
+? Comment savoir si ta nouvelle stratégie fonctionne ?
+- Compter tes abonnés Instagram
+- Regarder uniquement ton taux d'occupation
+* Comparer ton revenu par nuit disponible avant et après, à saison égale
+= L'occupation seule peut monter en bradant ; le revenu par nuit disponible dit si tu gagnes plus.
+:::
+
+:::action
+titre: Relève ton revenu par nuit disponible
+texte: Note-le aujourd'hui dans Performances : tu le compareras dans 3 mois.
+lien: /dashboard/performances
+bouton: Voir mes performances
+:::`,
         },
       ],
     },

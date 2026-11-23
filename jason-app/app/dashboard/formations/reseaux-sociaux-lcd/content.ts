@@ -22,7 +22,13 @@ export const RESEAUX_SOCIAUX_FORMATION = {
           id: 1,
           title: 'Les réseaux sociaux comme levier de réservation directe',
           duration: '12 min',
-          content: `## Pourquoi y être
+          content: `:::bref
+- Beaucoup de voyageurs découvrent des lieux sur Instagram avant d'ouvrir Airbnb.
+- Les réseaux construisent une audience qui peut réserver en direct.
+- Commence par une seule plateforme bien tenue, souvent Instagram.
+:::
+
+## Pourquoi y être
 Beaucoup de voyageurs découvrent
 des lieux et des hébergements
 sur Instagram avant de réserver.
@@ -113,13 +119,34 @@ TikTok, OPTIONNEL
 
 ## Exercice
 **Exercice pratique :** Recherche maintenant sur Instagram le hashtag de ta ville suivi de "location" ou "airbnb" (ex : #locationparis, #airbnblyon). Regarde les comptes qui apparaissent. Lesquels semblent attirer des voyageurs ? Note 2-3 éléments qui t'inspirent, ce sont tes premiers benchmarks.
-`,
+
+:::quiz
+? Quel est le principal intérêt des réseaux sociaux pour un hôte ?
+- Obtenir des avis Airbnb
+* Se faire connaître avant que le voyageur arrive sur les plateformes
+- Remplacer totalement Airbnb
+= Ils influencent la décision en amont et alimentent la réservation directe.
+:::
+
+:::quiz
+? Combien de réseaux ouvrir au départ ?
+- Aucun
+* Un seul, bien tenu
+- Tous en même temps
+= Mieux vaut un compte actif que cinq comptes abandonnés.
+:::`,
         },
         {
           id: 2,
           title: 'Créer sa page Instagram : les fondations qui font la différence',
           duration: '13 min',
-          content: `## Compte personnel vs compte dédié au logement
+          content: `:::bref
+- Un compte dédié au logement est plus clair qu'un compte personnel.
+- La bio de 150 caractères dit qui tu es, où, et comment réserver.
+- Lance le compte avec 5 publications soignées avant d'en parler.
+:::
+
+## Compte personnel vs compte dédié au logement
 La question que tout hôte se pose :
 "Dois-je utiliser mon compte perso
 ou créer un compte séparé pour mon logement ?"
@@ -203,7 +230,29 @@ quelque chose qui fait rêver.
 
 ## Exercice
 **Exercice pratique :** Crée maintenant ton compte Instagram dédié à ton logement. Passe-le en "Compte Professionnel" (Paramètres → Compte → Passer en compte professionnel). Rédige ta bio en 3 lignes avec le lien Driing. C'est ta page, la prochaine leçon t'apprend quoi y publier.
-`,
+
+:::quiz
+? Pourquoi un compte dédié au logement plutôt que ton compte personnel ?
+* Identité claire, contenu pour les voyageurs et statistiques précises
+- Il est obligatoire
+- Il donne plus d'avis Airbnb
+= Un compte professionnel donne aussi accès aux statistiques et au bouton de contact.
+:::
+
+:::quiz
+? Que doit contenir ta bio ?
+- Ta vie personnelle
+- Seulement des émojis
+* Ce que tu proposes, où, et un lien pour réserver
+= En 150 caractères, le visiteur doit comprendre l'offre et savoir où cliquer.
+:::
+
+:::action
+titre: Prépare ta première publication
+texte: Choisis tes meilleures photos et inspire-toi des messages prêts à publier.
+lien: /dashboard/visibilite/facebook
+bouton: Voir les messages prêts
+:::`,
         },
       ],
     },
@@ -216,7 +265,13 @@ quelque chose qui fait rêver.
           id: 11,
           title: 'Les 5 types de posts qui fonctionnent pour un logement LCD',
           duration: '12 min',
-          content: `## TYPE 1 : Les photos d'ambiance du logement
+          content: `:::bref
+- Cinq types de publications : ambiance, quartier, témoignages, coulisses, offres.
+- Le contenu local est ta vraie valeur ajoutée : tes adresses, tes conseils.
+- Lumière naturelle et détails qui racontent une histoire font réagir.
+:::
+
+## TYPE 1 : Les photos d'ambiance du logement
 C'est la base, mais ça doit être fait correctement.
 
 CE QUI FONCTIONNE :
@@ -318,13 +373,34 @@ TYPE 5, LES OFFRES ET DISPONIBILITÉS
 
 ## Exercice
 **Exercice pratique :** Planifie tes 4 prochains posts maintenant : 1 photo d'ambiance, 1 recommandation locale, 1 témoignage voyageur (si tu en as), 1 coulisse. Prends les photos cette semaine si elles n'existent pas encore. Tu as déjà un mois de contenu.
-`,
+
+:::quiz
+? Quel contenu te distingue le plus des autres logements ?
+- Une photo du plan de l'appartement
+- Une capture de ton calendrier
+* Tes recommandations locales
+= Le voyageur cherche une expérience ; tes adresses montrent ce qu'il va vivre.
+:::
+
+:::quiz
+? Quelle photo d'ambiance fonctionne le mieux ?
+- Une photo floue de nuit
+* Lumière naturelle avec un détail qui raconte une histoire
+- Une pièce vide au flash
+= Une scène vivante donne envie de s'y projeter.
+:::`,
         },
         {
           id: 12,
           title: 'La fréquence et le calendrier éditorial',
           duration: '12 min',
-          content: `## La fréquence idéale selon ton temps disponible
+          content: `:::bref
+- La régularité bat l'intensité : une publication par semaine pendant un an vaut mieux qu'un sprint.
+- Choisis un rythme tenable : 30 minutes ou une heure par semaine.
+- Programme tes publications à l'avance avec Meta Business Suite.
+:::
+
+## La fréquence idéale selon ton temps disponible
 LA RÈGLE D'OR :
 Mieux vaut 1 post/semaine pendant 1 an
 que 10 posts/semaine pendant 3 semaines
@@ -414,13 +490,34 @@ MÉTHODE SIMPLE SANS OUTIL
 
 ## Exercice
 **Exercice pratique :** Ouvre Meta Business Suite (business.facebook.com) et connecte ton compte Instagram. Crée et programme tes 2 premiers posts pour la semaine prochaine. Prendre l'habitude de programmer à l'avance est ce qui différencie les comptes qui durent de ceux qui abandonnent.
-`,
+
+:::quiz
+? Quelle stratégie est la plus efficace ?
+* Une publication par semaine toute l'année
+- Dix publications par semaine pendant trois semaines
+- Publier seulement en été
+= Un compte actif sur la durée gagne la confiance des abonnés et de l'algorithme.
+:::
+
+:::quiz
+? À quoi sert un calendrier éditorial ?
+- Gérer tes réservations
+- Calculer tes impôts
+* Savoir à l'avance quoi publier et quand
+= Il évite la panne d'idées et garde le rythme.
+:::`,
         },
         {
           id: 13,
           title: 'Hashtags, géolocalisation et algorithme Instagram',
           duration: '11 min',
-          content: `## Comment Instagram te fait découvrir
+          content: `:::bref
+- Instagram te fait découvrir par les hashtags, la géolocalisation et les recommandations.
+- Mélange hashtags locaux, de niche et de voyage.
+- Indique toujours le lieu sur tes publications.
+:::
+
+## Comment Instagram te fait découvrir
 Instagram te montre à de nouvelles personnes
 via 3 mécanismes :
 
@@ -505,7 +602,29 @@ POURQUOI C'EST IMPORTANT :
 
 ## Exercice
 **Exercice pratique :** Recherche sur Instagram les hashtags de ton secteur : tape #location + ta ville. Note les 5 hashtags les plus utilisés avec le plus de posts récents (pas trop génériques). Ce sont tes hashtags principaux à utiliser sur chaque post.
-`,
+
+:::quiz
+? Quel réflexe est souvent oublié et aide pourtant à être trouvé localement ?
+- Mettre 60 hashtags
+- Publier à minuit
+* Indiquer le lieu sur chaque publication
+= Les voyageurs qui explorent ta ville ou ton quartier voient les contenus géolocalisés.
+:::
+
+:::quiz
+? Quelle combinaison de hashtags privilégier ?
+* Des hashtags locaux, de niche et de voyage
+- Uniquement les plus populaires du monde
+- Aucun hashtag
+= Les hashtags trop généraux noient ta publication ; les locaux ciblent les bons voyageurs.
+:::
+
+:::action
+titre: Trouve tes groupes et tes hashtags locaux
+texte: Repère les groupes de voyageurs de ta ville pour diffuser ton contenu.
+lien: /dashboard/visibilite/facebook
+bouton: Voir les groupes
+:::`,
         },
       ],
     },
@@ -518,7 +637,13 @@ POURQUOI C'EST IMPORTANT :
           id: 21,
           title: `Le lien en bio : ton seul appel à l'action direct`,
           duration: '12 min',
-          content: `## Pourquoi le lien en bio est stratégique
+          content: `:::bref
+- Sur Instagram, le lien de la bio est le seul lien cliquable permanent.
+- Chaque publication doit inviter à visiter ton profil et cliquer sur ce lien.
+- Les stories à la une servent de vitrine : logement, quartier, avis, réserver.
+:::
+
+## Pourquoi le lien en bio est stratégique
 Sur Instagram, tu ne peux pas
 mettre de lien cliquable dans tes posts.
 
@@ -607,13 +732,34 @@ HIGHLIGHTS RECOMMANDÉS :
 
 ## Exercice
 **Exercice pratique :** Crée maintenant tes 3 premiers highlights : "Le logement", "Avis voyageurs" et "Réserver". Pour chacun : faites 1-2 stories dédiées et sauvegarde-les dans le highlight correspondant. Ces 3 highlights suffisent pour une première vitrine professionnelle.
-`,
+
+:::quiz
+? Où mettre le lien vers ta page de réservation ?
+- Nulle part
+* Dans la bio
+- Dans chaque légende, il sera cliquable
+= Les liens dans les légendes ne sont pas cliquables ; la bio est la passerelle.
+:::
+
+:::quiz
+? À quoi servent les stories à la une ?
+- Effacer tes anciennes stories
+- Remplacer la bio
+* Présenter en permanence logement, quartier, avis et réservation
+= Elles restent visibles sur ton profil et répondent aux questions des visiteurs.
+:::`,
         },
         {
           id: 22,
           title: 'Engager sa communauté pour générer des réservations',
           duration: '13 min',
-          content: `## La différence entre abonnés et communauté
+          content: `:::bref
+- 500 abonnés engagés valent mieux que 5 000 abonnés passifs.
+- Réponds aux commentaires, pose des questions, partage les publications de tes voyageurs.
+- Un message de bienvenue aux nouveaux abonnés crée un premier lien.
+:::
+
+## La différence entre abonnés et communauté
 Un compte avec 500 abonnés engagés
 génère plus de réservations directes
 qu'un compte avec 5 000 abonnés passifs.
@@ -695,7 +841,29 @@ N'hésitez pas si vous avez des questions !"
 
 ## Exercice
 **Exercice pratique :** Cette semaine : réponds à tous les commentaires de tes derniers posts, même anciens. Et regarde si tu as des DM non répondus, chacun peut être un prospect. Pour les nouveaux abonnés dont le profil ressemble à un voyageur potentiel : envoie le message de bienvenue de la slide 4 à 3 d'entre eux.
-`,
+
+:::quiz
+? Pourquoi l'engagement compte plus que le nombre d'abonnés ?
+* L'algorithme montre davantage tes publications aux abonnés qui réagissent
+- Les abonnés passifs réservent plus
+- Le nombre d'abonnés est payant
+= Des abonnés qui réagissent voient tes contenus et pensent à toi au moment de partir.
+:::
+
+:::quiz
+? Comment créer de l'engagement ?
+- Acheter des abonnés
+* Répondre à chaque commentaire et poser des questions
+- Publier sans jamais répondre
+= Les échanges réels construisent une communauté ; les faux abonnés la détruisent.
+:::
+
+:::action
+titre: Invite tes anciens voyageurs à te suivre
+texte: Envoie un message à tes derniers voyageurs avec le lien de ton compte.
+lien: /dashboard/voyageurs
+bouton: Voir mes voyageurs
+:::`,
         },
       ],
     },
@@ -708,7 +876,13 @@ N'hésitez pas si vous avez des questions !"
           id: 31,
           title: 'La routine sociale de 30 minutes',
           duration: '10 min',
-          content: `## La semaine type en 30 minutes
+          content: `:::bref
+- Trente minutes par semaine : création le lundi, échanges le mercredi, stories le vendredi.
+- Regarde chaque semaine portée, enregistrements et clics sur le lien.
+- Programme pour ne pas dépendre de ta motivation du jour.
+:::
+
+## La semaine type en 30 minutes
 LUNDI, 10 MIN : CRÉATION
 → Prends 1-2 photos du logement
   ou du quartier
@@ -766,13 +940,34 @@ CLICS SUR LE LIEN EN BIO
 
 ## Exercice
 **Exercice pratique :** Crée un rappel récurrent dans ton agenda pour chaque jour de ta routine : lundi création, mercredi engagement, vendredi stories, dimanche analyse. 30 minutes réparties sur 4 créneaux sont infiniment plus durables qu'une heure d'un coup le weekend.
-`,
+
+:::quiz
+? Quelle statistique dit le mieux si ton compte amène des réservations ?
+- Le nombre d'abonnements que tu as faits
+* Les clics sur le lien de la bio
+- Le nombre de mentions J'aime
+= Le clic vers ta page de réservation est l'étape qui précède la réservation.
+:::
+
+:::quiz
+? Combien de temps faut-il au minimum pour tenir un compte actif ?
+- Cinq minutes par mois
+* Environ 30 minutes par semaine
+- Deux heures par jour
+= Une routine courte et régulière suffit à rester visible.
+:::`,
         },
         {
           id: 32,
           title: 'Récapitulatif et plan de lancement',
           duration: '10 min',
-          content: `## Le plan sur 90 jours
+          content: `:::bref
+- 90 jours : fondations, rythme, croissance, conversion.
+- Les premiers résultats viennent rarement avant quelques mois.
+- Invite tes anciens voyageurs dès le premier jour.
+:::
+
+## Le plan sur 90 jours
 JOURS 1-7 : LES FONDATIONS
 □ Créer le compte Instagram dédié
 □ Rédiger la bio avec lien Driing
@@ -870,7 +1065,30 @@ Aujourd'hui, une seule action : crée ton compte Instagram dédié, rédige ta b
 
 C'est tout. Le reste vient avec la régularité.
 
-Formation 4`,
+Formation 4
+
+:::quiz
+? Que faire dès la première semaine ?
+- Faire de la publicité payante
+- Attendre d'avoir 1 000 abonnés
+* Créer le compte, rédiger la bio et publier les 5 premières publications
+= Les fondations rendent le compte crédible avant d'en parler.
+:::
+
+:::quiz
+? Quelle attente est réaliste ?
+- Des réservations dès le premier jour
+- Des milliers d'abonnés en une semaine
+* Une croissance lente mais régulière sur plusieurs mois
+= Les réseaux sont un investissement de moyen terme.
+:::
+
+:::action
+titre: Bloque ta routine de 30 minutes
+texte: Ajoute trois créneaux récurrents dans ton calendrier pour créer, échanger et publier.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },

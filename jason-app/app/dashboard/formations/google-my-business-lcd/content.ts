@@ -21,7 +21,13 @@ export const GMB_FORMATION = {
           id: 1,
           title: 'GBP vs Google Vacation Rentals : ne confonds pas les deux',
           duration: '15 min',
-          content: `## La confusion qui coûte cher à des centaines d'hôtes
+          content: `:::bref
+- Deux systèmes Google différents : la fiche d'établissement (Business Profile) et Google Vacation Rentals.
+- La fiche d'établissement est réservée aux activités avec présence physique : conciergerie, gîte avec accueil.
+- Un appartement loué seul, sans accueil, passe par Google Vacation Rentals.
+:::
+
+## La confusion qui coûte cher à des centaines d'hôtes
 
 La première chose à comprendre, et que la plupart des formations ne disent pas, c'est qu'il existe **deux systèmes Google complètement différents** pour la LCD.
 
@@ -76,13 +82,35 @@ Airbnb et Vrbo refusent **délibérément** d'intégrer Google Vacation Rentals.
 Dans les prochains modules, on travaille les **deux systèmes** :
 - Les modules 2 à 5 → optimiser ta fiche **GBP** (si tu es éligible)
 - Le module 6 → stratégie **GVR** pour les réservations directes (sans commission)
-- Le module 7 → mesurer tes résultats et améliorer`,
+- Le module 7 → mesurer tes résultats et améliorer
+
+:::quiz
+? Tu loues un appartement seul, sans bureau ni accueil. Quel outil Google te correspond ?
+- Une fiche Google Business Profile
+- Google Ads uniquement
+* Google Vacation Rentals
+= Une fiche d'établissement sans présence physique réelle risque la suspension.
+:::
+
+:::quiz
+? Qui peut créer une fiche Google Business Profile ?
+* Une conciergerie avec bureau ou un gîte avec accueil
+- Tout hôte Airbnb, sans condition
+- Uniquement les hôtels classés
+= Google réserve ces fiches aux entreprises qui reçoivent ou servent des clients à une adresse.
+:::`,
         },
         {
           id: 2,
           title: 'L\'algorithme Google Local : les 3 facteurs qui font tout',
           duration: '10 min',
-          content: `## Comment Google décide qui apparaît dans le Local Pack
+          content: `:::bref
+- Le bloc des 3 fiches sur la carte Google apporte une visibilité sans commission.
+- Trois critères officiels : pertinence, proximité, notoriété.
+- Tu agis sur la pertinence (catégories, description) et la notoriété (avis, activité).
+:::
+
+## Comment Google décide qui apparaît dans le Local Pack
 
 Le "Local Pack" (ou Pack Local) c'est le bloc des **3 fiches Google Maps** qui s'affiche en haut des résultats pour les requêtes locales. Être là = visibilité maximale, 0 commission.
 
@@ -126,7 +154,30 @@ Au bout de 3 mois de travail régulier (30 min/semaine) :
 ✅ 5-10 clics vers ton site par semaine
 ✅ 1-3 contacts directs par mois via Google
 
-Les modules qui suivent construisent chacun de ces résultats.`,
+Les modules qui suivent construisent chacun de ces résultats.
+
+:::quiz
+? Lequel de ces trois critères ne peux-tu pas modifier ?
+- Ta notoriété
+* La proximité avec la personne qui cherche
+- La pertinence de ta fiche
+= La distance dépend de l'internaute ; tu travailles la pertinence et la notoriété.
+:::
+
+:::quiz
+? Qu'est-ce qui améliore ta notoriété aux yeux de Google ?
+- Une fiche sans photo
+- Un nom bourré de mots-clés
+* Des avis nombreux, récents et bien notés
+= Les avis sont un signal majeur, et le bourrage de mots-clés dans le nom est sanctionné.
+:::
+
+:::action
+titre: Fais l'audit de ta fiche Google
+texte: L'outil vérifie ta fiche point par point et te dit quoi améliorer en premier.
+lien: /dashboard/visibilite/google
+bouton: Lancer l'audit
+:::`,
         },
       ],
     },
@@ -139,7 +190,13 @@ Les modules qui suivent construisent chacun de ces résultats.`,
           id: 3,
           title: 'Créer ta fiche Google Business Profile (étape par étape)',
           duration: '15 min',
-          content: `## Créer sa fiche GBP : le guide complet 2025
+          content: `:::bref
+- Prépare un compte Google professionnel, ton adresse exacte, ton téléphone et ton site.
+- La vérification se fait aujourd'hui souvent par vidéo.
+- Pendant l'attente, ne modifie pas sans cesse ta fiche.
+:::
+
+## Créer sa fiche GBP : le guide complet 2025
 
 > Rappel : ce module s'adresse aux conciergeries, gîtes avec accueil, et hébergements avec présence physique. Si tu loues un appartement individuel sans bureau/réception, saute au module 6 (Google Vacation Rentals).
 
@@ -196,13 +253,35 @@ La fiche n'est pas visible tant qu'elle n'est pas vérifiée. Mais tu peux déj�
 ❌ Mettre une boîte postale ou adresse domiciliation
 ❌ URL de redirection dans le champ "Site web"
 ❌ Se connecter depuis des VPN ou IP multiples pendant la vérification
-❌ Demander plusieurs codes (chaque nouveau code annule le précédent)`,
+❌ Demander plusieurs codes (chaque nouveau code annule le précédent)
+
+:::quiz
+? Pourquoi utiliser une adresse e-mail à ton nom de domaine ?
+- Elle donne plus d'avis
+* Elle réduit le risque de suspension de la fiche
+- Elle est obligatoire pour tous
+= Un compte professionnel cohérent avec ton site renforce la confiance de Google.
+:::
+
+:::quiz
+? Que faire pendant l'attente de la vérification ?
+* Éviter de modifier sans arrêt les informations clés
+- Créer une deuxième fiche
+- Changer le nom chaque jour
+= Des changements répétés peuvent bloquer ou retarder la vérification.
+:::`,
         },
         {
           id: 4,
           title: 'Choisir les bonnes catégories (l\'erreur que tout le monde fait)',
           duration: '15 min',
-          content: `## Les catégories GBP pour la LCD : le guide officiel
+          content: `:::bref
+- La catégorie principale détermine dans quelles recherches tu apparais.
+- Conciergerie : « Agence de location de vacances » ; gîte : « Gîte ».
+- Les attributs (accessibilité, paiements, services) sont souvent oubliés et pourtant utiles.
+:::
+
+## Les catégories GBP pour la LCD : le guide officiel
 
 La catégorie principale détermine dans quelles recherches tu apparais. C'est une des décisions les plus impactantes de ta fiche.
 
@@ -254,7 +333,30 @@ Après les catégories, Google propose des **attributs** selon ton type d'activi
 - Langues parlées (Français, Anglais, Espagnol...)
 - Méthodes de paiement
 
-Un attribut "Animaux acceptés" coché te fait apparaître dans les recherches "location vacances chien accepté [ville]", sans aucun autre effort.`,
+Un attribut "Animaux acceptés" coché te fait apparaître dans les recherches "location vacances chien accepté [ville]", sans aucun autre effort.
+
+:::quiz
+? Quelle catégorie principale pour un gîte avec accueil ?
+- Agence immobilière
+* Gîte
+- Hôtel
+= Choisir une catégorie qui ne correspond pas à ton activité réelle trompe Google et les voyageurs.
+:::
+
+:::quiz
+? Combien de catégories principales peux-tu choisir ?
+- Autant que tu veux
+- Aucune
+* Une seule, complétée par des secondaires
+= La principale pèse le plus ; les secondaires élargissent sans la remplacer.
+:::
+
+:::action
+titre: Vérifie ta catégorie et tes attributs
+texte: L'audit de ta fiche contrôle la catégorie et les attributs renseignés.
+lien: /dashboard/visibilite/google
+bouton: Ouvrir l'audit
+:::`,
         },
       ],
     },
@@ -267,7 +369,13 @@ Un attribut "Animaux acceptés" coché te fait apparaître dans les recherches "
           id: 5,
           title: 'Les 10 informations qui maximisent ta visibilité',
           duration: '15 min',
-          content: `## Remplir ta fiche GBP à 100% : le checklist complet
+          content: `:::bref
+- Google favorise les fiches remplies à 100 %.
+- Nom réel sans mots-clés ajoutés, zone de service, téléphone direct, horaires, site.
+- Nom, adresse et téléphone doivent être identiques partout sur internet.
+:::
+
+## Remplir ta fiche GBP à 100% : le checklist complet
 
 Google favorise les fiches **entièrement complètes**. Chaque champ vide = opportunité perdue face à un concurrent qui l'a rempli.
 
@@ -326,13 +434,35 @@ Ces 3 informations doivent être **exactement identiques** partout :
 - Airbnb (si professionnel)
 - Office de tourisme local
 
-> Attention : "Rue" vs "R." vs "r." = trois versions différentes pour Google. La moindre variation brouille les signaux et nuit à ton classement local.`,
+> Attention : "Rue" vs "R." vs "r." = trois versions différentes pour Google. La moindre variation brouille les signaux et nuit à ton classement local.
+
+:::quiz
+? Quel nom d'établissement est correct ?
+- « Conciergerie Azur location Nice pas cher »
+- « Meilleure location Nice »
+* « Conciergerie Azur »
+= Ajouter des mots-clés au nom est contraire aux règles de Google et peut suspendre la fiche.
+:::
+
+:::quiz
+? Que signifie la règle de cohérence nom, adresse, téléphone ?
+- Utiliser une adresse différente par site
+* Ces informations doivent être identiques sur toutes tes présences en ligne
+- Changer de téléphone chaque mois
+= Des informations qui se contredisent font perdre confiance à Google.
+:::`,
         },
         {
           id: 6,
           title: 'La description parfaite (750 caractères qui font ranker)',
           duration: '15 min',
-          content: `## Rédiger une description qui vend ET qui positionne
+          content: `:::bref
+- Seuls les 250 premiers caractères de la description sont visibles d'emblée.
+- Commence par qui tu es, ta zone, ce que tu apportes et un appel à l'action.
+- Glisse les mots-clés naturellement, sans liens ni promotions.
+:::
+
+## Rédiger une description qui vend ET qui positionne
 
 ### La règle des 250 premiers caractères
 
@@ -375,7 +505,30 @@ Quand tu réponds aux avis, glisse naturellement des mots-clés géographiques :
 
 > "Merci Marie ! Ravi que votre séjour **en appartement à Lyon** se soit si bien passé. À bientôt dans **notre logement du 2e arrondissement** !"
 
-Ces réponses sont indexées par Google et renforcent ta pertinence locale.`,
+Ces réponses sont indexées par Google et renforcent ta pertinence locale.
+
+:::quiz
+? Que doit contenir le début de ta description ?
+- La liste de tes équipements
+- Tes conditions générales
+* Qui tu es, ta zone et ce que tu apportes
+= C'est la seule partie lue par la plupart des visiteurs : elle doit accrocher.
+:::
+
+:::quiz
+? Que ne faut-il jamais mettre dans la description ?
+- Les langues parlées
+* Des liens et des promotions
+- Ta ville
+= Google les interdit dans la description ; utilise plutôt les posts pour les offres.
+:::
+
+:::action
+titre: Réécris ta description avec l'audit
+texte: L'audit t'indique ce qui manque à ta description et à ta fiche.
+lien: /dashboard/visibilite/google
+bouton: Ouvrir l'audit
+:::`,
         },
       ],
     },
@@ -388,7 +541,13 @@ Ces réponses sont indexées par Google et renforcent ta pertinence locale.`,
           id: 7,
           title: 'Stratégie photos : les images qui donnent envie de cliquer',
           duration: '20 min',
-          content: `## Les photos GBP : ton premier argument de vente
+          content: `:::bref
+- Selon Google, les fiches avec photos reçoivent nettement plus de demandes d'itinéraire et de clics.
+- Format conseillé : 1 080 × 1 080 px ou 1 200 × 900 px, 5 Mo au plus.
+- Ajoute régulièrement des photos réelles : logement, extérieur, équipe, quartier.
+:::
+
+## Les photos GBP : ton premier argument de vente
 
 ### Les chiffres qui motivent
 
@@ -455,7 +614,30 @@ Encourage-les activement à partager leurs photos **directement sur Google** (pa
 Objectif : **1 à 2 nouvelles photos par mois**. Google favorise les fiches actives avec du contenu récent.
 - Déco saisonnière (Noël, printemps...)
 - Nouveaux équipements (TV, nouveau canapé)
-- Vue du quartier lors d'événements locaux`,
+- Vue du quartier lors d'événements locaux
+
+:::quiz
+? Quelle taille de photo privilégier pour ta fiche ?
+* Environ 1 080 × 1 080 px
+- 200 × 200 px
+- Une capture d'écran floue
+= Une image nette et assez grande s'affiche bien sur téléphone comme sur ordinateur.
+:::
+
+:::quiz
+? Pourquoi ajouter des photos régulièrement ?
+- Ce n'est pas utile
+* Une fiche active est mieux mise en avant
+- Pour remplacer les avis
+= L'activité régulière est un signal positif pour Google et rassure les voyageurs.
+:::
+
+:::action
+titre: Ajoute 5 nouvelles photos à ta fiche
+texte: Logement, extérieur, détails et quartier : vérifie ensuite ta fiche avec l'audit.
+lien: /dashboard/visibilite/google
+bouton: Ouvrir l'audit
+:::`,
         },
       ],
     },
@@ -468,7 +650,13 @@ Objectif : **1 à 2 nouvelles photos par mois**. Google favorise les fiches acti
           id: 8,
           title: 'Obtenir des avis automatiquement (templates à copier)',
           duration: '15 min',
-          content: `## Collecter des avis Google : la méthode qui fonctionne
+          content: `:::bref
+- Les avis Google t'appartiennent et comptent pour ton classement local.
+- Trois signaux : nombre, note, récence.
+- Un lien direct et un QR code rendent la demande d'avis facile.
+:::
+
+## Collecter des avis Google : la méthode qui fonctionne
 
 ### Pourquoi les avis Google > les avis Airbnb
 
@@ -554,13 +742,35 @@ Merci sincèrement !
 ❌ Acheter de faux avis (suspension définitive de fiche)
 ❌ Demander explicitement un avis "5 étoiles"
 ❌ Poster des avis toi-même ou via des proches
-❌ Ignorer les avis sans répondre`,
+❌ Ignorer les avis sans répondre
+
+:::quiz
+? Quel avantage ont les avis Google sur les avis Airbnb ?
+* Ils t'appartiennent et apparaissent partout dans Google
+- Ils sont toujours meilleurs
+- Ils sont payants
+= Les avis Airbnb restent sur Airbnb ; les avis Google te suivent hors plateforme.
+:::
+
+:::quiz
+? Qu'est-ce qui est interdit pour obtenir des avis ?
+- Envoyer un lien direct après le séjour
+- Poser un QR code dans le logement
+* Offrir une réduction en échange d'un avis
+= Les avis contre récompense violent les règles de Google.
+:::`,
         },
         {
           id: 9,
           title: 'Répondre aux avis, la stratégie qui booste le classement',
           duration: '15 min',
-          content: `## Répondre aux avis : obligatoire, pas facultatif
+          content: `:::bref
+- Réponds à tous tes avis, dans les 24 à 48 heures.
+- Positif : remercie, cite un détail, invite à revenir.
+- Négatif : reste calme, reconnais, explique ce qui a été fait, propose d'en parler.
+:::
+
+## Répondre aux avis : obligatoire, pas facultatif
 
 ### Pourquoi répondre à TOUS tes avis
 
@@ -633,7 +843,30 @@ Si tu reçois un avis d'un concurrent ou basé sur une expérience qui n'a pas e
 
 Google autorise n'importe quel utilisateur à **suggérer des modifications** sur ta fiche (adresse, horaires, catégorie). Google peut les appliquer automatiquement sans te prévenir.
 
-**Vérifie ta fiche au moins une fois par semaine** pour détecter et refuser les modifications non souhaitées.`,
+**Vérifie ta fiche au moins une fois par semaine** pour détecter et refuser les modifications non souhaitées.
+
+:::quiz
+? Comment répondre à un avis négatif ?
+* Calmement, en reconnaissant le problème et en expliquant ce qui a changé
+- En accusant le voyageur
+- En ne répondant pas
+= Ta réponse est lue par les futurs voyageurs : elle peut les convaincre malgré l'avis.
+:::
+
+:::quiz
+? Dans quel délai répondre aux avis ?
+- Jamais pour les avis positifs
+* 24 à 48 heures
+- Un mois
+= Une réponse rapide montre une activité régulière et soignée.
+:::
+
+:::action
+titre: Prépare tes réponses types aux avis
+texte: Pars des modèles de messages pour répondre vite aux avis positifs et négatifs.
+lien: /dashboard/gabarits
+bouton: Ouvrir les modèles
+:::`,
         },
       ],
     },
@@ -646,7 +879,13 @@ Google autorise n'importe quel utilisateur à **suggérer des modifications** su
           id: 10,
           title: 'Google Posts : rester visible et attirer des réservations directes',
           duration: '15 min',
-          content: `## Google Posts : l'outil méconnu qui fait la différence
+          content: `:::bref
+- Un post Google est un mini-article visible sur ta fiche.
+- Quatre types : nouveautés, offres, événements, produits.
+- La messagerie de Google Business Profile a été supprimée en juillet 2024.
+:::
+
+## Google Posts : l'outil méconnu qui fait la différence
 
 ### Qu'est-ce qu'un Google Post ?
 
@@ -724,13 +963,35 @@ appartements Saint-Pierre.
 
 ### Recycler le contenu
 
-1 post GMB = 1 story Instagram = 1 message Facebook. Crée une fois, distribue partout.`,
+1 post GMB = 1 story Instagram = 1 message Facebook. Crée une fois, distribue partout.
+
+:::quiz
+? Les voyageurs peuvent-ils encore t'écrire par la messagerie de ta fiche Google ?
+* Non, elle a été supprimée en juillet 2024
+- Oui, c'est le canal principal
+- Seulement le week-end
+= Les demandes passent désormais par ton téléphone ou ton site.
+:::
+
+:::quiz
+? Quel type de post pour annoncer une remise en réservation directe ?
+- Une photo de profil
+* Un post Offre
+- Un avis
+= Le format Offre met en avant une promotion avec ses dates et son lien.
+:::`,
         },
         {
           id: 11,
           title: 'Google Vacation Rentals : apparaître avant Airbnb',
           duration: '10 min',
-          content: `## Google Vacation Rentals : l'arme que tu n'utilises pas encore
+          content: `:::bref
+- Google Vacation Rentals affiche tes disponibilités dans Google, sans commission Google.
+- Il faut passer par un gestionnaire de canaux partenaire.
+- Airbnb et Vrbo n'y figurent pas : c'est une place à prendre.
+:::
+
+## Google Vacation Rentals : l'arme que tu n'utilises pas encore
 
 ### L'opportunité que Airbnb ne veut pas que tu saches
 
@@ -774,7 +1035,30 @@ Ces logiciels synchronisent ton calendrier, publient tes disponibilités sur GVR
 
 ### Bing Places : le bonus à 5 minutes
 
-15% du marché des moteurs de recherche en France utilise Bing. Tu peux **importer ta fiche Google Business Profile** directement dans Bing Places en quelques clics. Zéro effort, audience supplémentaire.`,
+15% du marché des moteurs de recherche en France utilise Bing. Tu peux **importer ta fiche Google Business Profile** directement dans Bing Places en quelques clics. Zéro effort, audience supplémentaire.
+
+:::quiz
+? Comment apparaître dans Google Vacation Rentals ?
+* Via un gestionnaire de canaux partenaire
+- En créant une fiche d'établissement
+- En payant Google par nuit
+= Google reçoit tes disponibilités et prix par un outil partenaire.
+:::
+
+:::quiz
+? Combien prend Google sur ces réservations ?
+* Rien : tu paies seulement ton outil
+- 15 %
+- 3 %
+= Le voyageur réserve sur ton site, sans commission Google.
+:::
+
+:::action
+titre: Compare ce que te coûte chaque canal
+texte: Renseigne ton prix direct dans Mes prix et vois ce que tu gagnes par rapport aux plateformes.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Comparer mes prix
+:::`,
         },
       ],
     },
@@ -787,7 +1071,13 @@ Ces logiciels synchronisent ton calendrier, publient tes disponibilités sur GVR
           id: 12,
           title: 'Les statistiques qui comptent et les 10 erreurs à éviter',
           duration: '20 min',
-          content: `## Piloter ta fiche GBP avec les bonnes métriques
+          content: `:::bref
+- Cinq chiffres par mois : recherches, vues, actions, photos, avis.
+- Peu de recherches de découverte : revois catégories et description.
+- Trente minutes par semaine suffisent pour entretenir ta fiche.
+:::
+
+## Piloter ta fiche GBP avec les bonnes métriques
 
 ### Accéder aux statistiques
 
@@ -892,7 +1182,30 @@ N'importe qui peut y écrire des questions (et parfois du contenu négatif). Si 
 - [ ] Site web avec moteur de réservation
 - [ ] Channel manager partenaire GVR connecté
 - [ ] Office de tourisme contacté pour backlink
-- [ ] Calcul de tes économies potentielles en commissions`,
+- [ ] Calcul de tes économies potentielles en commissions
+
+:::quiz
+? Tu as peu de « recherches découverte ». Qu'est-ce que ça indique ?
+* Catégories et description à améliorer
+- Trop d'avis
+- Une fiche parfaite
+= Ces recherches viennent de personnes qui ne te connaissaient pas : la pertinence est à travailler.
+:::
+
+:::quiz
+? Combien de temps consacrer à ta fiche pour l'entretenir ?
+* Environ 30 minutes par semaine
+- Une heure par jour
+- Rien après la création
+= Avis, posts et photos réguliers suffisent à garder une fiche active.
+:::
+
+:::action
+titre: Refais l'audit de ta fiche
+texte: Mesure tes progrès et vois les derniers points à corriger.
+lien: /dashboard/visibilite/google
+bouton: Lancer l'audit
+:::`,
         },
       ],
     },

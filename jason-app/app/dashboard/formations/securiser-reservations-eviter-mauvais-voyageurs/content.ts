@@ -22,7 +22,13 @@ export const SECURISER_RESERVATIONS_FORMATION = {
           id: 1,
           title: 'Les profils à risque : comment les identifier',
           duration: '12 min',
-          content: `## La réalité du risque en LCD
+          content: `:::bref
+- La grande majorité des voyageurs sont respectueux ; une minorité peut coûter très cher.
+- Repère les signaux d'alarme : profil vide, demande floue, réservation de dernière minute pour une nuit le samedi.
+- Pose toujours la même question : le motif du séjour.
+:::
+
+## La réalité du risque en LCD
 La grande majorité des voyageurs
 sont honnêtes et respectueux.
 
@@ -128,13 +134,34 @@ Ce que cette question fait :
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit de message de pré-réservation dans tes outils. Utilise la structure de la slide 5. Envoie-le à chaque nouvelle réservation Booking, et à toute réservation Airbnb qui présente au moins 2 signaux d'alarme. Note les réponses, ou les absences de réponse.
-`,
+
+:::quiz
+? Quelle demande doit attirer ton attention ?
+- Un couple qui pose des questions sur le quartier
+* Profil récent sans avis, une seule nuit le samedi, réservée le jour même
+- Une famille avec plusieurs avis pour une semaine
+= Cumulés, ces signaux correspondent souvent à une fête non déclarée.
+:::
+
+:::quiz
+? Quelle question poser systématiquement avant d'accepter ?
+- Le salaire du voyageur
+- Son numéro de carte
+* Le motif du séjour
+= Une réponse claire rassure ; une réponse floue ou évasive est un signal.
+:::`,
         },
         {
           id: 2,
           title: 'Les situations les plus risquées à anticiper',
           duration: '12 min',
-          content: `## Le voyageur local : le profil le plus risqué
+          content: `:::bref
+- Les voyageurs qui habitent tout près sont souvent cités comme le profil le plus à risque.
+- Les réservations festives se repèrent au calendrier (samedi, réveillon) et au profil.
+- Refuse toujours une demande de paiement hors plateforme venue d'un inconnu.
+:::
+
+## Le voyageur local : le profil le plus risqué
 Les voyageurs locaux, ceux qui habitent
 à moins de 30 km du logement, sont souvent
 cités par les hôtes comme le profil
@@ -252,13 +279,34 @@ Airbnb supprime les comptes frauduleux.
 2. Interdiction des rassemblements non déclarés.
 
 Et crée l'habitude de prendre des photos horodatées de chaque pièce le matin avant chaque check-in. Ça prend 3 minutes et c'est ta meilleure protection en cas de litige.
-`,
+
+:::quiz
+? Un voyageur te propose de payer en dehors d'Airbnb « pour éviter les frais ». Que faire ?
+- Accepter pour économiser la commission
+- Lui donner ton IBAN par message
+* Refuser et garder tous les échanges sur la plateforme
+= Hors plateforme, tu perds toute protection et c'est contraire aux règles d'Airbnb.
+:::
+
+:::quiz
+? Comment limiter les réservations de voyageurs locaux sur Airbnb ?
+- Refuser tous les voyageurs français
+- Baisser ton prix
+* Ajouter une règle dans ton règlement intérieur et demander le motif du séjour
+= Une règle claire et une question sur le motif suffisent souvent à décourager.
+:::`,
         },
         {
           id: 3,
           title: 'Lire un profil voyageur comme un expert',
           duration: '11 min',
-          content: `## Les 5 éléments d'un profil Airbnb à analyser
+          content: `:::bref
+- Analyse cinq éléments : avis d'hôtes, ancienneté du compte, photo, vérifications, messages.
+- Lis les avis entre les lignes : « voyageur discret » n'est pas un compliment.
+- Une grille de notation rapide t'aide à décider vite et toujours de la même façon.
+:::
+
+## Les 5 éléments d'un profil Airbnb à analyser
 01. LES AVIS D'HÔTES PRÉCÉDENTS
     → Lis entre les lignes.
     → "Voyageur discret" peut signifier
@@ -343,7 +391,29 @@ Ce que le service vérifie :
 
 ## Exercice
 **Exercice pratique :** Prends ta dernière réservation acceptée. Passe-la à travers la grille de scoring de la slide 3. Quel score obtient-elle ? Refais l'exercice avec une réservation passée qui s'est mal passée, le score était-il révélateur ? Cette rétroactivité aide à calibrer ton instinct.
-`,
+
+:::quiz
+? Que peut signifier l'avis « voyageur discret » ?
+* Que l'hôte n'avait rien de positif à dire
+- Que c'est un voyageur parfait
+- Que le voyageur est célèbre
+= Les hôtes évitent les critiques publiques : l'absence de compliment est un signal.
+:::
+
+:::quiz
+? Pourquoi utiliser une grille de notation des profils ?
+* Pour décider vite et toujours avec les mêmes critères
+- Pour publier les notes
+- Pour refuser tout le monde
+= Une méthode fixe évite les décisions au feeling et les oublis.
+:::
+
+:::action
+titre: Écris ta question de pré-réservation
+texte: Prépare un message type qui demande le motif du séjour et rappelle tes règles.
+lien: /dashboard/gabarits
+bouton: Ouvrir les modèles
+:::`,
         },
       ],
     },
@@ -356,7 +426,13 @@ Ce que le service vérifie :
           id: 11,
           title: `L'obligation légale de vérification : ce que dit la loi en France`,
           duration: '15 min',
-          content: `## La fiche de police : une obligation méconnue
+          content: `:::bref
+- Une fiche de police est obligatoire pour tout voyageur de nationalité étrangère (article R.814-1 du CESEDA).
+- Elle se conserve 6 mois, puis se détruit.
+- Tu peux voir une pièce d'identité, pas en garder une copie sans nécessité (CNIL).
+:::
+
+## La fiche de police : une obligation méconnue
 En France, l'article R.814-1 du CESEDA
 (Code de l'entrée et du séjour des étrangers)
 oblige les hôtes à faire remplir une fiche
@@ -465,13 +541,34 @@ la messagerie de la plateforme."
 
 ## Exercice
 **Exercice pratique :** Ajoute maintenant dans ton règlement intérieur Airbnb une phrase sur la vérification d'identité : "Une copie de votre pièce d'identité vous sera demandée avant le check-in conformément à nos obligations légales." Une seule phrase dans les règles supplémentaires suffit. Elle te protège légalement et crée un filtre naturel.
-`,
+
+:::quiz
+? Pour quels voyageurs la fiche de police est-elle obligatoire ?
+- Tous les voyageurs français
+- Uniquement les groupes
+* Les voyageurs de nationalité étrangère
+= L'article R.814-1 du CESEDA vise les étrangers hébergés contre paiement.
+:::
+
+:::quiz
+? Combien de temps garder la fiche de police ?
+- 10 ans
+- Elle ne se garde pas
+* 6 mois
+= Elle reste à disposition des autorités 6 mois, puis doit être détruite.
+:::`,
         },
         {
           id: 12,
           title: 'Le dépôt de garantie : comment le mettre en place correctement',
           duration: '15 min',
-          content: `## Airbnb et la caution : comment ça fonctionne
+          content: `:::bref
+- Sur Airbnb, le dépôt de garantie est autorisé sur la carte sans être débité.
+- Pour Booking et le direct, une empreinte bancaire passe par un outil dédié ou par ton contrat.
+- Présente la caution comme une protection normale, pas comme de la méfiance.
+:::
+
+## Airbnb et la caution : comment ça fonctionne
 Sur Airbnb, le dépôt de garantie
 peut être configuré dans les paramètres
 de chaque annonce.
@@ -580,7 +677,29 @@ Ce que signifie un refus de caution :
 
 ## Exercice
 **Exercice pratique :** Configure ton dépôt de garantie sur Airbnb maintenant si ce n'est pas fait. Ensuite, si tu as des réservations Booking ou directes, ouvre un compte Swikly (swikly.com) pour gérer les cautions numériques. Ces deux actions ensemble couvrent 95% de tes réservations avec une protection financière réelle.
-`,
+
+:::quiz
+? Sur Airbnb, combien de temps as-tu pour déclarer un dommage après le départ ?
+- 6 mois
+* 14 jours
+- 24 heures
+= Passé ce délai, la demande n'est plus recevable.
+:::
+
+:::quiz
+? Comment présenter la caution au voyageur ?
+* Comme une procédure habituelle, sans débit si tout se passe bien
+- Comme une sanction
+- Sans en parler avant l'arrivée
+= Le ton fait accepter la caution sans froisser.
+:::
+
+:::action
+titre: Ajoute une caution à ton prochain contrat
+texte: Dans tes contrats, active la caution par empreinte bancaire pour les réservations directes.
+lien: /dashboard/contrats
+bouton: Ouvrir mes contrats
+:::`,
         },
       ],
     },
@@ -593,7 +712,13 @@ Ce que signifie un refus de caution :
           id: 21,
           title: `AirCover : ce qu'il couvre vraiment (et ce qu'il ne couvre pas)`,
           duration: '12 min',
-          content: `## Ce qu'AirCover couvre
+          content: `:::bref
+- AirCover est inclus pour les hôtes Airbnb : dommages jusqu'à 3 millions de dollars, responsabilité civile jusqu'à 1 million.
+- Il ne couvre pas l'usure normale ni ce qui n'est pas prouvé.
+- Photos avant et après chaque séjour sont indispensables pour être indemnisé.
+:::
+
+## Ce qu'AirCover couvre
 AirCover est inclus gratuitement
 pour tous les hôtes Airbnb.
 
@@ -707,13 +832,34 @@ Coût moyen : 150 à 400€/an selon le logement.
 
 ## Exercice
 **Exercice pratique :** Vérifie maintenant si tu as une assurance habitation qui couvre explicitement la location courte durée. Appelle ton assureur cette semaine et pose-lui la question directement. Beaucoup d'hôtes découvrent trop tard que leur assurance classique ne couvre pas la LCD.
-`,
+
+:::quiz
+? Qu'est-ce qu'AirCover ne couvre pas ?
+- Un meuble cassé par un voyageur
+- Un nettoyage exceptionnel après un animal non déclaré
+* L'usure normale du logement
+= L'usure liée à une utilisation normale reste à ta charge.
+:::
+
+:::quiz
+? Quelle preuve rend une demande AirCover solide ?
+* Des photos datées avant et après le séjour
+- Un avis négatif du voyageur
+- Ta parole seule
+= Sans comparaison avant et après, le dommage est difficile à prouver.
+:::`,
         },
         {
           id: 22,
           title: 'La protection sur Booking et en réservation directe',
           duration: '13 min',
-          content: `## Booking : une protection bien plus limitée
+          content: `:::bref
+- Booking n'offre ni garantie dommages ni responsabilité civile pour l'hôte.
+- Sur Booking et en direct, ta protection repose sur ta caution, ta vérification et ton assurance.
+- Cinq règles valent partout : règlement, vérification, caution, photos, échanges écrits.
+:::
+
+## Booking : une protection bien plus limitée
 Booking.com n'offre pas l'équivalent
 d'AirCover pour les hôtes.
 
@@ -799,7 +945,29 @@ est souvent celui qui posera problème.
 
 ## Exercice
 **Exercice pratique :** Évalue maintenant ta protection actuelle sur une échelle de 1 à 5 pour chaque règle d'or. Pour chaque règle notée ≤ 3, note l'action corrective à prendre cette semaine. Pas tout en même temps, une amélioration par semaine pendant 5 semaines suffit à avoir un système solide.
-`,
+
+:::quiz
+? Sur Booking, sur quoi repose ta protection en cas de dégâts ?
+- Rien, Booking rembourse tout
+* Ta caution, ta vérification et ton assurance
+- Une garantie Booking de 3 millions
+= Booking ne propose pas l'équivalent d'AirCover.
+:::
+
+:::quiz
+? Pourquoi garder tous les échanges par écrit ?
+- Pour améliorer ton classement
+- Ce n'est pas utile
+* Pour avoir des preuves en cas de litige
+= Un message écrit et daté pèse bien plus qu'une conversation téléphonique.
+:::
+
+:::action
+titre: Vérifie tes protections
+texte: Passe en revue l'espace Sécurité : règles, vérification et contacts utiles.
+lien: /dashboard/securite
+bouton: Ouvrir Sécurité
+:::`,
         },
       ],
     },
@@ -812,7 +980,13 @@ est souvent celui qui posera problème.
           id: 31,
           title: 'Comment réagir pendant un incident en cours',
           duration: '10 min',
-          content: `## Les 3 types d'incidents pendant le séjour
+          content: `:::bref
+- Trois types d'incidents pendant le séjour : casse, nuisances, situation grave.
+- Nuisances : message immédiat, rappel du règlement, délai de 30 minutes.
+- En cas de danger, appelle les secours avant tout.
+:::
+
+## Les 3 types d'incidents pendant le séjour
 TYPE 1, DÉGRADATION OU CASSE
 → Le voyageur te le signale lui-même.
 → Ou te le constate lors d'un passage.
@@ -868,13 +1042,34 @@ Cordialement,
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit "Incident nuisances" dans tes outils de messagerie avec le message de la slide 3 adapté à ton logement. Tu ne l'utiliseras peut-être jamais, mais le jour où tu en auras besoin, ne pas avoir à le rédiger à chaud sous le stress sera précieux.
-`,
+
+:::quiz
+? Un voisin signale une fête. Quelle est ta première action ?
+* Écrire au voyageur pour rappeler le règlement avec un délai court
+- Attendre le lendemain
+- Publier un avis négatif tout de suite
+= Une réaction rapide et écrite calme souvent la situation et laisse une trace.
+:::
+
+:::quiz
+? Que faire si la situation devient dangereuse ?
+- Ne rien faire
+* Appeler les secours ou la police
+- Y aller seul pour régler ça
+= La sécurité des personnes passe avant tout le reste.
+:::`,
         },
         {
           id: 32,
           title: 'Après le départ : constater, documenter, agir',
           duration: '10 min',
-          content: `## La procédure post-séjour en cas de dommage
+          content: `:::bref
+- Dans l'heure : photos et vidéos des dommages.
+- Dans les 24 heures : devis et message au voyageur sur la plateforme.
+- Dans les 14 jours : demande AirCover ou caution.
+:::
+
+## La procédure post-séjour en cas de dommage
 Dès que ton équipe de ménage
 constate un dommage :
 
@@ -937,13 +1132,34 @@ Cordialement,
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit "Dommage post-séjour" dans tes outils avec la structure de la slide 3. Et rappelle-toi : la règle des 14 jours. Configure un rappel dans ton calendrier pour J+13 après chaque check-out, si quelque chose a été constaté et pas encore traité, c'est ton dernier délai.
-`,
+
+:::quiz
+? Où contacter le voyageur après un dommage ?
+* Sur la plateforme de réservation
+- Sur WhatsApp
+- Par téléphone uniquement
+= La plateforme garde une trace qui servira en cas de litige.
+:::
+
+:::quiz
+? Que faire dans les 24 heures après avoir constaté un dommage ?
+- Réparer sans rien dire
+- Annuler sa prochaine réservation
+* Obtenir un devis et prévenir le voyageur
+= Le chiffrage et la prise de contact rapide renforcent ta demande.
+:::`,
         },
         {
           id: 33,
           title: 'Construire un système de sécurité complet',
           duration: '10 min',
-          content: `## Les 3 niveaux de protection
+          content: `:::bref
+- Trois niveaux : prévenir, surveiller, réparer.
+- La prévention fait la plus grande partie du travail : règlement, vérification, caution, photos.
+- Les capteurs de bruit respectent la vie privée quand ils mesurent le volume sans enregistrer.
+:::
+
+## Les 3 niveaux de protection
 NIVEAU 1, PRÉVENTION (avant le séjour)
 → Règlement intérieur précis et publié
 → Vérification du profil voyageur
@@ -1040,7 +1256,30 @@ Ou découvre le service de vérification voyageurs :
 
 Pour chaque mesure manquante : note l'action à faire et la date à laquelle tu la mettras en place. Un système de sécurité complet se construit en 4 à 6 semaines, une action à la fois.
 
-Fromation 3`,
+Fromation 3
+
+:::quiz
+? Quel niveau de protection évite le plus de problèmes ?
+* La prévention avant le séjour
+- La réparation après le séjour
+- Aucun, c'est le hasard
+= Un bon filtre avant l'arrivée évite la plupart des incidents.
+:::
+
+:::quiz
+? Quel outil est acceptable pour surveiller le bruit ?
+- Une caméra dans le salon
+- Un micro qui enregistre les conversations
+* Un capteur qui mesure le volume sans enregistrer de son
+= Filmer ou enregistrer l'intérieur porte atteinte à la vie privée et est interdit.
+:::
+
+:::action
+titre: Complète ta liste de sécurité
+texte: Vérifie chaque point de prévention dans l'espace Sécurité.
+lien: /dashboard/securite
+bouton: Ouvrir Sécurité
+:::`,
         },
       ],
     },
