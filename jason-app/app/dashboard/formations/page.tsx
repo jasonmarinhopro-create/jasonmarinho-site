@@ -4,7 +4,7 @@ import FormationsSuggestForm from './FormationsSuggestForm'
 import FormationsGrid from './FormationsGrid'
 import FormationsHighlights, { type HighlightFormation } from './FormationsHighlights'
 import Link from 'next/link'
-import { ArrowRight, Compass, GraduationCap } from '@phosphor-icons/react/dist/ssr'
+import { ArrowRight, Compass, GraduationCap, Lightbulb } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import { recommendFormations } from '@/lib/formations/recommend'
 import { isNouvelleFormation } from '@/lib/formations/nouveau'
@@ -188,7 +188,7 @@ export default async function FormationsPage() {
         <div style={styles.suggestSection} className="fade-up d3">
           <div style={styles.suggestBox} className="glass-card">
             <div style={styles.suggestLeft}>
-              <div style={styles.suggestEmoji}>💡</div>
+              <div style={styles.suggestEmoji}><Lightbulb size={26} weight="duotone" color="var(--accent-text)" /></div>
               <div>
                 <h3 style={styles.suggestTitle}>
                   Tu voudrais une formation sur un autre sujet ?

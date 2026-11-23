@@ -1,3 +1,4 @@
+import FormationIcon from '@/components/formations/FormationIcon'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
@@ -60,7 +61,7 @@ export default async function ParcoursListPage() {
             return (
               <Link key={p.slug} href={`/dashboard/formations/parcours/${p.slug}`} style={s.card}>
                 <div style={s.cardHead}>
-                  <span style={s.cardEmoji}>{p.emoji}</span>
+                  <span style={s.cardEmoji}><FormationIcon name={p.icon} size={24} /></span>
                   <span style={s.cardLevel}>{PARCOURS_LEVEL_LABELS[p.level]}</span>
                 </div>
                 <h2 style={s.cardTitle}>{p.title}</h2>

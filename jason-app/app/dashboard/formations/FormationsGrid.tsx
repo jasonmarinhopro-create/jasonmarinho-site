@@ -313,7 +313,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
                     ? <span style={styles.lockedBadge}>Standard</span>
                     : <>
                         <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
-                        {done && <span className="badge badge-green">Terminé ✓</span>}
+                        {done && <span className="badge badge-green">Terminé</span>}
                       </>
                   }
                 </div>

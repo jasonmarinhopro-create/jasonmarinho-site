@@ -2,7 +2,7 @@ import { getProfile } from '@/lib/queries/profile'
 // Titre dans l'en-tête du dashboard (avant, 29/09/2026 : un 2e Header complet
 // était rendu dans la page, avec sa cloche et son menu, en plus de celui du layout)
 import TitleSetter from '@/components/layout/TitleSetter'
-import FormationView from '@/components/formations/FormationView'
+import FormationView, { type InitialAnswer, type InitialAction } from '@/components/formations/FormationView'
 import { createClient } from '@/lib/supabase/server'
 import { getFormationDbContent, type FormationContent } from '@/lib/queries/formation-db-content'
 import { checkFormationAccess } from '@/lib/queries/formation-access'
@@ -124,8 +124,10 @@ export async function buildFormationPage({
   let initialNotes: Record<string, string> = {}
   let initialBookmarks: number[] = []
   let initialVotes: Record<string, 1 | -1> = {}
+  let initialAnswers: InitialAnswer[] = []
+  let initialActions: InitialAction[] = []
   if (formationId && profile?.userId) {
-    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }] = await Promise.all([
+    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }, answersRes, actionsRes] = await Promise.all([
       supabase
         .from('user_formations')
         .select('progress, completed_lessons')
@@ -147,7 +149,20 @@ export async function buildFormationPage({
         .select('lesson_id, vote')
         .eq('user_id', profile.userId)
         .eq('formation_id', formationId),
+      // Tables de la migration 196 : absentes = liste vide
+      supabase
+        .from('formation_answers')
+        .select('lesson_id, question, correct')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
+      supabase
+        .from('formation_action_plans')
+        .select('module_id, done_at, due_at')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId),
     ])
+    initialAnswers = (answersRes.data ?? []) as InitialAnswer[]
+    initialActions = (actionsRes.data ?? []) as InitialAction[]
     initialProgress = uf?.progress ?? null
     initialCompletedLessons = (uf?.completed_lessons as number[]) ?? []
     ;(notes ?? []).forEach((n: any) => { initialNotes[String(n.lesson_id)] = n.content as string })
@@ -203,6 +218,8 @@ export async function buildFormationPage({
         initialNotes={initialNotes}
         initialBookmarks={initialBookmarks}
         initialVotes={initialVotes}
+        initialAnswers={initialAnswers}
+        initialActions={initialActions}
         relatedArticles={relations.articles}
         recommendedNext={nextFormationsData}
         currentUserId={profile?.userId ?? null}

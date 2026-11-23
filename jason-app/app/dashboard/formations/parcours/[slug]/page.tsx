@@ -1,3 +1,4 @@
+import FormationIcon from '@/components/formations/FormationIcon'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
@@ -50,7 +51,7 @@ export default async function ParcoursDetailPage({ params }: { params: Promise<{
         {/* Hero */}
         <div style={s.hero}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
-            <span style={s.heroEmoji}>{parcours.emoji}</span>
+            <span style={s.heroEmoji}><FormationIcon name={parcours.icon} size={30} /></span>
             <span style={s.heroLevel}>{PARCOURS_LEVEL_LABELS[parcours.level]}</span>
           </div>
           <h1 style={s.heroTitle}>{parcours.title}</h1>
@@ -96,7 +97,7 @@ export default async function ParcoursDetailPage({ params }: { params: Promise<{
                 <div style={s.formationBody}>
                   <div style={s.formationTop}>
                     <span style={s.formationTitle}>{f.title}</span>
-                    {isDone && <span style={s.doneBadge}>✓ Terminée</span>}
+                    {isDone && <span style={s.doneBadge}>Terminée</span>}
                     {isInProgress && <span style={s.inProgressBadge}>{progress}%</span>}
                   </div>
                   <p style={s.formationDesc}>{f.description?.slice(0, 140)}{(f.description?.length ?? 0) > 140 ? '…' : ''}</p>

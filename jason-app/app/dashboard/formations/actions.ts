@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { actionDueDate } from '@/lib/formations/schedule'
 
 export async function enrollInFormation(formationId: string) {
   const supabase = await createClient()
@@ -274,6 +275,8 @@ export async function updateFormationProgress(
   if (!user) return { error: 'Non authentifié' }
 
   const updateData: Record<string, unknown> = { progress }
+  // Date de fin (écran de fin, attestation) : posée au passage à 100 %
+  if (progress >= 100) updateData.completed_at = new Date().toISOString()
   if (completedLessons !== undefined) {
     updateData.completed_lessons = completedLessons
   }
@@ -343,4 +346,75 @@ export async function toggleFormationFavorite(input: {
     revalidatePath('/dashboard/formations/favoris')
     return { favorited: false }
   }
+}
+
+// ─── Apprentissage actif (23/11/2026, docs/claude/formations.md) ─────────
+
+/** Réponse à une question de leçon. Seule la 1re réponse est gardée (score). */
+export async function answerLessonQuestion(input: {
+  formationId: string
+  lessonId: number
+  question: number
+  correct: boolean
+}): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+  const { error } = await supabase
+    .from('formation_answers')
+    .upsert(
+      { user_id: user.id, formation_id: input.formationId, lesson_id: input.lessonId, question: input.question, correct: input.correct },
+      { onConflict: 'user_id,formation_id,lesson_id,question', ignoreDuplicates: true },
+    )
+  // Table absente (migration 196 pas encore passée) : on n'empêche pas d'avancer
+  if (error && !/formation_answers/.test(error.message)) return { error: error.message }
+  return {}
+}
+
+/** Action de fin de module : faite maintenant, ou prévue à un moment choisi. */
+export async function planModuleAction(input: {
+  formationId: string
+  moduleId: number
+  title: string
+  href: string | null
+  when: 'done' | 'ce-soir' | 'demain' | 'week-end'
+}): Promise<{ error?: string; dueAt?: string | null }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+  const dueAt = input.when === 'done' ? null : actionDueDate(input.when, new Date()).toISOString()
+  const href = input.href && input.href.startsWith('/') && !input.href.startsWith('//') ? input.href.slice(0, 300) : null
+  const { error } = await supabase
+    .from('formation_action_plans')
+    .upsert({
+      user_id: user.id,
+      formation_id: input.formationId,
+      module_id: input.moduleId,
+      title: input.title.slice(0, 200),
+      href,
+      due_at: dueAt,
+      done_at: input.when === 'done' ? new Date().toISOString() : null,
+      notified_at: null,
+    }, { onConflict: 'user_id,formation_id,module_id' })
+  if (error) return { error: 'Impossible d\'enregistrer pour le moment.' }
+  return { dueAt }
+}
+
+/** Bilan de départ : objectif du membre et réponses de niveau. */
+export async function saveFormationBilan(input: {
+  formationId: string
+  objectif: string
+  bilan: Record<string, string>
+}): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+  const { error } = await supabase
+    .from('user_formations')
+    .upsert(
+      { user_id: user.id, formation_id: input.formationId, objectif: input.objectif.slice(0, 300), bilan: input.bilan },
+      { onConflict: 'user_id,formation_id' },
+    )
+  if (error) return { error: 'Impossible d\'enregistrer pour le moment.' }
+  return {}
 }
