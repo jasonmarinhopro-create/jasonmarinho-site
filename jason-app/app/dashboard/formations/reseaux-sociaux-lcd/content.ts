@@ -245,11 +245,99 @@ quelque chose qui fait rêver.
 - Seulement des émojis
 * Ce que tu proposes, où, et un lien pour réserver
 = En 150 caractères, le visiteur doit comprendre l'offre et savoir où cliquer.
+:::`,
+        },
+        {
+          id: 3,
+          title: "Les groupes Facebook : les fondations d'une présence qui convertit",
+          duration: '15 min',
+          content: `:::bref
+- Dans les groupes de location, les membres cherchent déjà un logement.
+- Rejoins des groupes de location directe, locaux et thématiques.
+- Un bon post : accroche, 2 à 3 photos, infos clés, lien en commentaire.
+:::
+
+## Pourquoi les groupes Facebook
+
+Pour la location saisonnière, les groupes Facebook restent un canal direct pour trouver des réservations sans commission.
+
+Leur particularité : **les membres sont déjà en recherche active**. Ils rejoignent un groupe « Location vacances Bretagne » parce qu'ils cherchent une location en Bretagne. Tu n'as pas à créer le besoin, tu réponds à une demande existante.
+
+Ce que les groupes permettent :
+
+- Publier tes disponibilités directement, sans commission
+- Répondre aux demandes de voyageurs en temps réel
+- Renvoyer vers ton lien de réservation directe
+- Construire une relation de confiance avant la réservation
+- Toucher des voyageurs qui n'utilisent pas ou plus Airbnb
+
+## Les groupes à rejoindre
+
+### Groupes de location directe (priorité)
+
+Ils mettent en relation hôtes et voyageurs dans une zone. À rechercher : « Location vacances [ta région] », « Gîtes et locations [ta ville] », « Hébergement direct [ta destination] ». Tu peux y publier tes disponibilités, tes tarifs et ton lien.
+
+### Groupes locaux et régionaux
+
+Résidents, expatriés, professionnels en déplacement : une source de réservations en basse saison souvent négligée. Exemples : « Expats à Lyon », « Professionnels en déplacement à Bordeaux », « Que faire à [ta ville] ».
+
+### Groupes thématiques
+
+Des centres d'intérêt proches de ta clientèle : un logement au ski rejoint les groupes de ski, un logement familial les groupes de parents.
+
+## Publier efficacement
+
+Un post qui convertit tient en 4 éléments :
+
+1. **Une accroche claire** : « Studio disponible à Lyon centre du [date] au [date] »
+2. **2 à 3 photos attractives** du logement
+3. **Les infos essentielles** : tarif, capacité, équipements clés
+4. **Un appel à l'action direct** : « Réservation directe sans commission, lien en commentaire »
+
+:::astuce
+Mets le lien de réservation en commentaire plutôt que dans le texte du post, et indique-le : « Lien de réservation en commentaire ».
+:::
+
+### Les règles pour ne pas être exclu
+
+Chaque groupe a ses propres règles : lis-les avant de publier.
+
+- Respecte la fréquence autorisée : certains groupes limitent à un post par semaine
+- Ne copie-colle pas le même message dans 20 groupes en même temps
+- Réponds vite aux commentaires et aux messages privés
+- Sois honnête sur les disponibilités
+
+## Répondre aux demandes de voyageurs
+
+Dans beaucoup de groupes, ce sont les voyageurs qui publient leur recherche : « Cherche location pour 4 personnes à Nice du 15 au 22 juillet, budget 800 € ».
+
+Réponds vite, personnellement :
+
+> « Bonjour [Prénom], j'ai un appartement qui correspond à votre recherche : 2 chambres, centre-ville de Nice, disponible sur ces dates. Je vous envoie le lien de réservation directe en message privé ! »
+
+## Exercice
+
+Cherche 5 groupes Facebook liés à ta zone et à la location de vacances : tape « location vacances [ta ville] », « séjour [ta région] », « hébergement [ta destination] ». Rejoins les plus actifs et observe ce qui y est publié avant de poster.
+
+:::quiz
+? Pourquoi les groupes de location sont-ils intéressants ?
+* Leurs membres cherchent déjà un logement
+- Ils sont réservés aux hôtes
+- Ils remplacent Airbnb
+= Tu réponds à une demande existante au lieu de la créer.
+:::
+
+:::quiz
+? Où mettre ton lien de réservation dans un post de groupe ?
+- Nulle part
+* En commentaire, en l'annonçant dans le texte
+- Répété dix fois dans le texte
+= Le texte reste lisible et le voyageur sait où cliquer.
 :::
 
 :::action
-titre: Prépare ta première publication
-texte: Choisis tes meilleures photos et inspire-toi des messages prêts à publier.
+titre: Rejoins tes premiers groupes
+texte: Trouve 5 groupes actifs dans ta zone et prépare ton premier post avec les messages prêts à publier.
 lien: /dashboard/visibilite/facebook
 bouton: Voir les messages prêts
 :::`,
