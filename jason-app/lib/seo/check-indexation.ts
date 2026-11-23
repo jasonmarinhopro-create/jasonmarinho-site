@@ -16,6 +16,7 @@ import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { fetchSitemapEntries } from '@/lib/seo/sitemap'
 import { inspectUrl, isConfigured, SearchConsoleAuthError } from '@/lib/google/search-console'
 import { logger } from '@/lib/logger'
+import { ordonnerVerification, type EtatConnu } from '@/lib/seo/check-order'
 
 const log = logger('lib/seo/check-indexation')
 const CONCURRENCY = 5
@@ -88,19 +89,14 @@ export async function checkAllUrls(): Promise<{ checked: number; remaining: numb
     const entries = await fetchSitemapEntries()
     const db = serviceClient()
 
-    const { data: statusRows } = await db.from('seo_indexation_status').select('url, last_checked_at, error')
-    const byUrl = new Map((statusRows ?? []).map(r => [r.url as string, r as { last_checked_at: string | null; error: string | null }]))
+    const { data: statusRows } = await db.from('seo_indexation_status').select('url, last_checked_at, error, indexed')
+    const byUrl = new Map((statusRows ?? []).map(r => [r.url as string, r as EtatConnu]))
 
-    // À faire en priorité : jamais vérifiées ou en erreur à la dernière
-    // vérification. Puis les plus anciennes (le cron quotidien repasse ainsi
-    // sur tout le sitemap au fil des jours).
+    // Jamais vérifiées et erreurs d'abord, puis chaque jour toutes les pages
+    // pas encore indexées, puis les indexées, les plus anciennes d'abord
+    // (lib/seo/check-order.ts).
     const needsCheck = (url: string) => { const r = byUrl.get(url); return !r?.last_checked_at || !!r.error }
-    const ordered = [...entries].sort((a, b) => {
-      const na = needsCheck(a.url) ? 0 : 1
-      const nb = needsCheck(b.url) ? 0 : 1
-      if (na !== nb) return na - nb
-      return (byUrl.get(a.url)?.last_checked_at ?? '').localeCompare(byUrl.get(b.url)?.last_checked_at ?? '')
-    })
+    const ordered = ordonnerVerification(entries, byUrl)
     const todo = ordered.filter(e => needsCheck(e.url)).length
 
     let checked = 0

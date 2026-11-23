@@ -308,6 +308,7 @@ export default function IndexationUI({ pages: serverPages, fetchError, lastCheck
                 <GoogleLogo size={13} weight="bold" /> Reconnecter Google Search Console
               </a>
             )}
+            <span style={s.asideNote}>Pages de sitemap.xml. Search Console compte en plus les fiches des pros (4 autres sitemaps) et tout le domaine : ses totaux sont plus élevés.</span>
           </div>
         }
       >
@@ -533,6 +534,7 @@ const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', boxSizing: 'border-box', padding: 'clamp(20px,3vw,44px)' },
   asideTitle: { fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)' },
   asideRow: { display: 'flex', justifyContent: 'space-between', gap: '12px', fontSize: '13.5px', color: 'var(--text-2)' },
+  asideNote: { fontSize: '11.5px', lineHeight: 1.45, color: 'var(--text-muted)', maxWidth: '260px' },
   asideLink: { display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '4px', fontSize: '12.5px', fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none' },
   warnBox: {
     display: 'flex', gap: '10px', alignItems: 'flex-start',
