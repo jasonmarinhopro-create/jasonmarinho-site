@@ -71,6 +71,34 @@ for (const t of cibles) {
   }
 }
 
+// Seconde passe (24/11/2026) : un article encore sous CIBLE cherche aussi dans
+// les autres catégories, avec un seuil plus exigeant.
+const SEUIL_AUTRES = 10.5
+// Rapprochements faux repérés à la relecture (mots communs, sujets différents)
+const EXCLUS = new Set([
+  'louer-chambre-chez-habitant-lcd-7-regles-cohabiter-voyageurs|photographe-hotel-conciergerie-7-points-avant-shooting',
+  'photographe-hotel-conciergerie-7-points-avant-shooting|louer-chambre-chez-habitant-lcd-7-regles-cohabiter-voyageurs',
+  'securiser-paiement-reservation-directe-sans-airbnb|reseau-wifi-invite-lcd-6-etapes-isoler-securiser',
+])
+const recu = slug => lie.get(slug).size + [...ajouts.values()].flat().filter(x => x.slug === slug).length
+for (const t of cibles) {
+  let manque = CIBLE - recu(t.slug)
+  if (manque <= 0) continue
+  const candidats = liste
+    .filter(h => h.slug !== t.slug && h.categorySlug !== t.categorySlug && !lie.get(t.slug).has(h.slug)
+      && !nu.get(h.slug).includes(`/blog/${t.slug}"`) && (ajouts.get(h.slug)?.length ?? 0) < MAX_HOTE
+      && !(ajouts.get(h.slug) || []).some(x => x.slug === t.slug) && !EXCLUS.has(`${h.slug}|${t.slug}`))
+    .map(h => ({ h, s: proche(t.slug, h.slug) }))
+    .filter(c => c.s >= SEUIL_AUTRES)
+    .sort((a, b) => b.s - a.s || a.h.slug.localeCompare(b.h.slug))
+  for (const { h } of candidats) {
+    if (manque <= 0) break
+    if (!ajouts.has(h.slug)) ajouts.set(h.slug, [])
+    ajouts.get(h.slug).push(t)
+    manque--
+  }
+}
+
 const parSlug = new Map(liste.map(a => [a.slug, a]))
 let ecrites = 0, liens = 0
 const ecarts = []

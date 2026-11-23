@@ -997,6 +997,17 @@ export function loadEngine () {
 /** Adresse d'une étude : /services/simulateurs/revenus-lcd/<ville> (10/11/2026) */
 export const etudeUrl = c => `/services/simulateurs/revenus-lcd/${c.urlSegment.replace(/^revenu-lcd-/, '')}`
 
+// Coordonnées approximatives (longitude × 1000, latitude × 1000, comme le
+// registre) des villes hors de France, absentes du registre (24/11/2026) :
+// sans elles, Amsterdam, Bruxelles et Vienne n'avaient aucune ville voisine.
+const CENTRES_ETRANGER = {
+  lisbonne: [-9139, 38722], porto: [-8611, 41150], funchal: [-16909, 32650], barcelona: [2170, 41387],
+  madrid: [-3704, 40417], sevilla: [-5984, 37389], valencia: [-376, 39470], rome: [12496, 41903],
+  firenze: [11256, 43770], bruxelles: [4352, 50847], amsterdam: [4904, 52368], berlin: [13405, 52520],
+  munich: [11582, 48135], wien: [16373, 48208],
+}
+const centreDe = (r, c) => r?.centre ?? CENTRES_ETRANGER[etudeUrl(c).split('/').pop()] ?? null
+
 function buildHtml (city, J, reg) {
   const me = reg.find(v => v.pages.revenus === etudeUrl(city))
   const t2 = c => J.estimateRevenue({ pays: c.pays, ville: c.ville, typeLogement: 't2', nbChambres: 1, mode: 'toute-annee' }).revenuAnnuel
@@ -1004,7 +1015,8 @@ function buildHtml (city, J, reg) {
     const r = reg.find(v => v.pages.revenus === etudeUrl(c))
     const b = J.findCity(c.ville, c.pays)
     let d = Infinity
-    if (me?.centre && r?.centre) d = Math.hypot(me.centre[0] - r.centre[0], (me.centre[1] - r.centre[1]) * 1.4)
+    const a = centreDe(me, city), b2 = centreDe(r, c)
+    if (a && b2) d = Math.hypot(a[0] - b2[0], (a[1] - b2[1]) * 1.4)
     else if (c.pays === city.pays) d = 1e6
     return { ville: c.ville, url: etudeUrl(c), occ: b.occ, adr: b.adr, t2: t2(c), d }
   }).filter(n => Number.isFinite(n.d)).sort((x, y) => x.d - y.d).slice(0, 4)

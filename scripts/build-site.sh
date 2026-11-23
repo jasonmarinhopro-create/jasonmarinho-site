@@ -17,6 +17,8 @@ node scripts/inject-a-lire-aussi.mjs
 node scripts/inject-course-formations.mjs
 # Liens entre formations et blog (24/11/2026)
 node scripts/inject-formations-blog.mjs
+# Liens vers les pages services peu reliées (24/11/2026)
+node scripts/inject-liens-services.mjs
 node scripts/build-accueil-annuaire.mjs
 node scripts/inject-photos-villes.mjs
 node scripts/inject-blog-covers.mjs
