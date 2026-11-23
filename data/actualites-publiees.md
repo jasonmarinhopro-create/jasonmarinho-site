@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-24 · plateformes · Airbnb bascule vers un frais hôte unique à 15,5 % HT dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-09-24 · fiscalite · Hausser tes prix Airbnb pour compenser : attention au seuil des 23 000 euros (https://www.moneyvox.fr/immobilier/actualites/110230/airbnb-de-nouvelles-consequencesfiscales-pour-la-location-meublee-de-courte-duree)
 - 2026-09-25 · plateformes · Airbnb passe à une commission unique de 15,5 % le 13 octobre 2026 · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
 - 2026-09-25 · marche · Bilan été 2026 : taux d'occupation en hausse, le littoral domine (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-26 · fiscalite · Meublé classé : le plafond micro-BIC monte à 83 600 euros pour 2026 (https://www.koliving.fr/meuble-tourisme-plafond-micro-bic-83600-euros-revenus-2026/)
@@ -72,3 +70,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-21 · plateformes · Mise à jour : Airbnb contrôle les annonces depuis le 20 novembre (https://www.rentalscaleup.com/fr/nous-avons-teste-le-nouvel-outil-de-verification-des-regles-de-maison-dairbnb-voici-ce-quil-signale-et-ce-que-cela-signifie-pour-les-gestionnaires/)
 - 2026-11-21 · marche · Décembre chargé : prépare tes interventions d'urgence pour tes clients hôtes · pour depannage (https://www.service-public.fr/particuliers/vosdroits/F31952)
 - 2026-11-22 · entreprise · Changer ta périodicité Urssaf pour 2027 : tu as jusqu'au 31 janvier · pour photographe, menage, depannage (https://banque.meilleurtaux.com/banque-en-ligne/actualites/2026-novembre/micro-entrepreneurs-date-limite-pour-changer-lurssaf.html)
+- 2026-11-23 · fiscalite · Mise à jour PLF 2027 : logements LMNP avant le 1er octobre exemptés du plafond (https://www.france-epargne.fr/news/plafond-lmnp-de-7-000-euros-la-commission-du-senat-exempte-les-meubles-loues-avant-le-1er-octobre)
+- 2026-11-23 · photo-video · Drone professionnel : formation de maintien des compétences obligatoire en 2027 · pour photographe (https://legifrance.gouv.fr/jorf/id/JORFTEXT000053435245)
