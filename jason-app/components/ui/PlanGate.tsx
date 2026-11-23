@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { FORMATIONS_TOTAL } from '@/lib/constants/auto-counts'
 import {
   Lock, ArrowRight, Sparkle, ChartLineUp, Receipt, FileText,
   Calculator, Tag, GraduationCap, Newspaper, ChartBar,
@@ -26,10 +27,10 @@ interface Copy {
 const COPY: Record<string, Copy> = {
   formations: {
     title: 'Tu as utilisé tes 2 accès gratuits',
-    description: 'Passe en Standard pour débloquer les 14 formations complètes, à vie et à ton rythme.',
+    description: `Passe en Standard pour débloquer les ${FORMATIONS_TOTAL} formations complètes, à vie et à ton rythme.`,
     intro: 'Inclus avec Standard',
     features: [
-      { icon: GraduationCap, title: '14 formations complètes', desc: 'Fiscalité, Airbnb, GBP, photographie, automatisation, prix dynamiques…' },
+      { icon: GraduationCap, title: `${FORMATIONS_TOTAL} formations complètes`, desc: 'Fiscalité, Airbnb, GBP, photographie, automatisation, prix dynamiques…' },
       { icon: Sparkle,      title: 'Accès à vie',             desc: 'Une fois débloqué, le contenu reste à toi sans limite de temps.' },
       { icon: ChartLineUp,   title: 'Suivi de progression',    desc: 'Reprends où tu t\'étais arrêté, modules, leçons et favoris synchronisés.' },
     ],

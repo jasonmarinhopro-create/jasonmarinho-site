@@ -14,7 +14,7 @@ const ROOT = path.resolve(__dirname, '..')
 // ── 1. Compte les formations réelles ──────────────────────────────────────
 const FORMATIONS_DIR = path.join(ROOT, 'jason-app/app/dashboard/formations')
 // Dossiers qui ne sont pas des formations (pages de la section formations)
-const EXCLUDE = new Set(['parcours', 'favoris', 'profil-apprenant'])
+const EXCLUDE = new Set(['parcours', 'favoris', 'profil-apprenant', 'attestation', 'hub'])
 
 const formationDirs = fs.readdirSync(FORMATIONS_DIR, { withFileTypes: true })
   .filter(d => d.isDirectory() && !EXCLUDE.has(d.name))
@@ -126,6 +126,30 @@ for (const rel of FILES_TO_UPDATE) {
     console.log(`[sync-counts] ✓ ${rel}`)
   }
 }
+
+// ── 3 ter. Toutes les pages du site (23/11/2026, Jason : « il n'y a pas 22
+// formations ? ») : 62 pages de ville affichaient encore « 16 formations
+// pratiques ». Seuls les motifs explicites à deux chiffres sont touchés
+// (« 16 formations pratiques », « 14 formations complètes »).
+const SITE_PATTERN = /(\b)([1-9]\d)(\s+formations\s+(?:pratiques|complètes))/g
+const SKIP_DIRS = new Set(['node_modules', '.git', 'jason-app', '.vercel', '.next'])
+function walkHtml(dir, out = []) {
+  for (const d of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (SKIP_DIRS.has(d.name)) continue
+    const full = path.join(dir, d.name)
+    if (d.isDirectory()) walkHtml(full, out)
+    else if (d.name.endsWith('.html')) out.push(full)
+  }
+  return out
+}
+let siteEdits = 0
+for (const file of [...walkHtml(ROOT), path.join(ROOT, 'scripts/inject-jsonld.mjs')]) {
+  if (!fs.existsSync(file)) continue
+  const before = fs.readFileSync(file, 'utf8')
+  const after = before.replace(SITE_PATTERN, (_m, p1, _n, p3) => `${p1}${TOTAL_FORMATIONS}${p3}`)
+  if (after !== before) { fs.writeFileSync(file, after); siteEdits++ }
+}
+if (siteEdits) { totalEdits += siteEdits; console.log(`[sync-counts] ✓ ${siteEdits} autres pages (nombre de formations)`) }
 
 // ── 3 bis. Filtres du catalogue /services/formations ──────────────────────
 // Chiffres des boutons « Tous 22 », « Gestion 5 »… recomptés depuis les

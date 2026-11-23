@@ -14,7 +14,7 @@ import { weekStartParis, WEEKLY_GOAL } from '@/lib/formations/revision'
 import { parseLesson } from '@/lib/formations/blocks'
 import { lessonSteps } from '@/lib/formations/steps'
 import { computeSignals } from '@/lib/formations/signals'
-import { coverBackground, objectifLabel } from '@/lib/formations/objectifs'
+import { coverBackground, objectifLabel, objectifOf } from '@/lib/formations/objectifs'
 import { PARCOURS } from '@/lib/formations/parcours'
 import { FORMATION_CONTENT_MAP } from '@/app/dashboard/admin/formations/[slug]/contentMap'
 import TitleSetter from '@/components/layout/TitleSetter'
@@ -117,7 +117,11 @@ export default async function FormationsPage({ searchParams }: { searchParams: {
       locked: slotsFull && !unlockedSlugs!.includes(f.slug),
       isNew: isNouvelleFormation(f.created_at),
       objectif: objectifLabel(f.slug),
+      objectifKey: objectifOf(f.slug),
+      description: content?.description ?? '',
+      level: content?.level ?? '',
       cover: coverBackground(f.slug, 0.25),
+      coverLg: coverBackground(f.slug, 0.7),
       next: nextLesson ? { id: nextLesson.id, title: nextLesson.title, duration: nextLesson.duration, steps: lessonSteps(parseLesson(nextLesson.content)).length } : null,
     }
   })

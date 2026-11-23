@@ -28,7 +28,7 @@ const PAGES = {
     type: 'CollectionPage',
     name: 'Formations LCD : Jason Marinho',
     url: 'https://jasonmarinho.com/services/formations',
-    description: '15 formations pratiques pour hôtes Airbnb et conciergeries en location courte durée.',
+    description: '22 formations pratiques pour hôtes Airbnb et conciergeries en location courte durée.',
     crumbs: [
       { name: 'Accueil',     item: 'https://jasonmarinho.com/' },
       { name: 'Services',    item: 'https://jasonmarinho.com/services' },

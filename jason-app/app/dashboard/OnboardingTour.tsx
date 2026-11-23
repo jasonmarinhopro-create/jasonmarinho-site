@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { ArrowRight, ArrowLeft, X, Sparkle } from '@phosphor-icons/react/dist/ssr'
 import { markOnboardingStep } from '@/lib/onboarding/actions'
+import { FORMATIONS_TOTAL } from '@/lib/constants/auto-counts'
 
 export type TourStep = {
   id: string
@@ -54,7 +55,7 @@ export const DASHBOARD_HOME_STEPS: TourStep[] = [
     id: 'apprendre',
     targetSelector: 'a[href="/dashboard/apprendre/formations"]',
     title: "Formations",
-    body: "18 formations (juridique, fiscal, Airbnb, Booking, automatisation…). Le Guide LCD, pour les vraies situations (annulation, litige caution, mauvais commentaire), est à côté des Actualités.",
+    body: `${FORMATIONS_TOTAL} formations (juridique, fiscal, Airbnb, Booking, automatisation…). Le Guide LCD, pour les vraies situations (annulation, litige caution, mauvais commentaire), est à côté des Actualités.`,
   },
   {
     id: 'entre-hotes',

@@ -2,11 +2,11 @@
 import type { Signal } from '@/lib/formations/signals'
 
 export type HubTab = 'aujourdhui' | 'parcours' | 'catalogue' | 'moi'
-export const HUB_TABS: Array<{ key: HubTab; label: string }> = [
-  { key: 'aujourdhui', label: "Aujourd'hui" },
-  { key: 'parcours', label: 'Parcours' },
-  { key: 'catalogue', label: 'Catalogue' },
-  { key: 'moi', label: 'Moi' },
+export const HUB_TABS: Array<{ key: HubTab; label: string; hint: string }> = [
+  { key: 'aujourdhui', label: "Aujourd'hui", hint: 'Ta prochaine leçon' },
+  { key: 'parcours', label: 'Parcours', hint: 'Un objectif, étape par étape' },
+  { key: 'catalogue', label: 'Catalogue', hint: 'Toutes les formations' },
+  { key: 'moi', label: 'Moi', hint: 'Progrès et attestations' },
 ]
 
 export interface HubFormation {
@@ -19,7 +19,11 @@ export interface HubFormation {
   locked: boolean           // formule Découverte, places épuisées
   isNew: boolean
   objectif: string          // libellé
-  cover: string             // fond CSS
+  objectifKey: string       // clé (ObjectifKey)
+  description: string       // promesse de la formation (content.ts)
+  level: string
+  cover: string             // fond CSS, vignette
+  coverLg: string           // fond CSS, grande carte
   next: { id: number; title: string; duration: string; steps: number } | null
 }
 

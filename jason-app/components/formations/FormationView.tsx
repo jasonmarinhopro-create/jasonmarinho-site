@@ -496,7 +496,14 @@ function LessonPlayer(p: {
   const timer = useRef<NodeJS.Timeout | null>(null)
   const stageRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { stageRef.current?.scrollTo({ top: 0 }); window.scrollTo({ top: 0 }) }, [p.step])
+  // Nouvelle étape : tout remonter en haut, y compris le conteneur qui défile
+  // (sinon le début de l'étape restait caché sous la barre de progression
+  // collée en haut, 23/11/2026).
+  useEffect(() => {
+    let el: HTMLElement | null = stageRef.current
+    while (el) { if (el.scrollTop > 0) el.scrollTop = 0; el = el.parentElement }
+    window.scrollTo({ top: 0 })
+  }, [p.step])
 
   // Lien d'action vers Mes prix : le logement de l'hôte déjà choisi
   const actionHref = (href: string | null) => {
@@ -781,8 +788,8 @@ const CSS = `
 .fv-prog i.n { background: linear-gradient(90deg, var(--accent-text) 50%, var(--surface-2) 50%); }
 .fv-count { font-size: 12.5px; font-weight: 700; color: var(--text-3); font-variant-numeric: tabular-nums; }
 .fv-lesson-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 24px; padding: 0 clamp(16px, 3vw, 32px); }
-.fv-stage { flex: 1; display: flex; justify-content: center; padding: 32px 0 24px; }
-.fv-full > .fv-stage { padding: 32px clamp(16px, 3vw, 32px) 24px; }
+.fv-stage { flex: 1; display: flex; justify-content: center; padding: 44px 0 24px; }
+.fv-full > .fv-stage { padding: 44px clamp(16px, 3vw, 32px) 24px; }
 .fv-stage-in { width: 100%; max-width: 660px; display: flex; flex-direction: column; gap: 16px; animation: fvStep .3s ease both; }
 @keyframes fvStep { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
 .fv-k { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700; color: var(--accent-text); }
@@ -871,8 +878,8 @@ const CSS = `
   .fv-full { position: fixed; inset: 0; z-index: 120; min-height: 0; overflow-y: auto; }
   .fv-top { top: 0; padding-top: calc(10px + env(safe-area-inset-top)); border-bottom: 0; }
   .fv-lesson-grid { padding: 0 20px; }
-  .fv-full > .fv-stage { padding: 12px 20px 24px; }
-  .fv-stage { padding: 12px 0 24px; }
+  .fv-full > .fv-stage { padding: 24px 20px 24px; }
+  .fv-stage { padding: 24px 0 24px; }
   .fv-foot { margin-top: auto; }
   .fv-sheet { margin-top: auto; }
 }

@@ -55,6 +55,18 @@ Maquettes de référence : artefact « Formations, maquettes complètes » (tél
 - **Leçon en étapes** (`?lecon=<id>&etape=<n>`, `lib/formations/steps.ts` testé) : chaque `##` = une étape, « En bref » en 1re étape, questions puis action à la fin. Plein écran sur téléphone (au-dessus de l'en-tête de l'app), barre de progression des étapes, « Continuer » en bas, réponse en panneau vert ou rouge, sommaire des étapes à droite sur ordinateur. Dernière étape : « Leçon terminée », « Cette leçon était claire ? », notes, question (commentaires). Les actions qui mènent à Mes prix ouvrent le 1er logement de l'hôte (`?logement=`).
 - **Fin** (`?fin=1`) : médaille et éclats (sans animation si mouvement réduit), score, actions, objectif, « Ce que tu sais faire », attestation, formation suivante. L'attestation propose « Ajouter à mon profil LinkedIn » (lien officiel « Licences et certifications »).
 
+## Version ordinateur (23/11/2026, retours de Jason sur captures)
+
+« Beaucoup de problèmes de responsive sur ordinateur », « la page d'accueil est vraiment vide », « il y a écrit 2 fois Formations », catalogue à refaire « avec l'effet wow ». Fait :
+- Onglets communs `HubTabBar` en haut à gauche (Aujourd'hui « Ta prochaine leçon », Parcours, Catalogue « Les N formations », Moi), plus de titre « Formations » dans la page. Téléphone : barre du bas inchangée.
+- **Aujourd'hui** : leçon à reprendre avec la couverture de la formation et un anneau de progression ; à droite « Ta progression » (leçons faites, terminées, bonnes réponses), semaine, actions prévues, parcours (ou « Choisis un parcours ») ; en dessous « Tes autres formations en cours », « Pour toi », « Nouveau » en cartes.
+- **Catalogue** : formation mise en avant (« Pour toi », grande couverture, promesse, chiffres du catalogue), recherche (titre, objectif et description), puces, puis une section par objectif en grille de cartes à couverture (`repeat(auto-fill, minmax(240px, 1fr))`). Téléphone : lignes compactes avec la petite couverture (`--cov-sm`).
+- **Parcours** : liste des 5 objectifs à gauche (collée, avec progression), chemin à droite en cartes ; sous 1 100 px, puces.
+- **Moi** : 4 chiffres, réussites et enregistré à gauche, attestations en grille à droite.
+- **Couvertures** : `coverBackground` varie selon le rang de la formation dans son objectif (place et taille du cercle, deux tons) : deux formations du même objectif ne se ressemblent plus.
+- **Leçon** : plus d'espace sous la barre de progression (44 px), et chaque nouvelle étape remonte tous les conteneurs qui défilent (le début de l'étape restait caché sous la barre).
+- Vérifié sur une page d'aperçu locale avec données fictives (non commitée) à 1920, 1280 et 390 px, clair et sombre : aucun débordement.
+
 ## Faits vérifiés le 23/11/2026 (à réutiliser dans les autres formations)
 
 - **Airbnb** : frais uniques à la charge de l'hôte, 15,5 %, pour tous les hôtes de l'UE depuis le 13/10/2026 (plus de frais voyageur à part ; avant : environ 3 % hôte + frais voyageur). Sans numéro de TVA, la TVA de 20 % s'ajoute aux frais : 18,6 % ; 100 € affichés = 81,40 € reçus (84,50 € avec un numéro de TVA). Une autre session avait déjà corrigé les autres formations sur ce point le 23/11 (commit « commission Airbnb à jour »). Toute formation qui parle de « 3 % » ou « 4 % hôte » ou de « frais de service voyageur 14 % » est à corriger. Sources : Airbnb « Simplifying Airbnb service fees », Hostfully, Smoobu.

@@ -1,64 +1,28 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ChatsCircle, Handshake } from '@phosphor-icons/react/dist/ssr'
+import HubTabBar from '@/components/layout/HubTabBar'
 
 /**
  * Barre d'onglets pour /dashboard/entre-hotes/*.
  * Les sous-routes du forum (/chez-nous/[postId], /chez-nous/membre/[id], etc.)
- * restent à leur URL d'origine — la tab bar n'est visible que sur la home
+ * restent à leur URL d'origine : la barre n'est visible que sur la home
  * du forum (/entre-hotes/forum), pas sur les vues détail.
+ * 18/11/2026 : l'entrée du menu s'appelle « Partenaires » et ouvre cet
+ * onglet en premier ; Questions & réponses passe en second.
+ * Style commun des onglets (HubTabBar, 23/11/2026).
  */
 export default function EntreHotesTabBar() {
   const pathname = usePathname() ?? ''
-  const tabs = [
-    // 18/11/2026 : l'entrée du menu s'appelle « Partenaires » et ouvre cet
-    // onglet en premier ; Questions & réponses passe en second.
-    // Groupes Facebook : déplacés dans « Trouver des voyageurs » (sept. 2026).
-    { href: '/dashboard/entre-hotes/ecosysteme', label: 'Partenaires & outils', Icon: Handshake },
-    { href: '/dashboard/entre-hotes/forum',      label: 'Questions & réponses', Icon: ChatsCircle },
-  ]
+  const on = (href: string) => pathname === href || pathname.startsWith(href + '/')
   return (
-    <nav style={s.bar} aria-label="Onglets Entre Hôtes">
-      {tabs.map(({ href, label, Icon }) => {
-        const active = pathname === href || pathname.startsWith(href + '/')
-        return (
-          <Link
-            key={href}
-            href={href}
-            style={{ ...s.tab, ...(active ? s.tabActive : {}) }}
-            aria-current={active ? 'page' : undefined}
-          >
-            <Icon size={15} weight={active ? 'fill' : 'regular'} />
-            <span>{label}</span>
-          </Link>
-        )
-      })}
-    </nav>
+    <HubTabBar
+      label="Onglets Partenaires"
+      tabs={[
+        { href: '/dashboard/entre-hotes/ecosysteme', label: 'Partenaires & outils', hint: 'Outils et offres pour les hôtes', Icon: Handshake, active: on('/dashboard/entre-hotes/ecosysteme') },
+        { href: '/dashboard/entre-hotes/forum', label: 'Questions & réponses', hint: "L'entraide entre hôtes", Icon: ChatsCircle, active: on('/dashboard/entre-hotes/forum') },
+      ]}
+    />
   )
-}
-
-const s: Record<string, React.CSSProperties> = {
-  bar: {
-    display: 'flex', gap: 4,
-    borderBottom: '1px solid var(--border)',
-    padding: '0 var(--dash-page-px)',
-    overflowX: 'auto', WebkitOverflowScrolling: 'touch',
-  },
-  tab: {
-    display: 'inline-flex', alignItems: 'center', gap: 8,
-    padding: '12px 16px',
-    fontSize: 13.5, fontWeight: 500,
-    color: 'var(--text-3)',
-    textDecoration: 'none',
-    borderBottom: '2px solid transparent',
-    marginBottom: -1, whiteSpace: 'nowrap',
-    transition: 'color 0.15s, border-color 0.15s',
-  },
-  tabActive: {
-    color: 'var(--accent-text)',
-    borderBottomColor: 'var(--accent-text)',
-    fontWeight: 600,
-  },
 }

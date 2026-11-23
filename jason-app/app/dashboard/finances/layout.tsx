@@ -6,7 +6,7 @@ import { loadFinances } from '@/lib/finances/load'
 
 /**
  * « Mes finances » (DA 28/09/2026) : bandeau vert commun aux onglets
- * (FinancesHero), puis les onglets. loadFinances() est mis en cache pour le
+ * (FinancesHero) sous les onglets. loadFinances() est mis en cache pour le
  * rendu : la page de l'onglet réutilise les mêmes requêtes.
  */
 export default async function FinancesLayout({ children }: { children: React.ReactNode }) {
@@ -16,10 +16,12 @@ export default async function FinancesLayout({ children }: { children: React.Rea
 
   return (
     <div>
-      <FinancesHero data={data} choices={choices} activeId={activeId} />
-      <Suspense fallback={<div style={{ height: 46, borderBottom: '1px solid var(--border)' }} />}>
+      {/* 23/11/2026 : onglets en haut à gauche, puis le bandeau (comme
+          S'informer et les autres espaces, HubTabBar). */}
+      <Suspense fallback={<div style={{ height: 66 }} />}>
         <FinancesTabBar />
       </Suspense>
+      <FinancesHero data={data} choices={choices} activeId={activeId} />
       {children}
     </div>
   )
