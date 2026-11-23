@@ -372,13 +372,24 @@ CAS 2, TU NE FAIS QUE COORDONNER
 le propriétaire, toi tu perçois ta
 commission directement de la plateforme
 ou du propriétaire EN PLUS)
-→ Carte G possiblement non obligatoire
-→ Tu es prestataire de service, pas mandataire
+→ Zone à risque : d'après la CCI
+  Paris Île-de-France, gérer l'annonce,
+  fixer les prix ou administrer les
+  réservations relève aussi de la
+  loi Hoguet, même sans encaisser
+→ Le tribunal de Tours a condamné en
+  janvier 2025 une conciergerie sans
+  carte qui n'encaissait pas les loyers
+
+CAS 3, PRESTATIONS MATÉRIELLES SEULES
+(ménage, linge, accueil des voyageurs)
+→ Pas de carte G : prestation de services
 
 → La frontière est juridiquement débattue.
-  Fais valider ton montage par un avocat.
+  Fais valider ton montage par ta CCI
+  ou un avocat.
 
-## Les 3 solutions légales sans Carte G
+## Les 3 façons d'exercer en règle
 SOLUTION 1, LE STATUT DE CO-HÔTE AIRBNB
 Airbnb permet au propriétaire de te désigner
 comme "co-hôte" sur son compte.
@@ -387,7 +398,10 @@ comme "co-hôte" sur son compte.
 → Tu factures tes services au propriétaire
   (prestation de service)
 → Tu n'encaisses jamais de loyers
-→ Pas de Carte G requise selon ce montage
+→ Attention : si tu gères l'annonce, les
+  prix ou les réservations du compte,
+  la carte G peut quand même être exigée
+  (voir CAS 2) : fais valider ce montage
 
 SOLUTION 2, REJOINDRE UN RÉSEAU D'INDÉPENDANTS
 Certains réseaux de conciergeries permettent
@@ -1369,7 +1383,7 @@ CONTRAT DE GESTION
 CARTE G
 → Chambre de Commerce de ta région (CCI)
 → Ou consulter un avocat spécialisé
-  pour valider ton montage sans Carte G
+  pour valider ton montage
 
 RC PRO CONCIERGERIE
 → Assureurs spécialisés : Hiscox,

@@ -446,15 +446,16 @@ const GUIDE_CARDS: GuideCard[] = [
     rules: [
       { type: 'warn', text: <><strong>Tu encaisses les loyers</strong> pour le propriétaire et les lui reverses : carte professionnelle <strong>G</strong> (gestion) + garantie financière</> },
       { type: 'warn', text: <><strong>Tu publies les annonces à ton nom</strong> et conclus les locations pour son compte : c&apos;est de l&apos;entremise, carte <strong>T</strong> requise</> },
-      { type: 'ok',   text: <>Annonce au nom du propriétaire, paiements versés directement sur son compte, toi facturant ménage, accueil et gestion du calendrier : <strong>prestation de services</strong>, sans carte</> },
-      { type: 'info', text: <>Sans carte alors qu&apos;elle est requise, le contrat peut être annulé et tes honoraires perdus (tribunal de Tours, janvier 2025)</> },
+      { type: 'warn', text: <><strong>Tu n&apos;encaisses pas</strong> mais tu gères l&apos;annonce, les prix ou les réservations : d&apos;après la CCI Paris Île-de-France, la carte <strong>G</strong> s&apos;impose aussi (le tribunal de Tours a condamné en janvier 2025 une conciergerie sans carte qui n&apos;encaissait pas)</> },
+      { type: 'ok',   text: <>Ménage, linge et accueil seuls : <strong>prestation de services</strong>, sans carte. Pour tout autre montage, fais-le valider par ta CCI ou un avocat</> },
     ],
     articles: [
-      { label: 'Créer une conciergerie LCD en 2025', slug: 'creer-conciergerie-airbnb-2025' },
+      { label: 'Créer une conciergerie LCD en 2026', slug: 'creer-conciergerie-airbnb-2025' },
       { label: 'Contrat de mandat conciergerie', slug: 'contrat-mandat-conciergerie-lcd-modele-clauses' },
     ],
     sources: [
       { label: 'Carte G et conciergerie (HostLegal)', url: 'https://www.hostlegal.fr/blog/carte-g-conciergerie-ou-cohost-airbnb' },
+      { label: 'Carte G : quand est-elle obligatoire ? (CCI Paris Île-de-France)', url: 'https://www.entreprises.cci-paris-idf.fr/fiches-pratiques/carte-g-immobilier-cas-ou-elle-est-obligatoire-activites' },
     ],
   },
   {

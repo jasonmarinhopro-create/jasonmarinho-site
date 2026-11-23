@@ -61,7 +61,7 @@ const ROWS: Row[] = [
     values: {
       gites:        { value: 'Non', tone: 'ok' },
       chambres:     { value: 'Non', tone: 'ok' },
-      conciergerie: { value: 'Oui si tu encaisses (G) ou publies à ton nom (T)', tone: 'warn' },
+      conciergerie: { value: 'Oui si tu encaisses (G), publies à ton nom (T) ou gères annonces et réservations (G, à faire valider)', tone: 'warn' },
       direct:       { value: 'Non', tone: 'ok' },
     },
   },
