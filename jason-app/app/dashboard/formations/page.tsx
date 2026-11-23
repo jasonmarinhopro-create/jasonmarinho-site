@@ -8,6 +8,7 @@ import { ArrowRight, Compass, GraduationCap, Lightbulb } from '@phosphor-icons/r
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import { recommendFormations } from '@/lib/formations/recommend'
 import { isNouvelleFormation } from '@/lib/formations/nouveau'
+import { weekStartParis, WEEKLY_GOAL } from '@/lib/formations/revision'
 import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
 import { getCachedPublishedFormations } from '@/lib/queries/cache'
 import type { Metadata } from 'next'
@@ -65,7 +66,7 @@ export default async function FormationsPage() {
 
   const plan = profile?.plan ?? 'decouverte'
 
-  const [allCachedFormations, { data: userFormations }, { data: favorites }, unlockedSlugs, { data: logementsPays }, { count: contractsCount }] = await Promise.all([
+  const [allCachedFormations, { data: userFormations }, { data: favorites }, unlockedSlugs, { data: logementsPays }, { count: contractsCount }, { count: weekLessons }] = await Promise.all([
     // Catalogue public partagé entre tous les users (caché 10 min).
     getCachedPublishedFormations(),
     supabase.from('user_formations').select('formation_id, progress').eq('user_id', userId),
@@ -74,7 +75,10 @@ export default async function FormationsPage() {
     // Recommandations « Pour toi » : pays des logements + réservations directes
     supabase.from('logements').select('pays').eq('user_id', userId),
     supabase.from('contracts').select('id', { count: 'exact', head: true }).eq('user_id', userId),
+    // Objectif de la semaine (2 leçons, sans série de jours qui culpabilise)
+    supabase.from('user_lesson_completion_log').select('id', { count: 'exact', head: true }).eq('user_id', userId).gte('completed_at', weekStartParis(new Date())),
   ])
+  const weekDone = Math.min(weekLessons ?? 0, 99)
 
   // Filtre côté JS sur ACTIVE_SLUGS : la liste est petite et la donnée
   // cachée, donc moins coûteux que de re-querier la DB par utilisateur.
@@ -153,6 +157,14 @@ export default async function FormationsPage() {
                   <span style={styles.asideMeta}>formations commencées · {doneCount} terminée{doneCount > 1 ? 's' : ''}</span>
                 </>
               )}
+              <span style={styles.weekGoal}>
+                <span style={styles.weekRow}>
+                  <span>Objectif de la semaine</span>
+                  <strong>{Math.min(weekDone, WEEKLY_GOAL)} / {WEEKLY_GOAL} leçons</strong>
+                </span>
+                <span style={styles.asideBar}><span style={{ ...styles.asideFill, width: `${Math.min(100, (weekDone / WEEKLY_GOAL) * 100)}%` }} /></span>
+                <span style={styles.asideMeta}>{weekDone >= WEEKLY_GOAL ? 'Objectif atteint, bravo.' : 'Deux leçons par semaine suffisent pour avancer sans y penser.'}</span>
+              </span>
               <span style={styles.asideLinks}>
                 <Link href="/dashboard/formations/profil-apprenant" style={heroLink}>Mon profil apprenant</Link>
                 <Link href="/dashboard/formations/favoris" style={heroLink}>Mes favoris</Link>
@@ -207,6 +219,8 @@ export default async function FormationsPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
+  weekGoal: { display: 'flex', flexDirection: 'column', gap: '6px', paddingTop: '10px', borderTop: '1px solid var(--border)' },
+  weekRow: { display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '12.5px', color: 'var(--text-2)' },
   page: { padding: 'clamp(16px,3vw,44px)', width: '100%' },
   ctaRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' },
   asideLabel: { fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.5px' },

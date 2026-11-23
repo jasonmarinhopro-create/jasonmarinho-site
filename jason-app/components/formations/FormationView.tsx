@@ -15,7 +15,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import {
   enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark,
-  voteLesson, answerLessonQuestion, planModuleAction,
+  voteLesson, answerLessonQuestion, planModuleAction, saveFormationBilan,
 } from '@/app/dashboard/formations/actions'
 import LessonComments from './LessonComments'
 import LessonContent, { type QuizState, type ActionWhen } from './LessonContent'
@@ -52,6 +52,7 @@ export default function FormationView({
   initialVotes = {},
   initialAnswers = [],
   initialActions = [],
+  initialObjectif = null,
   formationSlug,
   relatedArticles = [],
   recommendedNext = [],
@@ -67,6 +68,8 @@ export default function FormationView({
   initialVotes?: Record<string, 1 | -1>
   initialAnswers?: InitialAnswer[]
   initialActions?: InitialAction[]
+  /** Objectif posé au bilan de départ (null = pas encore). */
+  initialObjectif?: string | null
   formationSlug?: string
   relatedArticles?: Array<{ label: string; slug: string }>
   recommendedNext?: Array<{ slug: string; title: string; reason?: string }>
@@ -94,6 +97,8 @@ export default function FormationView({
   const [navOpen, setNavOpen] = useState(false)
   const [completed, setCompleted] = useState<number[]>(initialCompletedLessons)
   const [justFinished, setJustFinished] = useState(false)
+  const [objectif, setObjectif] = useState<string | null>(initialObjectif)
+  const [niveau, setNiveau] = useState<string | null>(null)
 
   // Réponses : { lessonId: { questionIndex: { picked, correct } } }
   const [answers, setAnswers] = useState<Record<number, QuizState>>(() => {
@@ -293,6 +298,7 @@ export default function FormationView({
   const finishPanel = finished ? (
     <FinishPanel
       celebrate={justFinished}
+      objectif={objectif}
       title={formation.title}
       objectifs={formation.objectifs}
       score={score}
@@ -343,6 +349,25 @@ export default function FormationView({
               <Meta icon={<BookOpen size={16} />} value={`${formation.modules.length} modules`} label={`${totalLessons} leçons`} />
               <Meta icon={<Target size={16} />} value={progress > 0 ? `${progress} %` : 'À toi de jouer'} label={progress > 0 ? 'déjà fait' : 'questions et actions dans chaque module'} />
             </div>
+
+            {objectif ? (
+              <div style={st.goalSet}>
+                <CheckCircle size={18} weight="fill" color="var(--success-1)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <span>
+                  <span style={st.goalLbl}>Ton objectif</span>
+                  <span style={{ color: 'var(--text)' }}>{objectif}</span>
+                  {niveau === 'bien' && <span style={st.goalTip}>Tu connais déjà le sujet : ouvre dans le sommaire les leçons qui t&apos;intéressent et réponds aux questions pour vérifier ce que tu sais.</span>}
+                </span>
+              </div>
+            ) : !finished && (
+              <BilanDepart
+                onSave={(obj, lvl) => {
+                  setObjectif(obj)
+                  setNiveau(lvl)
+                  if (formationId) saveFormationBilan({ formationId, objectif: obj, bilan: { niveau: lvl } }).catch(() => null)
+                }}
+              />
+            )}
 
             <div style={st.objBox}>
               <div style={st.objTitle}>Ce que tu sauras faire</div>
@@ -590,8 +615,48 @@ function LessonSteps({ module, completed, activeId, onPick }: { module: Module; 
   )
 }
 
-function FinishPanel({ celebrate, title, objectifs, score, actionsDone, actionsTotal, next, attestationHref }: {
+const BUTS = ['Démarrer sur de bonnes bases', 'Gagner plus avec ce que j\'ai déjà', 'Régler un problème précis']
+const NIVEAUX: Array<[string, string]> = [['debut', 'Pas du tout'], ['un-peu', 'Un peu'], ['bien', 'Bien']]
+
+/** Bilan de départ (1 minute) : dire ce qu'on veut réussir aide à aller au bout. */
+function BilanDepart({ onSave }: { onSave: (objectif: string, niveau: string) => void }) {
+  const [but, setBut] = useState<string | null>(null)
+  const [libre, setLibre] = useState('')
+  const [lvl, setLvl] = useState<string | null>(null)
+  const obj = libre.trim() || but
+  return (
+    <section style={st.bilan} aria-label="Bilan de départ">
+      <span style={st.goalLbl}>Avant de commencer · 1 minute</span>
+      <div style={st.bilanQ}>Qu&apos;est-ce que tu veux réussir avec cette formation ?</div>
+      <div style={st.chips}>
+        {BUTS.map(b => (
+          <button key={b} type="button" onClick={() => { setBut(b); setLibre('') }} style={{ ...st.chip, ...(but === b && !libre.trim() ? st.chipOn : {}) }}>{b}</button>
+        ))}
+      </div>
+      <input
+        id="bilan-objectif"
+        value={libre}
+        onChange={e => setLibre(e.target.value)}
+        placeholder="Ou écris-le en une phrase"
+        maxLength={200}
+        style={st.bilanInput}
+      />
+      <div style={st.bilanQ}>Tu connais déjà ce sujet ?</div>
+      <div style={st.chips}>
+        {NIVEAUX.map(([k, l]) => (
+          <button key={k} type="button" onClick={() => setLvl(k)} style={{ ...st.chip, ...(lvl === k ? st.chipOn : {}) }}>{l}</button>
+        ))}
+      </div>
+      <button type="button" className="btn-primary" disabled={!obj || !lvl} onClick={() => obj && lvl && onSave(obj, lvl)} style={{ ...st.midBtn, alignSelf: 'flex-start', opacity: !obj || !lvl ? 0.5 : 1 }}>
+        <Target size={15} weight="fill" /> Poser mon objectif
+      </button>
+    </section>
+  )
+}
+
+function FinishPanel({ celebrate, objectif, title, objectifs, score, actionsDone, actionsTotal, next, attestationHref }: {
   celebrate: boolean
+  objectif: string | null
   title: string
   objectifs: string[]
   score: { good: number; total: number }
@@ -630,6 +695,7 @@ function FinishPanel({ celebrate, title, objectifs, score, actionsDone, actionsT
           <span style={st.finishTitle}>Bravo, tu as terminé « {title} »</span>
         </span>
       </div>
+      {objectif && <div style={{ fontSize: '14px', color: 'var(--text-2)' }}>Tu voulais : <b style={{ color: 'var(--text)' }}>{objectif}</b>. Les outils sont maintenant entre tes mains.</div>}
       <div style={st.finishStats}>
         {score.total > 0 && <span style={st.finishStat}><strong>{score.good}/{score.total}</strong> bonnes réponses</span>}
         {actionsTotal > 0 && <span style={st.finishStat}><strong>{actionsDone}/{actionsTotal}</strong> actions faites</span>}
@@ -728,6 +794,13 @@ const st: Record<string, React.CSSProperties> = {
   saved: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: 'var(--success-1)', fontWeight: 600 },
   noteArea: { width: '100%', boxSizing: 'border-box', marginTop: '10px', padding: '10px 12px', fontSize: '14px', fontFamily: 'inherit', color: 'var(--text)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', outline: 'none', resize: 'vertical', lineHeight: 1.55 },
 
+  goalSet: { display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '14px 16px', borderRadius: '14px', border: '1px solid var(--success-border)', background: 'var(--success-bg)', fontSize: '15px', lineHeight: 1.5 },
+  goalLbl: { display: 'block', fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent-text)', marginBottom: '2px' },
+  goalTip: { display: 'block', fontSize: '13.5px', color: 'var(--text-2)', marginTop: '6px' },
+  bilan: { display: 'flex', flexDirection: 'column', gap: '10px', padding: '18px 20px', borderRadius: '16px', border: '1.5px dashed var(--accent-border)', background: 'var(--surface)' },
+  bilanQ: { fontSize: '15px', fontWeight: 600, color: 'var(--text)' },
+  bilanInput: { width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: '14px', fontFamily: 'inherit' },
+  chips: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
   finish: { border: '1px solid var(--accent-border)', borderRadius: '20px', padding: '22px 24px', background: 'linear-gradient(160deg, var(--accent-bg), var(--surface))', display: 'flex', flexDirection: 'column', gap: '18px', marginTop: '26px' },
   medal: { width: '72px', height: '72px', borderRadius: '50%', flexShrink: 0, display: 'grid', placeItems: 'center', color: '#3A2A00', background: 'radial-gradient(circle at 35% 30%, #FFF1C4, #FFD56B 55%, #E5B53F)', boxShadow: '0 10px 30px -12px rgba(255,213,107,0.8)' },
   finishEyebrow: { fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent-text)' },

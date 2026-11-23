@@ -126,8 +126,9 @@ export async function buildFormationPage({
   let initialVotes: Record<string, 1 | -1> = {}
   let initialAnswers: InitialAnswer[] = []
   let initialActions: InitialAction[] = []
+  let initialObjectif: string | null = null
   if (formationId && profile?.userId) {
-    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }, answersRes, actionsRes] = await Promise.all([
+    const [{ data: uf }, { data: notes }, { data: bookmarks }, { data: votes }, answersRes, actionsRes, bilanRes] = await Promise.all([
       supabase
         .from('user_formations')
         .select('progress, completed_lessons')
@@ -160,7 +161,16 @@ export async function buildFormationPage({
         .select('module_id, done_at, due_at')
         .eq('user_id', profile.userId)
         .eq('formation_id', formationId),
+      // Objectif du bilan de départ : lecture à part (colonnes de la migration 196,
+      // une erreur ici ne casse pas la lecture de la progression)
+      supabase
+        .from('user_formations')
+        .select('objectif')
+        .eq('user_id', profile.userId)
+        .eq('formation_id', formationId)
+        .maybeSingle(),
     ])
+    initialObjectif = (bilanRes.data as { objectif?: string | null } | null)?.objectif ?? null
     initialAnswers = (answersRes.data ?? []) as InitialAnswer[]
     initialActions = (actionsRes.data ?? []) as InitialAction[]
     initialProgress = uf?.progress ?? null
@@ -220,6 +230,7 @@ export async function buildFormationPage({
         initialVotes={initialVotes}
         initialAnswers={initialAnswers}
         initialActions={initialActions}
+        initialObjectif={initialObjectif}
         relatedArticles={relations.articles}
         recommendedNext={nextFormationsData}
         currentUserId={profile?.userId ?? null}

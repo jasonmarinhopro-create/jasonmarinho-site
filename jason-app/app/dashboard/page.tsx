@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { getProfile } from '@/lib/queries/profile'
 import { forAudience } from '@/lib/actualites/audience'
 import { getUserSpaces } from '@/lib/queries/spaces'
@@ -22,6 +23,7 @@ import { loadHostMenageSlots, buildHostMenageSlots, menageKey } from '@/lib/mena
 import { loadHomeState } from '@/lib/home/home-state'
 import { contractTodos } from '@/lib/contracts/todo'
 import ReviewPrompt from './ReviewPrompt'
+import RevisionCard from '@/components/formations/RevisionCard'
 import { buildRevenueLines, totaux as finTotaux } from '@/lib/finances/engine'
 import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
@@ -859,6 +861,9 @@ export default async function DashboardPage() {
 
             {/* Déclarations voyageurs obligatoires (SIBA, fiche police…) */}
             <DeclarationsWidget declarations={(pendingDeclarations ?? []).slice(0, 5)} />
+
+            {/* Révision des formations : questions répondues il y a 7 jours (rien sinon) */}
+            <Suspense fallback={null}><RevisionCard userId={userId} /></Suspense>
 
             {/* Prochaines arrivées et départs (14 jours) */}
             {!isNewHost && (

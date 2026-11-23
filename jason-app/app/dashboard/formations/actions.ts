@@ -418,3 +418,24 @@ export async function saveFormationBilan(input: {
   if (error) return { error: 'Impossible d\'enregistrer pour le moment.' }
   return {}
 }
+
+/** Révision à 7 jours : réponse à une question reposée sur l'Accueil. */
+export async function reviewLessonQuestion(input: {
+  formationId: string
+  lessonId: number
+  question: number
+  correct: boolean
+}): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+  const { error } = await supabase
+    .from('formation_answers')
+    .update({ reviewed_at: new Date().toISOString(), review_correct: input.correct })
+    .eq('user_id', user.id)
+    .eq('formation_id', input.formationId)
+    .eq('lesson_id', input.lessonId)
+    .eq('question', input.question)
+  if (error) return { error: 'Impossible d\'enregistrer pour le moment.' }
+  return {}
+}
