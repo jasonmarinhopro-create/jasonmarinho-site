@@ -63,7 +63,7 @@ export default {
     {
       h2: '5. Passer par la plateforme ou accepter en direct : les deux options',
       content: [
-        { type: 'p', text: 'Pour une réservation Airbnb ou Booking, la règle d\'or est de modifier la réservation initiale depuis l\'outil officiel. L\'hôte envoie une demande de modification de dates, le voyageur accepte, le paiement de la nuit supplémentaire est débité automatiquement et le tout reste couvert par la garantie AirCover ou l\'assurance Booking. C\'est 10 fois plus simple en cas de litige, et ça protège l\'avis final de ton voyageur.' },
+        { type: 'p', text: 'Pour une réservation Airbnb ou Booking, la règle d\'or est de modifier la réservation initiale depuis l\'outil officiel. L\'hôte envoie une demande de modification de dates, le voyageur accepte, le paiement de la nuit supplémentaire est débité automatiquement et le tout reste couvert par la garantie AirCover ou l\'assurance Booking. C\'est bien plus simple en cas de litige, et ça protège l\'avis final de ton voyageur.' },
         { type: 'ul', items: [
           'Avantage plateforme : paiement automatique, caution et assurance ajustées, un seul fil de messagerie',
           'Avantage direct : pas de nouvelle commission plateforme sur la nuit ajoutée',

@@ -20,7 +20,7 @@ export default {
           "Un plan d'ensemble drone, seulement si la zone et la météo le permettent",
           "Les photos extraites de la vidéo, livrées en complément",
         ]},
-        { type: 'tip', text: "Nomme ton forfait comme un hôte le dirait : « Pack annonce » et non « Captation 4K multicam ». Un nom simple te fait gagner 80 % des appels de découverte." },
+        { type: 'tip', text: "Nomme ton forfait comme un hôte le dirait : « Pack annonce » et non « Captation 4K multicam ». Un nom simple te fait gagner des appels de découverte." },
       ],
     },
     {

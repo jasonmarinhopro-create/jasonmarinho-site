@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 7,
 
-  lead: "La propreté est le critère n°1 des avis négatifs sur Airbnb et Booking. Tu peux avoir le plus beau logement de ta ville : un cheveu dans la douche et c'est 3 étoiles. Trouver une équipe de ménage fiable : vraiment fiable, celle qui tient le créneau 11h-15h un dimanche d'août : est probablement la décision opérationnelle la plus importante de ton activité d'hôte. Voici la méthode complète.",
+  lead: "La propreté pèse lourd dans les avis sur Airbnb et Booking. Tu peux avoir le plus beau logement de ta ville : un cheveu dans la douche et c'est 3 étoiles. Trouver une équipe de ménage fiable : vraiment fiable, celle qui tient le créneau 11h-15h un dimanche d'août : est probablement la décision opérationnelle la plus importante de ton activité d'hôte. Voici la méthode complète.",
 
   sections: [
     {
@@ -37,7 +37,7 @@ export default {
         { type: 'p', text: "Un quart d'heure de conversation avec ces six questions t'évitera des mois de galère. Une équipe professionnelle répond aux six sans hésiter :" },
         { type: 'ul', items: [
           '<strong>1. Avez-vous une RC pro à jour ?</strong> Demande l\'attestation. Sans elle, la casse d\'un objet ou un dégât des eaux pendant le ménage, c\'est pour ta pomme.',
-          '<strong>2. Travaillez-vous les week-ends et jours fériés ?</strong> 70 % des rotations LCD tombent le samedi et le dimanche. Une équipe indisponible le week-end est inutilisable en courte durée.',
+          '<strong>2. Travaillez-vous les week-ends et jours fériés ?</strong> Une grande partie des rotations LCD tombe le samedi et le dimanche. Une équipe indisponible le week-end est inutilisable en courte durée.',
           "<strong>3. Quel est votre délai de réservation d'un créneau ?</strong> Jour même ? 24h ? 72h ? Ça détermine ta capacité à accepter les réservations de dernière minute.",
           '<strong>4. Qui me remplace en cas d\'absence ou de maladie ?</strong> Une pro seule sans backup, c\'est un check-in raté qui t\'attend quelque part dans l\'année.',
           '<strong>5. Gérez-vous le linge ?</strong> Location + blanchisserie, lavage sur place, ou rien du tout : à clarifier avant, pas le jour où le sèche-linge tombe en panne.',

@@ -38,7 +38,7 @@ export default {
       ],
     },
     {
-      h2: '3. Chromecast, Apple TV ou Fire TV Stick : la solution qui règle 90 % des problèmes',
+      h2: '3. Chromecast, Apple TV ou Fire TV Stick : la solution qui règle la plupart des problèmes',
       content: [
         { type: 'p', text: 'Un décodeur externe branché en HDMI permet à chaque voyageur de lancer ses propres applications de streaming sans jamais toucher à un compte hôte. Le Chromecast est le plus simple : le voyageur caste depuis son téléphone, se déconnecte en partant, aucune trace ne reste. L\'Apple TV convient bien pour une clientèle premium et propose AirPlay natif. Le Fire TV Stick d\'Amazon offre le meilleur rapport qualité-prix pour une installation clé en main avec accès à toutes les applis.' },
         { type: 'ul', items: [
@@ -48,7 +48,7 @@ export default {
           'Toujours coller un petit sticker sur le décodeur avec le nom du bon HDMI à sélectionner sur la télécommande',
         ]},
         { type: 'p', text: 'Le décodeur externe est aussi la solution la plus économique en cas de panne : au lieu de remplacer une Smart TV à 400 €, tu remplaces un dongle à 40 €. Cette logique d\'équipements simples et remplaçables se retrouve dans la sélection d\'objets à laisser au voyageur, détaillée dans l\'article sur la <a href="/blog/banque-objets-utiles-laisser-voyageur-lcd" style="color:var(--g);font-weight:500">banque d\'objets utiles à laisser à tes voyageurs LCD</a>.' },
-        { type: 'tip', text: 'Colle une petite étiquette discrète sur la télécommande de la TV avec l\'inscription "Appuyer sur SOURCE puis choisir HDMI 1 pour le Chromecast". Cette signalétique évite littéralement 80 % des questions techniques.' },
+        { type: 'tip', text: 'Colle une petite étiquette discrète sur la télécommande de la TV avec l\'inscription "Appuyer sur SOURCE puis choisir HDMI 1 pour le Chromecast". Cette signalétique évite la plupart des questions techniques.' },
       ],
     },
     {
@@ -82,7 +82,7 @@ export default {
     {
       h2: '6. Réinitialiser la TV et les décodeurs entre chaque séjour : la routine en 3 minutes',
       content: [
-        { type: 'p', text: 'C\'est la règle que 90 % des hôtes oublient. Entre deux séjours, ton équipe ménage doit réinitialiser les applications de streaming et redémarrer la TV pour effacer les traces du voyageur précédent. Cela évite qu\'un voyageur ait accès à l\'historique Netflix du précédent, qu\'un enfant retrouve un jeu YouTube regardé la veille, ou qu\'un compte tiers reste connecté. La routine se fait en 3 minutes maximum.' },
+        { type: 'p', text: 'C\'est la règle que beaucoup d\'hôtes oublient. Entre deux séjours, ton équipe ménage doit réinitialiser les applications de streaming et redémarrer la TV pour effacer les traces du voyageur précédent. Cela évite qu\'un voyageur ait accès à l\'historique Netflix du précédent, qu\'un enfant retrouve un jeu YouTube regardé la veille, ou qu\'un compte tiers reste connecté. La routine se fait en 3 minutes maximum.' },
         { type: 'ul', items: [
           'Débrancher physiquement la TV et le décodeur pendant 30 secondes avant chaque nouveau séjour',
           'Se déconnecter manuellement des applications Netflix, Prime, Disney+, YouTube si le voyageur ne l\'a pas fait',

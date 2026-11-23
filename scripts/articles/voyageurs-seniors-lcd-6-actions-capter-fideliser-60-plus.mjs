@@ -53,7 +53,7 @@ export default {
           'Couette quatre saisons avec housse changée à chaque séjour',
           'Rideaux occultants ou volets fermants pour une obscurité totale',
         ]},
-        { type: 'tip', text: 'Mentionne précisément la marque et le type de matelas dans ta description : un voyageur senior qui voit Bultex, Tediber, Simba ou équivalent dans l\'annonce sait immédiatement à quoi s\'attendre. Ce niveau de précision rassure et différencie ton logement de 95 % des annonces concurrentes.' },
+        { type: 'tip', text: 'Mentionne précisément la marque et le type de matelas dans ta description : un voyageur senior qui voit Bultex, Tediber, Simba ou équivalent dans l\'annonce sait immédiatement à quoi s\'attendre. Ce niveau de précision rassure et différencie ton logement de la plupart des annonces concurrentes.' },
       ],
     },
     {
@@ -104,7 +104,7 @@ export default {
     {
       h2: 'Et maintenant : tester ta stratégie senior dès la prochaine intersaison',
       content: [
-        { type: 'p', text: 'La clientèle senior se construit dans le temps long. Tu ne vas pas voir l\'effet de ces six actions sur la semaine qui vient, mais sur les 6 à 12 mois à venir avec des séjours qui se prolongent, des réservations qui reviennent d\'une année sur l\'autre et un bouche à oreille qui amène des voyageurs du même âge et du même profil. Démarre par les deux ou trois actions les plus impactantes pour ton logement : adapter ton annonce au vocabulaire senior, investir dans la literie, structurer ton check-in. Mesure ensuite l\'évolution de tes réservations basse saison sur deux cycles complets et ajuste. C\'est ce travail patient qui sépare un hôte amateur d\'un professionnel capable de tarifer 15 à 20 % plus cher en septembre que son voisin direct.' },
+        { type: 'p', text: 'La clientèle senior se construit dans le temps long. Tu ne vas pas voir l\'effet de ces six actions sur la semaine qui vient, mais sur les 6 à 12 mois à venir avec des séjours qui se prolongent, des réservations qui reviennent d\'une année sur l\'autre et un bouche à oreille qui amène des voyageurs du même âge et du même profil. Démarre par les deux ou trois actions les plus impactantes pour ton logement : adapter ton annonce au vocabulaire senior, investir dans la literie, structurer ton check-in. Mesure ensuite l\'évolution de tes réservations basse saison sur deux cycles complets et ajuste. C\'est ce travail patient qui sépare un hôte amateur d\'un professionnel capable de tarifer plus cher en septembre que son voisin direct.' },
         { type: 'cta', text: 'Tu veux structurer une vraie stratégie de remplissage hors saison adaptée à ta clientèle cible ?', button: 'Découvrir les formations', href: '/#formations' },
       ],
     },

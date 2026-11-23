@@ -7,7 +7,7 @@ export default {
   categorySlug: 'visibilite',
   readTime: 5,
 
-  lead: 'La section Questions/Réponses (Q&A) est intégrée par défaut dans toute fiche Google My Business mais 90 % des hôtes LCD ne la touchent jamais. Pourtant, chaque question répondue par toi est indexée par Google et peut faire remonter ta fiche pour des recherches très spécifiques. C\'est un des outils SEO local les plus rentables et les moins chronophages.',
+  lead: 'La section Questions/Réponses (Q&A) est intégrée par défaut dans toute fiche Google My Business mais la plupart des hôtes LCD ne la touchent jamais. Pourtant, chaque question répondue par toi est indexée par Google et peut faire remonter ta fiche pour des recherches très spécifiques. C\'est un des outils SEO local les plus rentables et les moins chronophages.',
 
   sections: [
     {
@@ -21,7 +21,7 @@ export default {
     {
       h2: '2. Les 8 questions à pré-remplir absolument',
       content: [
-        { type: 'p', text: 'Une fiche GMB qui a 5 à 10 Q&A pré-remplies a 30 % plus de chances d\'être cliquée que celle qui en a 0 (étude SEMrush 2025). Voici les 8 questions à ajouter en priorité.' },
+        { type: 'p', text: 'Une fiche avec 5 à 10 questions-réponses déjà remplies rassure davantage le voyageur qu\'une fiche vide. Voici les 8 questions à ajouter en priorité.' },
         { type: 'ul', items: [
           '"Quelles sont les heures de check-in et check-out ?" : utile + capture la requête "horaires"',
           '"Y a-t-il un parking ?" : question #1 des voyageurs en ville, à répondre précisément',

@@ -47,7 +47,7 @@ export default {
     {
       h2: '4. Les nouvelles attentes voyageurs 2026 selon l\'étude Booking',
       content: [
-        { type: 'p', text: 'Booking.com a interrogé plus de 29 000 voyageurs pour identifier les tendances 2026. Deux données sont particulièrement utiles pour les hôtes LCD : 80 % des voyageurs veulent des hébergements proposant des accès à des soins bien-être ou des expériences locales, et 68 % choisissent leur destination en fonction des expériences disponibles à proximité.' },
+        { type: 'p', text: 'Booking.com a interrogé plus de 29 000 voyageurs pour identifier les tendances 2026. Deux données sont particulièrement utiles pour les hôtes LCD : beaucoup de voyageurs veulent des hébergements proposant des accès à des soins bien-être ou des expériences locales, et 68 % choisissent leur destination en fonction des expériences disponibles à proximité.' },
         { type: 'p', text: 'La leçon pour les hôtes : ton logement seul ne suffit plus. Mettre en avant les expériences locales accessibles depuis ton bien (randonnée, marché local, artisan remarquable, restaurant insolite) devient un argument de vente direct, pas seulement une touche de charme dans la description.' },
         { type: 'cta', text: 'Tu veux apprendre à optimiser tes annonces sur toutes les plateformes pour attirer les bons voyageurs au bon moment ?', button: 'Voir les formations', href: '/#formations' },
       ],

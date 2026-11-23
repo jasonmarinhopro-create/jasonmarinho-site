@@ -53,7 +53,7 @@ export default {
     {
       h2: '4. Quel modèle choisir selon ton profil',
       content: [
-        { type: 'p', text: 'Voici la matrice de décision basée sur 100+ hôtes français équipés en 2025-2026.' },
+        { type: 'p', text: 'Voici une matrice de décision.' },
         { type: 'ul', items: [
           'Studio centre-ville hyper-loué : Igloohome (autonomie + intégration Airbnb)',
           'T2/T3 propriétaire occupant alternant : Nuki (revient à ta serrure normale en mode désactivé)',

@@ -34,7 +34,7 @@ export default {
     {
       h2: '3. À qui convient chaque approche',
       content: [
-        { type: 'p', text: 'La décision dépend principalement du nombre de logements et de l\'ambition de la stratégie tarifaire. Pour un hôte avec 1 à 3 logements qui veut avant tout de la simplicité et un coût maîtrisé, l\'offre tout-en-un Hospitable est une excellente option. Le moteur intégré couvre 80 % des besoins de tarification sans complexité.' },
+        { type: 'p', text: 'La décision dépend principalement du nombre de logements et de l\'ambition de la stratégie tarifaire. Pour un hôte avec 1 à 3 logements qui veut avant tout de la simplicité et un coût maîtrisé, l\'offre tout-en-un Hospitable est une excellente option. Le moteur intégré couvre l\'essentiel des besoins de tarification sans complexité.' },
         { type: 'ul', items: [
           'Hospitable all-in-one : 1 à 3 logements, hôte qui veut tout centraliser, budget serré',
           'PriceLabs ou Wheelhouse en parallèle : 3 logements ou plus, marché très concurrentiel, objectif de maximisation des revenus',

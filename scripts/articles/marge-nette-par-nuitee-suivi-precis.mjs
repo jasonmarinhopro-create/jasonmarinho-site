@@ -25,7 +25,7 @@ export default {
         { type: 'ul', items: [
           'Réduire le coût ménage de 5-8 € par séjour via blanchisserie externalisée ou rationalisation = +5 €/nuit de marge sur les courts séjours',
           'Renégocier ton internet, assurance, copropriété tous les 12 mois : gain typique 10-20 % sur les fixes = +1-2 €/nuit',
-          'Activer le canal direct (Driing, GMB, Instagram) : économie 15 % de commission Airbnb sur 25 % des réservations = +3-4 €/nuit moyen',
+          'Activer le canal direct (Driing, GMB, Instagram) : économie de la commission Airbnb (18,6 % TVA comprise) sur 25 % des réservations = +3-4 €/nuit moyen',
           'Supprimer les abonnements logiciels redondants (channel manager + PMS qui font doublon) = +1-2 €/nuit',
         ]},
         { type: 'tip', text: 'Calcule ta marge nette par nuit chaque mois pendant 6 mois. Tu verras vite quels mois sont vraiment rentables et quels gestes augmentent ou baissent ce chiffre.' },

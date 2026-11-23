@@ -39,7 +39,7 @@ export default {
           'Notice chauffage par chambre (radiateur, climatisation réversible) : ce sont les questions les plus fréquentes',
           'Notice télévision (chaînes, télécommandes, abonnements Netflix accessibles)',
         ]},
-        { type: 'tip', text: 'Pour les notices, utilise des photos étapes-par-étapes (téléphone) plutôt que des explications textuelles. 70 % des voyageurs ne lisent pas un texte de plus de 3 lignes mais regardent une photo.' },
+        { type: 'tip', text: 'Pour les notices, utilise des photos étapes-par-étapes (téléphone) plutôt que des explications textuelles. Beaucoup de voyageurs ne lisent pas un texte de plus de 3 lignes, mais regardent une photo.' },
       ],
     },
     {

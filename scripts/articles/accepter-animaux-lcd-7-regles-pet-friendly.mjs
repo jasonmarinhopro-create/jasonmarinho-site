@@ -87,7 +87,7 @@ export default {
           'Le voyageur est responsable des dégâts occasionnés au mobilier et aux revêtements',
         ]},
         { type: 'p', text: 'Pour aller plus loin sur la prévention des litiges et la gestion des cas problématiques, notre guide sur <a href="/blog/gerer-voyageurs-difficiles-location-courte-duree" style="color:var(--g);font-weight:500">comment prévenir et gérer les voyageurs difficiles en LCD</a> détaille les bonnes pratiques applicables aux séjours avec animal comme aux autres.' },
-        { type: 'tip', text: 'Un règlement clair évite 80 % des litiges. Quand un voyageur signe un document précis avant son arrivée, il sait à quoi il s\'engage et il modifie son comportement en conséquence. La caution n\'est utile qu\'en complément.' },
+        { type: 'tip', text: 'Un règlement clair évite la plupart des litiges. Quand un voyageur signe un document précis avant son arrivée, il sait à quoi il s\'engage et il modifie son comportement en conséquence. La caution n\'est utile qu\'en complément.' },
       ],
     },
     {

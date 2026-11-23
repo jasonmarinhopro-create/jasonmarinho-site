@@ -7,7 +7,7 @@ export default {
   categorySlug: 'revenus',
   readTime: 7,
 
-  lead: 'Les voyageurs workation : télétravailleurs qui combinent séjour et boulot : sont le profil le plus rentable en basse saison. Séjours de 7 à 30 jours, peu de turn-over, bons avis. Les hôtes qui ont adapté leur bien à ce profil louent en moyenne 30 % plus cher hors saison. Voici les 5 équipements à mettre en place.',
+  lead: 'Les voyageurs workation : télétravailleurs qui combinent séjour et boulot : sont le profil le plus rentable en basse saison. Séjours de 7 à 30 jours, peu de turn-over, bons avis. Un bien adapté à ce profil se loue mieux, et plus cher, hors saison. Voici les 5 équipements à mettre en place.',
 
   sections: [
     {
@@ -43,7 +43,7 @@ export default {
           'Chaise avec réglage hauteur, accoudoirs et support lombaire : 100-200 €',
           'Marques accessibles : IKEA Markus (130 €), Hbada (90 €), Songmics (80 €)',
           'Vérifier régulièrement que les réglages fonctionnent (ressorts, roulettes)',
-          'La mention "chaise ergonomique" dans l\'annonce augmente le taux de clic de 15-20 % sur ce segment',
+          'La mention "chaise ergonomique" dans l\'annonce attire l\'œil de ce public',
         ]},
       ],
     },

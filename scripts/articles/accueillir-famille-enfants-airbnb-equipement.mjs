@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 7,
 
-  lead: 'Les familles avec enfants représentent 30 % des réservations LCD en France et sont parmi les profils qui paient le mieux : séjours plus longs, plus d\'équipements acceptés, moins de négociation. Pourtant, 70 % des annonces ne sont pas optimisées pour ce profil. Voici les 15 équipements qui font vraiment la différence.',
+  lead: 'Les familles avec enfants pèsent lourd dans les réservations LCD en France et sont parmi les profils qui paient le mieux : séjours plus longs, plus d\'équipements acceptés, moins de négociation. Pourtant, beaucoup d\'annonces ne sont pas pensées pour ce profil. Voici les 15 équipements qui font vraiment la différence.',
 
   sections: [
     {

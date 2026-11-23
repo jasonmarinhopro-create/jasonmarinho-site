@@ -7,7 +7,7 @@ export default {
   categorySlug: 'revenus',
   readTime: 5,
 
-  lead: 'Tu peux activer 2 leviers tarifaires temporels sur Airbnb et Booking : last-minute (J-7 à J-2 avant arrivée) et early booking (réservation 30+ jours à l\'avance). Bien combinées, elles maximisent ton remplissage. Mal combinées, elles te coûtent 15-25 % de revenu net.',
+  lead: 'Tu peux activer 2 leviers tarifaires temporels sur Airbnb et Booking : last-minute (J-7 à J-2 avant arrivée) et early booking (réservation 30+ jours à l\'avance). Bien combinées, elles maximisent ton remplissage. Mal combinées, elles te coûtent du revenu net.',
 
   sections: [
     {
@@ -57,7 +57,7 @@ export default {
           'Zone rurale ou hors saison : pas de last-minute (pénalise plus qu\'aide). Early booking 30+ jours uniquement',
           'Multi-biens (3+ logements) : test différentes combinaisons par bien et compare RevPAR sur 90 jours',
         ]},
-        { type: 'p', text: 'En cumulant les 2 leviers correctement, tu peux booster ton taux d\'occupation de 8-15 % sans baisser ton tarif moyen. Mais il faut surveiller les statistiques mensuelles pour ajuster.' },
+        { type: 'p', text: 'En cumulant les 2 leviers correctement, tu peux améliorer ton taux d\'occupation sans baisser ton tarif moyen. Mais il faut surveiller les statistiques mensuelles pour ajuster.' },
         { type: 'cta', text: 'Tu veux maîtriser tous les leviers tarifaires LCD ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

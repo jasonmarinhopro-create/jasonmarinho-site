@@ -10,7 +10,7 @@ export default {
 
   readTime: 7,
 
-  lead: 'Ta box internet accueille tes voyageurs comme elle accueillerait un cousin de passage : mot de passe unique, accès complet au réseau, aux imprimantes et parfois même aux caméras de la maison. En LCD, ce fonctionnement est un risque juridique et une porte ouverte à des usages qui engagent directement ta responsabilité d\'abonné internet. Voici 6 étapes concrètes pour créer un réseau Wi-Fi invité isolé, propre et sécurisé, sans changer de matériel dans 90 % des cas.',
+  lead: 'Ta box internet accueille tes voyageurs comme elle accueillerait un cousin de passage : mot de passe unique, accès complet au réseau, aux imprimantes et parfois même aux caméras de la maison. En LCD, ce fonctionnement est un risque juridique et une porte ouverte à des usages qui engagent directement ta responsabilité d\'abonné internet. Voici 6 étapes concrètes pour créer un réseau Wi-Fi invité isolé, propre et sécurisé, le plus souvent sans changer de matériel.',
 
   sections: [
     {
@@ -87,7 +87,7 @@ export default {
     {
       h2: '6. Communique le bon Wi-Fi au voyageur pour éviter les messages inutiles',
       content: [
-        { type: 'p', text: 'Un réseau invité parfaitement configuré ne sert à rien si le voyageur se connecte par erreur à ton SSID principal ou passe 20 minutes à chercher le mot de passe. Le combo qui marche partout : mot de passe affiché dans un cadre discret à côté de la box ou du salon, mention dans le livret d\'accueil digital, message automatique de bienvenue le jour du check-in avec le nom exact du réseau et le mot de passe. Cette redondance élimine 90 % des questions Wi-Fi qui polluent les premières heures.' },
+        { type: 'p', text: 'Un réseau invité parfaitement configuré ne sert à rien si le voyageur se connecte par erreur à ton SSID principal ou passe 20 minutes à chercher le mot de passe. Le combo qui marche partout : mot de passe affiché dans un cadre discret à côté de la box ou du salon, mention dans le livret d\'accueil digital, message automatique de bienvenue le jour du check-in avec le nom exact du réseau et le mot de passe. Cette redondance élimine la plupart des questions Wi-Fi qui polluent les premières heures.' },
         { type: 'p', text: 'Profite aussi de ta fiche Google Business Profile : mentionne "Wi-Fi haut débit sécurisé" dans les services et réponds à toutes les questions du type "Y a-t-il un Wi-Fi ?" par un oui explicite. C\'est un signal qui pèse à la fois pour l\'algorithme et pour les voyageurs qui préparent leur venue, notamment en amont d\'un séjour direct. C\'est exactement le type de finition qui différencie un logement qui pilote sa <a href="/services/annonce-directe" style="color:var(--g);font-weight:500">réservation directe sans commission</a> d\'un logement resté sur le pilotage automatique des OTA.' },
         { type: 'ul', items: [
           'Mot de passe affiché à côté du canapé ou de la box',

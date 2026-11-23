@@ -7,7 +7,7 @@ export default {
   categorySlug: 'visibilite',
   readTime: 7,
 
-  lead: 'Booking.com représente 20 à 35 % du CA d\'un hôte LCD multi-plateformes. Pourtant, les hôtes y consacrent 5x moins de temps qu\'à Airbnb. L\'algorithme Booking 2026 a 9 critères majeurs de classement. Voici comment les optimiser un par un, dans l\'ordre, avec l\'impact mesuré sur 100+ hôtes français.',
+  lead: 'Booking.com représente 20 à 35 % du CA d\'un hôte LCD multi-plateformes. Pourtant, les hôtes y consacrent 5x moins de temps qu\'à Airbnb. L\'algorithme Booking 2026 a 9 critères majeurs de classement. Voici comment les optimiser un par un, dans l\'ordre, avec ce que chacun change.',
 
   sections: [
     {
@@ -30,7 +30,7 @@ export default {
           'Stricte : pénalité visible dans les recherches voyageurs',
           'Modérée : neutre, pas de boost ni de pénalité',
           'Souple (J-5 ou J-3) : boost de visibilité significatif',
-          'Impact estimé : +25 à +35 % de visibilité',
+          'Impact : une meilleure visibilité',
         ]},
         { type: 'tip', text: 'Si tu crains les annulations tardives, garde la politique Souple mais demande une garantie de paiement à la réservation via les outils Booking : tu gardes le boost sans le risque.' },
       ],
@@ -51,7 +51,7 @@ export default {
     {
       h2: '4. Mobile rate -10 % : capter les 65 % de résa mobile',
       content: [
-        { type: 'p', text: '65 % des réservations Booking se font désormais sur mobile. Booking a créé un tarif mobile spécifique (-10 % minimum) qui ne s\'affiche qu\'aux voyageurs sur smartphone. Activer cette option booste directement ton classement dans les résultats mobiles, sans dégrader ton tarif desktop.' },
+        { type: 'p', text: 'Une grande partie des réservations Booking se fait désormais sur mobile. Booking a créé un tarif mobile spécifique (-10 % minimum) qui ne s\'affiche qu\'aux voyageurs sur smartphone. Activer cette option booste directement ton classement dans les résultats mobiles, sans dégrader ton tarif desktop.' },
         { type: 'ul', items: [
           'Activation : 1 clic dans l\'extranet Booking, section Promotions',
           'Cible : tous les jours non saisonnés haute saison',

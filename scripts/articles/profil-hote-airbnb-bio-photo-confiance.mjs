@@ -7,7 +7,7 @@ export default {
   categorySlug: 'visibilite',
   readTime: 5,
 
-  lead: '70 % des voyageurs Airbnb consultent le profil de l\'hôte avant de réserver. Si ta photo est floue, ta bio vide, et tes badges absents, tu perds des réservations même avec une excellente annonce. Voici la méthode pour transformer ton profil en argument de confiance.',
+  lead: 'Beaucoup de voyageurs Airbnb consultent le profil de l\'hôte avant de réserver. Si ta photo est floue, ta bio vide, et tes badges absents, tu perds des réservations même avec une excellente annonce. Voici la méthode pour transformer ton profil en argument de confiance.',
 
   sections: [
     {
@@ -40,10 +40,10 @@ export default {
       content: [
         { type: 'p', text: 'Airbnb décerne plusieurs badges visibles sur ton profil. Chaque badge augmente le taux de conversion.' },
         { type: 'ul', items: [
-          'Superhost : badge le plus puissant. Conditions : 4,8+ note moyenne, 90 %+ taux de réponse, 0 annulation. Booste conversion +15-25 %',
-          'Vérification d\'identité : photo d\'identité et téléphone vérifiés. Booste +5 %',
+          'Superhost : badge le plus puissant. Conditions : 4,8+ note moyenne, 90 %+ taux de réponse, 0 annulation. Aide nettement à convertir',
+          'Vérification d\'identité : photo d\'identité et téléphone vérifiés. Aide un peu',
           'Hôte certifié connecté avec téléphone : confirme le contact direct',
-          'Statut "Plus" : sélection éditoriale Airbnb pour les logements premium. Très puissant si obtenu (+30 % de conversion)',
+          'Statut "Plus" : sélection éditoriale Airbnb pour les logements premium. Très efficace si tu l\'obtiens',
           'Confirmé via email pro : si tu as un domaine pro (@madmaison.fr), connecte-le pour ce badge',
         ]},
         { type: 'p', text: 'Vise le Superhost en priorité. C\'est le badge avec le meilleur ROI et il s\'obtient en 12 mois avec une bonne discipline (réponse rapide, qualité de séjour, pas d\'annulation).' },

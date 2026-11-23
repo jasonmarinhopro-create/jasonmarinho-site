@@ -84,7 +84,7 @@ export default {
           'Papier toilette (4 rouleaux minimum)',
           'Brosse de toilettes',
         ]},
-        { type: 'tip', text: 'Imprime cette checklist et coche-la physiquement avant chaque arrivée. Mes hôtes qui font cet exercice ont 60 % moins d\'avis avec mention "manque [item]" et une note moyenne 0,2★ supérieure.' },
+        { type: 'tip', text: 'Imprime cette checklist et coche-la physiquement avant chaque arrivée. Cet exercice évite les avis du type "il manquait…" et protège ta note.' },
         { type: 'cta', text: 'Tu veux la checklist téléchargeable + tous les outils pour démarrer en LCD ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

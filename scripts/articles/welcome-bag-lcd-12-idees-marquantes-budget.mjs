@@ -13,7 +13,7 @@ export default {
     {
       h2: 'Idée 1 : Mot manuscrit personnalisé',
       content: [
-        { type: 'p', text: 'Le mot manuscrit fait 2× plus d\'effet qu\'un message digital. Parce qu\'il est rare, il est perçu comme une vraie attention. Coût : 0,50 € (carte postale de qualité). Mentionné dans les avis dans 30 % des cas.' },
+        { type: 'p', text: 'Le mot manuscrit fait 2× plus d\'effet qu\'un message digital. Parce qu\'il est rare, il est perçu comme une vraie attention. Coût : 0,50 € (carte postale de qualité). Souvent mentionné dans les avis.' },
         { type: 'ul', items: [
           'Papier de qualité et plume noire (pas de Bic), coût : 0,50 €',
           'Personnaliser avec le prénom : "Bienvenue Maud, on est ravis de t\'accueillir !"',
@@ -141,7 +141,7 @@ export default {
           'Établir un partenariat : "Je recommande ton restaurant, tu m\'offres un bon de 10 € pour mes voyageurs"',
           'Le bon doit être daté et personnalisé (pas un flyer générique)',
           'Accompagner d\'une recommandation manuscrite : "Mon restaurant préféré du quartier"',
-          'Résultat : 40-60 % des voyageurs utilisent le bon. Effet cascade sur les avis',
+          'Résultat : beaucoup de voyageurs utilisent le bon. Effet cascade sur les avis',
         ]},
         { type: 'cta', text: 'Tu veux apprendre à transformer chaque séjour en avis 5 étoiles ?', button: 'Voir les formations', href: '/#formations' },
       ],

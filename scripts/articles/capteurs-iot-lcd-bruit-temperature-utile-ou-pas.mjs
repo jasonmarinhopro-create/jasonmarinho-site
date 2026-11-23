@@ -15,7 +15,7 @@ export default {
       content: [
         { type: 'p', text: 'Les détecteurs de bruit mesurent le volume sonore dans ton logement (sans enregistrer audio, conformité RGPD oblige). Quand le seuil est dépassé pendant X minutes, tu reçois une notification. Tu peux alors contacter le voyageur pour rappeler le règlement.' },
         { type: 'ul', items: [
-          'Utilité : très réelle pour les logements en copropriété ou centre-ville. Réduit de 60 % les plaintes voisins',
+          'Utilité : très réelle pour les logements en copropriété ou centre-ville. Réduit nettement les plaintes des voisins',
           'Coût : 100-180 € par appareil + abonnement 5-10 €/mois (souvent obligatoire pour stocker les data)',
           'Marques fiables : NoiseAware (US, leader marché), Minut (suédois, plus pro européen)',
           'Limite : ne capte que le bruit dans le logement, pas dans la cour ou le jardin',

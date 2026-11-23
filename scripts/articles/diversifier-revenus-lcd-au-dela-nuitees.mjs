@@ -17,8 +17,8 @@ export default {
         { type: 'ul', items: [
           'Petit-déjeuner livré le matin (boulangerie locale ou kit organique) : marge 8-15 € par séjour',
           'Kit bébé (lit parapluie, chaise haute, baignoire) : 15-25 € par séjour, demande très forte',
-          'Late check-out facturé : 30-50 € pour un départ retardé de 4 h, accepté par 20-30 % des voyageurs',
-          'Nettoyage à mi-séjour pour les longs séjours : 35-50 €, accepté par 60 % des voyageurs sur 7+ nuits',
+          'Late check-out facturé : 30-50 € pour un départ retardé de 4 h, que beaucoup de voyageurs acceptent',
+          'Nettoyage à mi-séjour pour les longs séjours : 35-50 €, souvent accepté sur les séjours de 7 nuits ou plus',
         ]},
       ],
     },
@@ -71,7 +71,7 @@ export default {
     {
       h2: '6. Gestion pour compte de tiers (conciergerie)',
       content: [
-        { type: 'p', text: 'Si tu gères bien ton propre logement, tu peux gérer celui de voisins, d\'amis ou de propriétaires qui n\'ont pas le temps. La conciergerie à petite échelle (2-5 mandats) génère 15-22 % du CA des logements gérés.' },
+        { type: 'p', text: 'Si tu gères bien ton propre logement, tu peux gérer celui de voisins, d\'amis ou de propriétaires qui n\'ont pas le temps. La conciergerie à petite échelle (2 à 5 mandats) se rémunère par une commission sur le chiffre d\'affaires des logements gérés.' },
         { type: 'ul', items: [
           'Commence avec 1-2 logements de proches pour te former',
           'Formalise avec un contrat de mandat simple (1 page suffit pour débuter)',

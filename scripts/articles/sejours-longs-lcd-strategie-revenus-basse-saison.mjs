@@ -14,7 +14,7 @@ export default {
       h2: '1. Pourquoi les séjours longs changent l\'économie de ta location',
       content: [
         { type: 'p', text: 'Un séjour de 14 nuits coûte deux fois moins cher à gérer qu\'une série de 14 nuits isolées. Un ménage complet, un seul check-in, une seule communication d\'accueil. Résultat : même avec une remise de 20 % sur le tarif nuitée, ta marge nette par nuit est souvent supérieure sur un long séjour que sur des courtes périodes.' },
-        { type: 'p', text: 'Les chiffres sont clairs : les hôtes qui proposent des offres semaine et mois sur Airbnb et Booking obtiennent en moyenne 15 % de taux d\'occupation supplémentaire en période creuse. Les profils qui génèrent ces séjours sont principalement les télétravailleurs, les familles en déplacement prolongé, les patients en convalescence et les couples en slow travel.' },
+        { type: 'p', text: 'Les offres à la semaine et au mois sur Airbnb et Booking aident à remplir le calendrier en période creuse. Les profils qui génèrent ces séjours sont principalement les télétravailleurs, les familles en déplacement prolongé, les patients en convalescence et les couples en slow travel.' },
         { type: 'tip', text: 'Le point de bascule se situe souvent autour de 7 nuits. En dessous, tu as toujours la flexibilité des courts séjours. Au-dessus, tu attires un profil différent qui accepte de payer un tarif légèrement plus élevé en valeur absolue.' },
       ],
     },

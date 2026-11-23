@@ -21,7 +21,7 @@ export default {
           'Question 4 : Tu loues ta résidence principale ou un meublé dédié ? Résidence principale = plafond 120 jours/an. Meublé dédié = pas de plafond',
           'Question 5 : Tu as fait des travaux > 5 000 € dans le logement ? Si OUI → régime réel pour amortir. Si NON → micro-BIC si CA modeste',
         ]},
-        { type: 'tip', text: 'Pour 80 % des hôtes débutants : LMNP au régime micro-BIC. Simple, abattement de 30 % (50 % si le meublé est classé), déclaration via 2042-C-PRO. Pas besoin d\'expert-comptable la première année.' },
+        { type: 'tip', text: 'Pour la plupart des hôtes débutants : LMNP au régime micro-BIC. Simple, abattement de 30 % (50 % si le meublé est classé), déclaration via 2042-C-PRO. Pas besoin d\'expert-comptable la première année.' },
       ],
     },
     {

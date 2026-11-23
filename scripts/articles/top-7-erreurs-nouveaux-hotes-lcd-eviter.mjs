@@ -7,13 +7,13 @@ export default {
   categorySlug: 'ressources',
   readTime: 6,
 
-  lead: 'Sur 250 hôtes accompagnés à leurs débuts, 7 erreurs reviennent inlassablement. Elles coûtent en moyenne 2 000 à 5 000 € de manque à gagner sur les 6 premiers mois. Les éviter te fait gagner du temps, de la marge et des avis. Les voici dans l\'ordre de fréquence.',
+  lead: 'Chez les hôtes qui débutent, 7 erreurs reviennent inlassablement. Elles coûtent en moyenne 2 000 à 5 000 € de manque à gagner sur les 6 premiers mois. Les éviter te fait gagner du temps, de la marge et des avis. Les voici dans l\'ordre de fréquence.',
 
   sections: [
     {
       h2: '1. Tarif fixe toute l\'année',
       content: [
-        { type: 'p', text: '90 % des nouveaux hôtes définissent UN tarif "à l\'année" sans modulation saisonnière. Résultat : ils perdent 20-30 % de revenus en haute saison (sous-tarification) et 15-25 % en basse saison (sur-tarification qui bloque les réservations).' },
+        { type: 'p', text: 'Beaucoup de nouveaux hôtes définissent UN tarif "à l\'année" sans modulation saisonnière. Résultat : ils perdent des revenus en haute saison (prix trop bas) et en basse saison (prix trop haut qui bloque les réservations).' },
         { type: 'ul', items: [
           'La tarification doit varier semaine par semaine en fonction de la demande locale',
           'Utiliser un outil dynamique (PriceLabs, Beyond) dès le 1er mois : ROI immédiat',
@@ -24,7 +24,7 @@ export default {
     {
       h2: '2. Politique d\'annulation trop stricte',
       content: [
-        { type: 'p', text: 'Beaucoup choisissent la politique "Stricte" par prudence, craignant les annulations tardives. Erreur de calcul : la politique Stricte réduit la visibilité Airbnb de 25 à 45 % (l\'algorithme favorise les politiques souples). Une politique "Souple" génère 12-18 % de revenus en plus malgré ~5 % d\'annulations supplémentaires.' },
+        { type: 'p', text: 'Beaucoup choisissent la politique "Stricte" par prudence, craignant les annulations tardives. Erreur de calcul : la politique Stricte te rend moins visible sur Airbnb (l\'algorithme favorise les politiques souples). Une politique "Souple" peut rapporter plus malgré quelques annulations supplémentaires.' },
         { type: 'ul', items: [
           'Politique recommandée au démarrage : "Modérée" (remboursement complet jusqu\'à 5 jours avant)',
           '"Souple" si tu es en zone très touristique et que ta demande est forte',
@@ -70,7 +70,7 @@ export default {
     {
       h2: '6. Pas de check-in autonome',
       content: [
-        { type: 'p', text: 'Sans check-in 24/7 (boîte à clés ou serrure connectée), tu rates 60 % des voyageurs business qui arrivent après 21 h. C\'est l\'erreur la plus rentable à corriger : pour ~150 € d\'investissement, tu débloques un segment qui paie mieux et laisse de meilleurs avis.' },
+        { type: 'p', text: 'Sans check-in 24/7 (boîte à clés ou serrure connectée), tu rates beaucoup de voyageurs d\'affaires qui arrivent après 21 h. C\'est l\'erreur la plus rentable à corriger : pour ~150 € d\'investissement, tu débloques un segment qui paie mieux et laisse de meilleurs avis.' },
         { type: 'ul', items: [
           'Boîte à clés Master Lock : 80-120 €. Solution simple, fiable, sans abonnement',
           'Serrure connectée Igloohome ou Nuki : 150-300 €. Code unique par séjour',

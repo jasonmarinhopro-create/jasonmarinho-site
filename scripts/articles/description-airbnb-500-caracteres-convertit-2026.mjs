@@ -7,13 +7,13 @@ export default {
   categorySlug: 'visibilite',
   readTime: 6,
 
-  lead: 'En 2026, plus de 80 % des voyageurs Airbnb consultent ton annonce sur mobile. La description s\'affiche tronquée après 500 caractères avec un bouton "Lire plus". Ces 500 premiers caractères sont le seul texte qui décide réellement si le voyageur clique sur "Réserver" ou continue à scroller. Voici la méthode qui marche.',
+  lead: 'En 2026, la plupart des voyageurs Airbnb consultent ton annonce sur mobile. La description s\'affiche tronquée après 500 caractères avec un bouton "Lire plus". Ces 500 premiers caractères sont le seul texte qui décide réellement si le voyageur clique sur "Réserver" ou continue à scroller. Voici la méthode qui marche.',
 
   sections: [
     {
       h2: '1. Pourquoi 500 caractères et pas plus',
       content: [
-        { type: 'p', text: 'Airbnb a structuré sa fiche mobile pour réduire la friction de lecture. La description complète existe encore (jusqu\'à 5 000 caractères) mais n\'est lue que par 12 % des voyageurs en moyenne. Les autres se décident au-dessus du fold mobile, c\'est-à-dire dans le premier paragraphe et la liste d\'équipements.' },
+        { type: 'p', text: 'Airbnb a structuré sa fiche mobile pour réduire la friction de lecture. La description complète existe encore (jusqu\'à 5 000 caractères) mais peu de voyageurs la lisent en entier. Les autres se décident au-dessus du fold mobile, c\'est-à-dire dans le premier paragraphe et la liste d\'équipements.' },
         { type: 'p', text: 'L\'algorithme de classement Airbnb utilise les premiers caractères pour matcher les recherches voyageurs. Si ta description commence par "Ce charmant studio…", tu rates le matching pour les voyageurs qui cherchent "appartement avec terrasse" ou "logement 4 personnes Lyon centre".' },
         { type: 'tip', text: 'Test express : copie tes 500 premiers caractères dans un éditeur. Si tu n\'y trouves pas le type de logement, la capacité, la localisation précise, et 2 atouts différenciants, tu perds des réservations sans le savoir.' },
       ],
@@ -21,7 +21,7 @@ export default {
     {
       h2: '2. La structure 4-phrases qui convertit',
       content: [
-        { type: 'p', text: 'Sur 250 hôtes accompagnés, la structure suivante augmente le taux de conversion de 18 à 32 % par rapport à une description "storytelling" classique. Elle tient en 4 phrases ordonnées et fait environ 480 caractères.' },
+        { type: 'p', text: 'La structure suivante convertit mieux qu\'une description "storytelling" classique. Elle tient en 4 phrases ordonnées et fait environ 480 caractères.' },
         { type: 'ul', items: [
           'Phrase 1 : Type + capacité + spécificité : "Studio rénové 28 m² au 3e étage avec ascenseur, accueille 2 voyageurs."',
           'Phrase 2 : Localisation factuelle : "Situé rue de la République à Lyon, à 4 minutes à pied de la place Bellecour et de la station de métro."',

@@ -65,7 +65,7 @@ export default {
           'Télécommande dans un panier ou un tiroir dédié, piles neuves à chaque saison',
           'Fixation murale à hauteur d\'œil assis, câbles cachés en goulotte',
         ]},
-        { type: 'tip', text: 'Colle un petit mode d\'emploi plastifié format A6 à côté de la TV avec les 3 étapes pour allumer, changer de source et se connecter à une plateforme. Ce détail réduit de 80 % les messages "comment on regarde Netflix ?" reçus en soirée.' },
+        { type: 'tip', text: 'Colle un petit mode d\'emploi plastifié format A6 à côté de la TV avec les 3 étapes pour allumer, changer de source et se connecter à une plateforme. Ce détail réduit nettement les messages "comment on regarde Netflix ?" reçus en soirée.' },
       ],
     },
     {

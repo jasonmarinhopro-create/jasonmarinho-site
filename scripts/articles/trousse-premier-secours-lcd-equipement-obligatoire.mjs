@@ -46,7 +46,7 @@ export default {
           'Sucette glacée mini (en cas de fièvre enfant)',
           'Liste des hôpitaux + médecins de garde du quartier',
         ]},
-        { type: 'tip', text: 'Mets la trousse dans un endroit visible et signalé : armoire de salle de bain ou tiroir de cuisine avec étiquette "Premiers secours". 30 % des voyageurs qui en ont besoin ne trouvent pas la trousse même si elle est à portée de main.' },
+        { type: 'tip', text: 'Mets la trousse dans un endroit visible et signalé : armoire de salle de bain ou tiroir de cuisine avec étiquette "Premiers secours". Un voyageur qui en a besoin ne trouve pas toujours la trousse, même à portée de main.' },
       ],
     },
     {

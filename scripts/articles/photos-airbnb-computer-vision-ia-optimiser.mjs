@@ -54,7 +54,7 @@ export default {
       h2: '4. Photographie avancée : quand faire appel à un professionnel',
       content: [
         { type: 'p', text: 'Un photographe professionnel n\'est pas indispensable pour corriger les erreurs techniques : mais il apporte une valeur réelle sur deux points précis : la photo de couverture principale et les pièces avec un potentiel esthétique fort (terrasse, vue, pièce principale lumineuse). Ces deux éléments ont le plus d\'impact sur le taux de clic, qui représente 50 % du score algorithmique.' },
-        { type: 'p', text: 'Le retour sur investissement est calculable : si une meilleure photo de couverture augmente ton taux de clic de 15 %, et que tu as 10 réservations par mois, le coût d\'une séance photo (150 à 400 €) est amorti en 1 à 2 mois sur une annonce active.' },
+        { type: 'p', text: 'Le retour sur investissement est calculable : si une meilleure photo de couverture augmente ton taux de clic, même de 15 %, et que tu as 10 réservations par mois, le coût d\'une séance photo (150 à 400 €) est amorti en 1 à 2 mois sur une annonce active.' },
         { type: 'cta', text: 'Tu veux un plan complet pour optimiser ta visibilité sur Airbnb en 2026 ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

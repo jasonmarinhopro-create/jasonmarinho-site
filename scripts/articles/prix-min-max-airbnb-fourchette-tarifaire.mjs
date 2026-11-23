@@ -7,7 +7,7 @@ export default {
   categorySlug: 'revenus',
   readTime: 5,
 
-  lead: 'Si tu utilises la tarification dynamique (Airbnb Smart Pricing, PriceLabs, Wheelhouse), tu dois définir 2 bornes : prix min et prix max. Mal calibrées, elles font baisser ton revenu net. Voici la méthode pour les fixer correctement, basée sur des cas concrets de 50 hôtes français.',
+  lead: 'Si tu utilises la tarification dynamique (Airbnb Smart Pricing, PriceLabs, Wheelhouse), tu dois définir 2 bornes : prix min et prix max. Mal calibrées, elles font baisser ton revenu net. Voici la méthode pour les fixer correctement, avec des cas concrets.',
 
   sections: [
     {

@@ -7,7 +7,7 @@ export default {
   categorySlug: 'ressources',
   readTime: 6,
 
-  lead: 'Pas besoin de claquer 200 €/mois en logiciels pour démarrer en LCD. En 2026, il existe des outils gratuits ou freemium qui couvrent 80 % des besoins d\'un hôte débutant. Voici la liste complète, classée par fonction, des outils que les meilleurs hôtes utilisent au démarrage.',
+  lead: 'Pas besoin de claquer 200 €/mois en logiciels pour démarrer en LCD. En 2026, il existe des outils gratuits ou freemium qui couvrent l\'essentiel des besoins d\'un hôte débutant. Voici la liste complète, classée par fonction, des outils que les meilleurs hôtes utilisent au démarrage.',
 
   sections: [
     {

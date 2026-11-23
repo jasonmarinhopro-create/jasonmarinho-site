@@ -79,7 +79,7 @@ export default {
     {
       h2: '6. Combien d\'heures j\'ai mis sur ce logement ?',
       content: [
-        { type: 'p', text: "Beaucoup d'hôtes découvrent que leur rentabilité horaire est pire que leur salaire de salarié quand ils font enfin le compte. La question n'est pas de culpabiliser mais de savoir où le temps a filé pour choisir ce que tu délègues ou automatises en 2027. Trois tâches concentrent 80 % du temps : messagerie voyageurs, ménage ou coordination ménage, et paperasse administrative." },
+        { type: 'p', text: "Beaucoup d'hôtes découvrent que leur rentabilité horaire est pire que leur salaire de salarié quand ils font enfin le compte. La question n'est pas de culpabiliser mais de savoir où le temps a filé pour choisir ce que tu délègues ou automatises en 2027. Trois tâches prennent le plus de temps : messagerie voyageurs, ménage ou coordination ménage, et paperasse administrative." },
         { type: 'ul', items: [
           "Messagerie : nombre de messages envoyés sur l'année, temps moyen par message. Un gabarit bien fait divise ce poste par 3.",
           "Ménage et coordination : combien de turnovers gérés, combien d'heures à ton chapeau vs délégué à une équipe.",

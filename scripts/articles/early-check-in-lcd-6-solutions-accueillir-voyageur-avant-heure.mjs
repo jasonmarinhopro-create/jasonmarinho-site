@@ -21,7 +21,7 @@ export default {
       h2: '1. Anticipe la demande dès la confirmation de réservation',
       content: [
         { type: 'p', text: 'La meilleure gestion d\'un early check-in est celle où tu l\'as anticipé. Dès la confirmation de la réservation, envoie un message court qui pose le cadre : heure d\'arrivée prévue, moyen de transport, besoin éventuel d\'un accès anticipé. Tu récoltes l\'info sans que le voyageur te la demande en dernière minute par une fenêtre de messagerie stressante.' },
-        { type: 'p', text: 'Formule à réutiliser : "Bonjour [prénom], merci pour ta réservation. Pour préparer ton arrivée, peux-tu me dire ton heure d\'arrivée sur place et ton moyen de transport ? Le check-in officiel est à 15 h, mais je peux parfois arranger un accès plus tôt si tu me préviens à l\'avance." Cette phrase désamorce 80 % des demandes de dernière minute.' },
+        { type: 'p', text: 'Formule à réutiliser : "Bonjour [prénom], merci pour ta réservation. Pour préparer ton arrivée, peux-tu me dire ton heure d\'arrivée sur place et ton moyen de transport ? Le check-in officiel est à 15 h, mais je peux parfois arranger un accès plus tôt si tu me préviens à l\'avance." Cette phrase désamorce la plupart des demandes de dernière minute.' },
         { type: 'ul', items: [
           'Envoie ce message dans les 24 heures suivant la réservation, pas la veille du séjour',
           'Demande l\'heure d\'arrivée réelle, pas juste la ville de départ',
@@ -33,7 +33,7 @@ export default {
     {
       h2: '2. Propose une consigne à bagages sur place plutôt qu\'un accès anticipé',
       content: [
-        { type: 'p', text: 'La demande derrière un early check-in est rarement "je veux vivre chez toi 4 h plus tôt". C\'est presque toujours "je veux poser mes bagages pour aller déjeuner en ville sans traîner ma valise". Si tu proposes une consigne à bagages sur le palier, dans un placard d\'entrée sécurisé ou dans un box extérieur verrouillé, tu résous 70 % des demandes sans donner accès au logement.' },
+        { type: 'p', text: 'La demande derrière un early check-in est rarement "je veux vivre chez toi 4 h plus tôt". C\'est presque toujours "je veux poser mes bagages pour aller déjeuner en ville sans traîner ma valise". Si tu proposes une consigne à bagages sur le palier, dans un placard d\'entrée sécurisé ou dans un box extérieur verrouillé, tu résous beaucoup de demandes sans donner accès au logement.' },
         { type: 'p', text: 'Cette solution demande un tout petit investissement : un cadenas à code pour un placard, ou un mini-box de type consigne (compter 50 à 150 €). Tu envoies le code par message, le voyageur pose ses bagages, part se balader, et revient à 15 h pour un accès normal. Ton équipe ménage travaille tranquillement sans être perturbée.' },
         { type: 'tip', text: 'Si ton logement est en immeuble sans espace commun sécurisé, deux alternatives fonctionnent : les consignes de gare (type Nannybag ou Bounce, présentes dans la plupart des villes touristiques), ou un partenariat avec un commerce voisin (bar, boulangerie) qui accepte de garder les valises contre un petit défraiement.' },
       ],

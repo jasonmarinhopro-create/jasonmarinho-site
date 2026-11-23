@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 8,
 
-  lead: 'Un groupe de 8 personnes en week-end paie en moyenne le double d\'un couple sur le même logement. Mais il fait aussi 5 fois plus de bruit, use 3 fois plus le mobilier et déclenche la quasi-totalité des plaintes voisinage en LCD. Refuser tous les groupes, c\'est se priver d\'un revenu important. Les accepter sans cadre, c\'est risquer un mauvais avis, une plainte de copropriété ou un dépôt de plainte pour tapage. Voici les 7 règles que tu dois mettre en place avant d\'activer ton annonce pour les groupes.',
+  lead: 'Un groupe de 8 personnes en week-end paie en moyenne le double d\'un couple sur le même logement. Mais il fait aussi beaucoup plus de bruit, use davantage le mobilier et déclenche la quasi-totalité des plaintes voisinage en LCD. Refuser tous les groupes, c\'est se priver d\'un revenu important. Les accepter sans cadre, c\'est risquer un mauvais avis, une plainte de copropriété ou un dépôt de plainte pour tapage. Voici les 7 règles que tu dois mettre en place avant d\'activer ton annonce pour les groupes.',
 
   sections: [
     {
@@ -22,13 +22,13 @@ export default {
           'Préciser si tu acceptes les groupes mixtes ou uniquement familiaux',
           'Indiquer cette politique dans ta description, ton règlement et ton premier message',
         ]},
-        { type: 'tip', text: 'Une politique groupe écrite et visible fait fuir 80 % des profils incompatibles avant même la demande de réservation. Tu travailles moins en messagerie et tu protèges ton activité.' },
+        { type: 'tip', text: 'Une politique groupe écrite et visible écarte la plupart des profils incompatibles avant même la demande de réservation. Tu travailles moins en messagerie et tu protèges ton activité.' },
       ],
     },
     {
       h2: '2. Imposer un nombre maximum de voyageurs strictement lié à ton couchage',
       content: [
-        { type: 'p', text: 'La règle la plus simple et la plus efficace pour cadrer un groupe, c\'est de fixer le nombre maximum de voyageurs à exactement le nombre de couchages permanents et confortables que tu proposes. Pas de canapé-lit en dépannage qui transforme un 6 personnes en 8 personnes officieux. Pas de matelas gonflable autorisé. Si ton logement a 6 vrais lits, ton maximum est 6, point. Cette règle simple t\'épargne 90 % des problèmes de surnombre, qui sont la première cause de dégâts et de plaintes voisinage en LCD.' },
+        { type: 'p', text: 'La règle la plus simple et la plus efficace pour cadrer un groupe, c\'est de fixer le nombre maximum de voyageurs à exactement le nombre de couchages permanents et confortables que tu proposes. Pas de canapé-lit en dépannage qui transforme un 6 personnes en 8 personnes officieux. Pas de matelas gonflable autorisé. Si ton logement a 6 vrais lits, ton maximum est 6, point. Cette règle simple t\'épargne l\'essentiel des problèmes de surnombre, qui sont la première cause de dégâts et de plaintes voisinage en LCD.' },
         { type: 'p', text: 'Tu dois aussi prévoir une clause anti-visiteurs dans ton règlement : aucune personne supplémentaire n\'est autorisée dans le logement au-delà du nombre déclaré, même pour un apéritif ou un repas. Cette clause te protège quand un groupe de 6 invite 10 amis pour fêter quelque chose chez toi. Tu peux compléter avec une caméra de comptage à l\'extérieur si tu loues à distance, en respectant le cadre légal détaillé dans notre article sur <a href="/blog/videosurveillance-lcd-6-regles-cameras-legalite" style="color:var(--g);font-weight:500">la vidéosurveillance LCD et les 6 règles de légalité</a>.' },
         { type: 'ul', items: [
           'Nombre maximum = nombre de couchages permanents confortables',

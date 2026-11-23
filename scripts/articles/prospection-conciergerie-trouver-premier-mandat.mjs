@@ -17,7 +17,7 @@ export default {
         { type: 'ul', items: [
           'Identifier les annonces "sous le marché" via AirDNA ou une analyse manuelle sur Airbnb',
           'Contacter via Airbnb message ou LinkedIn : "J\'ai vu que votre logement a un super potentiel. Pourrions-nous discuter 15 min ?"',
-          'Taux de réponse : 5-10 % : conversion en mandat : 15-20 % des répondants',
+          'Taux de réponse : faible, mais chaque réponse est un propriétaire intéressé',
         ]},
       ],
     },
@@ -90,7 +90,7 @@ export default {
           'Offre : pour chaque client référé qui signe un mandat, le parrain reçoit 1 mois de gestion gratuit',
           'Communiquer l\'offre par email à tous tes clients existants + story Instagram',
           'Mettre en place un suivi simple dans un tableur (parrain, filleul, statut)',
-          'Les meilleurs hôtes du marché ont 60-70 % de leurs mandats par bouche-à-oreille après 18 mois',
+          'Avec le temps, le bouche-à-oreille devient souvent la première source de mandats',
         ]},
         { type: 'cta', text: 'Tu veux la méthode complète pour lancer et faire grandir ta conciergerie LCD ?', button: 'Voir les formations', href: '/#formations' },
       ],

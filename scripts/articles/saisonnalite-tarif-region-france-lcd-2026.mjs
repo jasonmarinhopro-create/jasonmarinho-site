@@ -7,7 +7,7 @@ export default {
   categorySlug: 'revenus',
   readTime: 6,
 
-  lead: 'La saisonnalité LCD est différente à Marseille, Strasbourg ou Honfleur. Appliquer la même grille tarifaire partout = perdre 15-25 % de revenus. Voici les patterns saisonniers des 12 grandes zones touristiques françaises en 2026, avec ratios prix haute/basse saison.',
+  lead: 'La saisonnalité LCD est différente à Marseille, Strasbourg ou Honfleur. Appliquer la même grille tarifaire partout, c\'est perdre des revenus. Voici les patterns saisonniers des 12 grandes zones touristiques françaises en 2026, avec ratios prix haute/basse saison.',
 
   sections: [
     {
@@ -29,7 +29,7 @@ export default {
         { type: 'ul', items: [
           'Pic principal juillet-août : tarif x 2 à x 2,5',
           'Pic secondaire mai (Ascension, Pentecôte) et octobre (Toussaint) : tarif x 1,5',
-          'Effet météo : un été pluvieux peut coûter 20 % de CA. Diversifier vers couples (au lieu de seules familles)',
+          'Effet météo : un été pluvieux peut coûter cher en chiffre d\'affaires. Diversifier vers couples (au lieu de seules familles)',
           'Surf zone (Hossegor, La Torche) : tarif élevé avril-octobre, pas que l\'été',
         ]},
         { type: 'tip', text: 'Pour les zones bretonnes-atlantiques, surveille les prévisions météo à 7 jours et baisse tarif de 10-15 % les week-ends pluvieux annoncés. Tu captures la demande "plan B" de ceux qui annulent leur destination soleil.' },

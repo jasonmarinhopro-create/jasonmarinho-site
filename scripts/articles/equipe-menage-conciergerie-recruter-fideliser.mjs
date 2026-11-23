@@ -38,7 +38,7 @@ export default {
     {
       h2: '3. Former en 2 semaines avec checklist photo',
       content: [
-        { type: 'p', text: 'Une formation rigoureuse fait la différence. Voici le programme en 2 semaines testé sur 50+ recrutements.' },
+        { type: 'p', text: 'Une formation rigoureuse fait la différence. Voici un programme en 2 semaines.' },
         { type: 'ul', items: [
           'Semaine 1 jours 1-2 : observation de 3 ménages avec un agent confirmé. Pas de geste, juste regarder et noter',
           'Semaine 1 jours 3-5 : ménages en binôme (junior-senior). Le senior valide chaque pièce avant de passer à la suivante',

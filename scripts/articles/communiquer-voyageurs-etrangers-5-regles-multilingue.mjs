@@ -50,7 +50,7 @@ export default {
     {
       h2: 'Règle 4 : Connaître les attentes par nationalité',
       content: [
-        { type: 'p', text: 'Les attentes voyageurs varient fortement selon les cultures. Ces 5 profils représentent 70 % des voyageurs étrangers en France LCD.' },
+        { type: 'p', text: 'Les attentes voyageurs varient fortement selon les cultures. Ces 5 profils reviennent le plus souvent parmi les voyageurs étrangers en LCD en France.' },
         { type: 'ul', items: [
           'Anglo-saxons (US, UK) : propreté impeccable + réactivité < 2 h aux messages',
           'Asiatiques (Japon, Corée, Chine) : silence, ordre parfait, instructions ultra-détaillées',

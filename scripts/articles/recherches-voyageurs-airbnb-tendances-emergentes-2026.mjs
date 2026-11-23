@@ -37,7 +37,7 @@ export default {
     {
       h2: '3. Tourisme durable et certifications éco',
       content: [
-        { type: 'p', text: 'En 2026, 42 % des voyageurs français disent privilégier les hébergements "écoresponsables". Ce critère devient un filtre actif sur Airbnb (option "Eco-friendly" depuis 2025).' },
+        { type: 'p', text: 'En 2026, de plus en plus de voyageurs français disent privilégier les hébergements "écoresponsables". Ce critère devient un filtre actif sur Airbnb (option "Eco-friendly" depuis 2025).' },
         { type: 'ul', items: [
           'Mentions à inclure dans description : "tri sélectif", "ampoules LED", "produits ménage écologiques", "vélos à disposition"',
           'Certifications utiles : label Clé Verte, Ecolabel européen, Green Globe',
@@ -49,7 +49,7 @@ export default {
     {
       h2: '4. Voyageurs solo en explosion + animaux acceptés',
       content: [
-        { type: 'p', text: 'Les voyageurs solo (1 voyageur seul) ont augmenté de 28 % en 2 ans. Profil : 28-50 ans, urbain, recherche autonomie + sécurité. Et 22 % des voyageurs souhaitent voyager avec leur animal.' },
+        { type: 'p', text: 'Les voyageurs solo (1 voyageur seul) ont augmenté de 28 % en 2 ans. Profil : 28-50 ans, urbain, recherche autonomie + sécurité. Et de plus en plus de voyageurs souhaitent partir avec leur animal.' },
         { type: 'ul', items: [
           'Voyageurs solo : mettre en avant la sécurité (digicode, quartier calme, voisinage), wifi rapide, équipements pour 1 personne (kettle, mini cafetière)',
           'Animaux acceptés : tu te positionnes sur un filtre fort. Ajouter "pet-friendly" dans titre/description = +30 % de matching pour ce segment',

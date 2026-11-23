@@ -14,7 +14,7 @@ export default {
       h2: '1. Pourquoi un blog hôte LCD fonctionne',
       content: [
         { type: 'p', text: 'Le voyageur Airbnb fait souvent une recherche Google avant de réserver, pour valider la zone, vérifier les activités, comparer les prix. Si ton blog ressort pour ces recherches, tu captures le voyageur AVANT qu\'il aille sur Airbnb. Avantage : tu peux le rediriger vers la réservation directe.' },
-        { type: 'p', text: 'Sur 100 hôtes français qui ont un blog actif (1+ article/semaine pendant 12 mois), 75 % génèrent au moins 30 % de leurs réservations en direct, sans commission Airbnb.' },
+        { type: 'p', text: 'Un hôte qui tient un blog actif (un article par semaine pendant un an) peut obtenir une part réelle de ses réservations en direct, sans commission Airbnb.' },
       ],
     },
     {
@@ -49,7 +49,7 @@ export default {
       content: [
         { type: 'p', text: 'Avoir 500 visiteurs/mois ne sert à rien sans tunnel de conversion.' },
         { type: 'ul', items: [
-          'Lead magnet : guide PDF gratuit ("Les 20 secrets de [ville]") en échange de l\'email : capture 5-15 % des visiteurs',
+          'Lead magnet : guide PDF gratuit ("Les 20 secrets de [ville]") en échange de l\'email : récupère une partie des visiteurs',
           'CTA bien visible dans chaque article : "Tu veux séjourner à [ville] ? Voir notre logement"',
           'Pop-up sortie discret : "Avant de partir, code FIDELE10 pour -10 % sur ta première réservation"',
           'Newsletter : email mensuel à ta base avec les nouveautés du quartier + dispos calendrier',

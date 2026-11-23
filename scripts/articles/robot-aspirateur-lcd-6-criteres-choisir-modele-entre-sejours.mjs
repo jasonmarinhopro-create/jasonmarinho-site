@@ -16,7 +16,7 @@ export default {
     {
       h2: '1. Une autonomie qui couvre ton logement d\'une seule traite',
       content: [
-        { type: 'p', text: 'Le premier réflexe quand tu achètes un robot pour ta LCD, c\'est de regarder la surface annoncée par le fabricant. Ce chiffre est presque toujours mesuré en mode éco, sur un sol lisse, sans obstacles. Sur le terrain d\'un meublé de tourisme meublé avec canapé, table basse, chaises et tapis, ta consommation réelle est 25 à 40 % plus élevée. Un robot vendu pour 200 m² peine souvent à finir un T3 de 65 m² en aspiration forte sans revenir se recharger au milieu.' },
+        { type: 'p', text: 'Le premier réflexe quand tu achètes un robot pour ta LCD, c\'est de regarder la surface annoncée par le fabricant. Ce chiffre est presque toujours mesuré en mode éco, sur un sol lisse, sans obstacles. Sur le terrain d\'un meublé de tourisme meublé avec canapé, table basse, chaises et tapis, ta consommation réelle est nettement plus élevée. Un robot vendu pour 200 m² peine souvent à finir un T3 de 65 m² en aspiration forte sans revenir se recharger au milieu.' },
         { type: 'p', text: 'Pour un turnover LCD, tu veux que le robot fasse le tour complet en un seul passage, sans intervention. Si tu dois vider le bac ou attendre une recharge à mi-parcours, tu perds tout le bénéfice. La règle simple : prends une autonomie annoncée équivalente à deux fois la surface de ton logement, en mode aspiration normale (pas éco). Un T3 de 60 m² prend un modèle donné pour 120 m² minimum, un grand plateau de 100 m² prend un modèle donné pour 200 m². Ta <a href="/blog/turnover-j0-lcd-7-regles-enchainer-checkout-checkin-meme-jour" style="color:var(--g);font-weight:500">gestion d\'un turnover LCD J+0</a> te remerciera.' },
       ],
     },
@@ -53,7 +53,7 @@ export default {
       h2: '5. Un niveau sonore compatible avec un voyageur qui rentre plus tôt',
       content: [
         { type: 'p', text: 'Le bruit ne compte pas si tu programmes le robot uniquement entre check-out 11 h et check-in 15 h, dans un logement vide. Il compte énormément dès que tu veux le lancer à distance parce qu\'un voyageur t\'a signalé un sol taché en début de séjour, ou parce qu\'un client de longue durée souhaite un passage à mi-semaine. Un robot à 72 dB en mode fort couvre une conversation à 1 m, il est intenable dans un studio ou un T2.' },
-        { type: 'p', text: 'Les meilleurs modèles LCD tournent aujourd\'hui autour de 55 à 60 dB en mode standard, ce qui reste supportable et permet de lancer une session ponctuelle sans faire fuir ton voyageur. Regarde deux valeurs distinctes dans la fiche technique : le mode standard (utilisé 80 % du temps) et le mode aspiration forte (utilisé sur les tapis et zones sales). Si le mode standard dépasse 62 dB, oublie pour un logement partagé ou un studio.' },
+        { type: 'p', text: 'Les meilleurs modèles LCD tournent aujourd\'hui autour de 55 à 60 dB en mode standard, ce qui reste supportable et permet de lancer une session ponctuelle sans faire fuir ton voyageur. Regarde deux valeurs distinctes dans la fiche technique : le mode standard (utilisé la plupart du temps) et le mode aspiration forte (utilisé sur les tapis et zones sales). Si le mode standard dépasse 62 dB, oublie pour un logement partagé ou un studio.' },
       ],
     },
     {

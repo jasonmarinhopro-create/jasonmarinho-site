@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 5,
 
-  lead: 'Le check-in tardif (après 21 h) concerne 60 % des voyageurs business sur Airbnb et Booking. Tu ne peux pas être là à 23 h pour tous tes voyageurs. Voici les 4 solutions concrètes pour gérer un self check-in tardif sans friction et sans risque sécurité.',
+  lead: 'Le check-in tardif (après 21 h) est fréquent chez les voyageurs d\'affaires sur Airbnb et Booking. Tu ne peux pas être là à 23 h pour tous tes voyageurs. Voici les 4 solutions concrètes pour gérer un self check-in tardif sans friction et sans risque sécurité.',
 
   sections: [
     {
@@ -61,7 +61,7 @@ export default {
           'Inconvénient : coût qui mange ta marge sur les courts séjours (45 € sur un séjour de 90 € = 50 % de marge perdue)',
           'Idéal pour : logements premium (200+ €/nuit) où l\'expérience justifie le coût',
         ]},
-        { type: 'p', text: 'En 2026, la solution la plus rentable pour 90 % des hôtes LCD est la combinaison serrure connectée + plan B physique. Tu maximises l\'expérience voyageur (autonomie 24/7) et tu minimises les coûts d\'exploitation.' },
+        { type: 'p', text: 'En 2026, la solution la plus rentable pour la plupart des hôtes LCD est la combinaison serrure connectée + plan B physique. Tu maximises l\'expérience voyageur (autonomie 24/7) et tu minimises les coûts d\'exploitation.' },
         { type: 'cta', text: 'Tu veux automatiser ta gestion LCD complète ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

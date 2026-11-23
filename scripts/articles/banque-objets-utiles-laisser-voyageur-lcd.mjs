@@ -37,7 +37,7 @@ export default {
     {
       h2: '5. Chargeurs USB-C et Lightning',
       content: [
-        { type: 'p', text: 'En 2026, les chargeurs sont devenus les oublis les plus fréquents. Un pack avec 1 câble USB-C et 1 câble Lightning (15 €) couvre 95 % des situations. À ranger dans un tiroir accessible.' },
+        { type: 'p', text: 'En 2026, les chargeurs sont devenus les oublis les plus fréquents. Un pack avec 1 câble USB-C et 1 câble Lightning (15 €) couvre presque toutes les situations. À ranger dans un tiroir accessible.' },
       ],
     },
     {
@@ -67,7 +67,7 @@ export default {
     {
       h2: '10. Petite trousse à outils',
       content: [
-        { type: 'p', text: 'Un tournevis plat + cruciforme, un marteau léger, un mètre ruban (15 €) règlent 80 % des petits soucis domestiques sans que le voyageur ait à te contacter. Signe de maturité et de prévoyance dans les avis.' },
+        { type: 'p', text: 'Un tournevis plat + cruciforme, un marteau léger, un mètre ruban (15 €) règlent la plupart des petits soucis domestiques sans que le voyageur ait à te contacter. Signe de maturité et de prévoyance dans les avis.' },
       ],
     },
     {
@@ -91,7 +91,7 @@ export default {
     {
       h2: '14. Carte du quartier annotée',
       content: [
-        { type: 'p', text: 'Imprimée et annotée à la main avec tes adresses coups de cœur (boulangerie, café, parc, pharmacie), cette carte coûte 0 € et crée un sentiment d\'accueil personnalisé immédiat. Mentionnée dans 25 % des avis 5★.' },
+        { type: 'p', text: 'Imprimée et annotée à la main avec tes adresses coups de cœur (boulangerie, café, parc, pharmacie), cette carte coûte 0 € et crée un sentiment d\'accueil personnalisé immédiat. Souvent citée dans les bons avis.' },
       ],
     },
     {

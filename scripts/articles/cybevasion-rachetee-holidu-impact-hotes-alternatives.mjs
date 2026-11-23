@@ -41,7 +41,7 @@ export default {
           'Abritel : séjours familiaux, réservations directes privilégiées, commission compétitive vs Airbnb',
           'Site de réservation directe (avec Google My Business + Booking Moteur) : zéro commission, fidélisation optimale',
         ]},
-        { type: 'tip', text: 'La réservation directe via ton propre site reste le canal le plus rentable : zéro commission plateforme. Combinée à Google My Business correctement configuré, elle peut représenter 10 à 20 % des réservations sans budget publicitaire.' },
+        { type: 'tip', text: 'La réservation directe via ton propre site reste le canal le plus rentable : zéro commission plateforme. Combinée à Google My Business correctement configuré, elle peut t\'apporter des réservations sans budget publicitaire.' },
       ],
     },
     {

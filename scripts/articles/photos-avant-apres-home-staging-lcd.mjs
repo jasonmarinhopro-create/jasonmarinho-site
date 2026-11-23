@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 5,
 
-  lead: 'Avant de payer un photographe pro à 400 €, fais un home staging à 200 €. Ces 5 transformations simples augmentent l\'attrait visuel de ton logement et boostent ton CTR de 30-50 %. Avant/après chiffrés.',
+  lead: 'Avant de payer un photographe pro à 400 €, fais un home staging à 200 €. Ces 5 transformations simples augmentent l\'attrait visuel de ton logement et donnent envie de cliquer. Avant/après chiffrés.',
 
   sections: [
     {
@@ -71,7 +71,7 @@ export default {
           'Re-uploader sur Airbnb : nouvelles photos = nouveau "boost" algorithmique. Test A/B silencieux Airbnb pendant 30 j',
           'Mesurer : taux de clic avant vs après = vérification du ROI',
         ]},
-        { type: 'p', text: 'Sur 50 hôtes français qui ont fait le home staging à 200 € + nouvelles photos en 2025, le CTR moyen a grimpé de 4,2 % à 6,8 % (+62 %). Cette amélioration se traduit en +5-10 % de réservations à terme. ROI : 200 € investis = 1 500-3 000 € de revenus supplémentaires/an.' },
+        { type: 'p', text: 'Un home staging à 200 € suivi de nouvelles photos fait souvent nettement monter le taux de clic. Plus de clics, c\'est à terme plus de réservations. ROI : 200 € investis = 1 500-3 000 € de revenus supplémentaires/an.' },
         { type: 'cta', text: 'Tu veux apprendre la méthode home staging et photo LCD ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

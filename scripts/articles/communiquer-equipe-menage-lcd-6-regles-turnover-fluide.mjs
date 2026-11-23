@@ -26,7 +26,7 @@ export default {
     {
       h2: '2. Laisser une fiche de passage dans le logement',
       content: [
-        { type: 'p', text: "La meilleure communication ne demande pas de téléphoner. Une feuille plastifiée aimantée sur le réfrigérateur, ou glissée dans un classeur dans le placard du local technique, répond à 80 % des questions que ton équipe pourrait poser pendant un turnover. Tu la rédiges une fois, tu la mets à jour deux fois par an." },
+        { type: 'p', text: "La meilleure communication ne demande pas de téléphoner. Une feuille plastifiée aimantée sur le réfrigérateur, ou glissée dans un classeur dans le placard du local technique, répond à la plupart des questions que ton équipe pourrait poser pendant un turnover. Tu la rédiges une fois, tu la mets à jour deux fois par an." },
         { type: 'p', text: "Cette fiche reprend ce qui change d'un logement à l'autre : code de la boîte à clés, emplacement des produits, nombre de jeux de linge à sortir, draps à compter, consommables à recharger, placard de réserve, lave-vaisselle à lancer, chauffage à remettre à la consigne de départ. Elle complète ta <a href=\"/blog/checklist-menage-professionnelle-location-courte-duree\" style=\"color:var(--g);font-weight:500\">checklist ménage professionnelle</a> : la checklist dit ce qu'il faut faire, la fiche dit où tout se trouve." },
         { type: 'ul', items: [
           "Un plan rapide du logement avec les points de vigilance (robinet qui goutte, volet capricieux, boîtier Wi-Fi)",

@@ -29,7 +29,7 @@ export default {
     {
       h2: '2. Choisis la bonne température de couleur, pièce par pièce',
       content: [
-        { type: 'p', text: 'La température de couleur d\'une ampoule se mesure en Kelvin et se trouve sur l\'emballage. Plus le chiffre est élevé, plus la lumière est froide et bleutée. Plus il est bas, plus elle est chaude et orangée. C\'est probablement le réglage le plus impactant en LCD, et 8 hôtes sur 10 se trompent.' },
+        { type: 'p', text: 'La température de couleur d\'une ampoule se mesure en Kelvin et se trouve sur l\'emballage. Plus le chiffre est élevé, plus la lumière est froide et bleutée. Plus il est bas, plus elle est chaude et orangée. C\'est probablement le réglage le plus impactant en LCD, et beaucoup d\'hôtes se trompent.' },
         { type: 'p', text: 'Pour un logement résidentiel chaleureux, vise 2700 K dans les chambres et le salon, et 3000 K maximum dans la cuisine, la salle de bain et l\'entrée. Au-delà de 4000 K, tu obtiens une ambiance bureau ou hôpital qui plombera la perception de confort et tes <a href="/blog/photos-airbnb-computer-vision-ia-optimiser" style="color:var(--g);font-weight:500">photos Airbnb scorées par l\'IA Computer Vision</a>.' },
         { type: 'ul', items: [
           'Chambre adulte : 2700 K, lumière chaude et apaisante',

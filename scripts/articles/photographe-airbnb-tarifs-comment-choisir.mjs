@@ -7,11 +7,11 @@ export default {
   categorySlug: 'visibilite',
   readTime: 8,
 
-  lead: "Tes photos sont le premier : et souvent le seul : argument qui décide un voyageur à cliquer sur ton annonce plutôt que sur celle du voisin. Les plateformes le confirment : des photos professionnelles génèrent jusqu'à +40 % de réservations. Pourtant la plupart des hôtes hésitent encore à investir 300 € dans un shooting… tout en perdant bien plus chaque mois en nuits non vendues. Voici les vrais tarifs, le calcul de rentabilité honnête et la méthode pour choisir le bon photographe.",
+  lead: "Tes photos sont le premier : et souvent le seul : argument qui décide un voyageur à cliquer sur ton annonce plutôt que sur celle du voisin. Des photos professionnelles aident l'annonce à se démarquer et à défendre son prix. Pourtant la plupart des hôtes hésitent encore à investir 300 € dans un shooting… tout en perdant bien plus chaque mois en nuits non vendues. Voici les vrais tarifs, le calcul de rentabilité honnête et la méthode pour choisir le bon photographe.",
 
   sections: [
     {
-      h2: 'Pourquoi la photo est ton levier n°1 (avant le prix)',
+      h2: 'Pourquoi la photo est ton premier levier (avant le prix)',
       content: [
         { type: 'p', text: "Sur Airbnb comme sur Booking, le voyageur voit d'abord une vignette : ta photo de couverture, un prix, une note. À ce stade, il n'a lu ni ta description ni tes équipements. Si la vignette ne donne pas envie, le reste n'existe pas. C'est mécanique : le taux de clic sur ton annonce dépend presque entièrement de cette première image." },
         { type: 'p', text: "Et l'effet se prolonge après le clic : une galerie complète et cohérente rassure, justifie un prix plus élevé et réduit les questions avant réservation. Les hôtes qui passent aux photos pro constatent en général deux choses : plus de réservations, et la possibilité de monter leurs prix de 5 à 15 % sans perdre de volume." },

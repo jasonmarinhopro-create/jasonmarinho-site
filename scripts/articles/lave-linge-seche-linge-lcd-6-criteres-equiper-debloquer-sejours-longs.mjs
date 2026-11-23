@@ -32,7 +32,7 @@ export default {
     {
       h2: '3. Miser sur les cycles courts et une consommation énergétique maîtrisée',
       content: [
-        { type: 'p', text: 'Un voyageur ne va pas lancer un cycle éco de 3 heures avant de partir en visite. Il veut un cycle rapide (15 à 30 minutes) qui rafraîchit un jean ou un t-shirt, et un cycle standard efficace pour le reste. Vérifie que la machine propose au moins un cycle rapide et un cycle standard court (moins d\'1h30 sur 40 degrés) : c\'est ce que ton voyageur utilisera 90 % du temps.' },
+        { type: 'p', text: 'Un voyageur ne va pas lancer un cycle éco de 3 heures avant de partir en visite. Il veut un cycle rapide (15 à 30 minutes) qui rafraîchit un jean ou un t-shirt, et un cycle standard efficace pour le reste. Vérifie que la machine propose au moins un cycle rapide et un cycle standard court (moins d\'1h30 sur 40 degrés) : c\'est ce que ton voyageur utilisera presque toujours.' },
         { type: 'p', text: 'La consommation énergétique compte doublement en 2026 : ta facture, mais aussi celle que ton voyageur verra en filigrane si tu factures l\'électricité au forfait. Une classe A ou A+ (nouvelle échelle 2021) sur le lavage et le séchage limite la casse. Pour les <a href="/blog/chauffage-lcd-7-regles-maitriser-facture-energie-hiver-avis" style="color:var(--g);font-weight:500">hôtes qui pilotent déjà leur facture énergie hiver</a>, un lave-linge économe est cohérent avec la stratégie globale.' },
         { type: 'tip', text: 'Colle une petite étiquette plastifiée sur la machine avec les deux ou trois programmes que tu recommandes (rapide 30 min, coton 40 degrés, synthétique 40 degrés). Ça réduit les messages du type "comment on lance la machine ?" de moitié.' },
       ],

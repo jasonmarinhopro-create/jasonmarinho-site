@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 7,
 
-  lead: 'Les voyageurs business représentent 25 % du marché LCD français. Ils paient 25-40 % plus cher que les voyageurs loisir, restent moins longtemps mais réservent plus régulièrement. Voici les 10 essentiels pour positionner ton logement sur ce segment lucratif.',
+  lead: 'Les voyageurs business représentent 25 % du marché LCD français. Ils acceptent souvent de payer plus cher que les voyageurs loisir, restent moins longtemps mais réservent plus régulièrement. Voici les 10 essentiels pour positionner ton logement sur ce segment lucratif.',
 
   sections: [
     {
@@ -31,7 +31,7 @@ export default {
           'Carte SIM avec 50 Go minimum, rechargée automatiquement',
           'Instructions claires dans le livret : "En cas de panne fibre, utiliser le routeur de secours dans le tiroir X"',
         ]},
-        { type: 'tip', text: 'Affiche dans l\'annonce "Backup 4G disponible en cas de panne". C\'est un différenciateur fort que 95 % des hôtes n\'ont pas.' },
+        { type: 'tip', text: 'Affiche dans l\'annonce "Backup 4G disponible en cas de panne". C\'est un différenciateur fort que peu d\'hôtes proposent.' },
       ],
     },
     {

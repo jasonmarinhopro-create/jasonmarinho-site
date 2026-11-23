@@ -52,7 +52,7 @@ export default {
     {
       h2: '4. Décider si ça vaut le coup',
       content: [
-        { type: 'p', text: 'Voici la matrice de décision basée sur 100+ hôtes français.' },
+        { type: 'p', text: 'Voici une matrice de décision.' },
         { type: 'ul', items: [
           'CA < 15 000 €/an : classement inutile (économie fiscale ~600 €/an, ne couvre pas le coût)',
           'CA 15-30 000 €/an : classement intéressant (économie 1 000-2 000 €/an, ROI en 3 mois)',

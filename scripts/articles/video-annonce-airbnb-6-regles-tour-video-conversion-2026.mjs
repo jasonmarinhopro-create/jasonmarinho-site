@@ -17,7 +17,7 @@ export default {
       h2: '1. Comprends pourquoi la vidéo d\'annonce est devenue un vrai signal en 2026',
       content: [
         { type: 'p', text: 'La vidéo d\'annonce sur Airbnb n\'est plus un bonus décoratif : c\'est un des signaux que l\'algorithme croise avec ta note, ton taux de réponse et ton taux d\'annulation pour décider de te faire remonter. Une annonce avec vidéo indique à la plateforme que l\'hôte investit dans sa fiche, et rassure le voyageur qui hésite entre plusieurs logements similaires. La vidéo devient l\'élément qui fait basculer une pré-sélection en réservation, surtout sur les recherches longues où le voyageur compare plusieurs annonces à la fois.' },
-        { type: 'p', text: 'Côté voyageur, la vidéo répond à une question que les photos ne couvrent jamais complètement : à quoi ressemble vraiment la circulation entre les pièces, la vue depuis la fenêtre, l\'espace réel du salon quand on marche dedans. Un voyageur qui a regardé la vidéo arrive avec 40 % moins d\'attentes floues, ce qui se traduit ensuite en avis plus généreux et en litiges post-séjour plus rares. Si tu veux aussi comprendre comment tes photos sont analysées par l\'IA en parallèle, relis le guide sur les <a href="/blog/photos-airbnb-computer-vision-ia-optimiser" style="color:var(--g);font-weight:500">critères de Computer Vision d\'Airbnb sur les images d\'annonce</a>.' },
+        { type: 'p', text: 'Côté voyageur, la vidéo répond à une question que les photos ne couvrent jamais complètement : à quoi ressemble vraiment la circulation entre les pièces, la vue depuis la fenêtre, l\'espace réel du salon quand on marche dedans. Un voyageur qui a regardé la vidéo arrive avec moins d\'attentes floues, ce qui se traduit ensuite en avis plus généreux et en litiges post-séjour plus rares. Si tu veux aussi comprendre comment tes photos sont analysées par l\'IA en parallèle, relis le guide sur les <a href="/blog/photos-airbnb-computer-vision-ia-optimiser" style="color:var(--g);font-weight:500">critères de Computer Vision d\'Airbnb sur les images d\'annonce</a>.' },
         { type: 'ul', items: [
           'Signal fort pris en compte par l\'algorithme de classement',
           'Temps passé sur la fiche multiplié par deux à trois',
@@ -54,7 +54,7 @@ export default {
           'Orientation unique choisie à l\'avance : horizontal ou vertical',
           'Micro externe si voix off, sinon musique libre de droit',
         ]},
-        { type: 'tip', text: 'Filme chaque plan deux fois plutôt qu\'une, en marchant plus lentement que ce qui te semble naturel. Le montage sera 3 fois plus rapide parce que tu auras toujours une bonne prise à choisir.' },
+        { type: 'tip', text: 'Filme chaque plan deux fois plutôt qu\'une, en marchant plus lentement que ce qui te semble naturel. Le montage sera bien plus rapide parce que tu auras toujours une bonne prise à choisir.' },
       ],
     },
     {

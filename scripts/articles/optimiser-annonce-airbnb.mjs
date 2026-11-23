@@ -53,7 +53,7 @@ export default {
       content: [
         { type: 'p', text: 'Airbnb filtre les résultats par équipements cochés. Si tu n\'as pas coché "Wi-Fi" alors que tu l\'as, tu n\'apparais pas dans les résultats filtrés. Fais un audit complet de ta liste d\'équipements : il y a souvent des cases oubliées.' },
         { type: 'ul', items: [
-          'Wi-Fi haut débit : 40 % des voyageurs filtrent par ce critère',
+          'Wi-Fi haut débit : un filtre très utilisé par les voyageurs',
           'Cuisine équipée avec cafetière, micro-ondes et plaques',
           'Parking gratuit ou à prix fixe : à préciser même si c\'est payant',
           'Lave-linge et sèche-linge pour les séjours de plus de 3 nuits',

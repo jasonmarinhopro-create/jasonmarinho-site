@@ -7,7 +7,7 @@ export default {
   categorySlug: 'automatisation',
   readTime: 5,
 
-  lead: 'Pour encaisser les réservations directes (sans commission Airbnb), Stripe est l\'outil le plus utilisé en France. Mise en place en 30 min, frais 1,4 % + 0,25 € par transaction (vs 14 % Airbnb voyageur + 3 % hôte = 17 % total). Économie réelle. Voici comment faire.',
+  lead: 'Pour encaisser les réservations directes (sans commission Airbnb), Stripe est l\'outil le plus utilisé en France. Mise en place en 30 min, frais 1,4 % + 0,25 € par transaction (contre 18,6 % de commission Airbnb TVA comprise). Économie réelle. Voici comment faire.',
 
   sections: [
     {

@@ -7,7 +7,7 @@ export default {
   categorySlug: 'reglementation',
   readTime: 5,
 
-  lead: 'Les conflits avec les voisins en copropriété sont la cause #1 d\'arrêt forcé d\'une activité LCD. Connaître tes droits ET ceux de tes voisins, c\'est éviter 80 % des litiges. Voici la situation juridique en 2026 et les actions préventives à mettre en place.',
+  lead: 'Les conflits avec les voisins en copropriété sont la cause #1 d\'arrêt forcé d\'une activité LCD. Connaître tes droits ET ceux de tes voisins, c\'est éviter la plupart des litiges. Voici la situation juridique en 2026 et les actions préventives à mettre en place.',
 
   sections: [
     {

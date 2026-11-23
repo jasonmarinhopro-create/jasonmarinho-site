@@ -61,7 +61,7 @@ export default {
           '4. Isolation murs intérieurs : 30-50 €/m² avec aides, gain 1-1,5 classe DPE',
           '5. VMC double flux : 4-8 000 € avec aides, gain 0,5 classe + amélioration confort',
         ]},
-        { type: 'p', text: 'Pour passer d\'un DPE E à D, l\'isolation combles + remplacement chaudière par PAC suffit dans 80 % des cas. Coût total typique 12-18 000 €, dont 5-8 000 € à ta charge après aides cumulées. Amortissement sur 5-7 ans via économies d\'énergie + maintien du droit de louer.' },
+        { type: 'p', text: 'Pour passer d\'un DPE E à D, l\'isolation combles + remplacement chaudière par PAC suffit souvent. Coût total typique 12-18 000 €, dont 5-8 000 € à ta charge après aides cumulées. Amortissement sur 5-7 ans via économies d\'énergie + maintien du droit de louer.' },
         { type: 'cta', text: 'Tu veux anticiper la conformité 2034 et augmenter la valeur de ton bien ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

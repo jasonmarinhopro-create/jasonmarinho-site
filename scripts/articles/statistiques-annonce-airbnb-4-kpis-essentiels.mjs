@@ -41,7 +41,7 @@ export default {
           'Taux d\'acceptation > 95 % = bonus algorithmique. Entre 80 et 95 % = neutre. < 80 % = pénalité (-25 % de visibilité)',
           'Délai de réponse < 1 h en journée = badge "Répond rapidement", impact très positif sur la conversion',
           'Délai > 24 h sur 5 messages dans le mois = pénalité automatique de classement',
-          'Une seule annulation hôte sur 60 jours = -10 % de visibilité pendant 60 jours supplémentaires',
+          'Une seule annulation de ta part pèse sur ta visibilité pendant des semaines',
         ]},
         { type: 'cta', text: 'Tu veux apprendre à lire et exploiter toutes les statistiques Airbnb pour piloter ta performance ?', button: 'Voir les formations', href: '/#formations' },
       ],

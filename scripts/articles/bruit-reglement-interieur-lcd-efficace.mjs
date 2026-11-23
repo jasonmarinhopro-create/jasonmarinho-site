@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 5,
 
-  lead: 'Le bruit voyageur est la cause #1 des plaintes voisins en LCD française. Un règlement intérieur bien formulé peut faire baisser les plaintes de 70 % sans dégrader l\'expérience voyageur. Voici la formulation testée sur 100 hôtes en zone urbaine et rurale, avec les pièges à éviter.',
+  lead: 'Le bruit voyageur est la cause #1 des plaintes voisins en LCD française. Un règlement intérieur bien formulé peut faire baisser les plaintes de 70 % sans dégrader l\'expérience voyageur. Voici une formulation qui fonctionne en ville comme à la campagne, avec les pièges à éviter.',
 
   sections: [
     {
@@ -20,7 +20,7 @@ export default {
     {
       h2: '2. Les 5 clauses anti-bruit qui marchent',
       content: [
-        { type: 'p', text: 'Sur 100 hôtes en France suivis depuis 2023, ces 5 clauses ont fait baisser les plaintes voisins de 70 % en moyenne. Elles sont à intégrer dans ta description (section "Règles de la maison" sur Airbnb) ET dans ton livret d\'accueil.' },
+        { type: 'p', text: 'Ces 5 clauses font nettement baisser les plaintes des voisins. Elles sont à intégrer dans ta description (section "Règles de la maison" sur Airbnb) ET dans ton livret d\'accueil.' },
         { type: 'ul', items: [
           '"Silence absolu de 22 h à 7 h. Pas de musique, conversations animées ou activités bruyantes pendant ces horaires." (au lieu de "silence après 22 h" qui est ambigu)',
           '"Maximum 2 invités au-delà des voyageurs réservés, et uniquement entre 14 h et 21 h." (interdit les fêtes sans interdire les visites raisonnables)',

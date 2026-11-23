@@ -21,7 +21,7 @@ export default {
     {
       h2: '2. Fourchettes 2026 par type de logement',
       content: [
-        { type: 'p', text: 'Sur 250 hôtes français suivis en 2025-2026, les fourchettes médianes sont les suivantes. Au-delà de la fourchette haute, tu perds en visibilité.' },
+        { type: 'p', text: 'Voici des fourchettes indicatives. Au-delà de la fourchette haute, tu perds en visibilité.' },
         { type: 'ul', items: [
           'Studio / T1 (≤ 35 m²) : 25 à 45 €. Médiane 35 €',
           'T2 (35-55 m²) : 35 à 60 €. Médiane 45 €',

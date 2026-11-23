@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 7,
 
-  lead: 'En LCD, un extérieur soigné vaut souvent plus qu\'une chambre supplémentaire. Un voyageur qui filtre les annonces sur "terrasse", "jardin" ou "balcon" accepte de payer 15 à 30 % plus cher pour un logement équivalent, à condition que l\'espace tienne réellement la promesse des photos. Pourtant, la majorité des extérieurs de LCD sont sous-exploités : mobilier bas de gamme délavé, éclairage inexistant, zéro ombrage, une simple table en plastique et deux chaises dépareillées. La bonne nouvelle, c\'est qu\'un extérieur qui déclenche la mention "on a passé toutes nos soirées dehors" dans les avis se construit avec un budget maîtrisé et sept décisions claires. Voici les 7 règles à appliquer pour transformer ta terrasse ou ton jardin en argument différenciant qui fait grimper ton tarif et fidélise tes voyageurs.',
+  lead: 'En LCD, un extérieur soigné vaut souvent plus qu\'une chambre supplémentaire. Un voyageur qui filtre les annonces sur "terrasse", "jardin" ou "balcon" accepte souvent de payer plus cher pour un logement équivalent, à condition que l\'espace tienne réellement la promesse des photos. Pourtant, la majorité des extérieurs de LCD sont sous-exploités : mobilier bas de gamme délavé, éclairage inexistant, zéro ombrage, une simple table en plastique et deux chaises dépareillées. La bonne nouvelle, c\'est qu\'un extérieur qui déclenche la mention "on a passé toutes nos soirées dehors" dans les avis se construit avec un budget maîtrisé et sept décisions claires. Voici les 7 règles à appliquer pour transformer ta terrasse ou ton jardin en argument différenciant qui fait grimper ton tarif et fidélise tes voyageurs.',
 
   sections: [
     {
@@ -86,7 +86,7 @@ export default {
       h2: '6. Sécuriser l\'extérieur et anticiper les risques voisins',
       content: [
         { type: 'p', text: 'Un extérieur mal encadré transforme rapidement une soirée voyageur en incident : verres cassés, chute d\'un enfant, tapage nocturne signalé par le voisin, mégot jeté dans un pot de fleurs sec. Ces incidents laissent des traces (avis, appel de police, lettre du syndic) et pèsent sur la relation avec ton voisinage, qui est la pierre angulaire de ta pérennité en LCD. La règle est de baliser l\'usage de l\'extérieur par un règlement clair affiché sur place, de sécuriser physiquement les zones à risque et d\'anticiper les points de friction récurrents avec le voisinage.' },
-        { type: 'p', text: 'Pense à intégrer les règles extérieures dans ton livret d\'accueil digital et à les rappeler dans le message de check-in : horaire de silence à partir de 22 heures, interdiction de fêtes non déclarées, consignes barbecue et cendriers, sécurité enfant autour d\'un point d\'eau. Cette logique de cadrage rejoint celle exposée dans notre article sur <a href="/blog/bruit-reglement-interieur-lcd-efficace" style="color:var(--g);font-weight:500">le règlement intérieur LCD qui fait baisser les plaintes de 70 %</a>. Elle est également reprise dans les modèles de règlement fournis via la <a href="/services/actualites" style="color:var(--g);font-weight:500">page réglementation LCD de la plateforme Jason Marinho</a>.' },
+        { type: 'p', text: 'Pense à intégrer les règles extérieures dans ton livret d\'accueil digital et à les rappeler dans le message de check-in : horaire de silence à partir de 22 heures, interdiction de fêtes non déclarées, consignes barbecue et cendriers, sécurité enfant autour d\'un point d\'eau. Cette logique de cadrage rejoint celle exposée dans notre article sur <a href="/blog/bruit-reglement-interieur-lcd-efficace" style="color:var(--g);font-weight:500">le règlement intérieur LCD qui fait baisser les plaintes</a>. Elle est également reprise dans les modèles de règlement fournis via la <a href="/services/actualites" style="color:var(--g);font-weight:500">page réglementation LCD de la plateforme Jason Marinho</a>.' },
         { type: 'ul', items: [
           'Un règlement extérieur affiché sur la terrasse ou remis à l\'arrivée',
           'Rappel du silence après 22 heures et interdiction des fêtes non déclarées',
@@ -94,7 +94,7 @@ export default {
           'Garde-corps ou barrière conforme si terrasse en hauteur ou piscine',
           'Contact voisin communiqué à toi seul et procédure en cas de plainte',
         ]},
-        { type: 'tip', text: 'Passe voir ton voisin direct une fois par saison avec un petit geste (bouteille locale, boîte de chocolats). Ce lien humain court-circuite 80 % des plaintes formelles et transforme ton voisin en allié qui te prévient discrètement au premier signal de dérive au lieu d\'appeler la mairie.' },
+        { type: 'tip', text: 'Passe voir ton voisin direct une fois par saison avec un petit geste (bouteille locale, boîte de chocolats). Ce lien humain évite la plupart des plaintes formelles et transforme ton voisin en allié qui te prévient discrètement au premier signal de dérive au lieu d\'appeler la mairie.' },
       ],
     },
     {

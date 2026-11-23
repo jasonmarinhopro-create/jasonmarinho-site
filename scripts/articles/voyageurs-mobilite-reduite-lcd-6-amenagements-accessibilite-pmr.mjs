@@ -42,7 +42,7 @@ export default {
     {
       h2: '3. Une salle de bain avec douche à l\'italienne et barres d\'appui',
       content: [
-        { type: 'p', text: 'La salle de bain concentre à elle seule 60 % des accidents domestiques des personnes âgées et handicapées. C\'est aussi la pièce qui bloque le plus de réservations PMR. Une baignoire d\'angle avec paroi de verre est inutilisable pour un voyageur en fauteuil, une douche avec receveur haut de 15 cm oblige à enjamber, un lavabo sur colonne empêche de rouler dessous. Chaque défaut de conception élimine un pan entier de clientèle sans que tu le voies dans tes statistiques.' },
+        { type: 'p', text: 'La salle de bain est l\'une des pièces où les personnes âgées et handicapées chutent le plus. C\'est aussi la pièce qui bloque le plus de réservations PMR. Une baignoire d\'angle avec paroi de verre est inutilisable pour un voyageur en fauteuil, une douche avec receveur haut de 15 cm oblige à enjamber, un lavabo sur colonne empêche de rouler dessous. Chaque défaut de conception élimine un pan entier de clientèle sans que tu le voies dans tes statistiques.' },
         { type: 'ul', items: [
           'Douche à l\'italienne avec seuil zéro ou receveur extra-plat de moins de 3 cm de hauteur',
           'Siège de douche mural rabattable, monté à 45-50 cm du sol et testé pour 100 kg minimum',
@@ -100,7 +100,7 @@ export default {
       h2: 'Ne t\'engage pas dans tout, engage-toi sur ce que tu peux tenir',
       content: [
         { type: 'p', text: 'La pire erreur avec l\'accessibilité, c\'est de sur-promettre. Un voyageur PMR qui découvre à l\'arrivée que la rampe est trop courte, que le siège de douche n\'a pas été installé ou que la porte de la chambre fait en réalité 68 cm au lieu des 78 annoncés, c\'est un litige assuré. Et un litige PMR fait du bruit : le voyageur en parlera à sa communauté, laissera un avis détaillé et signalera à Airbnb la non-conformité. Mieux vaut annoncer trois aménagements bien tenus que six aménagements approximatifs.' },
-        { type: 'p', text: 'Commence par ce qui ne coûte quasiment rien : rampe amovible, barres d\'appui, siège de douche, ajustement du livret d\'accueil, mise à jour des filtres Airbnb. Tu couvres déjà 70 % des besoins d\'un voyageur en fauteuil autonome. Pour aller plus loin sur les aménagements plus lourds, ou pour discuter du positionnement de ton annonce avec un regard extérieur, la <a href="/blog/appel-decouverte-jason-marinho-accompagnement-lcd" style="color:var(--g);font-weight:500">l\'appel découverte gratuit de 30 minutes avec Jason Marinho</a> te permet de prioriser les investissements selon ton logement et ton marché.' },
+        { type: 'p', text: 'Commence par ce qui ne coûte quasiment rien : rampe amovible, barres d\'appui, siège de douche, ajustement du livret d\'accueil, mise à jour des filtres Airbnb. Tu couvres déjà l\'essentiel des besoins d\'un voyageur en fauteuil autonome. Pour aller plus loin sur les aménagements plus lourds, ou pour discuter du positionnement de ton annonce avec un regard extérieur, la <a href="/blog/appel-decouverte-jason-marinho-accompagnement-lcd" style="color:var(--g);font-weight:500">l\'appel découverte gratuit de 30 minutes avec Jason Marinho</a> te permet de prioriser les investissements selon ton logement et ton marché.' },
         { type: 'cta', text: 'Tu veux structurer l\'accueil et le livret pour tous les profils de voyageurs ?', button: 'Découvrir les formations LCD', href: '/services/formations' },
       ],
     },

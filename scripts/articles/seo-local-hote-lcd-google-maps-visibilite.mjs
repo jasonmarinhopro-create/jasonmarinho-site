@@ -7,7 +7,7 @@ export default {
   categorySlug: 'visibilite',
   readTime: 6,
 
-  lead: 'Quand un voyageur cherche "appartement Bordeaux centre" sur Google, les 3 premiers résultats Google Maps captent 70 % des clics. Si tu n\'y figures pas, tu dépends 100 % d\'Airbnb pour exister. Voici comment optimiser ton SEO local pour apparaître dans le Local Pack Google en 2026.',
+  lead: 'Quand un voyageur cherche "appartement Bordeaux centre" sur Google, les 3 premiers résultats Google Maps captent l\'essentiel des clics. Si tu n\'y figures pas, tu dépends 100 % d\'Airbnb pour exister. Voici comment optimiser ton SEO local pour apparaître dans le Local Pack Google en 2026.',
 
   sections: [
     {

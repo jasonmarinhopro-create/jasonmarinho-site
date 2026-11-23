@@ -7,7 +7,7 @@ export default {
   categorySlug: 'revenus',
   readTime: 7,
 
-  lead: 'Quand tu démarres en location courte durée, tu connais ton tarif et ton occupation. Mais quand on te demande "quelle est ta marge nette annuelle ?", la plupart des hôtes ne savent pas. Voici une grille complète des coûts annuels d\'un hôte LCD français en 2026, par poste, avec les fourchettes observées sur 250 hôtes.',
+  lead: 'Quand tu démarres en location courte durée, tu connais ton tarif et ton occupation. Mais quand on te demande "quelle est ta marge nette annuelle ?", la plupart des hôtes ne savent pas. Voici une grille complète des coûts annuels d\'un hôte LCD français en 2026, par poste, avec des fourchettes indicatives.',
 
   sections: [
     {

@@ -39,7 +39,7 @@ export default {
     {
       h2: 'Étape 3 : Rédiger une réponse publique impeccable',
       content: [
-        { type: 'p', text: 'Si l\'avis ne peut pas être supprimé, ta réponse publique est critique. 84 % des futurs voyageurs lisent les réponses de l\'hôte aux avis négatifs avant de réserver.' },
+        { type: 'p', text: 'Si l\'avis ne peut pas être supprimé, ta réponse publique est critique. Les futurs voyageurs lisent souvent les réponses de l\'hôte aux avis négatifs avant de réserver.' },
         { type: 'ul', items: [
           'Reconnaitre la frustration sans accepter les torts : "Je suis désolé d\'apprendre que..."',
           'Apporter des faits précis qui nuancent : "Concernant le bruit signalé, le rapport sonore moyen est de 35 dB"',
@@ -57,7 +57,7 @@ export default {
           'Envoyer un message post-check-out avec lien direct vers l\'avis Airbnb à tous tes voyageurs du mois',
           'Relance à H+72 si pas d\'avis encore (une seule relance)',
           'Objectif : 5-7 nouveaux avis 5★ dans les 30 jours qui suivent l\'avis 1★',
-          'Sur 50 hôtes ayant suivi cette méthode : classement revenu à son niveau initial en 45-75 jours',
+          'Avec cette méthode, le classement remonte en général en quelques semaines',
         ]},
       ],
     },

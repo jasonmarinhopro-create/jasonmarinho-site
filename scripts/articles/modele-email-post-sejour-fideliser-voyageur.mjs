@@ -7,7 +7,7 @@ export default {
   categorySlug: 'ressources',
   readTime: 4,
 
-  lead: 'Le voyageur vient de partir. Tu as 24 à 48 h pour envoyer un email qui (1) demande l\'avis, (2) fidélise, (3) collecte son consentement newsletter. Bien fait, l\'email post-séjour génère 60-70 % d\'avis et 5-10 % de réservations directes futures. Voici 4 modèles testés.',
+  lead: 'Le voyageur vient de partir. Tu as 24 à 48 h pour envoyer un email qui (1) demande l\'avis, (2) fidélise, (3) collecte son consentement newsletter. Bien fait, l\'e-mail après le séjour t\'apporte des avis et des réservations directes futures. Voici 4 modèles testés.',
 
   sections: [
     {

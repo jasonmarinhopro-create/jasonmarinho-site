@@ -7,13 +7,13 @@ export default {
   categorySlug: 'visibilite',
   readTime: 6,
 
-  lead: 'Le titre de ton annonce Airbnb est ce qui apparaît en gras à côté de la photo de couverture. Depuis 2025, l\'algorithme pénalise activement certains mots détectés comme "spam" ou "trompeurs" : la pénalité va de -10 % à -30 % de visibilité, sans aucune notification à l\'hôte. Voici les 9 mots les plus pénalisants, un par un, et par quoi les remplacer pour booster ton matching algorithmique.',
+  lead: 'Le titre de ton annonce Airbnb est ce qui apparaît en gras à côté de la photo de couverture. Depuis 2025, l\'algorithme pénalise activement certains mots détectés comme "spam" ou "trompeurs" : la pénalité peut coûter de la visibilité, sans aucune notification à l\'hôte. Voici les 9 mots les plus pénalisants, un par un, et par quoi les remplacer pour booster ton matching algorithmique.',
 
   sections: [
     {
       h2: '1. « Magnifique », « Splendide », « Sublime » : les superlatifs vides',
       content: [
-        { type: 'p', text: 'Premier filtre anti-spam déclenché par Airbnb : les superlatifs purement subjectifs qui n\'apportent aucune information factuelle. Pénalité moyenne mesurée : -15 % de visibilité.' },
+        { type: 'p', text: 'Premier filtre anti-spam déclenché par Airbnb : les superlatifs purement subjectifs qui n\'apportent aucune information factuelle. Conséquence : une visibilité en baisse.' },
         { type: 'p', text: 'L\'algo considère ces mots comme du bruit : ils ne matchent aucun critère de recherche voyageur. Remplace-les par un fait vérifiable : surface en m², nombre de voyageurs, étage, exposition. "Magnifique appartement" devient "T2 50 m² 4 voyageurs balcon sud".' },
       ],
     },
@@ -69,7 +69,7 @@ export default {
     {
       h2: '9. « Promo », « Offre », « Réduction » : filtre anti-publicité automatique',
       content: [
-        { type: 'p', text: 'Le filtre le plus brutal d\'Airbnb : les mots assimilés à de la publicité commerciale sont bloqués au niveau du référencement. Une annonce qui contient "promo", "offre spéciale" ou "réduction" dans le titre est dégradée de -25 à -30 % de visibilité.' },
+        { type: 'p', text: 'Le filtre le plus brutal d\'Airbnb : les mots assimilés à de la publicité commerciale sont bloqués au niveau du référencement. Une annonce qui contient "promo", "offre spéciale" ou "réduction" dans le titre risque d\'être moins visible.' },
         { type: 'p', text: 'Pour signaler une réduction ou une période creuse, utilise les outils Airbnb prévus pour : prix promotionnel, dernière minute, semaine ouverte. Jamais dans le titre.' },
         { type: 'cta', text: 'Tu veux maîtriser tous les leviers de visibilité Airbnb (titre, photo, description, algorithme) et construire un titre optimisé en 50 caractères ?', button: 'Voir les formations', href: '/#formations' },
       ],
