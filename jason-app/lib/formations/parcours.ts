@@ -3,7 +3,8 @@
 
 export interface Parcours {
   slug: string
-  emoji: string
+  /** Nom d'icône de components/formations/FormationIcon.tsx */
+  icon: string
   title: string
   description: string
   duration: string // estimation totale
@@ -15,7 +16,7 @@ export interface Parcours {
 export const PARCOURS: Parcours[] = [
   {
     slug: 'demarrer-en-lcd-30-jours',
-    emoji: '🚀',
+    icon: 'rocket',
     title: 'Démarrer en LCD en 30 jours',
     description: 'De zéro à ton premier voyageur : règles légales, annonce optimisée, tarification, automatisation des messages.',
     duration: '~10h',
@@ -30,7 +31,7 @@ export const PARCOURS: Parcours[] = [
   },
   {
     slug: 'maximiser-tes-revenus',
-    emoji: '💰',
+    icon: 'money',
     title: 'Maximiser tes revenus LCD',
     description: 'Augmente ton revenu par bien : pricing dynamique, canal direct sans commission, optimisation algorithme + avis 5★, puis la stratégie multicanal niveau pro.',
     duration: '~16h',
@@ -46,7 +47,7 @@ export const PARCOURS: Parcours[] = [
   },
   {
     slug: 'devenir-conciergerie',
-    emoji: '🏢',
+    icon: 'building',
     title: 'Devenir conciergerie en 60 jours',
     description: 'Création juridique (loi Hoguet, statuts), prospection des premiers mandats, automatisation pour scaler.',
     duration: '~17h',
@@ -62,7 +63,7 @@ export const PARCOURS: Parcours[] = [
   },
   {
     slug: 'visibilite-directe',
-    emoji: '📍',
+    icon: 'pin',
     title: 'Booster ta visibilité hors plateformes',
     description: 'Construis ton canal direct : Google Business, réseaux sociaux, site web, avis Google, réduis ta dépendance Airbnb.',
     duration: '~9h',
@@ -77,7 +78,7 @@ export const PARCOURS: Parcours[] = [
   },
   {
     slug: 'securite-conformite',
-    emoji: '🛡️',
+    icon: 'shield',
     title: 'Sécurité, conformité & sérénité',
     description: 'Tout ce qu\'il faut savoir pour louer en règle : fiscalité 2026, réglementation, vérification voyageurs, gestion des conflits.',
     duration: '~7h',

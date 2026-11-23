@@ -117,11 +117,15 @@ async function seedFormation(slug) {
     return { skipped: true }
   }
 
-  // Update objectifs on formations
+  // Objectifs, description et durée totale (content.ts fait foi, 23/11/2026 :
+  // la durée affichée venait de la ligne formations, jamais mise à jour)
   if (!DRY_RUN && Array.isArray(content.objectifs) && content.objectifs.length > 0) {
+    const patch = { objectifs: content.objectifs }
+    if (content.duration) patch.duration = content.duration
+    if (content.description) patch.description = content.description
     const { error } = await supabase
       .from('formations')
-      .update({ objectifs: content.objectifs })
+      .update(patch)
       .eq('id', formationId)
     if (error) { errors += 1; console.log('  ! objectifs error:', error.message) }
   }

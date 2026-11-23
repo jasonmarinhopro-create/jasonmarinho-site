@@ -1,5 +1,7 @@
 'use client'
 
+import FormationIcon from '@/components/formations/FormationIcon'
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, GraduationCap, Trophy, Flame, Clock, BookOpen, ArrowRight, Star } from '@phosphor-icons/react/dist/ssr'
@@ -29,7 +31,7 @@ interface Niveau {
 
 interface Badge {
   id: string
-  emoji: string
+  icon: string
   label: string
   desc: string
   unlocked: boolean
@@ -181,7 +183,7 @@ export default function ProfilApprenantUI(props: Props) {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={s.formationTitle}>{f.title}</div>
                         <div style={{ ...s.formationMeta, color: '#15803d', fontWeight: 600 }}>
-                          ✓ Terminée à 100%
+                          Terminée à 100 %
                         </div>
                       </div>
                       <ArrowRight size={14} weight="bold" color="var(--text-muted)" />
@@ -222,7 +224,7 @@ export default function ProfilApprenantUI(props: Props) {
                     background: b.unlocked ? 'var(--accent-bg)' : 'var(--surface)',
                   }}
                 >
-                  <span style={s.badgeEmoji}>{b.emoji}</span>
+                  <span style={s.badgeEmoji}><FormationIcon name={b.icon} size={24} /></span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={s.badgeLabel}>{b.label}</div>
                     <div style={s.badgeDesc}>{b.desc}</div>

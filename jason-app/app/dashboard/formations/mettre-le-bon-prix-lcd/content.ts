@@ -1,1189 +1,754 @@
+// Formation pilote du nouveau format (23/11/2026, docs/claude/formations.md) :
+// « En bref », encadrés, chiffres clés, questions de vérification, action de
+// fin de module. Identifiants des leçons inchangés (progression des membres).
+// Chiffres vérifiés le 23/11/2026 : frais Airbnb hôte seul 15,5 % en Europe
+// depuis le 13/10/2026 (18,6 % TVA comprise sans numéro de TVA) ; Booking
+// autour de 15 % selon l'accord signé (TVA en plus sans numéro de TVA) ; tarifs
+// indicatifs de PriceLabs, Wheelhouse et Beyond.
 export const METTRE_BON_PRIX_FORMATION = {
   slug: 'mettre-le-bon-prix-lcd',
   title: 'Mettre le bon prix en location courte durée',
-  description: `Prix minimum, prix de base, tarification saisonnière, événements locaux, réservation directe : la méthode complète pour ne jamais laisser d'argent sur la table ni travailler à perte.`,
-  duration: '2h30',
+  description: `Prix minimum, prix de base, saisons, événements locaux, plateformes et réservation directe : la méthode pour ne jamais travailler à perte ni laisser d'argent sur la table.`,
+  duration: '1h30',
   level: 'Débutant',
   objectifs: [
-    'Calculer son prix minimum absolu avant de publier quoi que ce soit',
-    `Comprendre pourquoi un prix fixe fait perdre de l'argent`,
-    'Maîtriser les leviers saisonniers qui multiplient les revenus',
-    'Adapter sa stratégie selon les plateformes (Airbnb, Booking, Driing)',
-    'Savoir quand et comment utiliser la tarification dynamique',
-    'Fixer le bon prix en réservation directe sans se brader',
+    'Calculer ton prix minimum avant de fixer quoi que ce soit',
+    'Trouver ton prix de base à partir du marché et le tester',
+    'Construire ton calendrier de saisons, week-ends et événements',
+    'Régler tes remises de durée sans passer sous ton plancher',
+    'Adapter ton prix à Airbnb, Booking et la réservation directe',
+    'Suivre chaque mois ton revenu par nuit disponible',
   ],
   modules: [
     {
       id: 1,
-      title: 'Le prix minimum : la base que personne ne calcule',
-      duration: '30 min',
+      title: 'Ton prix minimum, la base de tout',
+      duration: '15 min',
       lessons: [
         {
           id: 1,
-          title: 'Pourquoi tant d\'hôtes travaillent à perte sans le savoir',
-          duration: '15 min',
-          content: `## La réalité que personne ne dit
-Beaucoup d'hôtes fixent un prix trop bas
-ou trop haut sans le savoir, et perdent
-des revenus chaque année.
+          title: 'Calculer ton prix minimum',
+          duration: '8 min',
+          content: `:::bref
+- Ton prix minimum est le montant sous lequel chaque nuit louée te coûte de l'argent.
+- Il se calcule à partir de TES charges, jamais à partir du prix du voisin.
+- Formule : charges fixes du mois divisées par les nuits louées, plus le coût d'un séjour ramené à la nuit.
+:::
 
-La cause la plus fréquente : fixer un prix "à l'oeil"
-en regardant les voisins sur Airbnb.
+## Pourquoi commencer par là
+La plupart des hôtes fixent leur prix en regardant les annonces voisines.
+Le problème : ton voisin n'a ni ton loyer, ni ton crédit, ni ta femme de ménage.
+Un prix copié peut être confortable pour lui et ruineux pour toi.
 
-C'est la pire méthode qui soit.
-Ton voisin a peut-être des charges
-dix fois inférieures aux tiennes.
+Ton prix minimum ne sert pas à être affiché. C'est un garde-fou :
+aucune remise, aucun outil, aucune promotion ne doit jamais le franchir.
 
-## Le piège du prix fixe
-Imaginons 3 hôtes avec le même appartement.
-
-Hôte A : prix fixe 80€/nuit toute l'année
-→ Toujours plein, mais travaille à perte
-  en basse saison
-
-Hôte B : prix fixe 120€/nuit toute l'année
-→ Plein en haute saison, calendrier vide
-  le reste de l'année
-
-Hôte C : prix dynamique 60€ → 180€
-→ Taux d'occupation stable + revenu maximum
-  aux bons moments
-
-→ Les locations avec tarification dynamique
-  génèrent en moyenne +27% de revenus bruts.
-
-> Source : investissement-locatif.com, 2026
-
-## Ce que doit couvrir ton prix minimum
-Avant tout calcul de stratégie,
-tu dois connaître ton PLANCHER absolu.
-
-Ton prix minimum = le montant en dessous
-duquel chaque nuit louée te coûte de l'argent.
-
-Il doit couvrir :
-
+## Ce que ton prix minimum doit couvrir
 CHARGES FIXES (même si le logement est vide)
-→ Loyer / mensualité de crédit
-→ Charges de copropriété
-→ Assurance LCD
-→ Abonnements (internet, outils...)
-→ Amortissement du mobilier
+- Loyer ou mensualité de crédit
+- Charges de copropriété, eau, électricité, internet
+- Assurance adaptée à la location courte durée
+- Abonnements et outils
+- Usure du mobilier et du linge
 
-CHARGES VARIABLES (par séjour)
-→ Ménage
-→ Consommables (café, produits accueil...)
-→ Commission de la plateforme
-→ Taxe de séjour si applicable
+CHARGES PAR SÉJOUR
+- Ménage et blanchisserie
+- Produits d'accueil et consommables
+- Commission de la plateforme (en pourcentage du prix)
 
-## La formule de base
-PRIX MINIMUM PAR NUIT =
+## La formule
+1. Additionne tes charges fixes du mois.
+2. Divise par le nombre de nuits que tu loues vraiment en moyenne (pas 30).
+3. Ajoute le coût d'un séjour divisé par sa durée moyenne.
+4. Ajoute la commission : divise le tout par (1 moins le taux de commission).
 
-  Charges fixes mensuelles
-  ÷ Nombre de nuits louées estimé
+:::chiffres
+1 000 € | charges fixes par mois
+18 | nuits louées en moyenne
+56 € | part des charges fixes par nuit
+:::
 
-  +
+:::exemple
+Studio : 1 000 € de charges fixes, 18 nuits louées, donc 56 € par nuit.
+Ménage et consommables : 60 € par séjour, séjours de 3 nuits en moyenne, donc 20 € par nuit.
+Total avant commission : 76 €. Avec les frais Airbnb de 18,6 % TVA comprise : 76 divisé par 0,814 = 93 €.
+Ton prix minimum sur Airbnb est d'environ 93 € la nuit.
+:::
 
-  Charges variables par séjour
+:::erreur
+Diviser tes charges par 30 nuits. Personne n'est plein tous les jours : avec 30, ton plancher est trop bas et tu travailles à perte sans le voir.
+:::
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+:::quiz
+? Tes charges fixes sont de 900 € par mois et tu loues 15 nuits. Quelle est la part des charges fixes par nuit ?
+- 30 €
+* 60 €
+- 90 €
+= 900 divisé par 15 = 60 €. On divise par les nuits réellement louées, pas par 30.
+:::
 
-Exemple concret :
-Charges fixes : 1 000€/mois
-Nuits estimées : 18/mois
-→ 1 000 ÷ 18 = 55,5€ de fixe/nuit
-
-Ménage : 40€
-Consommables : 8€
-Commission Airbnb (4%) : ~5€ sur 120€
-→ Variables : ~53€
-
-Prix minimum = 55,5 + 53 = 108,5€ → 110€
-
-En dessous de 110€ sur Airbnb :
-tu travailles à perte.
-
-## Ce que la commission change tout
-Même appartement, même prix de base : 100€
-
-Sur Airbnb (15,5% hôte, 18,6% TVA comprise,
-depuis le 13 octobre 2026 en Europe) :
-→ Tu reçois environ 81€ net
-
-Sur Booking (15 à 18% selon ton contrat) :
-→ Tu reçois environ 82 à 85€ net
-
-Sur Driing (0%) :
-→ Tu reçois 100€ net
-
-Conséquence directe sur ton prix minimum :
-→ Sur Airbnb et Booking, les commissions
-  sont maintenant proches : calcule ton prix
-  minimum avec le taux réel de chaque plateforme.
-→ Sur Driing, tu peux proposer moins cher
-  au voyageur ET gagner plus.
-
-
-## Exercice
-**Exercice pratique :** Calcule ton prix minimum maintenant avec cette formule :
-
-[Charges fixes mensuelles] ÷ [Nuits estimées] = ___€
-+ [Coût ménage] + [Consommables] + [Commission %] = ___€
-Mon prix minimum absolu = ___€
-
-Note ce chiffre quelque part. C'est le seul nombre qui ne bougera jamais quelles que soient les stratégies appliquées ensuite.
-`,
+:::quiz
+? Pourquoi ne faut-il pas fixer son prix minimum en copiant celui des voisins ?
+- Parce qu'Airbnb l'interdit
+* Parce que leurs charges ne sont pas les tiennes
+- Parce que les voisins sont toujours trop chers
+= Le prix minimum dépend de tes propres charges. Le marché sert à fixer le prix de base, pas le plancher.
+:::`,
         },
         {
           id: 2,
-          title: 'Comment fixer ton prix de base : la méthode des 3 comparateurs',
-          duration: '15 min',
-          content: `## Le prix de base : c'est quoi exactement ?
-Le prix de base, c'est ton tarif de référence
-pour une nuit "normale" :
-→ Pas un weekend
-→ Pas un événement local
-→ Pas les vacances
+          title: 'Trouver ton prix de base',
+          duration: '7 min',
+          content: `:::bref
+- Le prix de base est ton prix d'une nuit ordinaire : en semaine, hors saison, sans événement.
+- Tu le trouves en comparant 5 logements vraiment comparables au tien.
+- Tu l'ajustes ensuite selon la vitesse à laquelle ton calendrier se remplit.
+:::
 
-C'est le point de départ de toute
-ta stratégie tarifaire.
+## Le prix de base, c'est quoi ?
+C'est le point de départ de toute ta stratégie.
+Les week-ends, les saisons et les événements viennent s'ajouter dessus.
+Les outils de tarification automatique partent aussi de lui :
+s'il est faux, tout le reste l'est aussi.
 
-Trop bas → tu laisses de l'argent sur la table
-Trop haut → ton calendrier reste vide
+## Méthode : 5 comparables
+Cherche sur Airbnb, à 1 ou 2 km, des logements proches du tien :
+- même type (studio, appartement, maison)
+- même nombre de couchages
+- équipements et niveau de finition comparables
+- une note proche de la tienne
 
-Les outils de tarification dynamique
-utilisent ton prix de base pour calculer
-toutes leurs recommandations.
-Mal calibré, il fausse tout.
+Relève leur prix pour une nuit en semaine, hors vacances, dans 3 à 4 semaines.
+Fais la moyenne : c'est ta référence de marché.
 
-## Méthode 1 : L'analyse des concurrents directs
-Cherche sur Airbnb les logements similaires
-au tien dans un rayon de 1-2 km :
+## Le test sur 2 semaines
+1. Affiche ton prix de base estimé pendant 2 semaines.
+2. Si tes nuits partent en moins de 48 heures, ton prix est trop bas : monte de 10 %.
+3. Si rien ne se réserve en 2 semaines sur des dates proches, baisse de 10 %.
+4. Recommence jusqu'à trouver l'équilibre.
 
-Critères à faire correspondre :
-→ Surface approximative
-→ Nombre de chambres / couchages
-→ Type de logement (appartement, maison...)
-→ Niveau d'équipement comparable
+:::retenir
+L'objectif n'est pas d'être plein 30 nuits par mois à petit prix. C'est d'être bien rempli au meilleur prix possible, avec moins de ménages et moins de fatigue.
+:::
 
-Observe :
-→ Leur prix de base (en semaine, hors saison)
-→ Leur note (4,8+ = peut se payer plus cher)
-→ Leur taux d'occupation (calendrier rempli ?
-   = bon indicateur de prix correct)
+## Ta note compte
+Une annonce très bien notée, avec des photos soignées et des avis récents, peut se placer au-dessus de la moyenne du quartier sans perdre de réservations.
+Soigner l'accueil, la propreté et la communication est souvent le moyen le moins cher de justifier un prix plus haut.
 
-→ Les annonces très bien notées peuvent
-  afficher un prix plus élevé que leurs voisines.
+:::astuce
+Compare ta référence de marché à ton prix minimum. Si le marché est sous ton plancher, le problème vient de tes charges ou de ton positionnement, pas de ton prix.
+:::
 
-## Méthode 2 : La règle du 1% par semaine
-Une heuristique simple pour valider ton prix :
+:::quiz
+? Tes nuits se réservent toutes en moins de 48 heures. Que fais-tu ?
+* Je monte mon prix d'environ 10 %
+- Je baisse mon prix pour remplir encore plus
+- Je ne change rien, c'est parfait
+= Des réservations très rapides montrent que ton prix est sous ce que les voyageurs sont prêts à payer.
+:::
 
-TON PRIX DE BASE HEBDOMADAIRE
-doit être d'environ 1% de la valeur
-de marché de ton logement.
+:::quiz
+? La moyenne du marché est à 80 € et ton prix minimum à 95 €. Que montre cet écart ?
+- Que tu dois t'aligner à 80 €
+* Que tes charges ou ton positionnement sont à revoir
+- Que tes voisins travaillent tous à perte
+= Vendre à 80 € te ferait perdre de l'argent à chaque nuit. Il faut réduire des charges ou monter en gamme pour justifier un prix plus haut.
+:::
 
-Exemple :
-Appartement valeur 200 000€
-→ Prix de base semaine : ~2 000€
-→ Prix de base nuit : 2 000 ÷ 7 = ~285€
-
-C'est une indication, pas une règle absolue.
-Elle permet de vérifier que tu n'es pas
-complètement décalé du marché.
-
-## Méthode 3 : Le test prix-occupation
-La méthode la plus fiable sur le terrain :
-
-Semaines 1-2 : fixe ton prix de base estimé
-Semaines 3-4 : observe le résultat
-
-Si ton calendrier se remplit trop vite
-(réservations dans les 48h) :
-→ Ton prix est trop bas. Monte-le de 10-15%.
-
-Si ton calendrier reste vide au bout de 2 semaines :
-→ Ton prix est trop haut. Baisse-le de 10%.
-
-Répète jusqu'à trouver l'équilibre.
-
-L'objectif n'est pas d'être
-réservé 30 nuits par mois à bas prix.
-C'est d'être réservé 18-22 nuits
-au meilleur prix possible.
-
-## La note Airbnb et son impact sur le prix
-Ta note Airbnb est un levier tarifaire direct.
-
-Note 4,5 ou moins → Difficile de justifier
-                     un prix au-dessus du marché
-
-Note 4,7 → Prix marché standard
-
-Note 4,8 → +10 à 15% au-dessus du marché
-            sans perdre en réservations
-
-Note 4,9 → +15 à 20% sur les concurrents
-            comparables
-
-→ Investir dans l'expérience voyageur
-  (accueil, propreté, communication)
-  est le moyen le moins coûteux
-  d'augmenter ses prix légitimement.
-
-
-## Exercice
-**Exercice pratique :** Ouvre Airbnb maintenant. Cherche 5 logements similaires au tien dans ton quartier. Note leur prix de base en semaine hors saison. Fais la moyenne. C'est ton point de référence marché.
-
-Compare avec ton prix minimum calculé en leçon 1.1 :
-- Si ta moyenne marché > ton prix minimum → tu as de la marge. Bien.
-- Si ta moyenne marché ≈ ton prix minimum → ta rentabilité est fragile. À surveiller.
-- Si ta moyenne marché < ton prix minimum → tu as un problème de coûts ou de positionnement à corriger.
-`,
+:::action
+titre: Calcule ton prix minimum et note ton prix de base
+texte: Dans Mes prix, choisis ton logement et renseigne ton prix par plateforme : il te servira dans tous les modules suivants.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Ouvrir Mes prix
+:::`,
         },
       ],
     },
     {
       id: 2,
-      title: 'La saisonnalité : multiplier ses revenus aux bons moments',
-      duration: '30 min',
+      title: 'Saisons, week-ends et événements',
+      duration: '15 min',
       lessons: [
         {
           id: 11,
-          title: 'Construire son calendrier saisonnier',
-          duration: '15 min',
-          content: `## Les 4 niveaux de demande à connaître
-NIVEAU 4, DEMANDE EXCEPTIONNELLE
-Événements rares : grand festival, compétition
-internationale, salon professionnel majeur
-→ Majoration : +50% à +100% du prix de base
+          title: 'Construire ton calendrier de saisons',
+          duration: '8 min',
+          content: `:::bref
+- Ton année se découpe en niveaux de demande : basse saison, ordinaire, week-end, haute saison, événement.
+- Chaque niveau a sa majoration ou sa remise, appliquée sur ton prix de base.
+- Les événements locaux sont l'endroit où les hôtes laissent le plus d'argent.
+:::
 
-NIVEAU 3, HAUTE SAISON
-Vacances scolaires, été, fêtes de fin d'année
-→ Majoration : +30% à +50%
+## Les niveaux de demande
+| Niveau | Quand | Réglage indicatif |
+| --- | --- | --- |
+| Basse saison | Semaines creuses | moins 15 à 30 % |
+| Ordinaire | Semaine hors vacances | prix de base |
+| Week-end | Vendredi et samedi soir | plus 15 à 25 % |
+| Haute saison | Vacances scolaires, été, fêtes | plus 30 à 50 % |
+| Événement | Festival, salon, grand concert | plus 50 % et au-delà |
 
-NIVEAU 2, DEMANDE STANDARD
-Weekends, jours fériés isolés
-→ Majoration : +15% à +25%
+Ces pourcentages sont des points de départ à tester sur ton marché, pas des règles fixes.
 
-NIVEAU 1, PRIX DE BASE
-Semaine ordinaire, hors saison
-→ Ton prix de base (0% de variation)
+## Les vacances scolaires
+En France, les vacances sont décalées par zones : la demande monte plusieurs semaines de suite.
+Note dans ton calendrier : Toussaint, Noël, hiver, printemps, été, et les ponts de mai.
+Programme ces périodes à l'avance plutôt qu'à la dernière minute.
 
-NIVEAU 0, BASSE SAISON
-Périodes creuses, semaines calmes
-→ Réduction : -15% à -30%
+## Les événements locaux
+Un salon professionnel, un marathon ou un concert dans un stade fait exploser la demande dans un rayon de quelques kilomètres.
+Où les trouver :
+- l'agenda de l'office de tourisme
+- les événements Facebook de ta ville
+- le calendrier du parc des expositions ou du palais des congrès
 
-## Les vacances scolaires françaises : ton calendrier prioritaire
-En France, les 5 zones de vacances
-(A, B, C + spécifiques) créent des pics
-prévisibles chaque année.
+Dès que tu repères une date :
+- majore la période
+- impose 2 nuits minimum
+- fais-le des mois à l'avance pour les événements qui reviennent chaque année
 
-À noter dans ton calendrier :
-→ Toussaint (fin octobre)
-→ Noël / Jour de l'An
-→ Hiver (février)
-→ Printemps (avril)
-→ Grandes vacances (juillet-août)
-→ Ponts (mai : Ascension, Pentecôte)
+:::erreur
+Attendre de voir si la date se remplit toute seule. Les premières réservations partent alors à ton prix ordinaire, souvent bien en dessous de ce que vaut la nuit.
+:::
 
-Ces périodes méritent systématiquement
-un tarif majoré programmé à l'avance.
+## Le délai avant l'arrivée
+- Plus de 30 jours avant : garde ton prix, les voyageurs prévoyants sont moins sensibles au prix.
+- De 7 à 30 jours : c'est la période où se fait l'essentiel des réservations.
+- Moins de 7 jours et toujours libre : une remise de dernière minute peut remplir, sans jamais passer sous ton prix minimum.
 
-Airbnb et Booking te suggèrent ces
-ajustements, mais ne les fais pas
-à ta place et souvent sous-évaluent.
+:::quiz
+? Un salon professionnel a lieu dans ta ville en mars. Quand ajustes-tu ton prix ?
+* Dès que je connais la date, avec 2 nuits minimum
+- Une semaine avant, si ce n'est pas réservé
+- Je ne change rien, les salons n'attirent personne
+= Ajuster tôt évite que les premières réservations partent au prix ordinaire.
+:::
 
-## Les événements locaux : ton avantage concurrentiel
-C'est là que la majorité des hôtes
-laissent le plus d'argent sur la table.
-
-Un concert de stade, un salon professionnel,
-un marathon, un festival, la demande explose
-dans un rayon de quelques kilomètres.
-
-Comment les identifier :
-→ Google Agenda de ta ville
-→ Site de l'office de tourisme local
-→ Facebook Events de ta commune
-→ Calendriers des salons professionnels
-   (LinkedIn Events, Viparis, Reed...)
-
-Dès qu'un événement est identifié :
-→ Bloque la période dans ton calendrier
-→ Applique une majoration immédiate
-→ Augmente le séjour minimum (2 nuits min.)
-→ Anticipe 6-12 mois à l'avance
-   pour les grands événements récurrents
-
-## Les weekends : un levier simple et sous-exploité
-Une règle universelle en LCD :
-
-Le weekend vaut toujours plus que la semaine.
-
-Vendredi et samedi soir : +15% à +25%
-par rapport à ton prix de base.
-
-À configurer directement dans Airbnb :
-Paramètres → Tarification →
-"Prix du weekend"
-
-Sur Booking : créer une promotion
-"Prix spécial weekend"
-
-Sur Driing : ajustement manuel
-ou selon tes dates de disponibilité
-
-Cette seule modification peut augmenter
-tes revenus de 8 à 12% sur l'année entière.
-
-## La règle des 30/60/90 jours
-Le délai avant la date du séjour
-influence fortement la valeur du prix.
-
-30 jours avant et plus :
-→ Prix standard ou légèrement supérieur
-  Les voyageurs qui réservent tôt
-  sont souvent moins sensibles au prix.
-
-7 à 30 jours avant :
-→ Prix plein. Demand active.
-
-Moins de 7 jours avant :
-→ Si pas encore réservé, deux options :
-  A) Réduction de dernière minute (-15%)
-     pour remplir plutôt que laisser vide
-  B) Maintien du prix si ta politique est
-     la rentabilité plutôt que l'occupation
-
-Ne laisse JAMAIS une nuit se vendre
-en dessous de ton prix minimum.
-
-
-## Exercice
-**Exercice pratique :** Ouvre ton calendrier Airbnb. Identifie les 3 prochains événements locaux autour de chez toi (concert, festival, salon...). Configure immédiatement une majoration de +30% pour ces périodes et un séjour minimum de 2 nuits. C'est fait en 10 minutes et ça peut représenter plusieurs centaines d'euros de revenus supplémentaires.
-`,
+:::quiz
+? Il te reste une nuit libre dans 4 jours. Quelle est la limite à ne pas franchir ?
+- Le prix moyen du quartier
+* Ton prix minimum
+- Le prix de la nuit la plus chère du mois
+= Une remise de dernière minute est utile, mais jamais sous ton plancher.
+:::`,
         },
         {
           id: 12,
-          title: 'Réductions pour la durée de séjour : remplir le calendrier intelligemment',
-          duration: '15 min',
-          content: `## Pourquoi les réductions longue durée augmentent les revenus
-Contre-intuitif mais vrai :
+          title: 'Remises de durée et séjour minimum',
+          duration: '7 min',
+          content: `:::bref
+- Un séjour de 7 nuits coûte un seul ménage, une seule arrivée, un seul échange de messages.
+- Une remise de durée bien réglée remplit ton calendrier sans faire baisser ta marge.
+- Avant toute remise : le revenu par nuit doit rester au-dessus de ton prix minimum.
+:::
 
-Proposer -15% pour 7 nuits
-améliore ta rentabilité globale.
+## Pourquoi une remise peut rapporter plus
+:::chiffres
+7 | ménages pour 7 séjours d'une nuit
+1 | ménage pour un séjour de 7 nuits
+:::
 
-Pourquoi ?
+À 40 € le ménage, 7 séjours d'une nuit coûtent 280 € de ménage, contre 40 € pour une semaine.
+La remise de durée est en partie payée par ces économies.
 
-1 séjour de 7 nuits = 1 ménage
-                     = 1 set de messages
-                     = 1 check-in
+## Une grille de départ
+| Durée | Remise indicative | Pour qui |
+| --- | --- | --- |
+| 3 à 4 nuits | 5 % | week-ends prolongés |
+| 7 nuits | 10 à 15 % | vacances, missions |
+| 28 nuits et plus | 25 à 35 % | télétravail, déplacements longs |
 
-7 séjours d'1 nuit = 7 ménages (7 × 40€ = 280€)
-                   = 7 × messages
-                   = 7 check-ins
+## Le séjour minimum
+Imposer 2 nuits le week-end évite qu'une seule nuit du samedi bloque tout le week-end.
+En basse saison, accepter 1 nuit aide à combler les trous du calendrier.
 
-La remise compense largement la réduction
-des coûts opérationnels par séjour.
+:::retenir
+Remise intelligente : elle correspond à une vraie économie et reste au-dessus de ton prix minimum. Bradage : tu baisses seulement parce que le calendrier est vide.
+:::
 
-## La grille de remises recommandée
-SÉJOUR DE 3-4 NUITS (weekend prolongé)
-→ Remise : -5%
-   Objectif : attirer les réservations
-   de weekend complet
+:::exemple
+Prix de base 100 €, remise de 15 % sur 7 nuits : 85 € la nuit. Si ton prix minimum est 90 €, cette remise te fait perdre de l'argent : limite-la à 10 %.
+:::
 
-SÉJOUR DE 7 NUITS (semaine)
-→ Remise : -10% à -15%
-   Objectif : bloquer la semaine entière,
-   réduire les rotations
+:::quiz
+? Ton prix de base est 100 € et ton prix minimum 90 €. Quelle remise maximale pour 7 nuits ?
+- 15 %
+* 10 %
+- 25 %
+= 100 € moins 10 % = 90 €, pile ton plancher. Au-delà, chaque nuit te coûte de l'argent.
+:::
 
-SÉJOUR DE 28+ NUITS (mensuel)
-→ Remise : -25% à -35%
-   Objectif : cibler télétravailleurs, pros
-   en déplacement, séjours de longue durée
+:::quiz
+? Pourquoi imposer 2 nuits minimum le week-end ?
+* Pour éviter qu'une nuit isolée bloque tout le week-end
+- Parce qu'Airbnb l'exige
+- Pour faire baisser le prix moyen
+= Une seule nuit le samedi empêche souvent de louer le vendredi, et tu paies quand même un ménage complet.
+:::
 
-Ces remises s'appliquent SUR TON PRIX DE BASE.
-Elles ne doivent jamais faire descendre
-le revenu par nuit sous ton prix minimum.
-
-## La stratégie du prix à 2 nuits minimum
-Une technique avancée mais très efficace :
-
-Fixe un prix élevé pour 1 nuit.
-Applique une remise de 20-25% pour 2 nuits.
-
-Résultat :
-→ 1 nuit = 150€ (décourageant pour une seule nuit)
-→ 2 nuits = 120€/nuit (attractif)
-
-Effet :
-→ Les voyageurs d'1 nuit sont naturellement
-  découragés sans que tu refuses qui que ce soit
-→ Les voyageurs de 2 nuits voient une "bonne affaire"
-→ Tu réduis les rotations sans perdre en revenus
-
-Applicable sur Airbnb (remises sur durée de séjour)
-et sur Booking (promotions durée).
-
-## Ne jamais confondre remise et bradage
-La différence entre une remise intelligente
-et un bradage :
-
-REMISE INTELLIGENTE
-→ Elle correspond à une économie de coûts réels
-→ Le revenu net reste au-dessus du prix minimum
-→ Elle cible un type de voyageur précis
-
-BRADAGE
-→ Tu baisses juste parce que ton calendrier est vide
-→ Le revenu net approche ou dépasse ton prix minimum
-→ Tu n'as pas de stratégie, tu réagis à la panique
-
-Test simple avant toute remise :
-"Mon revenu net par nuit sur ce séjour
- reste-t-il au-dessus de mon prix minimum ?"
-
-Si non : ne fais pas cette remise.
-
-
-## Exercice
-**Exercice pratique :** Va dans les paramètres Airbnb → Tarification → Remises sur la durée de séjour. Configure ces deux valeurs :
-- Remise 7 nuits : -10%
-- Remise 28 nuits : -25%
-
-Vérifie que le prix par nuit résultant reste au-dessus de ton prix minimum calculé en module 1. Si ce n'est pas le cas, ajuste le pourcentage.
-`,
+:::action
+titre: Règle tes saisons dans Mes prix
+texte: Indique tes pourcentages de basse et de haute saison pour ton logement, puis reporte-les avec tes remises de durée dans Airbnb et Booking.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Régler mes saisons
+:::`,
         },
       ],
     },
     {
       id: 3,
-      title: 'Comprendre les algorithmes des plateformes',
-      duration: '35 min',
+      title: 'Le bon prix selon la plateforme',
+      duration: '20 min',
       lessons: [
         {
           id: 21,
-          title: 'Comment Airbnb fixe vraiment tes prix (et pourquoi tu ne dois pas lui faire confiance aveuglément)',
-          duration: '12 min',
-          content: `## La tarification intelligente Airbnb : comment ça fonctionne
-La tarification intelligente Airbnb est
-un outil gratuit intégré à ta gestion
-de calendrier.
+          title: 'Airbnb : sa tarification et ses nouveaux frais',
+          duration: '7 min',
+          content: `:::bref
+- Depuis le 13 octobre 2026 en Europe, Airbnb prélève des frais uniques de 15,5 % à l'hôte (18,6 % TVA comprise si tu n'as pas de numéro de TVA) : le voyageur ne paie plus de frais de service à part.
+- La tarification intelligente d'Airbnb peut aider, à condition de régler toi-même un prix minimum.
+- Sans prix minimum réglé, l'outil peut vendre des nuits sous ton plancher.
+:::
 
-Ce qu'elle analyse :
-→ La saisonnalité locale
-→ Les événements proches
-→ Les avis et la note de ton annonce
-→ Le nombre de visites sur ta page
-→ Les prix des logements similaires
-→ Le délai avant la date du séjour
-→ Le taux d'occupation local
+## Ce qui a changé
+Avant, les frais étaient partagés : environ 3 % pour l'hôte, et des frais de service ajoutés au prix payé par le voyageur.
+Aujourd'hui, le voyageur voit un prix tout compris et c'est l'hôte qui paie les frais.
 
-Elle ajuste tes prix automatiquement
-chaque jour en fonction de ces données.
+:::chiffres
+100 € | prix affiché au voyageur
+18,60 € | frais Airbnb TVA comprise
+81,40 € | ce que tu reçois
+:::
 
-## Le problème fondamental de la tarification Airbnb
-Attention : ce que personne ne dit assez clairement :
+Si tu as un numéro de TVA intracommunautaire, la TVA ne s'ajoute pas aux frais : tu reçois 84,50 €.
 
-La tarification intelligente Airbnb
-optimise les revenus D'AIRBNB.
-Pas forcément les tiens.
+> Source : Airbnb, « Simplifying Airbnb service fees » ; Hostfully et Smoobu, novembre 2026
 
-Airbnb préfère louer 10 nuits à 60€
-plutôt que 5 nuits à 120€.
-→ Le chiffre d'affaires est identique POUR AIRBNB.
-→ Mais pour toi, 5 nuits à 120€ est souvent
-  plus rentable (moins de ménages, moins de gestion).
+:::retenir
+Si tu n'as pas revu tes prix depuis octobre, tu reçois environ 81 € au lieu de 97 € pour 100 € de prix affiché. Refais ton calcul de prix minimum avec le taux réel.
+:::
 
-L'outil a aussi tendance à sous-évaluer
-les prix en basse saison pour maximiser
-le taux de réservation global de la plateforme.
+## La tarification intelligente
+Elle ajuste tes prix chaque jour selon la saison, la demande et les logements proches.
+Elle est pratique quand tu démarres ou que tu manques de temps.
+Mais son but est de remplir : elle peut descendre bas en période creuse.
 
-→ Utilise toujours la tarification intelligente
-  AVEC un prix minimum configuré manuellement.
-  Sans ça, tu prends le risque de vendre
-  des nuits sous ton seuil de rentabilité.
+À régler dans tous les cas :
+- un prix minimum (ton plancher recalculé)
+- un prix maximum raisonnable
+- ta majoration du week-end
+- ton séjour minimum
 
-## Les paramètres à toujours configurer sur Airbnb
-Dans Tarification → Tarification intelligente :
+:::erreur
+Activer la tarification intelligente sans prix minimum. C'est la façon la plus rapide de louer des nuits à perte.
+:::
 
-OBLIGATOIRE :
-□ Prix minimum par nuit
-  → Ton prix minimum calculé en module 1.
-  JAMAIS en dessous de ce chiffre.
+:::quiz
+? Sans numéro de TVA, sur un prix affiché de 200 €, combien reçois-tu environ avec Airbnb ?
+- 194 €
+* 163 €
+- 200 €
+= Frais de 18,6 % TVA comprise : 37,20 €, il te reste 162,80 €.
+:::
 
-□ Prix maximum par nuit
-  → Fixe un plafond raisonnable pour éviter
-  que l'algorithme ne monte trop haut
-  et fasse fuir les réservations anticipées.
-
-RECOMMANDÉ :
-□ Prix du weekend
-  → +15 à 25% par rapport au prix de base
-
-□ Séjour minimum
-  → 2 nuits en général, 1 nuit en basse saison
-  pour remplir les trous du calendrier
-
-□ Remises sur durée de séjour
-  → Configurées en module 2
-
-## Quand activer et quand désactiver la tarification intelligente
-ACTIVER si :
-→ Tu démarres et tu n'as pas encore de données
-→ Tu manques de temps pour gérer les prix manuellement
-→ Ton marché est simple (ville moyenne, peu d'événements)
-
-DÉSACTIVER et gérer manuellement si :
-→ Tu es sur un marché avec des événements locaux
-  forts (la tarification Airbnb les sous-exploite)
-→ Tu constates que tes prix sont systématiquement
-  plus bas que les concurrents autour de toi
-→ Tu utilises un outil de tarification tiers
-  (Pricelabs, Beyond, Wheelhouse)
-
-→ Dans tous les cas :
-  Prix minimum configuré = non négociable.
-
-
-## Exercice
-**Exercice pratique :** Vérifie maintenant dans ton tableau de bord Airbnb si un prix minimum est configuré. Si ce champ est vide ou inférieur au chiffre calculé en module 1 : corrige-le immédiatement. C'est la protection la plus importante de ta rentabilité.
-`,
+:::quiz
+? Quel réglage est indispensable avant d'activer la tarification intelligente ?
+* Un prix minimum
+- Une photo de couverture
+- Une remise de dernière minute
+= Le prix minimum empêche l'outil de vendre sous ton plancher.
+:::`,
         },
         {
           id: 22,
-          title: 'Booking.com : la logique tarifaire est différente',
-          duration: '12 min',
-          content: `## La différence fondamentale avec Airbnb
-Sur Airbnb (Europe, depuis le 13 octobre 2026) :
-Le voyageur voit ton prix, sans frais ajoutés.
-Tu paies une commission unique de 15,5%
-(18,6% TVA comprise).
+          title: 'Booking.com : une logique différente',
+          duration: '6 min',
+          content: `:::bref
+- Sur Booking, la commission dépend de l'accord signé à l'inscription : autour de 15 % en France.
+- Avec les nouveaux frais Airbnb, les deux plateformes te coûtent maintenant à peu près pareil.
+- Les promotions Booking ne doivent jamais faire passer ta nuit sous ton prix minimum.
+:::
 
-Sur Booking.com :
-Le voyageur voit TON prix, sans frais.
-Tu paies 15-18% de commission sur ce prix.
+## La commission
+Le voyageur voit ton prix, et Booking prélève sa commission dessus.
+Le taux exact figure dans ton extranet. Il tourne autour de 15 % pour un meublé en France, parfois plus selon les options choisies. Sans numéro de TVA, la TVA s'ajoute aussi à cette commission.
 
-Conséquence directe :
+> Source : PriceLabs, Smoobu et Lodgify, guides Booking 2026
 
-Les deux plateformes fonctionnent désormais
-de la même façon, avec des commissions proches.
-À prix affiché égal, tu reçois à peu près
-la même chose sur les deux.
+:::retenir
+Avant octobre 2026, il fallait afficher un prix plus élevé sur Booking qu'Airbnb pour garder la même marge. Avec les frais Airbnb à 15,5 %, les deux plateformes coûtent maintenant à peu près pareil : à prix affiché égal, tu reçois presque la même chose. Compare simplement ton revenu net.
+:::
 
-La vraie différence se joue sur les remises
-(Genius sur Booking) et sur la clientèle :
-adapte ta stratégie à chaque plateforme
-plutôt que ton prix de base.
+## Ce qui te rend visible sur Booking
+- un calendrier ouvert loin dans le temps
+- des conditions d'annulation souples
+- une bonne note et des avis récents
+- un prix compétitif face aux logements comparables
 
-## Comment Booking positionne tes annonces
-L'algorithme de Booking priorise :
+## Les promotions
+Booking propose des réductions : réservation anticipée, séjours longs, offres mobiles, programme Genius pour ses clients fidèles.
+Chacune réduit ton revenu. Avant d'en activer une, vérifie le prix final par nuit.
 
-01. Le taux de commission proposé
-    (plus tu paies, plus tu es visible)
+:::exemple
+Prix 100 €, réduction Genius de 10 % : 90 €. Après 15 % de commission, il te reste 76,50 €. Si ton prix minimum Booking est 80 €, cette promotion te fait perdre de l'argent.
+:::
 
-02. La flexibilité d'annulation
-    (annulation gratuite = plus de visibilité)
+:::quiz
+? Où trouves-tu ton taux de commission Booking exact ?
+* Dans ton extranet et ton accord d'hébergement
+- Sur la fiche du logement voisin
+- Il est le même pour tout le monde, 10 %
+= Le taux dépend de ton accord et de tes options, il varie d'un hébergement à l'autre.
+:::
 
-03. La disponibilité du calendrier
-    (calendrier plein = annonce remontée)
-
-04. La note et les avis récents
-
-05. La compétitivité du prix
-    par rapport aux annonces similaires
-
-→ Booking a tendance à pousser
-  les annonces avec annulation gratuite
-  et prix compétitifs, même si ça réduit
-  ta rentabilité par réservation.
-
-## La stratégie de prix sur Booking
-3 approches selon ton objectif :
-
-MAXIMISER LA VISIBILITÉ
-→ Prix compétitif (dans la moyenne du marché)
-→ Annulation flexible
-→ Commission standard
-
-MAXIMISER LA MARGE
-→ Prix majoré (+12-14% vs Airbnb)
-→ Conditions strictes acceptées
-→ Commission standard
-→ Moins de volume, plus de rentabilité/réservation
-
-ÉQUILIBRER LES DEUX
-→ Prix majoré de 8-10% vs Airbnb
-→ Annulation modérée (ex: gratuite jusqu'à J-7)
-→ C'est souvent le meilleur compromis
-
-→ L'important : ne jamais avoir le même prix
-  sur Airbnb et Booking sans ajuster
-  pour la différence de commission.
-
-## Les promotions Booking qui valent le coup
-Booking propose plusieurs types de promotions.
-Toutes ne sont pas intéressantes.
-
-✓ À UTILISER :
-→ Tarif early bird (-10% pour réservation
-  60+ jours à l'avance) : sécurise le calendrier
-→ Séjour long (-15% pour 7+ nuits) : déjà vu
-→ Promotion mobile : visibilité accrue sur mobile
-
-✗ À ÉVITER :
-→ Programme Genius : Booking te demande de réduire
-  tes prix pour ses membres fidèles.
-  Si ta marge est serrée, ça peut faire basculer
-  des réservations sous ton prix minimum.
-
-Règle : toute promotion ne doit jamais
-faire descendre ton revenu net sous
-ton prix minimum calculé en module 1.
-
-
-## Exercice
-**Exercice pratique :** Si tu es sur Booking, compare ton prix de base actuel sur Booking avec celui sur Airbnb. Applique la règle : ton prix Booking doit être ≥ prix Airbnb × 1.12. Si ce n'est pas le cas, ajuste-le maintenant dans l'extranet Booking.
-`,
+:::quiz
+? Prix 100 €, Genius à moins 10 %, commission 15 %. Que reçois-tu ?
+- 85 €
+- 90 €
+* 76,50 €
+= 100 moins 10 % = 90 €, puis moins 15 % de commission = 76,50 €.
+:::`,
         },
         {
           id: 23,
-          title: 'Le prix juste sur Driing et en réservation directe',
-          duration: '11 min',
-          content: `## La logique gagnant-gagnant de la réservation directe
-Quand un voyageur passe par Airbnb :
-→ Il paie 115-120€ pour un logement à 100€
-→ Tu reçois 96€ (après commission hôte)
+          title: 'Le prix en réservation directe',
+          duration: '7 min',
+          content: `:::bref
+- En direct, tu ne paies pas la commission des plateformes : tu peux être moins cher pour le voyageur et gagner plus.
+- Une remise de 5 à 10 % par rapport au prix affiché sur Airbnb suffit à rendre le direct intéressant.
+- Rends l'économie visible : le voyageur ne fait pas le calcul seul.
+:::
 
-Quand il réserve directement (Driing) :
-→ Il peut payer 105-108€ (économie visible)
-→ Tu reçois 105-108€ (plus que via Airbnb)
+## Le calcul gagnant pour les deux
+:::chiffres
+100 € | prix sur Airbnb
+81,40 € | ce que tu reçois via Airbnb
+92 € | prix direct, ce que tu reçois
+:::
 
-Le voyageur économise.
-Tu gagnes plus.
-Il n'y a pas de mauvaise affaire ici.
+Le voyageur paie 8 € de moins, et toi tu reçois plus de 10 € de plus.
+Compte seulement les frais de paiement en ligne si tu encaisses par carte (souvent autour de 1,5 % en Europe).
 
-→ Driing affiche automatiquement ce comparatif.
-  Le voyageur voit exactement ce qu'il économise
-  vs Airbnb et Booking. Tu n'as pas à argumenter.
+## Ce qu'il ne faut pas faire
+:::erreur
+Afficher le même prix qu'Airbnb : le voyageur n'a aucune raison de réserver en direct. Ou au contraire brader à moins 30 % : tu perds la marge que tu viens de gagner.
+:::
 
-## Comment calculer ton prix direct optimal
-TON PRIX DIRECT = Prix affiché Airbnb voyageur
-                  × 0,90 à 0,93
+## Le prix selon le voyageur
+| Voyageur | Prix proposé |
+| --- | --- |
+| Nouveau | 5 à 10 % sous le prix Airbnb |
+| Déjà venu | une petite remise fidélité en plus |
+| Recommandé par un ancien voyageur | un code de parrainage |
 
-Exemple :
-Prix base Airbnb : 100€
-Frais service voyageur (15%) : 115€ affiché
+:::astuce
+Sur Driing (je suis co-fondateur), la comparaison avec les plateformes s'affiche toute seule au voyageur. Sur ton propre site, montre-la clairement.
+:::
 
-Prix direct optimal : 115€ × 0,91 = 104-106€
+:::quiz
+? Airbnb affiche 100 € (tu reçois environ 81 €). Quel prix direct est le plus logique ?
+- 100 €, le même prix partout
+* Environ 92 €
+- 65 €, pour être sûr de remplir
+= À 92 € le voyageur économise et tu reçois plus qu'avec Airbnb. À 65 € tu perds de l'argent pour rien.
+:::
 
-→ Le voyageur économise ~10€/nuit
-→ Tu gagnes 8-10€ de plus que via Airbnb
+:::quiz
+? Pourquoi un prix direct identique à celui d'Airbnb fonctionne mal ?
+* Le voyageur ne voit aucun avantage à réserver en direct
+- C'est interdit par Airbnb
+- Le voyageur paie des frais en plus en direct
+= Sans économie visible, le voyageur reste sur la plateforme qu'il connaît.
+:::
 
-Sur un séjour d'une semaine :
-→ Voyageur économise ~70€
-→ Tu gagnes ~56€ de plus
-→ Win-win total : ~126€ "créés"
-   en sortant de la plateforme
-
-## Les 3 erreurs à ne pas faire sur le prix direct
-ERREUR 1, Afficher le même prix qu'Airbnb
-→ Pourquoi réserver directement ?
-  Il n'y a aucun avantage visible.
-
-ERREUR 2, Brader trop bas
-→ -30% vs Airbnb ne rapporte rien de plus
-  que -10%, mais te fait perdre 20% de marge.
-
-ERREUR 3, Ne pas rendre la comparaison visible
-→ Le voyageur ne fait pas le calcul seul.
-  Sur Driing, c'est fait automatiquement.
-  Sur ton site propre, montre-le explicitement.
-
-## Le prix direct selon le type de voyageur
-VOYAGEUR NOUVEAU (première visite)
-→ Prix direct standard : Airbnb × 0,91
-→ Il a besoin de voir la différence clairement
-
-VOYAGEUR FIDÈLE (déjà venu)
-→ Remise fidélité supplémentaire : -5 à -10%
-→ Il te connaît, il n'a pas besoin d'être
-  rassuré par une plateforme tiers
-→ Il revient car l'expérience valait le coup
-
-VOYAGEUR RECOMMANDÉ (envoyé par quelqu'un)
-→ Code parrainage : -5%
-→ Coûte moins que n'importe quelle commission
-→ Et récompense ton ambassadeur
-
-
-## Exercice
-**Exercice pratique :** Sur ton annonce Driing, vérifie que ton prix est correctement positionné. Il doit être inférieur au prix total Airbnb (frais inclus) mais supérieur à ton prix de base Airbnb net.
-
-Si tu n'as pas encore d'annonce Driing : c'est le moment de la créer. Le prix optimal de départ = prix affiché Airbnb × 0,91.
-`,
+:::action
+titre: Compare ton revenu net par plateforme
+texte: Dans Mes prix, renseigne tes prix Airbnb, Booking et direct : tu vois tout de suite ce que tu reçois sur chacune.
+lien: /dashboard/calculateurs#mes-prix
+bouton: Comparer mes prix
+:::`,
         },
       ],
     },
     {
       id: 4,
-      title: 'La tarification dynamique sans se prendre la tête',
-      duration: '30 min',
+      title: 'Ajuster tes prix chaque semaine',
+      duration: '15 min',
       lessons: [
         {
           id: 31,
-          title: 'Faire sa tarification dynamique manuellement (la méthode pour débuter)',
-          duration: '15 min',
-          content: `## Pourquoi commencer manuellement
-Avant d'utiliser un outil automatisé,
-il faut comprendre la logique.
+          title: 'Le rituel de 15 minutes par semaine',
+          duration: '7 min',
+          content: `:::bref
+- Avant tout outil automatique, ajuste tes prix toi-même pendant quelques semaines pour comprendre ton marché.
+- 15 minutes chaque lundi suffisent : événements, remplissage, concurrents.
+- Note ce que tu fais et ce que ça donne : en 3 mois, tu connais ton marché par cœur.
+:::
 
-Un outil de tarification dynamique
-peut augmenter tes revenus.
-Mais il part de ton prix de base
-et de tes règles, si tu les as mal
-configurés, il amplifie les erreurs.
+## Les 3 questions du lundi
+1. Y a-t-il un événement dans les 6 prochaines semaines ? Si oui, majore tout de suite.
+2. Mes 2 prochaines semaines sont-elles remplies à moins de la moitié ? Si oui, une petite remise.
+3. Mes 3 concurrents directs ont-ils bougé leurs prix ? Si oui, demande-toi pourquoi.
 
-→ Les 3 premières semaines : manuellement.
-→ Ensuite seulement : un outil si besoin.
+## Les 5 règles
+- Le prix minimum ne se franchit jamais.
+- Le week-end est toujours majoré.
+- Un événement se majore dès qu'il est connu.
+- Calendrier vide à 14 jours : petite remise.
+- Haute saison : prix haut et séjour minimum plus long.
 
-La tarification dynamique manuelle,
-c'est simplement 3 vérifications
-hebdomadaires de 15 minutes.
+## Un tableau simple
+| Semaine | Raison | Prix | Remplissage | Revenu |
+| --- | --- | --- | --- | --- |
+| Janvier, semaine 2 | ordinaire | 90 € | 60 % | 380 € |
+| Février, semaine 1 | vacances d'hiver | 130 € | 90 % | 820 € |
+| Mars, semaine 3 | marathon | 160 € | 100 % | 1 120 € |
 
-## Le rituel des 15 minutes hebdomadaires
-Chaque lundi matin, ouvre ton calendrier
-et réponds à ces 3 questions :
+:::exemple
+Ces lignes sont un exemple. Après quelques mois, ton tableau te montre quelles périodes rapportent et lesquelles méritent un meilleur réglage.
+:::
 
-01. Y A-T-IL DES ÉVÉNEMENTS LOCAUX
-    DANS LES 6 PROCHAINES SEMAINES ?
-    → Si oui : majorer immédiatement
-    → Source : Google Events, agenda ville
+:::quiz
+? Tes 2 prochaines semaines sont remplies à 30 %. Que fais-tu ?
+* Une petite remise, sans passer sous mon prix minimum
+- Je baisse de 50 % pour tout remplir
+- Rien, ça se remplira tout seul
+= Une remise mesurée aide à remplir, ton plancher reste la limite.
+:::
 
-02. MON CALENDRIER EST-IL TROP VIDE
-    POUR LES 2 PROCHAINES SEMAINES ?
-    → Si moins de 50% rempli à J-14 :
-      appliquer une remise de dernière minute
-
-03. MES PRIX SONT-ILS COMPÉTITIFS ?
-    → Regarder 3 concurrents directs
-    → Si eux baissent et toi non : ajuster
-    → Si eux montent et toi non : ajuster
-
-C'est tout. 15 minutes. Chaque semaine.
-
-## Les 5 règles de tarification manuelle
-RÈGLE 1, Le prix minimum est sacré
-→ Jamais en dessous, quelles que soient
-  les circonstances
-
-RÈGLE 2, Weekends majorés systématiquement
-→ +15-25% par rapport au prix de base
-
-RÈGLE 3, Événements = majoration immédiate
-→ Ne pas attendre. Agir dès l'identification.
-
-RÈGLE 4, Calendrier vide à J-14 = remise
-→ Une nuit à -15% vaut mieux qu'une nuit vide
-
-RÈGLE 5, Haute saison = prix maximum
-→ Pendant les vacances scolaires et l'été,
-  monte au maximum raisonnable (+30-50%)
-  et augmente le séjour minimum
-
-## Le tableau de bord simple à tenir
-Un Google Sheet avec 5 colonnes suffit :
-
-| Période | Événement/Raison | Prix appliqué | Taux occ. | Revenu net |
-
-Exemples :
-| Jan sem 2 | Standard | 90€ | 60% | 486€ |
-| Fév sem 1 | Vacances hiver | 130€ | 90% | 1053€ |
-| Mars sem 3 | Marathon local | 160€ | 100% | 1120€ |
-
-Après 3 mois, tu vois exactement
-quelles périodes performent
-et lesquelles méritent d'être optimisées.
-
-
-## Exercice
-**Exercice pratique :** Ouvre un Google Sheet ou une simple note. Liste les 8 prochaines semaines. Pour chacune, note le niveau de demande estimé (vacances ? événement ? standard ? creux ?) et le prix que tu vas appliquer. C'est ton premier plan de tarification, imparfait mais déjà 10 fois mieux qu'un prix fixe.
-`,
+:::quiz
+? Pourquoi commencer à la main avant un outil automatique ?
+- Parce que les outils sont interdits au début
+* Pour comprendre ton marché et bien régler l'outil ensuite
+- Parce que c'est toujours plus rentable
+= Un outil part de ton prix de base et de tes règles : mal réglés, il amplifie tes erreurs.
+:::`,
         },
         {
           id: 32,
-          title: 'Les outils de tarification dynamique : quand les utiliser et lesquels',
-          duration: '15 min',
-          content: `## À partir de quand un outil est-il pertinent ?
-Un outil de tarification dynamique
-est pertinent si :
+          title: 'Les outils de tarification automatique',
+          duration: '8 min',
+          content: `:::bref
+- Un outil devient utile quand tu as plusieurs logements, beaucoup d'événements ou peu de temps.
+- Il amplifie ta stratégie, il ne la remplace pas : prix minimum et prix de base restent à toi.
+- Les principaux coûtent autour de 20 dollars par logement et par mois, ou environ 1 % de tes revenus.
+:::
 
-✓ Tu gères 2+ logements
-✓ Ton marché a de nombreux événements locaux
-  difficiles à suivre manuellement
-✓ Tu n'as pas 15 minutes par semaine
-  pour la gestion manuelle
-✓ Tu veux optimiser finement
-  (délai de réservation, dernière minute, etc.)
+## Quand c'est utile
+✅ Tu gères 2 logements ou plus
+✅ Ton marché a beaucoup d'événements difficiles à suivre
+✅ Tu n'as pas 15 minutes par semaine pour tes prix
 
-Ce n'est PAS pertinent si :
-✗ Tu viens de démarrer (calibre d'abord)
-✗ Tu n'as pas configuré ton prix minimum
-  et ton prix de base correctement
-✗ Tu n'as pas encore compris ta saisonnalité locale
+Pas encore utile si :
+❌ Tu démarres et n'as pas encore calibré ton prix de base
+❌ Ton prix minimum n'est pas calculé
 
-→ Un outil amplifie ta stratégie.
-  Il ne la remplace pas.
+## Les outils les plus connus
+| Outil | Point fort | Prix indicatif |
+| --- | --- | --- |
+| PriceLabs | Très réglable, adapté à plusieurs logements | environ 15 à 20 dollars par logement et par mois |
+| Wheelhouse | Simple à prendre en main | 19,99 dollars par logement et par mois, ou 1 % des réservations |
+| Beyond | Fort sur les zones touristiques saisonnières | environ 1 % des revenus |
 
-## Les 3 outils à connaître
-PRICELABS
-→ Le plus puissant et personnalisable
-→ Idéal pour 2+ logements, hôtes avancés
-→ Contrôle fin sur toutes les règles
-→ Prix : ~20$/logement/mois
-→ Essai gratuit 30 jours
+> Source : pages de tarifs de PriceLabs et Wheelhouse, avis Bnbcalc sur Beyond, relevés en novembre 2026. Vérifie le prix actuel sur leur site.
 
-WHEELHOUSE
-→ Le plus simple à prendre en main
-→ Idéal pour débuter la tarification auto
-→ Moins de personnalisation mais plus intuitif
-→ Prix : ~1% des revenus ou ~20$/mois
-→ Essai gratuit disponible
+## Ce qui reste ton travail
+- ton prix minimum
+- ton positionnement et tes voyageurs cibles
+- ton séjour minimum et tes conditions d'annulation
+- ton prix en réservation directe, rarement géré par ces outils
 
-BEYOND
-→ Très performant sur les zones saisonnières
-→ Utilisé par de nombreuses conciergeries
-→ Bon pour les marchés touristiques marqués
-→ Prix : ~25$/logement/mois
-→ Essai gratuit 30 jours
+:::retenir
+Un outil branché sur un mauvais prix de base optimise tes revenus dans la mauvaise direction.
+:::
 
-→ Dans tous les cas : configure TOUJOURS
-  ton prix minimum manuellement.
-  Les outils respectent ce seuil.
+:::quiz
+? Tu viens de publier ton premier logement. Faut-il un outil tout de suite ?
+- Oui, c'est indispensable
+* Non, calibre d'abord ton prix de base et ton prix minimum
+- Oui, mais sans prix minimum
+= Sans base bien réglée, l'outil n'a rien de juste sur quoi s'appuyer.
+:::
 
-## Ce qu'aucun outil ne peut faire à ta place
-Les outils analysent le marché.
-Ils ne connaissent pas ton logement.
+:::quiz
+? Qu'est-ce qu'un outil de tarification ne gère généralement pas ?
+- Les prix du week-end
+* Ton prix en réservation directe
+- Les événements locaux
+= Ces outils pilotent surtout les prix des plateformes. Ton prix direct reste à régler toi-même.
+:::
 
-Ce qui reste ta responsabilité :
-
-→ Ton prix minimum (tes charges, tes coûts)
-→ Ton positionnement (à qui tu t'adresses)
-→ Ta politique d'annulation
-→ Ton séjour minimum selon les périodes
-→ Les exceptions (travaux, blocages perso)
-→ Le prix en réservation directe (Driing)
-   qui n'est généralement pas géré
-   par ces outils
-
-Un outil mal configuré sur un mauvais
-prix de base = revenus optimisés dans
-la mauvaise direction.
-
-## La vraie question : outil ou pas ?
-Pose-toi ces questions :
-
-"Est-ce que je laisse de l'argent sur la table
- faute de temps pour gérer mes prix ?"
-→ Si oui : un outil vaut son coût
-
-"Est-ce que mon prix de base et mon prix minimum
- sont bien calibrés ?"
-→ Si non : calibre d'abord (modules 1 et 2)
-
-"Est-ce que je veux optimiser mes revenus
- de 15 à 30% ?"
-→ Si oui et que tu gères 2+ logements :
-  oui, un outil est pertinent
-
-"Est-ce que j'ai le budget ?"
-→ À 20$/mois pour un logement,
-  si ça génère 200€ de revenus supplémentaires,
-  le ROI est évident.
-
-Tu as des doutes ? [Parles-en avec Jason](/contact)
-avant d'investir dans un outil.
-
-
-## Exercice
-**Exercice pratique :** Rien à faire maintenant si tu démarres. Reviens à cette leçon dans 3 mois, après avoir appliqué la méthode manuelle du module 4.1. À ce moment-là, regarde ton tableau de bord : si tu passes plus de 30 minutes par semaine sur les prix ou si tu vois des nuits mal optimisées récurrentes, c'est le signal pour passer à un outil.
-`,
+:::action
+titre: Planifie tes 8 prochaines semaines
+texte: Ouvre ton calendrier, repère vacances, week-ends prolongés et événements, et note le prix que tu appliqueras à chaque période.
+lien: /dashboard/calendrier
+bouton: Ouvrir mon calendrier
+:::`,
         },
       ],
     },
     {
       id: 5,
-      title: 'Les erreurs de prix qui coûtent le plus cher',
-      duration: '25 min',
+      title: 'Éviter les erreurs et mesurer',
+      duration: '20 min',
       lessons: [
         {
           id: 41,
-          title: 'Les 5 erreurs de tarification les plus fréquentes',
-          duration: '10 min',
-          content: `## Erreur 1 : Le prix figé toute l'année
-C'est l'erreur la plus courante.
+          title: 'Les 5 erreurs de prix les plus coûteuses',
+          duration: '7 min',
+          content: `:::bref
+- Un prix figé toute l'année rate tous les pics de demande.
+- Être plein n'est pas le but : être rentable l'est.
+- Le ménage et la taxe de séjour font partie de ta structure de prix.
+:::
 
-Un hôte fixe son prix en janvier
-et ne le regarde plus pendant 6 mois.
+## 1. Le prix figé
+Un prix réglé en janvier et jamais revu passe à côté des vacances, des ponts et des événements.
+Ces nuits auraient pu valoir bien plus.
 
-Ce qu'il rate :
-→ Le festival local en mars (+30%)
-→ La Fashion Week en octobre (+50%)
-→ Les ponts de mai (+25%)
-→ Le marathon en avril (+40%)
+## 2. Copier le voisin
+Tu ne connais ni ses charges, ni sa rentabilité, ni la réalité de son calendrier.
+Le marché est une référence, ton prix minimum est la limite.
 
-Résultat : des nuits vendues au prix
-normal alors qu'elles auraient pu
-valoir deux à trois fois plus.
+## 3. Confondre plein et rentable
+:::chiffres
+25 × 70 € | 1 750 € et 25 ménages
+18 × 120 € | 2 160 € et 18 ménages
+:::
 
-→ Un prix statique en LCD, c'est
-  garantir de sous-performer.
+:::exemple
+Avec 40 € de ménage : 1 750 moins 1 000 de ménage = 750 €. 2 160 moins 720 de ménage = 1 440 €. Moins de nuits, presque deux fois plus de revenu.
+:::
 
-## Erreur 2 : Copier le prix du voisin
-"Mes concurrents sont à 80€,
- je vais me mettre à 75€."
+## 4. Des frais de ménage mal réglés
+Trop élevés, ils découragent les courts séjours. Absents, ils rendent les séjours d'une nuit peu rentables.
+Une piste : intégrer le ménage au prix pour les courts séjours, le facturer à part pour les longs.
 
-Le problème :
-→ Tu ne sais pas ce que ton voisin paie
-  comme charges
-→ Tu ne sais pas si son prix est rentable
-→ Tu ne sais pas si ses réservations
-  sont réelles ou de test
+## 5. Oublier la taxe de séjour
+Elle est fixée par ta commune, par personne et par nuit, et dépend du classement du logement.
+Vérifie si ta plateforme la collecte. Sinon, prévois-la dans ton prix ou facture-la à part, mais jamais après coup.
 
-La seule boussole valide :
-→ Ton prix minimum (tes coûts)
-→ Le marché (référence, pas diktat)
+:::quiz
+? 25 nuits à 70 € ou 18 nuits à 120 €, ménage à 40 € : laquelle rapporte le plus après ménage ?
+- 25 nuits à 70 €
+* 18 nuits à 120 €
+- Les deux rapportent pareil
+= 750 € contre 1 440 € : remplir à bas prix coûte cher en ménages.
+:::
 
-Si ton prix minimum est 110€ et
-que le marché est à 80€ :
-le problème n'est pas ton prix,
-c'est tes coûts ou ton positionnement.
-
-## Erreur 3 : Confondre taux d'occupation et rentabilité
-Un calendrier plein à 70€/nuit
-n'est pas forcément mieux qu'un calendrier
-rempli à 60% à 120€/nuit.
-
-Exemple :
-→ 25 nuits × 70€ = 1 750€ brut
-→ 18 nuits × 120€ = 2 160€ brut
-
-+ 25 ménages vs 18 ménages
-= 7 ménages × 40€ = 280€ de coût supplémentaire
-
-Résultat réel :
-→ Calendrier plein : 1 750 - 1 000 = 750€ net
-→ 60% d'occupation : 2 160 - 720 = 1 440€ net
-
-→ L'objectif n'est pas d'être plein.
-  C'est d'être rentable.
-
-## Erreurs 4 et 5
-ERREUR 4, Oublier l'impact des frais de ménage
-
-Des frais de ménage trop élevés (80€+)
-découragent les courtes réservations.
-Des frais nuls incitent les réservations
-d'une nuit non rentables.
-
-→ Stratégie : inclure le ménage dans le prix
-  pour les séjours courts (1-2 nuits)
-  et facturer séparément pour les longs séjours.
-
-ERREUR 5, Ne pas tenir compte de la taxe de séjour
-
-La taxe de séjour varie de 0,20€ à plus de 5€
-par nuit et par personne selon la commune
-et la catégorie de l'hébergement.
-
-Si ta plateforme ne la collecte pas automatiquement,
-tu dois l'intégrer dans ta structure tarifaire.
-Ne la calcule jamais "après coup".
-
-
-## Exercice
-**Exercice pratique :** Réponds honnêtement : est-ce que tu fais l'une de ces 5 erreurs en ce moment ? Note laquelle et l'action corrective correspondante. Une seule erreur corrigée peut représenter plusieurs centaines d'euros de revenus supplémentaires sur l'année.
-`,
+:::quiz
+? Qui fixe le montant de la taxe de séjour ?
+* La commune
+- La plateforme
+- L'hôte, librement
+= Chaque commune vote ses tarifs. Les pages de ville du site indiquent le tarif officiel.
+:::`,
         },
         {
           id: 42,
-          title: 'La stratégie complète par type de logement',
-          duration: '8 min',
-          content: `## Le studio en zone urbaine
-PROFIL TYPE : Paris, Lyon, Bordeaux,
-              centres-villes actifs
+          title: 'La stratégie selon ton type de logement',
+          duration: '6 min',
+          content: `:::bref
+- Un studio en ville vit des week-ends et des événements professionnels.
+- Une maison familiale vit des vacances et des longs séjours.
+- Une chambre d'hôtes vend une expérience humaine qui justifie un prix plus haut.
+:::
 
-STRATÉGIE :
-→ Prix de base compétitif (référence marché)
-→ Forte majoration weekend (+20-30%)
-→ Majoration événements pro (salons, congrès)
-→ Séjour minimum 2 nuits le weekend
-→ Ouverture à 1 nuit en semaine creuse
-→ Cible télétravailleurs (semaines entières)
+## Studio en centre-ville
+- Prix de base proche du marché
+- Forte majoration le week-end
+- Salons et congrès : souvent plus rentables que les événements grand public
+- 2 nuits minimum le week-end, 1 nuit possible en semaine creuse
+- Semaines entières pour les télétravailleurs
 
-LEVIER CLÉ : les événements professionnels
-(salons, congrès, fashion week...) sont
-souvent plus lucratifs que les événements
-grand public pour un studio.
+## Maison ou villa familiale
+- Prix de base plus élevé : la capacité a de la valeur
+- 3 nuits minimum en basse saison, une semaine en haute saison
+- Été très majoré, réservé tôt par les familles, souvent dès l'hiver
+- Remises au mois pour remplir l'automne et le printemps
 
-## La maison / villa familiale
-PROFIL TYPE : Littoral, campagne, montagne,
-              zones de loisirs
+## Chambre d'hôtes
+- Petit-déjeuner inclus et mis en valeur dans le prix
+- Positionnement au-dessus du marché grâce à l'accueil
+- La note est ton premier levier de prix
 
-STRATÉGIE :
-→ Prix de base plus élevé (capacité = valeur)
-→ Séjour minimum 3 nuits en basse saison,
-  7 nuits en haute saison
-→ Très forte saisonnalité (+50-80% en été)
-→ Remise 28 nuits pour télétravailleurs
-  en intersaison (remplissage automne/printemps)
-→ Tarification anticipée : les familles réservent
-  les vacances d'été dès janvier-février
+:::quiz
+? Pour un studio en centre-ville, quel levier rapporte souvent le plus ?
+* Les salons et congrès professionnels
+- Les remises au mois en été
+- Le petit-déjeuner inclus
+= Les voyageurs d'affaires réservent pendant les salons, souvent en semaine, à des prix élevés.
+:::
 
-LEVIER CLÉ : les remises de longue durée
-en basse saison sont souvent plus rentables
-que les courtes rotations à prix réduit.
-
-## La chambre d'hôtes
-PROFIL TYPE : Hébergement chez l'habitant,
-              chambres d'hôtes indépendantes
-
-STRATÉGIE :
-→ Prix incluant le petit-déjeuner
-  (valoriser le service dans le prix)
-→ Positionnement premium justifié
-  par le contact humain et l'authenticité
-→ Séjour minimum 2 nuits recommandé
-→ Forte saisonnalité locale à exploiter
-→ Moins sensible aux événements pro,
-  plus sensible aux événements touristiques
-→ Note Airbnb = levier tarifaire majeur :
-  4,9 étoiles = justifie +15-20% du marché
-
-LEVIER CLÉ : la qualité de l'expérience
-humaine permet de maintenir un prix
-au-dessus du marché sans algorithme.
-
-
-## Exercice
-**Exercice pratique :** Identifie dans quelle case ton logement tombe. Note les 2-3 leviers spécifiques à ton profil que tu n'appliques pas encore. Ce sont tes prochaines actions d'optimisation tarifaire.
-`,
+:::quiz
+? Comment une maison familiale peut-elle remplir l'automne ?
+- En baissant de 50 % chaque week-end
+* Avec des remises au mois pour les longs séjours
+- En fermant le logement
+= Les séjours longs remplissent les périodes calmes avec peu de ménages.
+:::`,
         },
         {
           id: 43,
-          title: 'Mesurer et ajuster : les 3 indicateurs à suivre chaque mois',
+          title: 'Mesurer : 3 indicateurs chaque mois',
           duration: '7 min',
-          content: `## Indicateur 1 : Le RevPAN
-RevPAN = Revenu Par nuit Disponible
-(équivalent du RevPAR hôtelier)
+          content: `:::bref
+- Le revenu par nuit disponible est l'indicateur qui résume tout : prix et remplissage ensemble.
+- Regarde ton remplissage par type de période, pas en moyenne sur le mois.
+- Compare ton revenu net par plateforme pour savoir où concentrer tes efforts.
+:::
 
-Calcul :
-Revenus bruts du mois ÷ Nuits disponibles
+## 1. Le revenu par nuit disponible
+Revenus du mois divisés par les nuits où le logement était disponible.
 
-Exemple :
-1 800€ de revenus sur 30 nuits disponibles
-→ RevPAN = 60€
+:::chiffres
+1 800 € | revenus du mois
+30 | nuits disponibles
+60 € | revenu par nuit disponible
+:::
 
-C'est LE chiffre à optimiser.
-Pas le taux d'occupation.
-Pas le prix moyen.
+S'il monte de mois en mois (à saison égale), ta stratégie progresse.
 
-Si ton RevPAN augmente mois après mois,
-ta stratégie tarifaire s'améliore.
+## 2. Le remplissage par période
+| Période | Repère indicatif |
+| --- | --- |
+| Week-ends | 85 % et plus |
+| Haute saison | 90 % et plus |
+| Semaines ordinaires | 60 à 70 % |
+| Basse saison | 40 à 60 % |
 
-Objectif réaliste :
-→ Augmenter le RevPAN de 10% tous les 6 mois
+Au-dessus du repère : tu peux sans doute monter tes prix sur cette période. En dessous : regarde ton prix ou ton annonce.
 
-## Indicateur 2 : Le taux d'occupation par période
-Ne regarde pas ton taux d'occupation global.
-Regarde-le par type de période :
+## 3. Le revenu net par plateforme
+Pour chaque plateforme : réservations, revenus, commission, revenu net.
+Si le direct pèse peu, c'est un levier à développer.
 
-Weekends : ___% → objectif 85%+
-Jours fériés : ___% → objectif 90%+
-Haute saison : ___% → objectif 90%+
-Semaines standard : ___% → objectif 60-70%
-Basse saison : ___% → objectif 40-60%
+:::retenir
+Note ton revenu par nuit disponible aujourd'hui. Recalcule-le dans 3 mois : c'est ta mesure de progrès.
+:::
 
-Si un segment est en dessous de l'objectif :
-→ Trop haut → baisse les prix sur ce segment
-→ Trop plein → monte les prix sur ce segment
+:::quiz
+? 2 400 € de revenus sur 30 nuits disponibles : quel est ton revenu par nuit disponible ?
+- 120 €
+* 80 €
+- 2 400 €
+= 2 400 divisé par 30 = 80 €.
+:::
 
-Si un segment est au-dessus de l'objectif :
-→ Tu laisses de l'argent sur la table.
-  Monte les prix progressivement.
+:::quiz
+? Tes week-ends sont pleins à 100 % tous les mois. Que montre ce chiffre ?
+* Que tu peux sans doute monter tes prix du week-end
+- Que tout est parfait, ne change rien
+- Que tu dois baisser tes prix en semaine
+= Toujours plein, c'est souvent le signe d'un prix sous ce que les voyageurs accepteraient.
+:::
 
-## Indicateur 3 : Le revenu net par canal
-Tous les mois, calcule tes revenus nets
-par canal de réservation :
-
-Canal          Réservations  Revenus bruts  Commission  Revenu net
-Airbnb         ___           ___€           ___€        ___€
-Booking        ___           ___€           ___€        ___€
-Driing/Direct  ___           ___€           0€          ___€
-TOTAL          ___           ___€           ___€        ___€
-
-→ Ce tableau te dit où optimiser :
-  Si Booking est peu rentable vs volume :
-  ajuste ta stratégie tarifaire sur Booking.
-  Si le direct représente < 20% :
-  développe ce canal (module 4 de l'autre formation).
-
-## Le récapitulatif de la formation
-CE QUE TU SAIS MAINTENANT FAIRE :
-
-MODULE 1 : Calculer ton prix minimum absolu
-           + trouver ton prix de base
-
-MODULE 2 : Construire ton calendrier saisonnier
-           + configurer les remises durée de séjour
-
-MODULE 3 : Comprendre les algorithmes Airbnb
-           et Booking + fixer le bon prix en direct
-
-MODULE 4 : Gérer ta tarification manuellement
-           + savoir quand passer à un outil
-
-MODULE 5 : Éviter les 5 erreurs les plus coûteuses
-           + suivre les 3 indicateurs clés
-
-→ Applique dans cet ordre.
-  Reviens dans 90 jours mesurer l'impact.
-
-Des questions ? [Prends un appel avec Jason](/contact)
-
-
-## Exercice
-**L'action finale de la formation :**
-
-Calcule ton RevPAN du mois dernier. Revenus bruts ÷ nuits disponibles = ___€. Note ce chiffre. Dans 3 mois, recalcule-le. Si tu as appliqué les enseignements de cette formation, il aura progressé. C'est ta mesure de succès.
-
-# ANNEXE, Récapitulatif des formules
-
-\`\`\`
-PRIX MINIMUM
-= (Charges fixes mensuelles ÷ Nuits estimées) + Charges variables
-
-PRIX DIRECT OPTIMAL (Driing)
-= Prix affiché Airbnb voyageur × 0,91
-
-PRIX BOOKING
-= Prix Airbnb de base × 1,12 minimum
-
-REVPAN (Revenu par nuit disponible)
-= Revenus bruts du mois ÷ Nuits disponibles
-
-GRILLE DE MAJORATIONS
-Weekends : +15 à +25%
-Vacances scolaires : +30 à +50%
-Événements locaux : +30 à +100%
-Dernière minute (J-7 vide) : -15%
-
-GRILLE DE REMISES PAR DURÉE
-3-4 nuits : -5%
-7 nuits : -10 à -15%
-28 nuits : -25 à -35%
-
-Formation 6`,
+:::action
+titre: Note ton revenu par nuit disponible
+texte: Dans Performances, relève ton revenu par nuit disponible du mois dernier. Tu le compareras dans 3 mois.
+lien: /dashboard/performances
+bouton: Voir mes performances
+:::`,
         },
       ],
     },

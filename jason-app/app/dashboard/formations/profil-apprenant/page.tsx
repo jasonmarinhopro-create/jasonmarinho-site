@@ -75,14 +75,14 @@ export default async function ProfilApprenantPage() {
 
   // Badges
   const badges = [
-    { id: 'first', emoji: '🎓', label: 'Première leçon',     desc: 'Tu as commencé ton apprentissage',     unlocked: totalLessonsDone >= 1 },
-    { id: 'ten',   emoji: '📚', label: '10 leçons terminées', desc: 'Tu prends de bonnes habitudes',         unlocked: totalLessonsDone >= 10 },
-    { id: 'first-formation', emoji: '🏅', label: 'Première formation', desc: 'Tu as terminé une formation entière', unlocked: completed.length >= 1 },
-    { id: 'three', emoji: '🥉', label: '3 formations finies',  desc: 'Tu construis ta culture LCD',           unlocked: completed.length >= 3 },
-    { id: 'streak3', emoji: '🔥', label: 'Streak 3 jours',      desc: '3 jours d\'apprentissage consécutifs', unlocked: streak >= 3 },
-    { id: 'streak7', emoji: '⚡', label: 'Streak 7 jours',      desc: 'Une semaine de régularité !',          unlocked: streak >= 7 },
-    { id: 'fifty',  emoji: '🌟', label: '50 leçons terminées',  desc: 'Sérieusement engagé',                  unlocked: totalLessonsDone >= 50 },
-    { id: 'all',    emoji: '👑', label: 'Toutes les formations',desc: 'Tu as tout terminé, bravo !',         unlocked: completed.length >= 16 },
+    { id: 'first', icon: 'cap', label: 'Première leçon',     desc: 'Tu as commencé ton apprentissage',     unlocked: totalLessonsDone >= 1 },
+    { id: 'ten',   icon: 'books', label: '10 leçons terminées', desc: 'Tu prends de bonnes habitudes',         unlocked: totalLessonsDone >= 10 },
+    { id: 'first-formation', icon: 'medal', label: 'Première formation', desc: 'Tu as terminé une formation entière', unlocked: completed.length >= 1 },
+    { id: 'three', icon: 'trophy', label: '3 formations finies',  desc: 'Tu construis ta culture LCD',           unlocked: completed.length >= 3 },
+    { id: 'streak3', icon: 'calendar', label: '3 jours de suite',    desc: '3 jours d\'apprentissage consécutifs', unlocked: streak >= 3 },
+    { id: 'streak7', icon: 'bolt', label: '7 jours de suite',    desc: 'Une semaine de régularité',          unlocked: streak >= 7 },
+    { id: 'fifty',  icon: 'star', label: '50 leçons terminées',  desc: 'Sérieusement engagé',                  unlocked: totalLessonsDone >= 50 },
+    { id: 'all',    icon: 'crown', label: 'Toutes les formations',desc: 'Tu as tout terminé, bravo !',         unlocked: completed.length >= 16 },
   ]
 
   return (
