@@ -26,7 +26,7 @@ Les deux plateformes dominent le marché de la LCD européenne, mais elles fonct
 
 ### Différence 1, Le contrat : commissionnaire vs facilitateur
 
-**Airbnb est un facilitateur.** Il met en relation hôte et voyageur, prend une commission (généralement 3 % hôte + 14 % voyageur), et tu restes juridiquement le prestataire de service. Tu gardes le contrôle.
+**Airbnb est un facilitateur.** Il met en relation hôte et voyageur, prend une commission (en Europe, depuis le 13 octobre 2026 : 15,5 % côté hôte, sans frais ajoutés pour le voyageur), et tu restes juridiquement le prestataire de service. Tu gardes le contrôle.
 
 **Booking.com est un commissionnaire.** Il **vend ton hébergement en son nom** auprès du voyageur, encaisse le paiement (selon les cas), et applique ses propres conditions générales de vente par-dessus les tiennes. Techniquement, le contrat avec le voyageur est entre lui et Booking, pas toi.
 
@@ -34,7 +34,7 @@ Les deux plateformes dominent le marché de la LCD européenne, mais elles fonct
 
 ### Différence 2, L'audience : Europe et business vs international et loisir
 
-- **Booking** : ~60 % des réservations viennent d'Europe continentale (DE, NL, BE, FR, IT). Forte part de voyageurs business, séjours courts (1 à 3 nuits), check-in tardifs, mobilité. L'application mobile est utilisée dans 65 % des cas.
+- **Booking** : une grande part des réservations vient d'Europe continentale (Allemagne, Pays-Bas, Belgique, France, Italie). Beaucoup de voyageurs d'affaires, de séjours courts (1 à 3 nuits), d'arrivées tardives, et une forte utilisation de l'application mobile.
 - **Airbnb** : clientèle plus internationale (US, UK, Australie forts), séjours plus longs (3 à 7 nuits en moyenne), majoritairement loisir et famille.
 
 **Conséquence :** ton logement n'attire pas le même profil. Sur Booking, mets en avant la proximité transports, la wifi rapide, l'accueil flexible (self check-in, horaires étendus).
@@ -129,9 +129,9 @@ Booking compte automatiquement tes nuitées. À l'approche de la limite, tu reç
 Avant même de commencer à construire ta fiche (module 2) :
 
 ☐ Numéro d'enregistrement national obtenu sur service-public.fr
-☐ DPE < 10 ans, classé D ou mieux (E accepté temporairement)
+☐ DPE en cours de validité, au niveau exigé par la loi Le Meur pour ton logement
 ☐ Déclaration en mairie faite (formulaire Cerfa 14004)
-☐ SIRET si CA > seuil micro-BIC (77 700 € en 2026)
+☐ SIRET obtenu (obligatoire pour déclarer une location meublée)
 ☐ Choix du statut TVA selon prestations para-hôtelières
 ☐ Assurance LCD responsabilité civile en vigueur
 
@@ -147,7 +147,7 @@ La bonne nouvelle ? Cette check-list est **la même pour Booking et Airbnb**. Tu
       lessons: [
         { id: 3, title: 'Les 8 sections obligatoires pour passer le filtre qualité 2026', duration: '15 min', content: `## Le filtre qualité Booking en 2026 : plus strict qu'on ne le pense
 
-Booking.com a renforcé son filtre qualité en 2025. Les fiches incomplètes ou mal remplies ne sont plus rétrogradées, elles ne sont **plus affichées du tout** dans les résultats pour 40 % des recherches. Passer ce filtre n'est pas une option, c'est le préalable à toute stratégie.
+Booking.com a renforcé son filtre qualité en 2025. Une fiche incomplète ou mal remplie recule nettement dans les résultats, au point de disparaître de nombreuses recherches. Passer ce filtre n'est pas une option, c'est le préalable à toute stratégie.
 
 Voici les 8 sections à remplir méticuleusement avant de publier.
 
@@ -226,7 +226,7 @@ C'est la section la plus récente, ajoutée fin 2024 :
 
 ### Check-list de publication
 
-Une fiche Booking prête à être indexée coche **chacune** de ces 8 sections à 100 %. En dessous de 90 % de complétion, tu es hors du top 50 % des résultats pour la plupart des requêtes.
+Une fiche Booking prête à être indexée coche **chacune** de ces 8 sections à 100 %. Chaque section incomplète te fait reculer dans les résultats.
 
 **Temps estimé la première fois : 2 à 3 heures** pour remplir proprement. C'est l'investissement initial qui conditionne 90 % de ton ROI Booking.` },
         { id: 4, title: 'Photos, titre et description, les règles Booking (différentes d\'Airbnb)', duration: '15 min', content: `## Pourquoi ta description Airbnb va flopper sur Booking
@@ -315,7 +315,7 @@ Pourquoi c'est différent d'Airbnb ? Parce que le voyageur Booking fait une comp
 
 Le programme Genius de Booking.com est un programme de fidélité destiné aux voyageurs qui réservent régulièrement. Pour eux : des réductions et avantages. Pour toi, l'hôte : **une visibilité accrue en échange d'une remise**.
 
-En 2026, les voyageurs Genius représentent **45 à 55 % des réservations sur Booking** (varie selon les marchés). Ignorer ce programme, c'est se priver de la moitié du marché.
+Les voyageurs Genius pèsent lourd dans les réservations sur Booking (la part varie selon les marchés). Ignorer ce programme, c'est se priver d'une grande partie du marché.
 
 ### Comment fonctionne Genius côté voyageur
 
@@ -339,7 +339,7 @@ Dans ton extranet Booking (section "Offres"), tu peux activer **3 niveaux de rem
 
 Fin 2025, Booking a ajusté son algorithme de pertinence pour **donner plus de poids aux Genius 15 % et 20 %**, au détriment de Genius 10 %. Concrètement :
 
-- Un Genius 10 % gagne désormais **+15 à +25 % de visibilité** (avant : +40 à +60 %)
+- Le gain de visibilité apporté par Genius 10 % est **moins fort qu'avant**, maintenant que beaucoup de fiches y participent
 - Un Genius 15 % gagne **+40 à +50 %**
 - Un Genius 20 % gagne **+70 à +90 %**
 
@@ -359,7 +359,7 @@ Prends 3 chiffres :
 - Nouveau prix voyageur : 90 €
 - Nouvelle commission Booking : 90 × 15 % = 13,5 €
 - Ta marge : 90 - 25 - 13,5 = 51,5 € / nuitée (−14 %)
-- Visibilité +20 %, donc occupation potentielle : 72 %
+- Hypothèse pour l'exemple : visibilité +20 %, donc occupation potentielle de 72 %
 
 **Revenu mensuel** :
 - Actuel : 60 × 0,6 × 30 j = 1 080 €
@@ -370,13 +370,15 @@ Prends 3 chiffres :
 - Occupation potentielle : 78 %
 - Revenu : 47,25 × 0,78 × 30 j = 1 106 € (+2,4 %)
 
-### Ce que montrent les vrais chiffres
+### Ce que montre cet exemple
 
-Sur mes données terrain (250+ hôtes) en 2026 :
+Le gain dépend de ta marge et de ton marché :
 
-- **Genius 10 % seul** : +5 à +10 % de CA sur Booking dans 60 % des cas. Reste neutre dans 30 %. Négatif dans 10 %.
-- **Genius 15 %** : +10 à +20 % de CA dans 70 % des cas.
-- **Genius 20 %** : +15 à +30 % de CA, mais marge par nuitée très réduite.
+- **Genius 10 %** : souvent un léger mieux, parfois neutre, parfois négatif si ta marge est faible.
+- **Genius 15 %** : intéressant si la hausse d'occupation suit vraiment.
+- **Genius 20 %** : plus de réservations possibles, mais une marge par nuitée très réduite.
+
+Fais le calcul avec tes propres chiffres avant de choisir.
 
 **Recommandation** : active **Genius 15 %** en priorité. Teste 3 mois. Si tu saturas ton taux d'occupation, rétrograde à 10 %. Si tu restes sous-occupé, monte à 20 %.
 
@@ -433,7 +435,7 @@ Avant de monter à Genius 15 ou 20 %, vérifie que tu as optimisé ces 4 leviers
 
 **1. Politique d'annulation souple**. En 2026, Booking fait **remonter fortement les fiches avec annulation gratuite** (c'est l'attente dominante des voyageurs post-COVID). Coût pour toi : ~5 % de no-show. Gain en visibilité : +15 à +20 %.
 
-**2. Taux de réponse < 4 h**. Booking mesure ton délai moyen de réponse aux messages. En dessous de 4 h, tu es classé "ultra-réactif". Au-delà de 12 h, tu perds 20 % de visibilité.
+**2. Taux de réponse < 4 h**. Booking mesure ton délai moyen de réponse aux messages. En dessous de 4 h, tu es classé "ultra-réactif". Au-delà, ta visibilité en pâtit.
 
 **3. Taux d'acceptation > 95 %**. Le taux = réservations acceptées / demandes reçues. En dessous de 90 %, tu es rétrogradé. À 100 %, tu es maximisé.
 
@@ -585,21 +587,21 @@ Oui, tu lis bien : une politique **Non remboursable rétrograde** ta fiche, malg
 
 Parce que les voyageurs Booking sont majoritairement **business et week-end** (voir Module 1) : des déplacements qui peuvent être annulés ou reportés au dernier moment. Une politique souple augmente la probabilité de réservation, et donc les revenus de Booking.
 
-L'algorithme 2026 intègre ce biais : plus ta politique est souple, plus tu apparais tôt dans les résultats pour les voyageurs qui filtrent "annulation gratuite" (50 % des recherches selon Booking).
+L'algorithme 2026 intègre ce biais : plus ta politique est souple, plus tu apparais tôt dans les résultats pour les voyageurs qui filtrent "annulation gratuite" (un filtre très utilisé par les voyageurs).
 
 ### Le coût réel d'une politique souple
 
 **Question légitime** : si tu as des annulations, tu perds des revenus, non ?
 
-Données observées sur 250 hôtes en 2026 :
+Ce qu'on observe en général : plus la politique est souple, plus les annulations sont nombreuses.
 
-- **Politique Très souple** : 12-18 % de taux d'annulation (dont 5-7 % de no-shows)
-- **Politique Souple** : 8-12 %
-- **Politique Modérée** : 5-8 %
-- **Politique Ferme** : 3-5 %
-- **Non remboursable** : 1-2 % (mais avec 15-25 % de remise appliquée)
+- **Politique Très souple** : le plus d'annulations et de non-présentations
+- **Politique Souple** : des annulations régulières
+- **Politique Modérée** : moins d'annulations
+- **Politique Ferme** : peu d'annulations, mais moins de visibilité
+- **Non remboursable** : presque aucune annulation, en échange d'une remise accordée au voyageur
 
-**Calcul net** : pour un logement à 100 € / nuit, 60 % d'occupation, la politique **Souple** génère en moyenne **+8 à +15 % de revenus net** par rapport à la politique Ferme, même après absorption des annulations.
+**Calcul net** : pour un logement à 100 € / nuit, 60 % d'occupation, la politique **Souple** peut rapporter plus que la politique Ferme, même après les annulations, parce qu'elle t'affiche à plus de voyageurs. Vérifie-le sur tes propres réservations.
 
 ### La stratégie hybride recommandée
 
@@ -718,7 +720,7 @@ Moralité : le score est un indicateur **actionnable**, pas une fatalité.
 
 Depuis octobre 2025, OpenAI et Booking.com ont noué un partenariat technique : les utilisateurs de ChatGPT peuvent désormais **planifier et réserver un hébergement directement dans la conversation**, sans jamais ouvrir le site Booking.com.
 
-Le déploiement est progressif (Europe en priorité), mais à fin 2025, ~15 % des réservations Booking en France passent déjà par cette interface. Ça grimpe rapidement.
+Le déploiement est progressif (Europe en priorité), et la part des réservations qui passent par cette interface augmente.
 
 ### Comment ça fonctionne côté voyageur
 
@@ -786,7 +788,7 @@ Si elle apparaît mais avec un résumé qui ne te plaît pas ("appartement au ce
 
 ### À retenir
 
-- ChatGPT × Booking = ~15 % des réservations en Europe fin 2025, en forte croissance
+- Réserver Booking depuis ChatGPT : un usage nouveau, en croissance
 - L'IA lit **du texte uniquement**, pas de photos
 - Les 4 critères : spécificité factuelle, cohérence, avis récents, annulation explicite
 - Optimiser pour ChatGPT est **complémentaire** de Booking natif (pas de conflit)
@@ -837,25 +839,25 @@ L'IA reconnaît les sous-titres (ligne en gras, ou avec majuscules) comme **des 
 
 Template de sections à reprendre dans ta description longue :
 
-**🏠 Le logement**
+** Le logement**
 Description pièce par pièce avec superficies, capacités, vues.
 
-**📍 L'emplacement**
+** L'emplacement**
 Quartier nommé, distances précises à 3-5 points d'intérêt (en minutes à pied / en voiture / en transport).
 
-**🚶 Accès et transports**
+** Accès et transports**
 Arrêts tram/métro/bus les plus proches avec noms et temps de marche. Parking avec conditions.
 
-**🛌 Couchages**
+** Couchages**
 Nombre exact de lits, taille, qualité matelas, literie changée entre chaque séjour.
 
-**💻 Travailler depuis le logement**
+** Travailler depuis le logement**
 Critique si tu vises les voyageurs business Booking : bureau (dimensions), chaise, prise secteur, lumière, débit internet mesuré.
 
-**☀️ Bien-être et détente**
+** Bien-être et détente**
 Terrasse, vue, environnement sonore (calme / animé), équipements détente.
 
-**✅ Équipements détaillés**
+** Équipements détaillés**
 La grande liste (voir Principe 2).
 
 **ℹ️ Bon à savoir**

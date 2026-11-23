@@ -154,7 +154,7 @@ NOM DE COMPTE (@handle)
 BIO (150 caractères max)
 Structure recommandée :
 → Ligne 1 : Ce que vous êtes
-  "🏠 Appartement design · Paris 11ème"
+  " Appartement design · Paris 11ème"
 → Ligne 2 : Ce que vous offrez
   "Séjours sans commission · Fibre + bureau"
 → Ligne 3 : Appel à l'action + lien
@@ -307,7 +307,7 @@ TYPE 4, LES COULISSES (behind the scenes)
 
 TYPE 5, LES OFFRES ET DISPONIBILITÉS
 
-→ "Le logement est libre ce weekend ! 🗓️"
+→ "Le logement est libre ce weekend ! "
 → "Offre de dernière minute : [Dates] disponibles"
 → "Promo basse saison : réservez en direct ici
    [Lien Driing en bio]"
@@ -561,10 +561,10 @@ LINKTREE (gratuit)
 → Votre annonce Airbnb si applicable
 
 EXEMPLE DE PAGE LINKTREE POUR UN HÔTE :
-→ 🏠 Réserver directement (Driing)
-→ 📖 Guide d'accueil du logement
-→ ⭐ Voir nos avis voyageurs
-→ 📩 Nous contacter
+→ Réserver directement (Driing)
+→ Guide d'accueil du logement
+→ 1/5 Voir nos avis voyageurs
+→ Nous contacter
 
 → Astuce : mettez votre lien Linktree
   dans votre bio Instagram, pas directement
@@ -580,19 +580,19 @@ C'est votre vitrine permanente.
 
 HIGHLIGHTS RECOMMANDÉS :
 
-🏠 "LE LOGEMENT"
+ "LE LOGEMENT"
 → Photos des différentes pièces
 → Vidéo tour rapide
 
-📍 "LE QUARTIER"
+ "LE QUARTIER"
 → Vos adresses favorites
 → Les spots à voir
 
-⭐ "AVIS VOYAGEURS"
+1/5 "AVIS VOYAGEURS"
 → Citations et captures d'avis positifs
 → Témoignages partagés
 
-📅 "DISPONIBILITÉS"
+ "DISPONIBILITÉS"
 → Mise à jour mensuelle des disponibilités
 → Lien vers Driing
 
@@ -672,13 +672,13 @@ Message de bienvenue simple et non intrusif :
 
 "Bonjour [Prénom] !
 
-Merci de nous suivre 🙏
+Merci de nous suivre 
 Notre logement [Nom] est situé
 à [Ville], idéal pour [cible principale].
 
 Si vous planifiez un séjour,
 vous pouvez réserver directement ici
-(sans frais de service Airbnb) :
+(sans passer par une plateforme) :
 [Lien Driing]
 
 N'hésitez pas si vous avez des questions !"

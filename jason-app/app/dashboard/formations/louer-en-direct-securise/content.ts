@@ -98,7 +98,7 @@ Driing est une plateforme de réservation pensée pour les hôtes qui veulent d�
 
 > Transparence : je suis co-fondateur de Driing. Je t'en parle parce que c'est exactement le problème qu'on a voulu résoudre, pas parce que c'est obligatoire. Tout ce que tu apprends ici vaut aussi pour une réservation par téléphone ou par message.
 
-## Le frein n°1 du voyageur : la peur
+## Le premier frein du voyageur : la peur
 
 Le voyageur aussi a peur de réserver en direct : peur de l'arnaque, de payer pour un logement qui n'existe pas. Rassure-le avec ce que tu vas mettre en place dans cette formation :
 
@@ -272,7 +272,7 @@ Le module **Contrats & paiements** (formule Standard) génère un contrat qui re
 
 ## À retenir
 
-Un bon contrat ne sert pas qu'en cas de litige : il rassure le voyageur et évite 90 % des malentendus (heure d'arrivée, nombre de personnes, ce qui est inclus). Prends le temps de l'écrire une fois, proprement.`,
+Un bon contrat ne sert pas qu'en cas de litige : il rassure le voyageur et évite la plupart des malentendus (heure d'arrivée, nombre de personnes, ce qui est inclus). Prends le temps de l'écrire une fois, proprement.`,
         },
         {
           id: 2,

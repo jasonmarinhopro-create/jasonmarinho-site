@@ -42,7 +42,7 @@ Anciennement "Google My Business". C'est la fiche d'établissement pour les **en
 ❌ Logement individuel sans accueil physique
 ❌ Hôte particulier qui n'a pas d'adresse professionnelle
 
-> ⚠️ Google a officiellement confirmé que les logements vacances individuels sans accueil sont **non-éligibles** à GBP. Des fiches créées malgré cela peuvent être suspendues.
+> Attention : google a officiellement confirmé que les logements vacances individuels sans accueil sont **non-éligibles** à GBP. Des fiches créées malgré cela peuvent être suspendues.
 
 ### Système 2 : Google Vacation Rentals (GVR)
 
@@ -86,7 +86,7 @@ Dans les prochains modules, on travaille les **deux systèmes** :
 
 Le "Local Pack" (ou Pack Local) c'est le bloc des **3 fiches Google Maps** qui s'affiche en haut des résultats pour les requêtes locales. Être là = visibilité maximale, 0 commission.
 
-Statistique clé : **95% des vacanciers cherchent leur hébergement sur internet, et 90% passent par Google**.
+Pour la plupart des vacanciers, la recherche d'un hébergement commence sur internet, et très souvent sur Google.
 
 ### Les 3 piliers officiels du classement local
 
@@ -154,7 +154,7 @@ Les modules qui suivent construisent chacun de ces résultats.`,
 
 Va sur **business.google.com** et connecte-toi.
 
-> ⚠️ Avant tout : tape ton nom ou adresse dans Google Maps pour vérifier qu'une fiche n'existe pas déjà. Google crée parfois des fiches automatiquement. Si c'est le cas, **revendique-la** plutôt que d'en créer une nouvelle.
+> Attention : avant tout : tape ton nom ou adresse dans Google Maps pour vérifier qu'une fiche n'existe pas déjà. Google crée parfois des fiches automatiquement. Si c'est le cas, **revendique-la** plutôt que d'en créer une nouvelle.
 
 ### Étape 2, Saisir tes informations
 
@@ -326,7 +326,7 @@ Ces 3 informations doivent être **exactement identiques** partout :
 - Airbnb (si professionnel)
 - Office de tourisme local
 
-> ⚠️ "Rue" vs "R." vs "r." = trois versions différentes pour Google. La moindre variation brouille les signaux et nuit à ton classement local.`,
+> Attention : "Rue" vs "R." vs "r." = trois versions différentes pour Google. La moindre variation brouille les signaux et nuit à ton classement local.`,
         },
         {
           id: 6,
@@ -386,7 +386,7 @@ Ces réponses sont indexées par Google et renforcent ta pertinence locale.`,
       lessons: [
         {
           id: 7,
-          title: 'Stratégie photos : 42% plus de clics avec les bonnes images',
+          title: 'Stratégie photos : les images qui donnent envie de cliquer',
           duration: '20 min',
           content: `## Les photos GBP : ton premier argument de vente
 
@@ -410,16 +410,16 @@ Que celles sans photos (source : Google). Une fiche avec **100+ photos** génèr
 
 | Type | Quantité | Priorité |
 |------|----------|----------|
-| Photo de couverture (bannière) | 1 | 🔴 Urgent |
-| Photo de profil (logo ou façade) | 1 | 🔴 Urgent |
-| Salon / espace de vie | 2-3 | 🔴 Urgent |
-| Chambre(s) | 1 par chambre | 🟡 Haute |
-| Cuisine | 1-2 | 🟡 Haute |
-| Salle de bain | 1 | 🟡 Haute |
-| Extérieur / terrasse / piscine | 2-3 | 🟡 Haute |
-| Vue / quartier | 1-2 | 🟢 Utile |
-| Équipe / accueil (conciergerie) | 2-3 | 🟢 Utile |
-| Local / détails déco | 2-3 | 🟢 Utile |
+| Photo de couverture (bannière) | 1 | Urgent |
+| Photo de profil (logo ou façade) | 1 | Urgent |
+| Salon / espace de vie | 2-3 | Urgent |
+| Chambre(s) | 1 par chambre | Haute |
+| Cuisine | 1-2 | Haute |
+| Salle de bain | 1 | Haute |
+| Extérieur / terrasse / piscine | 2-3 | Haute |
+| Vue / quartier | 1-2 | Utile |
+| Équipe / accueil (conciergerie) | 2-3 | Utile |
+| Local / détails déco | 2-3 | Utile |
 
 ### La photo de couverture : ta vitrine
 
@@ -510,11 +510,11 @@ Génère un QR code depuis ce lien (via qr-code-generator.com). Imprime-le sur :
 
 **SMS / WhatsApp, 24h après le départ :**
 \`\`\`
-Bonjour [Prénom] 👋
+Bonjour [Prénom] 
 
 J'espère que ton séjour à [logement/ville] s'est bien passé !
 
-Si tu as eu une bonne expérience, un avis Google m'aiderait vraiment, ça prend 2 minutes et c'est une façon concrète de soutenir les hôtes indépendants 🙏
+Si tu as eu une bonne expérience, un avis Google m'aiderait vraiment, ça prend 2 minutes et c'est une façon concrète de soutenir les hôtes indépendants 
 
 → [LIEN COURT GMB]
 
@@ -535,7 +535,7 @@ Merci d'avoir choisi mon logement ! Si tu as apprécié ton séjour, je t'invite
 
 **Par email :**
 \`\`\`
-Objet : Ton avis compte pour moi ⭐
+Objet : Ton avis compte pour moi 1/5
 
 Bonjour [Prénom],
 
@@ -576,7 +576,7 @@ Merci sincèrement !
 
 **Template avis positif :**
 \`\`\`
-Merci beaucoup [Prénom] pour cet avis ! 🙏
+Merci beaucoup [Prénom] pour cet avis ! 
 
 Ravis que [mention un élément de leur avis ou du logement]
 vous ait plu. C'est exactement l'expérience qu'on essaie
@@ -586,7 +586,7 @@ Au plaisir de vous accueillir à nouveau à [ville] !
 [Ton prénom], [Nom établissement]
 \`\`\`
 
-> 💡 **Astuce SEO** : glisse naturellement le nom de ta ville dans les réponses. Ex : "Ravi que votre séjour en appartement à Lyon se soit si bien passé." Ces réponses sont indexées par Google.
+> **Astuce SEO** : glisse naturellement le nom de ta ville dans les réponses. Ex : "Ravi que votre séjour en appartement à Lyon se soit si bien passé." Ces réponses sont indexées par Google.
 
 ### Répondre aux avis négatifs (sans se braquer)
 
@@ -652,7 +652,7 @@ Google autorise n'importe quel utilisateur à **suggérer des modifications** su
 
 Un mini-article publié directement sur ta fiche Google. Visible dans Google Maps et la recherche quand quelqu'un consulte ton profil, sans qu'il soit abonné à quoi que ce soit.
 
-> ⚠️ **Mise à jour 2024 importante :** La **messagerie directe** (chat) de Google Business Profile a été **supprimée en juillet 2024**. Les hôtes ne peuvent plus échanger de messages via GMB. Les demandes passent maintenant par le téléphone ou ton site web.
+> Attention : **Mise à jour 2024 importante :** La **messagerie directe** (chat) de Google Business Profile a été **supprimée en juillet 2024**. Les hôtes ne peuvent plus échanger de messages via GMB. Les demandes passent maintenant par le téléphone ou ton site web.
 
 ### Les 4 types de posts
 
@@ -673,7 +673,7 @@ Un mini-article publié directement sur ta fiche Google. Visible dans Google Map
 
 **Post "Offre", dernière minute :**
 \`\`\`
-🌊 Appartement vue mer disponible ce week-end
+ Appartement vue mer disponible ce week-end
 
 Quelques nuits libres dans notre studio terrasse
 à Nice. Réservation directe → pas de frais de
@@ -744,22 +744,22 @@ Pour y apparaître, tu dois passer par un **logiciel de gestion partenaire GVR**
 
 | Channel Manager | Prix indicatif | Lien GVR |
 |----------------|---------------|----------|
-| Lodgify | ~30-80€/mois | ✅ Partenaire officiel |
-| Hostaway | ~100€+/mois | ✅ Partenaire officiel |
-| Smoobu | ~25-60€/mois | ✅ Partenaire officiel |
-| iGMS | ~20€+/mois | ✅ Partenaire officiel |
-| Rentals United | Sur devis | ✅ Partenaire officiel |
+| Lodgify | ~30-80€/mois | Oui, partenaire officiel |
+| Hostaway | ~100€+/mois | Oui, partenaire officiel |
+| Smoobu | ~25-60€/mois | Oui, partenaire officiel |
+| iGMS | ~20€+/mois | Oui, partenaire officiel |
+| Rentals United | Sur devis | Oui, partenaire officiel |
 
 Ces logiciels synchronisent ton calendrier, publient tes disponibilités sur GVR, et redirigent le voyageur vers **ton site de réservation directe**.
 
 ### Le calcul économique
 
-- Airbnb : ~3% hôte + 15-20% voyageur = **18-23% total** perdu en commissions
+- Airbnb : **15,5 % côté hôte** (18,6 % TVA comprise), en Europe depuis le 13 octobre 2026
 - Booking.com : **15-18% côté hôte**
 - Google Vacation Rentals : **0% de commission**
 - Abonnement channel manager : ~300-600€/an
 
-**Exemple :** Sur un bien à 2 000€/mois, 30% de réservations directes via GVR = **économie de ~1 500€ par an** (sans compter les frais voyageur récupérés).
+**Exemple :** Sur un bien à 2 000€/mois, 30% de réservations en direct, c'est 7 200€ par an sans commission, soit **environ 1 300€ économisés** par rapport à Airbnb (18,6 % de 7 200€), avant l'abonnement du channel manager.
 
 ### La stratégie en 5 étapes
 
@@ -799,7 +799,7 @@ Dans Google Business Profile → "Voir les statistiques" ou "Performance".
 - **Recherche directe** : quelqu'un a tapé ton nom ou adresse exacte
 - **Recherche découverte** : quelqu'un cherchait un type de logement et t'a trouvé
 
-> 💡 Peu de recherches découverte = tes catégories et description ne sont pas assez optimisées.
+> Peu de recherches découverte = tes catégories et description ne sont pas assez optimisées.
 
 **② Vues du profil**
 Combien de fois ta fiche est apparue dans les résultats. Surveille la tendance mois par mois.

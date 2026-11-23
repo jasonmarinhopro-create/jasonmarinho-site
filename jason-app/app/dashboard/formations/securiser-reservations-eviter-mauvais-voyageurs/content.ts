@@ -51,7 +51,7 @@ des réservations selon les zones.
 Avant d'accepter une réservation,
 vérifiez ces 8 points :
 
-🔴 SIGNAUX FORTS (refus recommandé)
+ SIGNAUX FORTS (refus recommandé)
 → Profil sans photo ou photo floue
 → Compte créé récemment (moins de 3 mois)
   + aucun avis de séjour précédent
@@ -62,7 +62,7 @@ vérifiez ces 8 points :
   (le voyageur réel n'est pas déclaré)
 → Demande de payer hors plateforme
 
-🟡 SIGNAUX À SURVEILLER
+ SIGNAUX À SURVEILLER
 → Profil sans avis avec une longue date
   d'inscription (compte inactif réactivé)
 → Voyageur local qui réserve à 2 km
@@ -120,8 +120,8 @@ Ce que cette question fait :
   (absence de réponse, réponse évasive
    ou agressive = signal d'alarme fort)
 
-→ 90% des bons voyageurs répondent
-  en moins de 2 heures.
+→ La plupart des bons voyageurs répondent
+  vite, souvent en moins de 2 heures.
   Les profils à risque évitent
   souvent de répondre.
 
@@ -135,10 +135,10 @@ Ce que cette question fait :
           title: 'Les situations les plus risquées à anticiper',
           duration: '12 min',
           content: `## Le voyageur local : le profil le plus risqué
-Statistiquement, les voyageurs locaux
-- ceux qui habitent à moins de 30 km
-du logement, représentent le profil
-le plus problématique en LCD.
+Les voyageurs locaux, ceux qui habitent
+à moins de 30 km du logement, sont souvent
+cités par les hôtes comme le profil
+le plus à risque en LCD.
 
 Pourquoi :
 → Ils n'ont pas besoin de dormir sur place.

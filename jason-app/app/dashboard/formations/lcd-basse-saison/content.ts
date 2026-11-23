@@ -349,7 +349,7 @@ Pour en profiter :
 ✓ Réduire automatiquement les prix
   de -10% pour les réservations J-3.
 
-⚠️ Renforcer la vérification des profils
+Attention : renforcer la vérification des profils
   pour les réservations J-0/J-1.
   La clientèle last-minute est globalement
   plus imprévisible.
@@ -410,13 +410,13 @@ remets-le en version estivale en avril.
 Les photos que tu n'as peut-être pas
 mais qui font la différence en hiver :
 
-📸 OBLIGATOIRES :
+ OBLIGATOIRES :
 → Salon avec éclairage chaud (lampes allumées,
   bougies, plaid visible)
 → Lit bien fait avec coussins et couverture
   douillette (pas la couette blanche d'été)
 
-📸 TRÈS EFFICACES :
+ TRÈS EFFICACES :
 → Bureau avec lampe de bureau allumée
   si tu cibles les télétravailleurs
 → Cheminée allumée si tu en as une
@@ -424,7 +424,7 @@ mais qui font la différence en hiver :
 → Vue de la fenêtre sur la pluie ou la neige
   (crée un sentiment de refuge)
 
-📸 BONUS :
+ BONUS :
 → Table dressée avec café / chocolat chaud
   (atmosphère d'accueil)
 
@@ -801,9 +801,9 @@ et nous en gardons un excellent souvenir !
 Nous vous réservons une offre exclusive
 pour cet hiver :
 
-🏠 [Nom logement], [Ville]
-📅 Disponible du [date] au [date]
-💶 [Prix] €/nuit, réservation directe
+ [Nom logement], [Ville]
+ Disponible du [date] au [date]
+ [Prix] €/nuit, réservation directe
    sans frais de service
 
 Soit [X]€ de moins qu'en passant
@@ -889,7 +889,7 @@ ont un impact direct sur la haute saison suivante.
       sur le critère "confort"
     → Budget : 150 à 400€
 
-02. AMÉLIORER LA CONNECTIVITÉ (ROI ×2 en basse saison)
+02. AMÉLIORER LA CONNECTIVITÉ (très rentable en basse saison)
     → Passer en fibre si pas encore fait
     → Ajouter un répéteur Wi-Fi
     → Mention du débit dans l'annonce

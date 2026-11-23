@@ -57,7 +57,7 @@ Au micro-BIC, tu déclares ton chiffre d'affaires brut sur ta déclaration de re
 | --- | --- | --- |
 | Meublé de tourisme non classé | 30% | 15 000€/an |
 | Meublé de tourisme classé | 50% | 77 700€/an |
-| Chambre d'hôtes | 71% | 77 700€/an |
+| Chambre d'hôtes | 50% | 77 700€/an |
 
 Pour les revenus 2026 (déclarés en 2027), le plafond "classé" est réévalué à 83 600€. Le plafond "non classé" de 15 000€, lui, est explicitement exclu de la revalorisation : il reste figé.
 
@@ -125,7 +125,7 @@ L'amortissement, c'est la déduction comptable de la perte de valeur théorique 
 
 C'est souvent la plus grosse charge déductible au régime réel : bien plus que le ménage ou l'assurance. D'où l'écart important dans l'exemple ci-dessus.
 
-⚠️ Depuis 2025, l'amortissement n'est plus "gratuit" à long terme. La leçon suivante t'explique pourquoi : un point que beaucoup de guides publiés avant 2025 ne mentionnent pas encore.
+Attention : depuis 2025, l'amortissement n'est plus "gratuit" à long terme. La leçon suivante t'explique pourquoi : un point que beaucoup de guides publiés avant 2025 ne mentionnent pas encore.
 
 ## Dans quels cas rester au micro-BIC
 
@@ -224,7 +224,7 @@ Depuis le 1er janvier 2023, toutes les démarches de création d'activité (y co
 - La date de début d'activité
 - Le régime fiscal souhaité : c'est ici que tu peux directement cocher "régime réel" si tu sais déjà que c'est ton choix (voir leçon suivante)
 
-⚠️ Si tu loues plusieurs logements, un seul SIRET suffit pour l'ensemble de ton activité LMNP, sauf cas particuliers (montages spécifiques).
+Attention : si tu loues plusieurs logements, un seul SIRET suffit pour l'ensemble de ton activité LMNP, sauf cas particuliers (montages spécifiques).
 
 ## Un piège fréquent
 
@@ -253,7 +253,7 @@ C'est le point qui coince le plus d'hôtes : pour que l'option s'applique aux re
 
 En clair : si tu veux basculer au réel pour tes revenus 2026, ta lettre doit être partie avant la date limite de la déclaration des revenus 2025 : soit fin mai/début juin 2026.
 
-⚠️ Si tu envoies ta lettre après cette date, ton option ne prend effet que sur les revenus de l'année suivante. Il n'y a pas de rattrapage rétroactif.
+Attention : si tu envoies ta lettre après cette date, ton option ne prend effet que sur les revenus de l'année suivante. Il n'y a pas de rattrapage rétroactif.
 
 ## Durée de l'option
 
@@ -319,7 +319,7 @@ Des alertes automatiques signalent les incohérences de saisie (montants aberran
 
 > Source : decla.fr, grille tarifaire publique 2026 ; comparatifs indépendants (jedeclaremonmeuble.com, lmnp.ai), 2026
 
-⚠️ Les tarifs évoluent d'une année sur l'autre : vérifie toujours le prix affiché au moment de ton inscription plutôt que de te fier à ce chiffre dans un an ou deux.
+Attention : les tarifs évoluent d'une année sur l'autre : vérifie toujours le prix affiché au moment de ton inscription plutôt que de te fier à ce chiffre dans un an ou deux.
 
 **Exercice pratique :** Va sur decla.fr et regarde la page tarifs actuelle. Compare le prix affiché aujourd'hui à celui indiqué dans cette leçon : s'il a changé, tu sauras que tu dois toujours vérifier l'info à la source plutôt que de te fier à un guide, aussi récent soit-il.`,
         },
@@ -401,7 +401,7 @@ Prépare ces documents avant d'ouvrir l'outil, ça t'évitera des allers-retours
 
 ## Ce qu'il te reste à faire après la liasse
 
-⚠️ La télétransmission de la liasse ne remplace **pas** ta déclaration de revenus personnelle. Il te reste à reporter le résultat fiscal calculé sur ton formulaire 2042-C-PRO, sur impots.gouv.fr, au moment de ta déclaration de revenus classique. La leçon suivante détaille ce point, qui est une source fréquente de confusion.
+Attention : la télétransmission de la liasse ne remplace **pas** ta déclaration de revenus personnelle. Il te reste à reporter le résultat fiscal calculé sur ton formulaire 2042-C-PRO, sur impots.gouv.fr, au moment de ta déclaration de revenus classique. La leçon suivante détaille ce point, qui est une source fréquente de confusion.
 
 **Exercice pratique :** Fais la liste des documents mentionnés en début de leçon et coche ceux que tu as déjà sous la main. Pour ceux qui manquent (typiquement le relevé annuel plateforme ou le tableau d'amortissement), va les récupérer avant ta prochaine session : ça te fera gagner un temps précieux le jour J.`,
         },
@@ -469,7 +469,7 @@ Ces dates concernent la campagne 2026 (revenus 2025). Elles évoluent chaque ann
 
 ## Une coïncidence de dates qui prête à confusion
 
-⚠️ En 2026, la date limite d'enregistrement loi Le Meur (20 mai) et la date limite de télétransmission de la liasse (19-20 mai) tombent quasiment au même moment. Ce n'est **pas** la même obligation, et rater l'une n'a aucun rapport avec l'autre : mais ça explique pourquoi tant de contenus en parlent en même temps sur les réseaux au printemps. Ne mélange pas les deux dans ton suivi.
+Attention : en 2026, la date limite d'enregistrement loi Le Meur (20 mai) et la date limite de télétransmission de la liasse (19-20 mai) tombent quasiment au même moment. Ce n'est **pas** la même obligation, et rater l'une n'a aucun rapport avec l'autre : mais ça explique pourquoi tant de contenus en parlent en même temps sur les réseaux au printemps. Ne mélange pas les deux dans ton suivi.
 
 ## Ton rétroplanning recommandé
 

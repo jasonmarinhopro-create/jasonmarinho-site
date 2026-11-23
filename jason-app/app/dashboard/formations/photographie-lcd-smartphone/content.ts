@@ -16,7 +16,7 @@ export const PHOTOGRAPHIE_LCD_FORMATION = {
   modules: [
     {
       id: 1,
-      title: `La photo est ton vendeur n°1`,
+      title: `La photo est ton premier vendeur`,
       duration: '20 min',
       lessons: [
         {
@@ -114,7 +114,7 @@ C'est la **photo de couverture**.
 
 Toutes les autres servent à confirmer ou à infirmer la promesse de la première. Mais c'est la première qui fait le clic.
 
-- Sur **Airbnb**, 92 % des voyageurs ne regardent **que** la photo de couverture avant de décider s'ils cliquent.
+- Sur **Airbnb**, dans les résultats, le voyageur ne voit d'abord **que** la photo de couverture : c'est elle qui décide du clic.
 - Sur **Booking**, c'est 88 %.
 - Sur **Google** (résultats de recherche), c'est 100 %, il n'y en a qu'une.
 
@@ -166,7 +166,7 @@ Une chambre lumineuse OU le jardin avec **table extérieure dressée**. Image qu
 
 > **Règle d'or :** ne mets jamais la salle de bain ou les chambres côte à côte en couverture. Trop intime, pas vendeur.
 
-## L'erreur que 70 % des hôtes commettent
+## L'erreur que beaucoup d'hôtes commettent
 
 **Mettre une photo de la chambre principale en couverture.**
 
@@ -182,15 +182,15 @@ Mais voici le problème :
 
 ## Test : ta photo passe-t-elle le filtre Airbnb ?
 
-Airbnb a publié les critères automatiques qui détectent une photo de couverture "à risque" :
+Les défauts qui font passer une photo de couverture à côté du clic :
 
-| Défaut | Impact sur les clics |
+| Défaut | Pourquoi ça pénalise |
 |---|---|
-| Photo verticale (portrait) | **-30 %** |
-| Photo avec un humain | -15 % |
-| Photo avec du texte ajouté | -25 % |
-| Photo très sombre (luminosité < 40 %) | **-50 %** |
-| Photo de l'extérieur sous la pluie | -40 % |
+| Photo verticale (portrait) | Recadrée dans les résultats, elle perd une partie de la pièce |
+| Photo avec une personne | Le voyageur ne se projette plus dans le logement |
+| Photo avec du texte ajouté | Elle ressemble à une publicité et peut être refusée |
+| Photo très sombre | La pièce paraît petite et triste |
+| Extérieur sous la pluie | L'envie de réserver disparaît |
 
 > Vérifie ta couverture actuelle. Si elle a **un seul** de ces défauts, le simple fait de la remplacer augmentera tes vues immédiatement.
 
@@ -311,7 +311,7 @@ Voici ce que les smartphones modernes font mieux qu'un reflex pour la photo LCD 
 - **Aperçu temps réel**, tu vois exactement ce que tu obtiens.
 - **Partage immédiat**, de la prise de vue à la publication sur Airbnb : 30 minutes max.
 
-> **Conclusion :** pour 95 % des hôtes LCD, le smartphone est la **meilleure** option, pas une option de repli.
+> **Conclusion :** pour la plupart des hôtes LCD, le smartphone est la **meilleure** option, pas une option de repli.
 
 ## Quand un reflex devient pertinent
 
@@ -325,7 +325,7 @@ Un objectif ultra grand-angle *(10-12 mm)* permet de capturer une pièce entièr
 
 Cave aménagée, sous-sol, chambre sans fenêtre. Un capteur plein format gère mieux le bruit qu'un capteur smartphone.
 
-> Dans **95 % des cas** *(logements urbains ou maisons standards)*, tu n'es pas dans ces 2 cas.
+> Dans **la plupart des cas** *(logements urbains ou maisons standards)*, tu n'es pas dans ces 2 cas.
 
 ## Ce qui compte vraiment en photo LCD
 
@@ -447,7 +447,7 @@ Un disque pliable blanc ou doré qui réfléchit la lumière naturelle vers les 
 
 Les pièges que les fabricants vendent aux hôtes débutants :
 
-- **Un drone**, joli pour 1 photo aérienne, mais inutile pour 95 % des annonces. Si tu veux une vue aérienne, fais-toi prêter un drone par un voisin ou paie 50 € à un freelance local.
+- **Un drone**, joli pour 1 photo aérienne, mais inutile pour la plupart des annonces. Si tu veux une vue aérienne, fais-toi prêter un drone par un voisin ou paie 50 € à un freelance local.
 - **Une ringlight** *(lumière cercle)*, conçue pour le portrait, pas pour les pièces. Fait des reflets affreux sur les murs et les vitres.
 - **Un objectif macro** pour smartphone, sauf si tu fais des photos de moustiques. Aucune utilité en LCD.
 - **Un kit photo "spécial Airbnb" à 200 €**, marketing. Tu peux faire mieux avec les 3 accessoires ci-dessus.
@@ -845,18 +845,18 @@ Ton téléphone affiche cette grille en superposition pendant la prise de vue, s
 
 ### 1. Salon : le canapé sur 1/3 de la photo
 
-- ❌ **Mauvais cadrage** : canapé centré, mur derrière au milieu. Photo *"constat d'huissier"*.
-- ✅ **Bon cadrage** : canapé sur le tiers gauche ou droit. L'autre côté laisse voir une fenêtre, une plante, une bibliothèque. *La photo respire.*
+❌ **Mauvais cadrage** : canapé centré, mur derrière au milieu. Photo *"constat d'huissier"*.
+✅ **Bon cadrage** : canapé sur le tiers gauche ou droit. L'autre côté laisse voir une fenêtre, une plante, une bibliothèque. *La photo respire.*
 
 ### 2. Cuisine : la perspective sur 1/3
 
-- ❌ **Mauvais cadrage** : photographier de face le plan de travail, toute la cuisine dans le cadre, rien ne se détache.
-- ✅ **Bon cadrage** : photographier en biais, le plan de travail qui file en diagonale vers le 1/3 droit. *La pièce semble plus grande, plus dynamique.*
+❌ **Mauvais cadrage** : photographier de face le plan de travail, toute la cuisine dans le cadre, rien ne se détache.
+✅ **Bon cadrage** : photographier en biais, le plan de travail qui file en diagonale vers le 1/3 droit. *La pièce semble plus grande, plus dynamique.*
 
 ### 3. Chambre : le lit sur 2/3, la fenêtre sur 1/3
 
-- ❌ **Mauvais cadrage** : lit centré, fenêtre coupée sur le côté. Composition statique.
-- ✅ **Bon cadrage** : lit qui occupe 2/3 du cadre *(côté gauche)*, fenêtre lumineuse sur le tiers droit. *La lumière entre, l'œil voyage du lit vers la lumière. Ambiance.*
+❌ **Mauvais cadrage** : lit centré, fenêtre coupée sur le côté. Composition statique.
+✅ **Bon cadrage** : lit qui occupe 2/3 du cadre *(côté gauche)*, fenêtre lumineuse sur le tiers droit. *La lumière entre, l'œil voyage du lit vers la lumière. Ambiance.*
 
 ## L'horizon sur la ligne du tiers
 
@@ -1074,7 +1074,7 @@ Le téléphone prend plusieurs photos en quelques secondes, les empile, réduit 
 
 Vu au module 2. Fais entrer la lumière d'une pièce voisine ou d'une fenêtre proche en la réfléchissant.
 
-> Ces 6 options combinées permettent de bien photographier **99 % des pièces** sans jamais utiliser le flash.
+> Ces 6 options combinées permettent de bien photographier **presque toutes les pièces** sans jamais utiliser le flash.
 
 ## Le vrai problème : la dynamique de lumière
 
@@ -1259,8 +1259,8 @@ Pour donner une impression de **profondeur maximale**, il faut que des **lignes*
 
 ### Évite à l'inverse
 
-- ❌ Photographier **face à un mur** *(pièce écrasée)*.
-- ❌ Photographier **centré sur un meuble** *(statique)*.
+❌ Photographier **face à un mur** *(pièce écrasée)*.
+❌ Photographier **centré sur un meuble** *(statique)*.
 
 ## Le piège du grand-angle excessif
 
@@ -1307,7 +1307,7 @@ Pour chaque pièce, prends **2 photos comparatives** :
 
 Compare les 2 photos côte à côte.
 
-> Tu vas être **bluffé** par la différence. La photo B paraîtra parfois **30 % plus grande** alors que c'est la même pièce.
+> Tu vas être **bluffé** par la différence. La photo B paraîtra souvent **nettement plus grande** alors que c'est la même pièce.
 
 C'est ce gain *« gratuit »* que tu vas appliquer dans le module 5 sur chaque pièce
 de ton logement.`,
@@ -1449,7 +1449,7 @@ Pour chaque pièce de vie *(salon, cuisine, chambres)*, prends au moins **3 phot
 2. **1 photo "lifestyle"** *(détail vivant)*
 3. **1 photo de perspective** ou angle alternatif
 
-> Sur Airbnb, mettre 3 photos d'une même pièce augmente la durée passée sur l'annonce de **22 %**.
+> Sur Airbnb, plusieurs photos d'une même pièce aident le voyageur à se projeter et le gardent plus longtemps sur l'annonce.
 
 > Plus le voyageur explore, plus il s'attache, **plus il réserve**.
 
@@ -1614,10 +1614,10 @@ Les voyageurs choisissent autant un **lieu** qu'un logement.
 
 ### Quand photographier
 
-- ✅ **Idéal** : *"golden hour"* *(1h avant coucher)*.
-- ✅ Acceptable : matin *(8h-10h)*.
-- ❌ À éviter : **midi pile** *(lumière dure et bleue)*.
-- ❌ À éviter : nuit complète *(sauf si tu as un éclairage extérieur design)*.
+✅ **Idéal** : *"golden hour"* *(1h avant coucher)*.
+✅ Acceptable : matin *(8h-10h)*.
+❌ À éviter : **midi pile** *(lumière dure et bleue)*.
+❌ À éviter : nuit complète *(sauf si tu as un éclairage extérieur design)*.
 
 ### Composition
 
@@ -1641,9 +1641,9 @@ Les voyageurs choisissent autant un **lieu** qu'un logement.
 
 ### Quand photographier
 
-- ✅ **Tôt le matin** *(rosée, lumière douce)*.
-- ✅ **Fin d'après-midi** *(golden hour)*.
-- ❌ Évite **midi** *(couleurs lavées)*.
+✅ **Tôt le matin** *(rosée, lumière douce)*.
+✅ **Fin d'après-midi** *(golden hour)*.
+❌ Évite **midi** *(couleurs lavées)*.
 
 ### Composition
 
@@ -1661,10 +1661,10 @@ Les voyageurs choisissent autant un **lieu** qu'un logement.
 
 ### Évite à tout prix
 
-- ❌ La poubelle, le composteur, le tas de bois
-- ❌ Les outils de jardinage qui traînent
-- ❌ Le linge qui sèche
-- ❌ Les jouets pour enfants éparpillés
+❌ La poubelle, le composteur, le tas de bois
+❌ Les outils de jardinage qui traînent
+❌ Le linge qui sèche
+❌ Les jouets pour enfants éparpillés
 
 > **Tour du jardin** avant la séance, avec un sac, comme dans la cuisine.
 
@@ -1711,15 +1711,15 @@ Beaucoup d'hôtes pensent qu'une photo aérienne fait *« pro »*. **C'est rarem
 
 ### Quand un drone vaut le coup
 
-- ✅ Très **grand domaine** *(gîte de groupe, villa avec piscine et terrain)*
-- ✅ **Vue exceptionnelle** *(bord de mer, haut de colline avec panorama)*
-- ✅ **Architecture remarquable** *(villa moderne, château)*
+✅ Très **grand domaine** *(gîte de groupe, villa avec piscine et terrain)*
+✅ **Vue exceptionnelle** *(bord de mer, haut de colline avec panorama)*
+✅ **Architecture remarquable** *(villa moderne, château)*
 
 ### Quand un drone ne vaut PAS le coup
 
-- ❌ Studio en ville
-- ❌ Maison de banlieue standard
-- ❌ Appartement
+❌ Studio en ville
+❌ Maison de banlieue standard
+❌ Appartement
 
 > Si tu n'es pas dans les 3 cas favorables, **ignore le drone**. Investis ces 50-100 € ailleurs.
 
@@ -1842,11 +1842,11 @@ Une tasse fumante, une casserole qui fume, une bougie qui fume, ça crée du **m
 
 La frontière entre lifestyle réussie et *« photo de catalogue »* est **fine**.
 
-### ❌ Trop = "fake"
+### Trop = "fake"
 
 > Tasse de café parfaitement centrée, croissant impeccable, fleur isolée. Effet *« publicité Nespresso »*.
 
-### ✅ Bien = "vie réelle"
+### Bien = "vie réelle"
 
 > Tasse de café légèrement décalée, croissant **entamé** *(1 bouchée prise)*, miettes sur la table, journal froissé.
 
@@ -1866,7 +1866,7 @@ Sur les 20-30 photos de ton annonce, voici la répartition optimale :
 
 > Une annonce **sans lifestyle shots** est une annonce qui vend un toit.
 
-> Une annonce avec **4-6 lifestyle shots** bien réparties peut tarifer **15-25 % plus cher**.
+> Une annonce avec **4 à 6 photos d'ambiance** bien réparties donne envie et aide à défendre un prix plus élevé.
 
 ## Exercice, à planifier pour ta séance
 
@@ -1905,7 +1905,7 @@ Tu peux retoucher tes photos LCD avec :
 
 1. **Gratuit, sans pub, sans abonnement.** Développé par Google, plus de 100 millions de téléchargements.
 2. **Interface intuitive.** Tu peux retoucher une photo en 90 secondes sans tutoriel.
-3. **Suffit à 95 % des besoins LCD.** Tu n'as pas besoin de Lightroom pour des photos d'intérieur.
+3. **Suffit à la plupart des besoins LCD.** Tu n'as pas besoin de Lightroom pour des photos d'intérieur.
 
 > Télécharge **Snapseed** maintenant *(App Store ou Google Play)*.
 
@@ -1919,8 +1919,8 @@ Le voyageur ne doit pas se dire *« cette photo est retouchée »*.
 
 Il doit se dire : *« cette pièce est lumineuse, accueillante »*.
 
-- ❌ Si ta photo a l'air *« filtrée Instagram »* *(saturée, contrastée, dramatique)*, tu as raté la retouche.
-- ✅ Si ta photo a l'air **naturelle mais "mieux qu'avant"**, tu as réussi.
+❌ Si ta photo a l'air *« filtrée Instagram »* *(saturée, contrastée, dramatique)*, tu as raté la retouche.
+✅ Si ta photo a l'air **naturelle mais "mieux qu'avant"**, tu as réussi.
 
 ## Les 5 réglages dans Snapseed
 
@@ -2039,7 +2039,7 @@ Très utile pour **fixer une zone problématique** sans toucher au reste.
 
 Tu peux avoir **30 superbes photos**. Si la 1ère est mauvaise, le voyageur ne verra jamais les 29 autres.
 
-- Sur **Airbnb**, un voyageur scrolle en moyenne **5 photos** avant de décider : cliquer sur *« Réserver »* ou retourner aux résultats.
+- Sur **Airbnb**, un voyageur ne regarde souvent que **les premières photos** avant de décider : cliquer sur *« Réserver »* ou retourner aux résultats.
 - Sur **Booking**, il scrolle **3 photos**.
 - Sur ton **site direct**, c'est entre **2 et 4**.
 
@@ -2214,14 +2214,14 @@ Mêmes mesures, mêmes conditions.
 
 ## Quand tester
 
-### ✅ Tu DEVRAIS tester ta couverture si
+### Tu DEVRAIS tester ta couverture si
 
 - Tu n'as **jamais testé** *(la majorité des hôtes)*.
 - Ton **taux de clic est < 3 %** *(en dessous de la moyenne Airbnb)*.
 - Tu as **des nouvelles photos** depuis cette formation.
 - Ton activité a **baissé** sans raison apparente.
 
-### ❌ Tu peux NE PAS tester si
+### Tu peux NE PAS tester si
 
 - Ta couverture **cartonne déjà** *(CTR > 5 %, calendrier rempli)*.
 - Tu n'as **qu'une seule photo** possible *(très petit logement, peu d'options)*.
@@ -2282,7 +2282,7 @@ Mêmes mesures, mêmes conditions.
 
 Tu sais maintenant :
 
-1. **Pourquoi la photo est ton vendeur n°1** et comment l'auditer.
+1. **Pourquoi la photo est ton premier vendeur** et comment l'auditer.
 2. **Comment utiliser ton smartphone** et quels accessoires acheter *(62 € max)*.
 3. **Comment préparer chaque pièce** avec 23 points de checklist et 12 € de déco temporaire.
 4. **La règle des tiers**, l'orientation, la lumière naturelle vs flash, et les angles qui agrandissent.

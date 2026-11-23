@@ -84,7 +84,7 @@ Tu as 3 options, par ordre de qualité :
 ### Option 2, Le contrat PDF par mail
 
 - Tu envoies le PDF, le voyageur l'imprime, signe, scanne, te renvoie.
-- Friction maximale → **30 % des voyageurs** ne le retournent jamais.
+- Friction maximale → **beaucoup de voyageurs** ne le retournent jamais.
 - À éviter sauf si pas d'alternative.
 
 ### Option 3, La signature en mains propres
@@ -93,7 +93,7 @@ Tu as 3 options, par ordre de qualité :
 - Inconvénient : si l'arrivée est problématique, tu n'as plus de levier pour exiger la signature.
 - Réservé aux séjours longs (> 1 mois).
 
-> Choisis l'**option 1** dans 95 % des cas.
+> Choisis l'**option 1** dans la très grande majorité des cas.
 
 ## Les 3 clauses qui te protègent vraiment
 
@@ -147,10 +147,10 @@ La caution te protège **financièrement**.
 
 | Type | Sécurité | Friction | Recommandé |
 |---|---|---|---|
-| **Stripe pré-autorisation** | ⭐⭐⭐⭐⭐ | Faible | OUI |
-| **Chèque non encaissé** | ⭐⭐⭐⭐ | Moyenne | OUI |
-| **Virement bancaire** | ⭐⭐⭐ | Élevée | Selon cas |
-| **Caution Airbnb (AirCover)** | ⭐⭐ | Aucune | NON |
+| **Stripe pré-autorisation** | 5/5 | Faible | OUI |
+| **Chèque non encaissé** | 4/5 | Moyenne | OUI |
+| **Virement bancaire** | 3/5 | Élevée | Selon cas |
+| **Caution Airbnb (AirCover)** | 2/5 | Aucune | NON |
 
 ## Option 1, La pré-autorisation Stripe *(recommandée)*
 
@@ -177,7 +177,7 @@ La caution te protège **financièrement**.
 
 ### Quand l'utiliser
 
-> **Par défaut.** Pour 95 % des voyageurs étrangers et français urbains.
+> **Par défaut.** Pour la plupart des voyageurs étrangers et français urbains.
 
 Si tu utilises le dashboard, la pré-autorisation Stripe est intégrée. Tu actives "Caution Stripe" sur le contrat.
 
@@ -199,7 +199,7 @@ Si tu utilises le dashboard, la pré-autorisation Stripe est intégrée. Tu acti
 ### Inconvénients
 
 - Friction d'envoi (1 à 5 jours).
-- Risque de **chèque sans provision** (~10 % des cas).
+- Risque de **chèque sans provision**.
 - Inapplicable aux voyageurs étrangers.
 - Tu dois te déplacer en banque pour encaisser.
 - Délai de plusieurs semaines avant d'avoir la somme effective.
@@ -245,7 +245,7 @@ Voyageurs français, zones rurales, séjours longs (> 5 nuits) où la friction d
 
 - Tu n'as **aucun contrôle** sur le montant remboursé.
 - Airbnb tranche en 7-21 jours.
-- **Refus fréquents** (~40 % des dossiers).
+- **Refus fréquents**.
 - Plafond AirCover : 3 millions $, mais en pratique, rarement plus de 500-1000 € accordés.
 - Tu n'as pas de preuve "argent" en main, juste une promesse.
 
@@ -260,7 +260,7 @@ Voyageurs français, zones rurales, séjours longs (> 5 nuits) où la friction d
 Pour les hôtes sérieux, **empile 3 niveaux de protection** :
 
 1. **Niveau 1, Pré-autorisation Stripe**
-   Couvre 95 % des dégâts mineurs/moyens (50-1000 €).
+   Couvre la plupart des dégâts mineurs et moyens (50 à 1 000 €).
 
 2. **Niveau 2, Assurance PNO ou GLI**
    Couvre les gros dégâts (incendie, inondation > 1000 €).
@@ -295,7 +295,7 @@ Pour les hôtes sérieux, **empile 3 niveaux de protection** :
         },
         {
           id: 3,
-          title: `Les questions pré-arrivée qui détectent 80 % des risques`,
+          title: `Les questions pré-arrivée qui détectent la plupart des risques`,
           duration: '6 min',
           content: `## La phase la plus négligée
 
@@ -304,7 +304,7 @@ Entre la réservation et l'arrivée, il s'écoule généralement **2 à 30 jours
 C'est ta **fenêtre de tir** pour vérifier qui est ce voyageur et s'il représente un risque.
 
 - La majorité des hôtes utilisent ce temps pour **zéro vérification**.
-- Pourtant, **80 % des incidents** en LCD sont prévisibles dès cette phase.
+- Pourtant, **une grande partie des incidents** en LCD se voit venir dès cette phase.
 
 ## Les 7 questions qui détectent les risques
 
@@ -414,16 +414,16 @@ Si refus catégorique, c'est un **drapeau rouge sérieux**. Annule.
 
 Après les 7 questions + vérification d'identité, classe ton voyageur :
 
-- 🟢 **Vert**, 0 drapeau rouge
+- **Vert**, 0 drapeau rouge
   *Accepte sans appréhension.*
 
-- 🟡 **Orange**, 1 drapeau rouge
+- **Orange**, 1 drapeau rouge
   *Demande des précisions, applique des conditions strictes (caution doublée, contrat avec clauses renforcées).*
 
-- 🔴 **Rouge**, 2+ drapeaux rouges
+- **Rouge**, 2+ drapeaux rouges
   *Annule la réservation maintenant. Tu peux invoquer "circonstances exceptionnelles" sur Airbnb.*
 
-> Cette grille te fait économiser en moyenne **1500 €/an** de dégâts évités.
+> Cette grille t'évite une bonne partie des dégâts, et donc des frais de remise en état.
 
 ## Le timing des messages
 
@@ -448,7 +448,7 @@ Questions 5, 6, 7 + envoi du contrat + lien de caution Stripe
 2. **Sauvegarde-les** dans tes "Gabarits" (sur le dashboard).
 3. **Active l'envoi semi-automatique** pour tes 5 prochaines réservations et observe les réponses.
 
-> La prévention bien faite réduit tes incidents de **80 %**.
+> La prévention bien faite réduit **nettement** tes incidents.
 > La prévention mal faite te fait perdre 1500 €/an et beaucoup de sommeil.`,
         },
       ],
@@ -492,9 +492,9 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 
 **Ce que ça révèle :**
 
-- 80 % du temps, c'est une fête.
-- 15 % du temps, ce sont des dégâts (déménagement nocturne, cambriolage interne).
-- 5 % du temps, c'est un voisin susceptible.
+- Le plus souvent, c'est une fête.
+- Parfois, ce sont des dégâts (déménagement nocturne, cambriolage interne).
+- Plus rarement, c'est un voisin susceptible.
 
 **Comment réagir :** documente l'heure et la nature du signalement par écrit (SMS du voisin, mail). C'est ta preuve future.
 
@@ -738,7 +738,7 @@ Si ton contrat (cf. M1.L1) inclut une **clause anti-fête**, tu peux :
 4. **Note dans ton dashboard** chaque plainte, même mineure. Ça te sert à long terme.
 
 > Une plainte voisin bien gérée = **0 conséquence**.
-> Mal gérée = avis 1⭐, signalement copropriété, voire perte de l'autorisation municipale.`,
+> Mal gérée = avis 11/5, signalement copropriété, voire perte de l'autorisation municipale.`,
         },
         {
           id: 3,
@@ -837,7 +837,7 @@ Documente :
 
 **Total moyen prélevable :** 300 à 800 €.
 
-> La fumée de cannabis est **plus difficile** à éliminer (3 à 5 fois plus cher que la cigarette). Mentionne-le dans le devis.
+> La fumée de cannabis est **plus difficile** à éliminer (souvent plus cher à traiter que la cigarette). Mentionne-le dans le devis.
 
 ## Cas 4, Fêtes et soirées
 
@@ -1073,7 +1073,7 @@ Encore plus puissant que les photos statiques : la **vidéo d'inspection**.
 
 ## Les zones que personne ne photographie (et qui posent problème)
 
-Voici les **5 zones oubliées** qui causent 80 % des litiges :
+Voici les **5 zones oubliées** qui causent la plupart des litiges :
 
 1. **Le dessous du lit**, tu y trouves souvent des taches anciennes, des moisissures, des restes du voyageur précédent.
 
@@ -1155,9 +1155,9 @@ C'est **l'état des lieux d'arrivée**.
 - L'absence de réponse négative dans les 24 h vaut acceptation tacite.
 
 **Pour :** zéro friction d'arrivée.
-**Contre :** valeur juridique légèrement plus faible (mais suffisante pour 95 % des cas).
+**Contre :** valeur juridique légèrement plus faible (mais suffisante dans la plupart des cas).
 
-> Pour 95 % des séjours, **méthode 3** suffit.
+> Pour la plupart des séjours, **méthode 3** suffit.
 > Pour les séjours long terme ou à forte caution (> 1500 €), **méthode 2** recommandée.
 
 ## Le message-type "validation tacite"
@@ -1387,7 +1387,7 @@ Certains voyageurs **insistent** pour être présents au check-out.
 
 > *« Pour fluidifier votre départ, je préfère faire l'EDL de sortie après votre départ. Je vous enverrai les photos et le rapport dans les 24 h. Vous aurez tout le temps de réagir si quelque chose ne va pas. »*
 
-→ **80 % des voyageurs acceptent.**
+→ **La plupart des voyageurs acceptent.**
 
 → Les 20 % qui résistent veulent vraiment te mettre la pression. **Maintiens ta position.**
 
@@ -1442,7 +1442,7 @@ Si tu prélèves la caution, envoie un **rapport structuré** :
 - **Ouvert** : tu laisses au voyageur la possibilité de contester.
 - **Limité dans le temps** : tu fixes un délai (7 jours), au-delà c'est validé.
 
-> Avec ce format, **80 % des voyageurs acceptent sans broncher.**
+> Avec ce format, **la plupart des voyageurs acceptent sans broncher.**
 > Les 20 % qui contestent vont au Module 4.
 
 ## Exercice, action immédiate
@@ -1558,10 +1558,10 @@ Pour les objets de **valeur**, tu peux appliquer une décote de vétusté :
 
 - Canapé acheté 1500 € il y a 4 ans.
 - Tache irrécupérable.
-- Vétusté à 4 ans = 60 %.
+- Valeur restante après 4 ans de vétusté : 60 %.
 - Tu factures **900 €** (1500 × 60 %).
 
-> La vétusté est **toujours en ta faveur** : si tu factures la valeur de remplacement (1500 €), Airbnb peut refuser. Si tu appliques la vétusté (900 €), Airbnb valide presque toujours.
+> La vétusté est **toujours en ta faveur** : si tu factures la valeur de remplacement (1500 €), Airbnb peut refuser. Si tu appliques la vétusté (900 €), ta demande a bien plus de chances d'être acceptée.
 
 ## Avec assurance : le réflexe à adopter
 
@@ -1600,7 +1600,7 @@ Pour les dégâts non couverts par l'assurance :
 
 ### Niveau 1, La caution Stripe
 
-- Couvre 95 % des dégâts moyens (< 1000 €).
+- Couvre la plupart des dégâts moyens (moins de 1 000 €).
 - Capture immédiate dans les 7 jours.
 
 ### Niveau 2, AirCover (Airbnb)
@@ -1738,7 +1738,7 @@ Click sur **"Envoyer"**.
 - Tu reçois le montant **directement sur ton compte** Airbnb.
 - Délai : 3-7 jours après acceptation.
 
-> **Taux d'acceptation moyen :** 35 % des cas.
+> **Ce n'est pas gagné d'avance :** prépare un dossier solide.
 
 ### Issue 2, Le voyageur conteste
 
@@ -1819,7 +1819,7 @@ Tu ouvres la demande 16 jours après le départ.
 4. **Vérifie ton processus** : as-tu toujours les 47 photos + l'EDL d'arrivée signé ? Sinon, c'est ta priorité avant tout litige.
 
 > Une demande Resolution Center bien préparée = **80 % d'acceptation** ou indemnisation AirCover.
-> Une demande bâclée = **0 €** et avis 1⭐.`,
+> Une demande bâclée = **0 €** et avis 11/5.`,
         },
         {
           id: 3,
@@ -2004,10 +2004,10 @@ Tu as utilisé une **pré-autorisation Stripe** comme caution (Module 1.L2). Voi
 
 Vérifie :
 
-- ✅ Le délai n'est pas dépassé (**7 jours** max après création de la pré-autorisation).
-- ✅ Tu as photographié les dégâts.
-- ✅ Tu as informé le voyageur par écrit.
-- ✅ Le montant à capturer est **justifié** par devis ou facture.
+✅ Le délai n'est pas dépassé (**7 jours** max après création de la pré-autorisation).
+✅ Tu as photographié les dégâts.
+✅ Tu as informé le voyageur par écrit.
+✅ Le montant à capturer est **justifié** par devis ou facture.
 
 ### Étape 1, Connexion Stripe
 
@@ -2357,7 +2357,7 @@ Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashbo
       lessons: [
         {
           id: 1,
-          title: `Le voyageur menace de te mettre 1⭐ : que faire (et ne pas faire)`,
+          title: `Le voyageur menace de te mettre 11/5 : que faire (et ne pas faire)`,
           duration: '7 min',
           content: `## La menace classique
 
@@ -2417,23 +2417,23 @@ Quand un voyageur menace, **applique** quand même les pénalités. Sans hésita
 
 ## Le mythe du "bad buzz" sur Airbnb
 
-Beaucoup d'hôtes ont peur qu'un avis 1⭐ ruine leur annonce.
+Beaucoup d'hôtes ont peur qu'un avis 11/5 ruine leur annonce.
 
 **Réalité :**
 
 ### 1. Les voyageurs lisent **plusieurs** avis
 
-Sur 50 avis, 1 avis 1⭐ noyé dans 49 avis 5⭐ ne change pas la décision de réservation.
+Sur 50 avis, 1 avis 11/5 noyé dans 49 avis 51/5 ne change pas la décision de réservation.
 
 ### 2. Airbnb pondère les avis récents
 
-Les voyageurs voient surtout les **5-10 derniers avis**. Si tu en as 5⭐ après l'incident, l'effet du 1⭐ s'estompe rapidement.
+Les voyageurs voient surtout les **5-10 derniers avis**. Si tu en as 51/5 après l'incident, l'effet du 11/5 s'estompe rapidement.
 
 ### 3. Une **réponse publique** bien rédigée transforme l'avis
 
 Cf. la prochaine leçon.
 
-> Un avis 1⭐ avec une **bonne réponse** vaut mieux qu'un avis 5⭐ obtenu sous chantage.
+> Un avis 11/5 avec une **bonne réponse** vaut mieux qu'un avis 51/5 obtenu sous chantage.
 
 ## La double évaluation Airbnb
 
@@ -2505,7 +2505,7 @@ Parfois, après une réponse ferme de ta part, le voyageur **s'excuse** :
 - Tu protèges la communauté des hôtes.
 - Le voyageur peut se sentir trahi et critiquer.
 
-> **Recommandation :** option **B** dans 90 % des cas. Les excuses ont une valeur, et un voyageur qui apprend de son erreur ne mérite pas d'être détruit publiquement.
+> **Recommandation :** option **B** le plus souvent. Les excuses ont une valeur, et un voyageur qui apprend de son erreur ne mérite pas d'être détruit publiquement.
 
 ## Quand contacter le support Airbnb
 
@@ -2533,7 +2533,7 @@ Le voyageur menace clairement et explicitement de te mettre un avis injustifié.
           id: 2,
           title: `Répondre publiquement à un avis injustifié sans s'enliser`,
           duration: '6 min',
-          content: `## Tu as reçu un avis 1⭐. Et maintenant ?
+          content: `## Tu as reçu un avis 11/5. Et maintenant ?
 
 Il vient d'apparaître sur ton annonce. Tu le lis. Tu vois rouge.
 
@@ -2608,7 +2608,7 @@ Voici un canevas en **5 paragraphes** :
 
 ## Exemple complet : réponse à un avis "sur-facturation caution"
 
-**Avis du voyageur (1⭐) :**
+**Avis du voyageur (11/5) :**
 
 > *« L'hôte a prélevé 350 € sur la caution pour des dégâts qui n'existaient pas. Photos truquées. Fuyez. »*
 
@@ -2623,7 +2623,7 @@ Voici un canevas en **5 paragraphes** :
 >
 > *Le règlement intérieur signé par [Prénom] indique que le logement est non-fumeur. La caution a donc été prélevée conformément au contrat.*
 >
-> *Je suis transparent sur tous mes processus et je conserve l'ensemble de la documentation à disposition. Mon annonce affiche [50] avis avec une moyenne de [4.9]⭐, témoignage de la rigueur que j'applique chaque jour à mes voyageurs respectueux du logement.*
+> *Je suis transparent sur tous mes processus et je conserve l'ensemble de la documentation à disposition. Mon annonce affiche [50] avis avec une moyenne de [4.9]1/5, témoignage de la rigueur que j'applique chaque jour à mes voyageurs respectueux du logement.*
 >
 > *Je reste disponible pour toute question avant réservation. Bon voyage à venir ! »*
 
@@ -2693,7 +2693,7 @@ Si la réponse est non à une seule question, **réécris**.
 3. **Réécris** une de tes anciennes réponses en utilisant la structure 5 paragraphes (en privé, pour la prochaine fois).
 4. **Sauvegarde le canevas** dans tes Gabarits pour gagner du temps lors du prochain avis difficile.
 
-> Une bonne réponse publique transforme un avis 1⭐ en **outil de vente** pour les voyageurs intelligents.`,
+> Une bonne réponse publique transforme un avis 11/5 en **outil de vente** pour les voyageurs intelligents.`,
         },
         {
           id: 3,
@@ -2770,17 +2770,17 @@ Pendant ce temps :
 
 3 issues possibles :
 
-### Issue A, AirCover accepte (~50 % des cas)
+### Issue A, AirCover accepte
 
 - Tu reçois le montant **directement** sur ton compte Airbnb.
 - Délai : 5-15 jours après acceptation.
 
-### Issue B, AirCover accepte partiellement (~30 % des cas)
+### Issue B, AirCover accepte partiellement
 
 - Tu reçois une partie de la somme demandée.
 - Tu peux **contester** la décision (1 fois maximum).
 
-### Issue C, AirCover refuse (~20 % des cas)
+### Issue C, AirCover refuse
 
 - Aucune indemnisation côté Airbnb.
 - Tu peux **contester** mais le taux de succès est faible (~10 %).
@@ -2814,7 +2814,7 @@ Tu n'as **jamais** mentionné le dégât au voyageur avant d'ouvrir AirCover.
 
 ### Raison 5, Avis négatif perçu comme représailles
 
-Tu as mis 1⭐ au voyageur, il conteste, AirCover suspecte que ta demande est de la vengeance.
+Tu as mis 11/5 au voyageur, il conteste, AirCover suspecte que ta demande est de la vengeance.
 
 > **Solution :** demande AirCover **avant** d'écrire ton avis.
 
@@ -3211,7 +3211,7 @@ C'est **rarement** vrai.
 
 ### Réalité
 
-- 95 % des voisins se plaignent **avec raison** (selon leur perception).
+- La plupart des voisins se plaignent **avec raison** (selon leur perception).
 - 5 % sont effectivement de mauvaise foi (jaloux, conflit pré-existant).
 
 ### Conséquence
@@ -3249,7 +3249,7 @@ Sur 100 séjours, voici la fréquence statistique des dégâts les plus courants
 | **Brûlure tissu** | 5 % | 100-400 € |
 | **Vol petits objets** | 3 % | 50-200 € |
 
-> Ces 5 cas couvrent **85 % des dégâts** que tu rencontreras. Voici la procédure pour chacun.
+> Ces 5 cas couvrent **l'essentiel des dégâts** que tu rencontreras. Voici la procédure pour chacun.
 
 ## Cas 1, Drap / linge taché
 
@@ -3323,7 +3323,7 @@ Une tache **profonde** sur un canapé ou matelas est **rarement réparable** en 
 
 - Détacher pro : 80-200 € (selon surface et profondeur).
 - Délai : 2-5 jours.
-- Succès : ~70 % des taches.
+- Succès : la plupart des taches, pas toutes.
 
 ### Option 2, Remplacement de la housse
 
@@ -3409,7 +3409,7 @@ Le voyageur peut prétendre avoir **oublié** des objets et propose de les renvo
 → Si tu les reçois → annule.
 → Si tu ne les reçois pas → applique la facturation comme prévue.
 
-> 99 % des "j'ai oublié" sont en fait des **vols masqués**.
+> Un "j'ai oublié" cache parfois un **vol masqué** : reste factuel et demande la restitution.
 
 ## La règle d'or de la facturation
 
@@ -3664,12 +3664,12 @@ Si tu fais cette formation, c'est probablement parce que tu as déjà vécu :
 
 - Une nuit blanche à cause d'une fête.
 - Un voyageur agressif qui te menace.
-- Un avis 1⭐ qui t'a laissé une boule au ventre pendant 3 jours.
+- Un avis 11/5 qui t'a laissé une boule au ventre pendant 3 jours.
 - Une caution prélevée mais perdue après contestation.
 
 Ces moments, **cumulés**, fragilisent ton **mental**.
 
-> 35 % des hôtes LCD arrêtent dans les 3 premières années à cause du **stress**, pas du manque de rentabilité.
+> Beaucoup d'hôtes LCD qui arrêtent citent le **stress** plutôt que le manque de rentabilité.
 
 ## Pourquoi la LCD est psychologiquement plus dure que d'autres business
 
@@ -3836,8 +3836,8 @@ C'est faux **au-delà** d'un certain seuil.
 | CA | ... € |
 | Préjudice non récupéré | ... € |
 | % de séjours problématiques | ... % |
-| Nb avis 5⭐ | ... |
-| Nb avis < 4⭐ | ... |
+| Nb avis 51/5 | ... |
+| Nb avis < 41/5 | ... |
 | Mon stress sur 10 | ... |
 
 ### Tirage des conclusions

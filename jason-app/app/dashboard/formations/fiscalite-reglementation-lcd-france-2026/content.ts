@@ -75,15 +75,14 @@ APRÈS (à partir des revenus 2025)
 
 Meublé non classé :
 → Abattement micro-BIC : 30%
-→ Plafond : 15 000€/an ⚠️
+→ Plafond : 15 000€/an
 
-Meublé classé :
+Meublé classé et chambres d'hôtes :
 → Abattement micro-BIC : 50%
-→ Plafond : 77 700€/an
+→ Plafond : 77 700€/an pour les revenus 2025,
+  83 600€/an à partir des revenus 2026
 
-Chambres d'hôtes :
-→ Abattement maintenu à 71%
-→ Plafond : 77 700€/an
+> Source : CGI, art. 50-0, modifié par la loi n° 2024-1039 du 19 novembre 2024 (loi Le Meur) ; seuils revalorisés pour 2026 à 2028
 
 ## La date clé à retenir : 20 mai 2026
 À partir du 20 mai 2026 :
@@ -333,23 +332,26 @@ Si tu n'es pas immatriculé :
           id: 12,
           title: 'Le micro-BIC en 2026 : qui est concerné et comment ça marche',
           duration: '14 min',
-          content: `## Les nouveaux seuils micro-BIC (applicables aux revenus 2025)
+          content: `## Les seuils micro-BIC (revenus 2026)
 TYPE DE LOCATION          ABATTEMENT    PLAFOND
-Meublé longue durée           50%       77 700€
+Meublé longue durée           50%       83 600€
 (bail classique, étudiant,
  mobilité)
 
-Meublé tourisme NON classé    30%       15 000€ ⚠️
+Meublé tourisme NON classé    30%       15 000€
 (Airbnb standard, LCD sans
  classement officiel)
 
-Meublé tourisme CLASSÉ        50%       77 700€
+Meublé tourisme CLASSÉ        50%       83 600€
 (étoiles officielles délivrées
  par organisme agréé)
 
-Chambres d'hôtes              71%       77 700€
+Chambres d'hôtes              50%       83 600€
 (accueil chez l'habitant
  avec petit-déjeuner)
+
+Pour les revenus 2025, le plafond
+de 83 600€ était de 77 700€.
 
 ## Ce que ça veut dire en pratique
 Exemple concret, meublé NON classé :
@@ -371,11 +373,12 @@ Pour 12 000€ de recettes (sous le plafond) :
 → Revenus imposables = 8 400€
 → Impôt à 30% = 2 520€
 
-Soit 1 620€ d'impôts supplémentaires
-par rapport à l'ancien régime (abattement 50%).
+Soit 720€ d'impôts supplémentaires
+par rapport à l'ancien régime
+(abattement 50% : 6 000€ imposables, 1 800€ d'impôt).
 
 ## Le piège du plafond à 15 000€
-⚠️ POINT CRITIQUE À RETENIR
+POINT CRITIQUE À RETENIR
 
 Si tes recettes brutes de location LCD
 dépassent 15 000€ par an
@@ -393,7 +396,7 @@ Beaucoup d'hôtes LCD dépassent ce seuil
 sans le savoir.
 
 Solution : soit faire classer ton logement
-(plafond remonte à 77 700€),
+(plafond de 83 600€ en 2026),
 soit adopter le régime réel
 (souvent plus avantageux de toute façon).
 
@@ -521,7 +524,7 @@ Le micro-BIC reste pertinent si :
   avec peu de charges
 → Tu veux la simplicité maximale
 
-⚠️ Le régime réel implique une liasse fiscale à produire chaque année (formulaires 2031-SD et annexes 2033). Pour une situation simple, un outil en ligne dédié comme décla.fr peut suffire (environ 220€/an en 2026) sans passer par un expert-comptable (500€ à 1 200€/an selon les cas). Pour une situation plus complexe (SCI, plusieurs biens, revente prévue), un expert-comptable spécialisé LMNP reste recommandé. Voir la formation "Déclarer sa LMNP seul avec décla.fr" pour le détail.
+Attention : le régime réel implique une liasse fiscale à produire chaque année (formulaires 2031-SD et annexes 2033). Pour une situation simple, un outil en ligne dédié comme décla.fr peut suffire (environ 220€/an en 2026) sans passer par un expert-comptable (500€ à 1 200€/an selon les cas). Pour une situation plus complexe (SCI, plusieurs biens, revente prévue), un expert-comptable spécialisé LMNP reste recommandé. Voir la formation "Déclarer sa LMNP seul avec décla.fr" pour le détail.
 
 ## Exercice
 **Exercice pratique :** Si tu ne sais pas quel régime te convient, c'est normal, c'est une décision qui dépend de ta situation personnelle. L'action de cette leçon : [prends un appel découverte avec Jason](/contact) pour faire le point, ou consulte un expert-comptable spécialisé LMNP. Ne prends pas cette décision à l'aveugle.
@@ -599,7 +602,7 @@ Dans tous les cas :
   Un DPE coûte entre 100€ et 250€.
 
 ## Les passoires thermiques (G) en 2026
-⚠️ LOGEMENTS NOTÉS G
+Attention : LOGEMENTS NOTÉS G
 
 Depuis 2025, un logement noté G
 NE PEUT PLUS être proposé à la location,
@@ -646,10 +649,10 @@ AVANT LA LOI LE MEUR :
 APRÈS LA LOI LE MEUR :
 → Le classement est devenu STRATÉGIQUE
 → Il protège ton régime fiscal
-   (abattement 50% vs 30%, plafond 77 700€ vs 15 000€)
+   (abattement 50% vs 30%, plafond 83 600€ vs 15 000€)
 → Il peut t'éviter le basculement obligatoire
    au régime réel si tu es entre 15 000€
-   et 77 700€ de recettes
+   et 83 600€ de recettes
 
 ## Les avantages fiscaux du classement
 SANS CLASSEMENT (meublé non classé)
@@ -657,9 +660,9 @@ SANS CLASSEMENT (meublé non classé)
 → Au-delà de 15 000€ : régime réel obligatoire
 
 AVEC CLASSEMENT (1 à 5 étoiles)
-→ Micro-BIC : abattement 50%, plafond 77 700€
+→ Micro-BIC : abattement 50%, plafond 83 600€
 → Tu peux rester au micro-BIC
-   jusqu'à 77 700€ de recettes annuelles
+   jusqu'à 83 600€ de recettes annuelles
 
 Impact concret pour 20 000€ de recettes :
 
@@ -1108,7 +1111,7 @@ Tu peux gérer seul(e) si :
 
 ✓ Tes recettes sont inférieures à 15 000€
   et ton logement n'est pas classé
-  (ou inférieures à 77 700€ s'il est classé)
+  (ou inférieures à 83 600€ s'il est classé)
 
 ✓ Tu n'as pas de crédit immobilier
   pour ce logement
@@ -1184,7 +1187,7 @@ TON profil fiscal dépend de :
 Il n'y a pas de réponse universelle
 à "micro-BIC ou régime réel".
 
-⚠️ Ce que cette formation ne remplace pas :
+Attention : ce que cette formation ne remplace pas :
 → Un conseil fiscal personnalisé
 → L'accompagnement d'un professionnel
   pour ta situation spécifique
@@ -1233,7 +1236,7 @@ MODULE 5, Organisation
 MICRO-BIC           MICRO-BIC          RÉGIME RÉEL
                     Non classé          Classé
 
-Plafond             15 000€/an          77 700€/an         Sans plafond
+Plafond             15 000€/an          83 600€/an         Sans plafond
 Abattement          30%                 50%                Charges réelles
 Comptabilité        Minimale            Minimale           Obligatoire
 Amortissement       Non                 Non                Oui
@@ -1270,7 +1273,7 @@ FISCALITÉ LMNP
 ACCOMPAGNEMENT JASON
 → /contact (appel découverte gratuit 30 min)
 
-⚠️ AVERTISSEMENT IMPORTANT
+AVERTISSEMENT IMPORTANT
 Cette formation est un guide pédagogique
 basé sur la réglementation en vigueur en mars 2026.
 La fiscalité et la réglementation LCD évoluent.

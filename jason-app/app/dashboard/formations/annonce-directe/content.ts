@@ -60,13 +60,13 @@ Calculons concrètement ce que représente la commission Airbnb sur ton activit�
 
 ### La commission réelle : plus que tu ne crois
 
-Airbnb prélève **3% côté hôte** + une part variable côté voyageur (typiquement 14-16% du montant de la réservation). Mais ce n'est que la partie visible.
+Depuis le 13 octobre 2026, en Europe, Airbnb prélève une **commission unique de 15,5 % côté hôte**, soit **18,6 % avec la TVA** sur cette commission. Le voyageur ne paie plus de frais de service en plus.
 
 **Pour 100 nuits à 120€/nuit :**
 - Revenus bruts : 12 000€
-- Commission hôte (3%) : -360€
-- Frais de paiement inclus dans les 3% : compris
-- **Net hôte Airbnb : 11 640€**
+- Commission hôte (18,6 % TVA comprise) : -2 232€
+- Frais de paiement : compris
+- **Net hôte Airbnb : 9 768€**
 
 **Pour les mêmes 100 nuits en direct :**
 - Revenus bruts : 12 000€
@@ -74,7 +74,7 @@ Airbnb prélève **3% côté hôte** + une part variable côté voyageur (typiqu
 - Frais channel manager (si applicable) : ~-120€
 - **Net hôte direct : 11 640€**
 
-À surface égale, l'avantage n'est pas sur les 3% côté hôte. Il est sur **le prix affiché** : en direct, tu peux afficher le même prix qu'Airbnb et augmenter ta marge, ou afficher moins cher et convertir mieux.`,
+Soit près de **1 900€ de plus** pour les mêmes nuits. En direct, tu peux aussi afficher un peu moins cher qu'Airbnb et rester gagnant, ce qui aide à convertir.`,
         },
       ],
     },
@@ -178,7 +178,7 @@ Une page de réservation directe efficace suit une structure précise. Voici les
           duration: '15 min',
           content: `## Paiements directs : Stripe, PayPal et les alternatives
 
-Le système de paiement est le point de friction n°1 de la réservation directe. Un mauvais setup = abandons garantis.
+Le système de paiement est un point de friction majeur de la réservation directe. Un mauvais setup = abandons garantis.
 
 ### Stripe : la référence pour les hôtes
 
@@ -285,7 +285,7 @@ Même avec un beau site et un bon prix, certains visiteurs n'osent pas réserver
           duration: '25 min',
           content: `## La séquence email de conversion directe
 
-Un visiteur qui n'a pas réservé n'est pas perdu. Une séquence email bien conçue peut convertir 15-25% des prospects indécis.
+Un visiteur qui n'a pas réservé n'est pas perdu. Une séquence d'e-mails bien conçue peut convertir une partie des prospects indécis.
 
 ### La séquence en 3 emails
 

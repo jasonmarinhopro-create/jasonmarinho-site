@@ -348,7 +348,7 @@ Budget recommandé pour les textiles :
 → Avant d'acheter un meuble neuf :
   achetez de beaux draps.
 
-## La literie : le critère n°1 des avis
+## La literie : un critère majeur des avis
 LE MATELAS
 → Investissez entre 300 et 700€.
 → Un mauvais matelas = mauvaise nuit

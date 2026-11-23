@@ -106,18 +106,20 @@ tu travailles à perte.
 ## Ce que la commission change tout
 Même appartement, même prix de base : 100€
 
-Sur Airbnb (4% hôte) :
-→ Tu reçois 96€ net
+Sur Airbnb (15,5% hôte, 18,6% TVA comprise,
+depuis le 13 octobre 2026 en Europe) :
+→ Tu reçois environ 81€ net
 
-Sur Booking (16% hôte) :
-→ Tu reçois 84€ net
+Sur Booking (15 à 18% selon ton contrat) :
+→ Tu reçois environ 82 à 85€ net
 
 Sur Driing (0%) :
 → Tu reçois 100€ net
 
 Conséquence directe sur ton prix minimum :
-→ Sur Booking, ton prix minimum doit être
-  16% plus élevé pour la même marge nette.
+→ Sur Airbnb et Booking, les commissions
+  sont maintenant proches : calcule ton prix
+  minimum avec le taux réel de chaque plateforme.
 → Sur Driing, tu peux proposer moins cher
   au voyageur ET gagner plus.
 
@@ -481,7 +483,7 @@ Elle ajuste tes prix automatiquement
 chaque jour en fonction de ces données.
 
 ## Le problème fondamental de la tarification Airbnb
-⚠️ Ce que personne ne dit assez clairement :
+Attention : ce que personne ne dit assez clairement :
 
 La tarification intelligente Airbnb
 optimise les revenus D'AIRBNB.
@@ -553,9 +555,10 @@ DÉSACTIVER et gérer manuellement si :
           title: 'Booking.com : la logique tarifaire est différente',
           duration: '12 min',
           content: `## La différence fondamentale avec Airbnb
-Sur Airbnb :
-Le voyageur paie ton prix + 14-16% de frais.
-Tu paies 3-5% de commission.
+Sur Airbnb (Europe, depuis le 13 octobre 2026) :
+Le voyageur voit ton prix, sans frais ajoutés.
+Tu paies une commission unique de 15,5%
+(18,6% TVA comprise).
 
 Sur Booking.com :
 Le voyageur voit TON prix, sans frais.
@@ -563,17 +566,15 @@ Tu paies 15-18% de commission sur ce prix.
 
 Conséquence directe :
 
-Si tu affiches le même prix sur les deux :
-→ Airbnb : tu reçois ton prix - 4%
-→ Booking : tu reçois ton prix - 16%
+Les deux plateformes fonctionnent désormais
+de la même façon, avec des commissions proches.
+À prix affiché égal, tu reçois à peu près
+la même chose sur les deux.
 
-Pour la même marge nette sur Booking,
-ton prix affiché doit être
-+12 à 14% plus élevé que sur Airbnb.
-
-Ou : tu ajustes ta stratégie sur Booking
-pour que ça reste compétitif tout en
-protégeant ta marge.
+La vraie différence se joue sur les remises
+(Genius sur Booking) et sur la clientèle :
+adapte ta stratégie à chaque plateforme
+plutôt que ton prix de base.
 
 ## Comment Booking positionne tes annonces
 L'algorithme de Booking priorise :
@@ -738,7 +739,7 @@ Avant d'utiliser un outil automatisé,
 il faut comprendre la logique.
 
 Un outil de tarification dynamique
-peut augmenter tes revenus de 15 à 30%.
+peut augmenter tes revenus.
 Mais il part de ton prix de base
 et de tes règles, si tu les as mal
 configurés, il amplifie les erreurs.
@@ -920,7 +921,7 @@ avant d'investir dans un outil.
           title: 'Les 5 erreurs de tarification les plus fréquentes',
           duration: '10 min',
           content: `## Erreur 1 : Le prix figé toute l'année
-C'est l'erreur n°1.
+C'est l'erreur la plus courante.
 
 Un hôte fixe son prix en janvier
 et ne le regarde plus pendant 6 mois.

@@ -172,7 +172,7 @@ un avis nous ferait vraiment plaisir."
 MÉTHODE 2, Le QR code dans le logement
 Un cadre encadré, posé sur la table :
 "Vous avez aimé votre séjour ?
-Laissez-nous un avis Google 👇"
+Laissez-nous un avis Google"
 + QR code vers votre fiche GMB.
 → Discret, efficace, disponible 24h/24.
 

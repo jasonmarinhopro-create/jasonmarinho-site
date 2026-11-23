@@ -35,16 +35,16 @@ Les questions les plus fréquentes :
 → "Y a-t-il un parking ?"
 → "Où trouver un bon restaurant ?"
 
-Temps moyen de réponse : 3 à 5 min par message.
-Sur 6 messages × 20 séjours par an :
+Exemple : 6 messages par séjour,
+20 séjours par an, 4 minutes par réponse :
 
 → 120 messages × 4 min = 480 minutes
   = 8 heures par an perdues
     sur des questions identiques.
 
 Avec un livret bien conçu :
-→ Réduction de 80% des messages entrants.
-→ 6h30 récupérées.
+→ Une bonne partie de ces messages disparaît.
+→ Autant d'heures récupérées.
 → Des voyageurs plus autonomes et satisfaits.
 
 ## L'impact direct sur vos avis
@@ -99,27 +99,27 @@ LIVRET DIGITAL (Driing)
 ## Ce que contient le livret Driing
 Le livret Driing est structuré en 6 blocs :
 
-🏠 MESSAGE DE BIENVENUE
+ MESSAGE DE BIENVENUE
    Personnalisé, avec photo de l'hôte,
    disponible en plusieurs langues (🇫🇷🇺🇸...)
 
-📋 INFORMATIONS UTILES
+ INFORMATIONS UTILES
    Arrivée, pendant le séjour, départ
    Organisées en 3 étapes claires
 
-🗺️ ACTIVITÉS ET RECOMMANDATIONS
+ ACTIVITÉS ET RECOMMANDATIONS
    Restaurants, visites, spots locaux
    avec liens directs
 
-📞 EN CAS DE BESOIN
+ EN CAS DE BESOIN
    Numéro de l'hôte cliquable (appel/SMS)
    Disponible à tout moment
 
-📍 CARTE INTERACTIVE
+ CARTE INTERACTIVE
    Adresse du logement avec itinéraire
    intégré
 
-⭐ LIVRE D'OR
+1/5 LIVRE D'OR
    Les voyageurs laissent leur avis
    directement dans le livret -
    avant même de quitter le logement
@@ -138,18 +138,18 @@ Le livret Driing est organisé en 3 temps
 qui correspondent au parcours naturel
 du voyageur :
 
-📥 À VOTRE ARRIVÉE
+ À VOTRE ARRIVÉE
    Tout ce dont le voyageur a besoin
    dès qu'il franchit la porte.
    → Codes d'accès, Wi-Fi, stationnement,
      chauffage, règles essentielles
 
-🏡 PENDANT VOTRE SÉJOUR
+ PENDANT VOTRE SÉJOUR
    Ce qui améliore le quotidien.
    → Équipements, tri des déchets,
      machine à laver, TV, règlement
 
-📤 À VOTRE DÉPART
+ À VOTRE DÉPART
    Pour un check-out sans friction.
    → Heure limite, que faire des clés,
      ménage attendu ou non
@@ -352,25 +352,25 @@ Mauvais exemples :
 Voici exactement ce que cette section
 doit contenir pour être parfaite :
 
-🔑 ACCÈS AU LOGEMENT
+ ACCÈS AU LOGEMENT
 "Pour entrer : [Boîte à clés / serrure connectée]
 Code : [X], [localisation précise]"
 
-📶 WI-FI
+ WI-FI
 "Réseau : [Nom du réseau]
 Mot de passe : [Mot de passe]"
 
-🚗 STATIONNEMENT
+ STATIONNEMENT
 "[Instructions parking, gratuit rue X,
 parking payant à X mètres à gauche,
 pas de parking, métro recommandé]"
 
-🌡️ CHAUFFAGE / CLIMATISATION
+ CHAUFFAGE / CLIMATISATION
 "Le thermostat est situé [localisation].
 Réglez-le sur [X°C recommandé].
 [Instructions courtes si spécifique]"
 
-🔌 EN CAS DE COUPURE
+ EN CAS DE COUPURE
 "Le tableau électrique se trouve [localisation].
 Vérifiez si un disjoncteur a sauté."
 
@@ -381,22 +381,22 @@ Vérifiez si un disjoncteur a sauté."
 Cette section répond aux questions
 du quotidien dans le logement.
 
-🗑️ TRI DES DÉCHETS
+ TRI DES DÉCHETS
 "Bac jaune : plastiques/cartons
 Bac vert : verre
 Bac gris : ordures ménagères
 Localisation : [Endroit dans le logement / immeuble]"
 
-🧺 MACHINE À LAVER
+ MACHINE À LAVER
 "Localisation : [Endroit]
 Lessive : [Fournie / dans le placard X]
 Programme recommandé : [X]"
 
-📺 TÉLÉVISION
+ TÉLÉVISION
 "Télécommande : [Localisation]
 Netflix/TV : [Instructions d'accès si applicable]"
 
-🔇 RÈGLES ESSENTIELLES (3 max)
+ RÈGLES ESSENTIELLES (3 max)
 "Silence demandé après [X]h
 Pas de fumée à l'intérieur
 [Règle spécifique à votre logement]"
@@ -414,12 +414,12 @@ tout flou sur le check-out.
 En cas de besoin, contactez-nous
 la veille pour un late check-out."
 
-🔑 LES CLÉS
+ LES CLÉS
 "Déposez les clés [localisation précise -
 boîte à clés / sur le comptoir /
 dans la boîte aux lettres]"
 
-🧹 ÉTAT DU LOGEMENT ATTENDU
+ ÉTAT DU LOGEMENT ATTENDU
 "Pas besoin de faire le ménage -
 notre équipe s'en charge.
 Merci de :
@@ -427,7 +427,7 @@ Merci de :
 → Sortir les poubelles si nécessaire
 → Fermer les fenêtres"
 
-⭐ INVITATION À LAISSER UN AVIS
+1/5 INVITATION À LAISSER UN AVIS
 "Si vous avez passé un bon séjour,
 un avis nous ferait énormément plaisir.
 Vous pouvez le faire directement
@@ -613,9 +613,9 @@ de votre professionnalisme :
   posé sur la table de salon ou de cuisine
 
 Texte au-dessus du QR code :
-"Votre guide de séjour 📱"
+"Votre guide de séjour "
 ou
-"Infos pratiques + recommandations locales 👇"
+"Infos pratiques + recommandations locales "
 
 → Le voyageur le scanne dès l'arrivée
 → Pas besoin de chercher un lien
@@ -669,7 +669,7 @@ Pourtant, elle résout un problème
 que vous connaissez bien :
 
 Le problème :
-→ 70% des voyageurs satisfaits ne laissent
+→ Beaucoup de voyageurs satisfaits ne laissent
   pas d'avis sur Airbnb.
 → Pas par mauvaise volonté.
 → Par manque de déclencheur au bon moment.

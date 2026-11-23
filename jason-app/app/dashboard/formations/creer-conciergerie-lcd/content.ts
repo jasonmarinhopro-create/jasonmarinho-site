@@ -232,7 +232,7 @@ Les 6 premiers mois : montée en charge progressive.
           content: `## Les 4 statuts possibles et leur logique
 MICRO-ENTREPRISE (Auto-entrepreneur)
 → Pour : démarrer simplement, tester
-→ Plafond CA : 77 700€/an
+→ Plafond CA : 83 600€/an (services, 2026 à 2028)
 → Charges déductibles : NON
 → Création : gratuite, 1 heure sur inpi.fr
 → Idéal si : tu débutes et tu veux valider
@@ -264,7 +264,7 @@ TU TESTES, DÉMARRAGE PRUDENT
 → Avantage : zéro risque financier,
   création immédiate
 → Limite : pas de déduction de charges,
-  plafond à 77 700€
+  plafond à 83 600€
 
 TU ES DÉCIDÉ, LANCEMENT SÉRIEUX
 → SASU ou EURL
@@ -352,7 +352,7 @@ Pour l'obtenir, il faut :
 → S'inscrire à la CCI (Chambre de Commerce)
 
 Exercer sans carte G :
-⚠️ Jusqu'à 6 mois d'emprisonnement
+Attention : jusqu'à 6 mois d'emprisonnement
    et 7 500€ d'amende
 
 ## Est-ce que tu en as vraiment besoin ?
@@ -417,7 +417,7 @@ SOLUTION 3, OBTENIR LA CARTE G
 → Si non : formation Bac+3 en immobilier
   (accessible en alternance ou VAE)
 
-⚠️ Quelle que soit la solution choisie,
+Attention : quelle que soit la solution choisie,
    fais valider ton montage juridique
    par un avocat spécialisé immobilier
    avant de signer ton premier contrat.
@@ -596,7 +596,7 @@ CE QUI EST SOUVENT FACTURÉ EN PLUS :
 
 → Sois transparent sur ce qui est inclus
   et ce qui ne l'est pas.
-  La clarté évite 80% des litiges.
+  La clarté évite la plupart des litiges.
 
 ## Comment justifier ton tarif face à un propriétaire
 Le propriétaire voit 20% de commission.
@@ -1270,8 +1270,7 @@ DÉLÉGATION 2, LES CHECK-INS PHYSIQUES
 DÉLÉGATION 3, LA COMMUNICATION ROUTINE
 → Les gabarits de messages prêts à l'emploi
   disponibles sur la plateforme Jason Marinho
-  te font gagner 30 minutes par logement
-  et par semaine.
+  te font gagner du temps chaque semaine.
 → Configure-les dans ton PMS
   pour un envoi automatique.
 

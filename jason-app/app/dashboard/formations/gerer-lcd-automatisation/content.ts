@@ -87,7 +87,7 @@ TOTAL                           _____ h/semaine
 
 → Multipliez par 52 pour l'impact annuel.
 → Identifiez la tâche la plus chronophage.
-  C'est votre priorité d'automatisation n°1.
+  C'est votre première priorité d'automatisation.
 
 ## L'ordre d'automatisation recommandé
 Ne tentez pas de tout automatiser
@@ -298,7 +298,7 @@ POUR DRIING :
   comme templates dans votre outil d'automatisation.
 
 ## Les questions fréquentes à anticiper dans les messages
-80% des questions voyageurs concernent
+La plupart des questions voyageurs concernent
 les mêmes 5 sujets.
 
 Intégrez les réponses dans vos messages
@@ -322,7 +322,7 @@ AVANT que la question soit posée :
   (dans tous les messages clés)
 
 → Ces réponses anticipées éliminent
-  70 à 80% des messages entrants.
+  une grande partie des messages entrants.
   Moins de messages = plus de temps
   ET meilleur taux de réponse Airbnb.
 
@@ -351,7 +351,7 @@ Le problème :
 La solution en 3 niveaux :
 
 NIVEAU 1, LES MESSAGES AUTOMATIQUES
-(couvrent 70-80% des questions)
+(couvrent la plupart des questions)
 → Si votre message J-1 est complet,
   la plupart des questions n'arrivent pas.
 
@@ -372,7 +372,7 @@ NIVEAU 3, LE MESSAGE D'ACCUSÉ DE RÉCEPTION
 ## Les outils d'IA pour répondre aux messages
 En 2026, des outils basés sur l'IA
 peuvent répondre automatiquement
-à 80-90% des messages voyageurs.
+à une grande partie des messages voyageurs.
 
 HOSPITABLE.COM (ex-Smartbnb)
 → IA qui apprend votre style de communication
@@ -775,27 +775,27 @@ ONGLET 4, CONTACTS VOYAGEURS
 Certains chiffres doivent déclencher
 une action immédiate :
 
-🔴 Note moyenne < 4,5
+ Note moyenne < 4,5
 → Problème urgent à identifier et corriger.
    Lisez les avis récents, identifiez le motif.
 
-🔴 Taux d'occupation < 30%
+ Taux d'occupation < 30%
    sur un mois normalement chargé
 → Vérifiez : prix trop élevé ?
    Séjour minimum trop long ?
    Calendrier non à jour ?
 
-🔴 Plus de 48h sans réservation
+ Plus de 48h sans réservation
    en haute saison
 → Vérifiez votre annonce, votre visibilité,
    vos prix vs la concurrence.
 
-🟡 Temps de gestion > 10h/semaine
+ Temps de gestion > 10h/semaine
    pour 1-2 logements
 → Automatisation insuffisante.
    Revenez sur les modules précédents.
 
-🟡 Note "Propreté" < 4,6
+ Note "Propreté" < 4,6
 → Briefez à nouveau votre équipe ménage.
    Ajoutez des éléments à la checklist.
 

@@ -58,7 +58,7 @@ Lors de ta création d'activité, l'INSEE t'attribue un **code APE**. Pour une c
 
 - Pour les conciergeries **B2B** ou corporate.
 
-> ⚠️ Le code APE n'a **pas d'impact fiscal direct**, mais il conditionne certaines **aides** et certaines **conventions collectives**.
+> Attention : le code APE n'a **pas d'impact fiscal direct**, mais il conditionne certaines **aides** et certaines **conventions collectives**.
 
 > La nouvelle nomenclature **NAF 2025** entrera en vigueur au 1er janvier **2027**.
 
@@ -67,7 +67,7 @@ Lors de ta création d'activité, l'INSEE t'attribue un **code APE**. Pour une c
 La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des revenus locatifs.*
 
 - Tu n'es **pas soumis** aux règles des LMNP.
-- Tu n'es **pas concerné** par l'abattement 71 % des locations meublées classées.
+- Tu n'es **pas concerné** par les abattements des locations meublées (50 % en meublé classé, 30 % en non classé).
 - Tu n'es **pas impacté** par la baisse d'abattement micro-BIC pour les meublés non classés *(30 %)*.
 
 > Ces règles concernent les **propriétaires**. Toi tu es un **prestataire de service**.
@@ -84,8 +84,8 @@ La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des
 | Critère | Propriétaire LCD | Conciergerie |
 |---|---|---|
 | **Catégorie** | BIC *(loyers)* | BIC *(services)* |
-| **Abattement micro 2025** | 30 % *(non classé)* / 50 % *(classé)* | **50 %** |
-| **Plafond micro 2025** | 15 000 € / 77 700 € | **77 700 €** |
+| **Abattement micro 2026** | 30 % *(non classé)* / 50 % *(classé)* | **50 %** |
+| **Plafond micro 2026** | 15 000 € / 83 600 € | **83 600 €** |
 | **Impacté loi Le Meur fiscalement** | Oui | **Non directement** |
 
 ## Exercice pratique
@@ -109,7 +109,7 @@ Les prestations d'une conciergerie sont soumises au **taux normal de TVA : 20 %*
 - Le taux de **10 %** s'applique aux services **para-hôteliers** rendus **directement aux voyageurs** *(petit-déjeuner, nettoyage régulier, réception…)*.
 - La conciergerie facture ses services **au propriétaire** = prestations de services commerciaux = **20 %**.
 
-> ⚠️ **Attention à la confusion fréquente.** Si tu fournis **toi-même** des services para-hôteliers directement aux voyageurs *(dans le cadre d'un contrat de sous-location ou colocation touristique)*, le taux de **10 %** peut s'appliquer. Dans ce cas spécifique, consulte un expert-comptable.
+> **Attention à la confusion fréquente.** Si tu fournis **toi-même** des services para-hôteliers directement aux voyageurs *(dans le cadre d'un contrat de sous-location ou colocation touristique)*, le taux de **10 %** peut s'appliquer. Dans ce cas spécifique, consulte un expert-comptable.
 
 *Source : BOFiP mise à jour 26/03/2025*
 
@@ -132,7 +132,9 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 
 > L'article 32 de la LFI 2025 prévoyait d'abaisser le seuil à 25 000 € au 1er mars 2025. **Cette réforme a été officiellement suspendue le 30 avril 2025** par le Ministère de l'Économie.
 
-*Les seuils actuels (37 500 €) restent valables.*
+*Les seuils actuels (37 500 €) restent valables : la loi de finances pour 2026 ne les a pas modifiés.*
+
+> Source : CCI Lyon Métropole, « Micro-entreprises : le projet de loi de finances 2026 relance la réforme du seuil de franchise » ; seuils de franchise inchangés en 2026
 
 ## Une fois assujetti à la TVA : tes obligations
 
@@ -153,13 +155,13 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 
 ## Franchise ou TVA : qu'est-ce qui est préférable ?
 
-### ✅ Avec la franchise *(CA < 37 500 €)*
+### Avec la franchise *(CA < 37 500 €)*
 
 - ✓ Pas de paperasse TVA
 - ✓ Prix compétitifs *(car pas de TVA en sus)*
 - ✗ Pas de récupération de TVA sur tes achats
 
-### ✅ Avec la TVA *(CA > 37 500 €)*
+### Avec la TVA *(CA > 37 500 €)*
 
 - ✓ Tu récupères la TVA sur **tous** tes achats pro
 - ✓ Crédibilité auprès des propriétaires pro
@@ -212,32 +214,34 @@ L'administration fiscale applique **automatiquement** un abattement de **50 %** 
 
 En auto-entrepreneur, tu paies sur ton **CA**, pas sur ton **bénéfice** :
 
-| Poste | Taux 2025 |
+| Poste | Taux 2026 |
 |---|---|
 | **Cotisations sociales** *(services BIC)* | 21,2 % |
-| **CFP** *(formation professionnelle)* | 0,3 % |
-| **Total global** | **~22-24 % du CA** |
+| **CFP** *(formation professionnelle)* | 0,1 à 0,3 % selon l'activité |
+| **Total global** | **environ 21,5 % du CA** |
 
 ### ACRE *(1ère année)*
 
-- **50 % de réduction** → environ **10-12 % du CA**.
+- Depuis le **1er juillet 2026**, l'ACRE réduit les cotisations de **25 %** (contre 50 % auparavant).
 - Demande à faire à la création sur *net-entreprises.fr*.
 
 ### Évolution 2026
 
-> Les taux augmentent d'environ **1 point au 1er janvier 2026** pour renforcer les droits à la retraite. *Prévoir ~24-26 % du CA dès 2026.*
+> Le taux des prestations de services **BIC reste à 21,2 %** en 2026. *La hausse d'un point au 1er janvier 2026 concerne les activités libérales (BNC), pas la conciergerie.*
+>
+> Source : economie.gouv.fr, « Micro-entreprises : quel est le montant de vos cotisations sociales ? » (mars 2026)
 
 ## Le versement libératoire de l'IR
 
 Option disponible si ton **revenu fiscal de référence** de l'année N-2 est inférieur à **27 478 €** *(1 part, 2025)*.
 
-### ✅ Avec le versement libératoire
+### Avec le versement libératoire
 
 - Tu paies l'impôt en même temps que les cotisations.
 - **Taux fixe** : 1,7 % du CA pour les services BIC.
 - Simple mais potentiellement **moins avantageux** si tu as peu d'autres revenus.
 
-### ❌ Sans versement libératoire
+### Sans versement libératoire
 
 - Bénéfice imposable *(CA × 50 %)* intégré dans la déclaration de revenus du foyer fiscal.
 - **Barème progressif** : 0 %, 11 %, 30 %, 41 %, 45 %.
@@ -252,19 +256,19 @@ Option disponible si ton **revenu fiscal de référence** de l'année N-2 est in
 
 ## Les limites à connaître
 
-### ❌ Pas de déduction des charges réelles
+### Pas de déduction des charges réelles
 
 Si tu achètes un véhicule, du matériel, tu sous-traites… *tu ne peux rien déduire individuellement.*
 
-### ❌ Plafond bloquant
+### Plafond bloquant
 
 Si ton activité décolle à **90 000 €**, tu **dois** sortir du micro.
 
-### ❌ Responsabilité personnelle
+### Responsabilité personnelle
 
 Ton patrimoine personnel n'est **pas séparé** de ton patrimoine professionnel *(sauf domicile principal)*.
 
-### ❌ Retraite plus faible
+### Retraite plus faible
 
 Cotisations calculées sur le **CA**, pas sur le **bénéfice réel** → droits à la retraite proportionnellement plus bas.
 
@@ -360,7 +364,7 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 |---|---|
 | Débute, CA < 30 000 € | **Auto-entrepreneur / micro-BIC** |
 | Activité établie, charges < 50 % CA | **Micro-BIC** maintenu |
-| Charges > 50 % CA, CA < 77 700 € | **EI au réel** |
+| Charges > 50 % CA, CA < 83 600 € | **EI au réel** |
 | CA 60 000, 100 000 €, croissance | **EURL / IS** |
 | CA > 100 000 €, bénéfices solides | **SASU / IS** |
 | S'associer prévu | **SAS** *(pluripersonnel)* |
@@ -434,12 +438,12 @@ Les cotisations sont calculées sur le **salaire brut**.
 
 Si la SASU génère **80 000 € de bénéfice** :
 
-### ❌ Option 1, Tout en salaire
+### Option 1 à éviter : tout en salaire
 
 - Charges sociales très élevées.
 - Non rentable au-delà d'un certain seuil.
 
-### ✅ Option 2, Salaire minimal + dividendes
+### Option 2 conseillée : salaire minimal et dividendes
 
 - **Salaire** : 1 500 €/mois brut *(sécurité sociale de base)*.
 - **Dividendes** : reste des bénéfices après IS.
@@ -484,26 +488,28 @@ Si la SASU génère **80 000 € de bénéfice** :
 
 > **Applicable en** : micro-BIC, EI réel, EURL sans option IS.
 
-### Le barème progressif 2025
+### Le barème progressif 2026 *(revenus 2025)*
 
-| Tranche | Taux |
+| Tranche (par part) | Taux |
 |---|---|
-| 0, 11 294 € | 0 % |
-| 11 294, 28 797 € | 11 % |
-| 28 797, 82 341 € | 30 % |
-| 82 341, 177 106 € | 41 % |
-| > 177 106 € | 45 % |
+| Jusqu'à 11 600 € | 0 % |
+| De 11 601 à 29 579 € | 11 % |
+| De 29 580 à 84 577 € | 30 % |
+| De 84 578 à 181 917 € | 41 % |
+| Au-delà de 181 917 € | 45 % |
+
+> Source : loi de finances pour 2026 (loi n° 2026-103 du 19 février 2026), tranches revalorisées de 0,9 %
 
 > Les bénéfices de ton entreprise **s'ajoutent** à tes autres revenus du foyer fiscal.
 
-### ✅ Avantages IR
+### Avantages IR
 
 - Déficits **imputables** sur le revenu global.
 - Simple, **pas de double imposition**.
 
-### ❌ Inconvénients IR
+### Inconvénients IR
 
-- Taux marginal monte vite dès **28 797 €**.
+- Taux marginal monte vite dès **29 580 €** *(barème 2026)*.
 - Impôt payé **même si tu réinvestis** dans la société.
 
 ## L'Impôt sur les Sociétés *(IS)*, l'option société
@@ -515,15 +521,15 @@ Si la SASU génère **80 000 € de bénéfice** :
 - **15 %** sur les premiers 42 500 € de bénéfice
 - **25 %** au-delà
 
-> ⚠️ **PLF 2026 en cours d'examen :** le seuil du taux réduit pourrait passer à **100 000 €** si le texte est adopté. *À surveiller pour les clôtures fiscales 2025.*
+> La loi de finances pour 2026 (19 février 2026) a **maintenu** le taux réduit de 15 % jusqu'à **42 500 €** de bénéfice *(CGI, art. 219-I-b)*.
 
-### ✅ Avantages IS
+### Avantages IS
 
 - Taux **faibles** sur les premiers 42 500 €.
 - Dividendes SASU : **flat tax 31,4 %** *(pas de charges sociales)*.
 - Possibilité de **conserver des bénéfices** en société sans les distribuer *(renforcement des capitaux propres)*.
 
-### ❌ Inconvénients IS
+### Inconvénients IS
 
 - **Double imposition** si tout est distribué *(IS + flat tax)*.
 - Formalisme comptable renforcé.
@@ -558,13 +564,13 @@ Si la SASU génère **80 000 € de bénéfice** :
 
 ## Quand choisir IS vs IR
 
-### ✅ Choisir IR si
+### Choisir IR si
 
 - Bénéfices **inférieurs à 30 000 €/an**.
 - Tu as des **déficits à imputer** sur le revenu global.
 - Tu veux la **simplicité maximale**.
 
-### ✅ Choisir IS si
+### Choisir IS si
 
 - Bénéfices dépassent **40 000 €/an** régulièrement.
 - Tu veux **conserver des bénéfices** en société.
@@ -713,7 +719,7 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 - **Échéance principale** : 15 décembre de chaque année.
 - **Mensualisation possible** *(option à activer en janvier)*.
 
-> ⚠️ Si tu travailles depuis ton **domicile** sans local commercial distinct, la CFE est calculée sur la **base minimum** de ta commune. Anticipe ce montant dès la 2ème année d'activité.
+> Attention : si tu travailles depuis ton **domicile** sans local commercial distinct, la CFE est calculée sur la **base minimum** de ta commune. Anticipe ce montant dès la 2ème année d'activité.
 
 ## Provisions fiscales mensuelles, une habitude de gérant
 
@@ -766,7 +772,7 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
    - **Micro-BIC** → 28 % de ton CA mensuel moyen
    - **Société IS** → IS annuel estimé / 12
 
-> Cette seule habitude évite **90 % des surprises** de trésorerie en fin d'exercice.`,
+> Cette seule habitude évite **l'essentiel des surprises** de trésorerie en fin d'exercice.`,
         },
       ],
     },
@@ -843,7 +849,7 @@ Les communes peuvent désormais :
 ## Ce que la loi Le Meur NE change PAS fiscalement
 
 - ✓ Ton **abattement micro-BIC** reste à 50 %.
-- ✓ Ton **plafond micro** reste à 77 700 € / 83 600 €.
+- ✓ Ton **plafond micro** reste à 83 600 € pour les services *(seuil fixé pour 2026 à 2028)*.
 - ✓ Tes **cotisations TNS** ne changent pas.
 - ✓ Ton **régime IS/IR** n'est pas modifié.
 
@@ -941,7 +947,7 @@ Les communes peuvent désormais :
 ### Étape 2, Décider *(dans le mois)*
 
 - ☐ Compare ton impôt actuel vs le statut optimal identifié.
-- ☐ Si l'écart dépasse **2 000 €/an** : consulte un expert-comptable.
+- Si l'écart dépasse **2 000 €/an** : consulte un expert-comptable.
 - ☐ Prends une décision **IS vs IR** pour l'exercice en cours.
 - ☐ Vérifie la **date de clôture** pour optimiser le timing fiscal.
 
@@ -966,7 +972,7 @@ Les communes peuvent désormais :
 
 Tu as terminé la formation **Fiscalité et meilleur statut pour une conciergerie de tourisme**.
 
-> Les conciergeries qui optimisent leur fiscalité économisent en moyenne **5 000 à 15 000 €/an** par rapport à celles qui ne l'ont pas fait.
+> Bien choisir son régime peut représenter **plusieurs milliers d'euros par an** pour une conciergerie qui grandit : fais le calcul avec tes chiffres.
 
 > Ce n'est pas de l'argent gagné en travaillant plus. *C'est de l'argent récupéré sur ce que tu paies déjà.*`,
         },

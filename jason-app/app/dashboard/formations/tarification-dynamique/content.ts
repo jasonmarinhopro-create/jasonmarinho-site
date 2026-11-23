@@ -356,7 +356,7 @@ AVEC PRICELABS :
 AVEC BEYOND :
 → Même procédure, interface plus guidée
 
-⚠️ POINT CRITIQUE :
+POINT CRITIQUE :
 → Ne connectez PAS Booking directement
   à deux outils différents en même temps.
 → Choisissez un seul outil de pricing
@@ -687,7 +687,7 @@ OÙ CONFIGURER :
 → Airbnb : "Remise de dernière minute"
   dans les promotions
 
-⚠️ Toujours avec votre prix minimum
+Attention : toujours avec votre prix minimum
 comme plancher. La remise last-minute
 ne doit jamais tomber sous ce seuil.
 

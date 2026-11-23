@@ -420,27 +420,27 @@ Ces photos font la différence entre
 une annonce correcte et une annonce
 mémorable :
 
-🌅 LE LOGEMENT EN LUMIÈRE DU SOIR
+ LE LOGEMENT EN LUMIÈRE DU SOIR
    Lampes allumées, ambiance chaude.
    Crée un sentiment de cocon.
 
-🏙️ LA VUE DEPUIS LA FENÊTRE
+ LA VUE DEPUIS LA FENÊTRE
    Même ordinaire, elle contextualise
    le logement dans son environnement.
 
-🛏️ LE LIT VU DE LOIN
+ LE LIT VU DE LOIN
    Pas juste les oreillers mais la chambre
    entière, qui montre l'espace.
 
-🍵 LE COIN CAFÉ / PETIT DÉJEUNER
+ LE COIN CAFÉ / PETIT DÉJEUNER
    Table dressée avec tasse et plante.
    Vend un style de vie, pas une chambre.
 
-📶 L'ESPACE DE TRAVAIL
+ L'ESPACE DE TRAVAIL
    Bureau avec lampe allumée.
    Indispensable pour capter les pros.
 
-🚿 LA SALLE DE BAIN STYLÉE
+ LA SALLE DE BAIN STYLÉE
    Serviettes pliées, quelques produits
    bien disposés. Propreté visible.
 
@@ -448,7 +448,7 @@ mémorable :
 Airbnb permet d'ajouter une légende
 à chaque photo.
 
-Moins de 10% des hôtes l'utilisent.
+Peu d'hôtes l'utilisent.
 C'est pourtant un levier SEO interne :
 
 → L'algorithme lit ces légendes pour
