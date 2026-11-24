@@ -48,6 +48,10 @@ Airbnb a augmenté ses commissions plusieurs fois depuis 2020. Chaque augmentati
 
 Ton classement dans les résultats Airbnb dépend d'un algorithme opaque. Un changement d'algorithme peut diviser ton trafic par deux sans aucun avertissement.
 
+:::exemple
+Imagine 100 % de tes réservations sur Airbnb, et ton annonce suspendue 3 semaines en juillet le temps d'un litige. Ce sont 3 semaines de haute saison sans aucune autre source de réservations. Avec 20 % de réservations en direct, tu gardes un revenu pendant que tu règles le problème.
+:::
+
 ### La solution : construire un canal parallèle
 
 Les hôtes qui résistent aux crises ont tous un point commun : ils ont construit un canal de réservation directe. Pas pour remplacer Airbnb, pour ne plus en dépendre.
@@ -55,6 +59,10 @@ Les hôtes qui résistent aux crises ont tous un point commun : ils ont construi
 Dans cette formation, on construit ce canal ensemble. De zéro. Avec des outils accessibles, des coûts maîtrisés, et une méthode testée sur des dizaines d'hôtes.
 
 Chaque module est actionnable dès la première heure. Tu n'as pas besoin d'un budget marketing, d'une agence ou d'un développeur. Tu as besoin d'une méthode.
+
+:::retenir
+La réservation directe ne remplace pas Airbnb : elle s'ajoute. L'objectif réaliste est d'abord une part, puis de la faire grandir année après année.
+:::
 
 :::quiz
 ? Quel est le principal risque de tirer tous tes revenus d'une seule plateforme ?
@@ -103,6 +111,23 @@ Depuis le 13 octobre 2026, en Europe, Airbnb prélève une **commission unique d
 - **Net hôte direct : 11 640€**
 
 Soit près de **1 900€ de plus** pour les mêmes nuits. En direct, tu peux aussi afficher un peu moins cher qu'Airbnb et rester gagnant, ce qui aide à convertir.
+
+:::chiffres
+15,5 % | frais hôte Airbnb en Europe depuis octobre 2026
+18,6 % | avec la TVA, sans numéro de TVA
+1,5 % + 0,25 € | frais Stripe pour une carte européenne standard
+:::
+
+:::exemple
+Séjour de 700 € (7 nuits à 100 €).
+Sur Airbnb, sans numéro de TVA : 700 × 18,6 % = 130,20 € de frais, tu reçois 569,80 €.
+En direct avec Stripe : 700 × 1,5 % + 0,25 € = 10,75 €, tu reçois 689,25 €.
+Écart : 119,45 € sur un seul séjour.
+:::
+
+:::astuce
+Fais ce calcul avec ton vrai prix moyen et ton nombre de séjours de l'an dernier : le chiffre annuel est souvent la meilleure motivation pour s'y mettre.
+:::
 
 :::quiz
 ? Sur 12 000 € de nuitées, combien te coûte environ la commission Airbnb TVA comprise (18,6 %) ?
@@ -158,6 +183,14 @@ La question centrale de cette leçon. Si tu n'as pas de réponse claire, personn
 
 **4. La relation directe**, Certains voyageurs préfèrent parler à un humain. Une adresse email et un numéro de téléphone rassurent plus qu'un chat Airbnb.
 
+:::exemple
+Ce qu'un voyageur peut gagner en réservant chez toi en direct : un prix un peu plus bas que sur Airbnb, une arrivée anticipée offerte si le planning le permet, un contact direct avec toi avant le séjour. Choisis-en un ou deux et dis-le clairement.
+:::
+
+:::erreur
+Proposer en direct exactement le même prix et les mêmes conditions que sur Airbnb. Le voyageur n'a alors aucune raison de quitter une plateforme qu'il connaît.
+:::
+
 :::quiz
 ? Quelle remise suffit généralement pour qu'un voyageur préfère réserver en direct ?
 - 30 à 40 %
@@ -195,6 +228,15 @@ Une offre de bienvenue bien construite peut multiplier par 3 ton taux de convers
 **Le contenu** : simple, clair, immédiatement compréhensible. "Réservez directement et profitez de -10% + late check-out offert."
 
 **L'urgence** : une date d'expiration douce, "offre valable pour les réservations avant le [date]", augmente le taux de conversion sans créer de friction.
+
+:::exemple
+« Réservez directement sur notre site : 5 % de moins qu'ailleurs, et le panier petit-déjeuner du premier matin est offert. »
+Une offre courte, chiffrée, que le voyageur comprend en une seconde.
+:::
+
+:::astuce
+Calcule ce que l'offre te coûte face à la commission économisée. Sur un séjour de 700 €, offrir 5 % (35 €) reste bien moins cher que les frais d'une plateforme.
+:::
 
 :::quiz
 ? Quel est le meilleur moment pour présenter ton offre de réservation directe ?
@@ -262,6 +304,14 @@ Il n'existe pas une seule solution, la bonne dépend de ton volume, ton budget e
 - Avantages : démarrage rapide, 0 compétences techniques
 - Idéal pour : tester avant d'investir
 
+:::astuce
+Avant de choisir, liste ce dont tu as vraiment besoin : calendrier synchronisé avec Airbnb, paiement en ligne, caution. Tout le reste est du confort.
+:::
+
+:::erreur
+Ouvrir un site de réservation sans synchroniser les calendriers. Une même nuit vendue deux fois, c'est un voyageur à reloger en urgence.
+:::
+
 :::quiz
 ? Pour un hôte avec plusieurs logements, quelle solution est la plus adaptée ?
 * Un gestionnaire de canaux avec site intégré
@@ -301,6 +351,16 @@ Une page de réservation directe efficace suit une structure précise. Voici les
 5. **Disponibilités et tarifs** : moteur de réservation visible sans scroll
 6. **Preuves sociales** : avis importés depuis Airbnb ou Google
 7. **FAQ** : 5-7 questions fréquentes qui lèvent les objections
+
+:::exemple
+**Titre faible :** « Bienvenue dans notre appartement »
+**Titre fort :** « T2 lumineux avec terrasse, à 5 minutes à pied de la plage du Prado »
+Le 2e dit où, quoi et pourquoi en une ligne.
+:::
+
+:::astuce
+Affiche tes avis Airbnb sur ta page (en citant la source). Un voyageur qui ne te connaît pas cherche d'abord la preuve que d'autres ont été contents.
+:::
 
 :::quiz
 ? Où placer le moteur de réservation sur ta page ?
@@ -342,6 +402,15 @@ Stripe est la solution la plus utilisée par les hôtes en réservation directe.
 - Acompte à la réservation (30-50% recommandé)
 - Solde automatique 2-7 jours avant l'arrivée
 - Caution par empreinte bancaire (Stripe Cards)
+
+:::chiffres
+1,5 % + 0,25 € | carte européenne standard (Stripe)
+2,5 % + 0,25 € | carte du Royaume-Uni
+:::
+
+:::astuce
+Demande un acompte à la réservation et le solde quelques jours avant l'arrivée : le voyageur s'engage tôt, et tu gardes une trace écrite des montants.
+:::
 
 :::quiz
 ? Quel schéma de paiement est recommandé en direct ?
@@ -393,6 +462,10 @@ Le SEO local est le canal d'acquisition le plus rentable pour un hôte LCD, traf
 **Pages de quartier** : "Location [ville] [quartier]", ex. "Location appartement Bordeaux Saint-Pierre"
 **Pages saisonnières** : "Location [ville] [événement]", ex. "Location Bordeaux Vinexpo 2025"
 
+:::astuce
+Écris une page sur ton quartier (restaurants, plages, transports) : elle répond aux questions que les voyageurs tapent dans Google avant de réserver.
+:::
+
 ### Les éléments SEO à optimiser
 
 - Balise H1 avec mot-clé principal
@@ -400,6 +473,10 @@ Le SEO local est le canal d'acquisition le plus rentable pour un hôte LCD, traf
 - Données structurées Schema.org (LodgingBusiness)
 - Vitesse de chargement < 2 secondes
 - Version mobile impeccable
+
+:::exemple
+Une page « Location de vacances à Annecy, vue sur le lac » répond à une vraie recherche. Une page « Notre bel appartement » ne répond à aucune.
+:::
 
 :::quiz
 ? Quel titre de page vise le mieux un voyageur qui cherche sur Google ?
@@ -439,6 +516,10 @@ Voir la formation dédiée "Google My Business pour la LCD" pour le détail comp
 
 **Google Business Profile** : pour les conciergeries et gîtes avec accueil physique. Fiche d'établissement + avis + posts réguliers = visibilité locale maximale.
 
+:::retenir
+Fiche Google Business Profile : pour une conciergerie ou un gîte avec accueil. Google Vacation Rentals : pour un logement, via un outil de réservation partenaire. Ce ne sont pas les mêmes règles.
+:::
+
 :::quiz
 ? Quelle commission Google prend-il sur une réservation venue de Vacation Rentals ?
 * Aucune
@@ -476,6 +557,14 @@ Les réseaux sociaux ne sont pas le canal principal de réservation directe, mai
 **Groupes Facebook locaux** : "Voyageurs à [ville]", "Expats [ville]", groupes d'entreprises locales. Présence utile, pas commerciale.
 
 **Partenariats locaux** : office de tourisme, restaurants, activités locales. Un lien depuis leur site = trafic qualifié + SEO.
+
+:::exemple
+Publication dans un groupe local : « Disponible du 10 au 14 mai, T2 au centre de Bayonne, 4 personnes. Réservation directe, lien en commentaire. » Une date précise et un lien : la personne sait quoi faire.
+:::
+
+:::erreur
+Copier le même message dans vingt groupes le même jour. Les administrateurs suppriment, et tu risques d'être exclu.
+:::
 
 :::quiz
 ? Comment se comporter dans un groupe Facebook local ?
@@ -533,6 +622,14 @@ Même avec un beau site et un bon prix, certains visiteurs n'osent pas réserver
 
 **5. L'habitude**, "Je réserve toujours sur Airbnb." → Offre exclusive direct + avantages concrets pour briser l'habitude.
 
+:::exemple
+Le frein le plus fréquent : « Est-ce que je peux faire confiance à ce site ? » Réponse : mentions légales, avis vérifiables, paiement sécurisé avec le cadenas, numéro joignable. Quatre éléments qui rassurent avant le paiement.
+:::
+
+:::astuce
+Mets une photo de toi et un prénom sur ta page. Réserver chez une personne identifiée rassure plus qu'un site sans visage.
+:::
+
 :::quiz
 ? Un visiteur hésite car il « ne connaît pas ce site ». Que faire ?
 - Baisser ton prix de moitié
@@ -579,6 +676,15 @@ Un visiteur qui n'a pas réservé n'est pas perdu. Une séquence d'e-mails bien 
 - Expiration de l'offre dans 48h
 - Social proof (X réservations cette semaine)
 - CTA fort
+
+:::erreur
+Envoyer des offres à des personnes qui ne te l'ont pas permis. En France, la prospection par e-mail d'un particulier demande son accord préalable ; seuls tes anciens clients peuvent recevoir des offres proches de ce qu'ils ont acheté, avec un lien de désinscription dans chaque message.
+Source : CNIL, « Communications par voie électronique aux prospects et clients ».
+:::
+
+:::astuce
+Un seul objectif par e-mail : un lien, un bouton. Un e-mail qui propose trois choses n'en fait faire aucune.
+:::
 
 :::quiz
 ? Quel est le rôle du deuxième e-mail de la séquence ?
@@ -632,12 +738,20 @@ Une liste email de 500 voyageurs satisfaits vaut plus que 5 000 abonnés Instagr
 
 **Via le channel manager** : certains outils (Lodgify, Hostaway) collectent automatiquement les emails avec consentement.
 
+:::exemple
+À la fin du séjour : « Voulez-vous recevoir nos disponibilités en avant-première, une fois par mois au plus ? Oui / Non. » La personne choisit, et tu gardes la preuve de son accord.
+:::
+
 ### La newsletter mensuelle idéale
 
 - Disponibilités du mois suivant en avant-première
 - Offre exclusive abonnés (-5% code unique)
 - Un conseil ou recommandation locale
 - Rappel de ton programme de parrainage
+
+:::astuce
+Une lettre par mois suffit : une photo de saison, les dates libres, une adresse du coin. Plus souvent, on se désinscrit ; moins souvent, on t'oublie.
+:::
 
 :::quiz
 ? Pourquoi une liste d'anciens voyageurs est-elle si précieuse ?
@@ -683,11 +797,19 @@ Déclenché à la réservation : confirmation + infos pratiques + anticipation d
 **4. Programme de parrainage**
 Email automatique J+7 post-séjour : "Recommandez-nous à un ami et recevez 50€ de réduction sur votre prochain séjour."
 
+:::exemple
+Un an après le séjour, envoi automatique : « Il y a un an, vous étiez chez nous pour les vacances de printemps. Les mêmes dates sont libres cette année, avec le même accueil. » Le voyageur se souvient d'un bon moment.
+:::
+
 ### Les outils recommandés
 
 - **Mailchimp** (gratuit jusqu'à 500 contacts) : simple, efficace, intégrations faciles
 - **Brevo (ex-Sendinblue)** : meilleure délivrabilité, prix compétitif
 - **ActiveCampaign** : automatisations avancées pour les hôtes multi-logements
+
+:::retenir
+Automatiser, c'est écrire une fois de bons messages et les laisser partir au bon moment. Relis-les deux fois par an pour qu'ils restent justes.
+:::
 
 :::quiz
 ? Quand envoyer l'e-mail « offre de retour » ?

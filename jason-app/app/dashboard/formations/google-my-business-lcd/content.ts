@@ -67,6 +67,10 @@ Airbnb et Vrbo refusent **délibérément** d'intégrer Google Vacation Rentals.
 
 **Conséquence pour toi :** Si tu as un site de réservation directe via l'un de ces channel managers, tes disponibilités apparaissent dans Google **avant** les résultats Airbnb. 0% de commission. C'est l'opportunité la plus sous-exploitée de 2025.
 
+:::erreur
+Créer une fiche Google Business Profile pour un appartement sans accueil physique. Google peut la suspendre, et tu perds tes avis avec elle.
+:::
+
 ### En résumé : qui fait quoi ?
 
 | Profil | Outil Google recommandé |
@@ -76,6 +80,11 @@ Airbnb et Vrbo refusent **délibérément** d'intégrer Google Vacation Rentals.
 | Appartement LCD individuel | GVR via channel manager |
 | Multi-propriétaire avec structure | GBP pour l'entreprise + GVR pour les biens |
 | Hôte particulier Airbnb uniquement | GVR indirect (Airbnb ≠ partenaire GVR) |
+
+:::exemple
+**Cas 1 :** Julie loue un T2 à Lyon, sans accueil sur place. Elle n'a pas droit à une fiche Google Business Profile pour ce logement : sa voie, c'est Google Vacation Rentals, via un outil connecté.
+**Cas 2 :** Marc tient une conciergerie avec un bureau où il reçoit ses clients. Il crée une fiche Google Business Profile pour sa conciergerie.
+:::
 
 ### Ce que cette formation couvre
 
@@ -144,6 +153,16 @@ C'est le facteur sur lequel tu as le plus d'impact :
 - **Cohérence NAP** : Nom, Adresse, Téléphone **identiques** sur Google, ton site, Pages Jaunes, etc.
 - **Backlinks** : d'autres sites qui pointent vers le tien (office de tourisme, blogs locaux)
 
+:::chiffres
+Pertinence | ta fiche correspond-elle à la recherche ?
+Distance | où se trouve la personne qui cherche
+Notoriété | avis, liens, citations sur le web
+:::
+
+:::astuce
+Tu ne peux pas changer la distance. Concentre ton énergie sur ce que tu contrôles : une fiche complète (pertinence) et des avis réguliers (notoriété).
+:::
+
 ### Objectifs concrets à 3 mois
 
 Au bout de 3 mois de travail régulier (30 min/semaine) :
@@ -155,6 +174,10 @@ Au bout de 3 mois de travail régulier (30 min/semaine) :
 ✅ 1-3 contacts directs par mois via Google
 
 Les modules qui suivent construisent chacun de ces résultats.
+
+:::exemple
+Sur 3 mois, une conciergerie qui part de zéro peut viser : fiche remplie à 100 %, une dizaine d'avis avec réponse, une publication par semaine. Note où tu en es aujourd'hui pour mesurer le chemin.
+:::
 
 :::quiz
 ? Lequel de ces trois critères ne peux-tu pas modifier ?
@@ -207,6 +230,10 @@ bouton: Lancer l'audit
 - [ ] Ton numéro de téléphone direct
 - [ ] L'URL de ton site de réservation directe
 
+:::astuce
+Prépare tout dans une note avant d'ouvrir Google : nom exact, adresse, téléphone, site, horaires, 5 photos. La création prend alors un quart d'heure au lieu d'une soirée.
+:::
+
 ### Étape 1, Accéder à Google Business Profile
 
 Va sur **business.google.com** et connecte-toi.
@@ -244,6 +271,10 @@ Google a largement **abandonné les cartes postales**. La méthode principale es
 - Si refus : refais une vidéo plus courte et plus claire
 
 **Vérification instantanée :** Si ton site est déjà vérifié dans Google Search Console avec le même email, Google peut valider immédiatement.
+
+:::erreur
+Modifier le nom, l'adresse ou la catégorie pendant la vérification. Chaque changement peut relancer la vérification depuis le début.
+:::
 
 ### Étape 4, Pendant l'attente
 
@@ -312,11 +343,20 @@ La catégorie principale détermine dans quelles recherches tu apparais. C'est u
 
 4. **Surveille les concurrents :** cherche les locations de vacances bien positionnées dans ta ville sur Google Maps, clique sur leur profil → tu peux voir leur catégorie principale.
 
+:::exemple
+**Conciergerie à Nice** : catégorie principale « Service de conciergerie », puis en secondaires les services réellement proposés (location de vacances, gestion locative).
+**Gîte avec accueil** : catégorie principale « Gîte », secondaires selon l'offre (chambre d'hôtes si tu sers le petit-déjeuner).
+:::
+
 ### Les catégories à éviter absolument
 
 ❌ **"Hôtel"**, tu n'en es pas un, risque de suspension
 ❌ **"Agence immobilière"** pour un logement individuel, incompatible
 ❌ Des catégories non pertinentes pour paraître dans plus de recherches
+
+:::erreur
+Ajouter des catégories pour « ratisser large ». Google te montre alors sur des recherches qui ne te correspondent pas, les gens ne cliquent pas, et ta fiche perd en pertinence.
+:::
 
 ### Les attributs : la mine d'or oubliée
 
@@ -334,6 +374,10 @@ Après les catégories, Google propose des **attributs** selon ton type d'activi
 - Méthodes de paiement
 
 Un attribut "Animaux acceptés" coché te fait apparaître dans les recherches "location vacances chien accepté [ville]", sans aucun autre effort.
+
+:::astuce
+Les attributs (wifi, parking, accessibilité, animaux acceptés) prennent 5 minutes à cocher et servent de filtres dans Maps. Coche tous ceux qui sont vrais.
+:::
 
 :::quiz
 ? Quelle catégorie principale pour un gîte avec accueil ?
@@ -421,6 +465,10 @@ Ces réponses sont indexées par Google et boostent ta pertinence sur les bonnes
 **⑩ Score de complétion**
 Google t'indique lui-même les champs manquants dans l'interface. Objectif : atteindre le score maximum affiché.
 
+:::astuce
+Garde un document « Mes infos officielles » avec nom, adresse, téléphone et site écrits une fois pour toutes. Tu copies-colles depuis ce document à chaque nouvelle inscription.
+:::
+
 ### La cohérence NAP : la règle d'or du SEO local
 
 **NAP = Name, Address, Phone (Nom, Adresse, Téléphone)**
@@ -435,6 +483,10 @@ Ces 3 informations doivent être **exactement identiques** partout :
 - Office de tourisme local
 
 > Attention : "Rue" vs "R." vs "r." = trois versions différentes pour Google. La moindre variation brouille les signaux et nuit à ton classement local.
+
+:::exemple
+Sur ta fiche : « 12 rue de la Paix ». Sur ton site : « 12 r. de la Paix ». Sur Facebook : « 12, Rue de la Paix ». Pour toi c'est la même adresse ; pour Google, ce sont trois signaux qui ne se confirment pas. Choisis une écriture et copie-la partout.
+:::
 
 :::quiz
 ? Quel nom d'établissement est correct ?
@@ -472,6 +524,12 @@ Seuls les **250 premiers caractères** sont visibles sans cliquer sur "Voir plus
 - Caractères 1-250 : Qui tu es + ta zone géo + ta proposition de valeur + appel à l'action
 - Caractères 251-750 : Services, points forts, types de biens, langues, disponibilité
 
+:::exemple
+**Faible :** « Bienvenue ! Nous sommes une jeune entreprise dynamique et passionnée… »
+**Fort :** « Conciergerie à Nice : accueil des voyageurs, ménage et gestion de vos réservations, 7 jours sur 7. »
+La 2e version dit qui, où et quoi avant que le lecteur clique sur « Voir plus ».
+:::
+
 ### Exemple de description complète (à adapter)
 
 *Pour une conciergerie :*
@@ -498,6 +556,10 @@ Pour **un gîte / logement** :
 ❌ Bourrage de mots-clés "location Nice location vacances Nice appartement Nice"
 ❌ Majuscules excessives
 ❌ Contenu trompeur
+
+:::erreur
+Mettre un lien ou un ton promotionnel (« promo », « -20 % ») dans la description. Google peut refuser le texte : les offres ont leur place dans les publications.
+:::
 
 ### Astuce : les mots-clés dans les réponses aux avis
 
@@ -580,6 +642,10 @@ Que celles sans photos (source : Google). Une fiche avec **100+ photos** génèr
 | Équipe / accueil (conciergerie) | 2-3 | Utile |
 | Local / détails déco | 2-3 | Utile |
 
+:::astuce
+Fais une série par saison avec ton téléphone : la même façade en été et en hiver, la terrasse au printemps. Des photos récentes montrent à Google et aux voyageurs que la fiche est vivante.
+:::
+
 ### La photo de couverture : ta vitrine
 
 C'est la **première image** visible dans la carte Google. Elle doit :
@@ -598,6 +664,10 @@ C'est la **première image** visible dans la carte Google. Elle doit :
 ❌ Fouillis visible (câbles, désordre)
 ❌ Filtres Instagram excessifs
 ❌ Photos de stock (Google peut les détecter)
+
+:::erreur
+Publier des photos retouchées à l'excès ou trouvées sur internet. Le voyageur qui arrive et ne reconnaît pas le lieu laisse un avis négatif.
+:::
 
 ### Photos d'équipe pour les conciergeries
 
@@ -683,6 +753,12 @@ Dans ton tableau de bord Google Business Profile :
 
 Il envoie directement à la page d'avis, sans friction pour le voyageur.
 
+:::exemple
+Après un séjour réussi, envoie le lien dans ton message de départ :
+« Merci pour votre séjour ! Si vous avez 30 secondes, votre avis sur Google nous aide énormément : [lien]. »
+Un lien direct évite au voyageur de chercher ta fiche.
+:::
+
 ### QR code = avis en pilote automatique
 
 Génère un QR code depuis ce lien (via qr-code-generator.com). Imprime-le sur :
@@ -743,6 +819,10 @@ Merci sincèrement !
 ❌ Demander explicitement un avis "5 étoiles"
 ❌ Poster des avis toi-même ou via des proches
 ❌ Ignorer les avis sans répondre
+
+:::erreur
+Offrir une réduction ou un cadeau en échange d'un avis. C'est interdit par les règles de Google, et les avis peuvent être supprimés en bloc.
+:::
 
 :::quiz
 ? Quel avantage ont les avis Google sur les avis Airbnb ?
@@ -825,12 +905,22 @@ N'hésitez pas à nous contacter directement.
 [Ton prénom]
 \`\`\`
 
+:::exemple
+**Avis :** « Logement sale à l'arrivée. »
+**Réponse :** « Merci de nous l'avoir signalé et désolés pour cette arrivée. Nous avons revu notre contrôle avant chaque arrivée avec notre équipe de ménage. Au plaisir de vous accueillir à nouveau. »
+Tu reconnais, tu montres l'action, tu conclus calmement.
+:::
+
 ### Ce qu'il ne faut jamais faire
 
 ❌ Répondre avec agressivité ou ironie
 ❌ Accuser le voyageur publiquement
 ❌ Mentionner des détails privés
 ❌ Ne pas répondre du tout
+
+:::erreur
+Répondre à chaud, le soir même. Attends le lendemain : ta réponse reste visible par tous les futurs clients.
+:::
 
 ### Signaler un avis frauduleux
 
@@ -903,10 +993,19 @@ Un mini-article publié directement sur ta fiche Google. Visible dans Google Map
 
 **4. Produit** → pour mettre en avant un bien ou une formule spécifique.
 
+:::exemple
+**Post « Offre » :** « Dernière minute : 2 nuits libres du 14 au 16 mars, réservation directe sur notre site. »
+**Post « Nouveauté » :** « Nouveau : lit bébé et chaise haute disponibles sur demande. »
+:::
+
 ### Fréquence recommandée
 
 - Minimum : **1 post par semaine** pour maintenir l'activité aux yeux de Google
 - Idéal : 2-3 par semaine en période haute (été, vacances, fêtes)
+
+:::astuce
+Bloque 15 minutes le même jour chaque semaine. Une photo du moment et deux phrases suffisent : la régularité compte plus que la longueur.
+:::
 
 ### Exemples de posts concrets
 
@@ -1022,6 +1121,10 @@ Ces logiciels synchronisent ton calendrier, publient tes disponibilités sur GVR
 
 **Exemple :** Sur un bien à 2 000€/mois, 30% de réservations en direct, c'est 7 200€ par an sans commission, soit **environ 1 300€ économisés** par rapport à Airbnb (18,6 % de 7 200€), avant l'abonnement du channel manager.
 
+:::exemple
+Réservation de 500 € sur Airbnb : avec les frais hôte de 15,5 % (18,6 % TTC sans numéro de TVA), tu reçois 407 €. La même réservation en direct depuis Google, sans commission de plateforme, te laisse 500 € moins les frais de paiement de ton outil.
+:::
+
 ### La stratégie en 5 étapes
 
 1. **Créer un site web direct** avec moteur de réservation (priorité absolue)
@@ -1032,6 +1135,10 @@ Ces logiciels synchronisent ton calendrier, publient tes disponibilités sur GVR
    - Service offert : bouteille de bienvenue, late check-out, guide personnalisé
    - Politique d'annulation plus souple
 5. **Recapturer les voyageurs passés** : après un séjour via Airbnb, invite-les à réserver directement la prochaine fois
+
+:::astuce
+Vérifie d'abord que ton outil de réservation est partenaire de Google Vacation Rentals : c'est lui qui envoie tes prix et disponibilités à Google.
+:::
 
 ### Bing Places : le bonus à 5 minutes
 
@@ -1118,6 +1225,10 @@ Nombre de fois que tes photos ont été vues. Si ce chiffre est bas → change t
 | 3 | Ajouter 1-2 nouvelles photos |
 | 4 | Répondre aux avis + vérifier modifications de fiche |
 
+:::exemple
+Ce mois-ci : 300 vues, 12 clics vers ton site, 4 appels. Le mois prochain, après 4 publications et 3 nouveaux avis : compare les mêmes chiffres. Tu sais alors ce qui marche.
+:::
+
 ## Les 10 erreurs fatales à éviter
 
 **Erreurs de création :**
@@ -1153,6 +1264,10 @@ Différentes versions de ton nom, adresse ou téléphone sur Google, ton site, P
 
 **⑩ Ignorer la section Q&A**
 N'importe qui peut y écrire des questions (et parfois du contenu négatif). Si tu ne la gères pas, elle s'alimente sans toi.
+
+:::retenir
+Une fiche Google n'est pas « faite » une fois créée. 30 minutes par semaine (un avis demandé, une réponse, une publication) font la différence sur un an.
+:::
 
 ## Tes prochaines étapes concrètes
 

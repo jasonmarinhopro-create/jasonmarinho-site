@@ -661,16 +661,28 @@ Vérifie si ta plateforme la collecte. Sinon, prévois-la dans ton prix ou factu
 - 2 nuits minimum le week-end, 1 nuit possible en semaine creuse
 - Semaines entières pour les télétravailleurs
 
+:::exemple
+Studio à 70 € la nuit, souvent loué pour 1 à 3 nuits : la demande vient des courts séjours et des événements. Garde un minimum de 1 ou 2 nuits et fais varier surtout le prix du week-end.
+:::
+
 ## Maison ou villa familiale
 - Prix de base plus élevé : la capacité a de la valeur
 - 3 nuits minimum en basse saison, une semaine en haute saison
 - Été très majoré, réservé tôt par les familles, souvent dès l'hiver
 - Remises au mois pour remplir l'automne et le printemps
 
+:::exemple
+Maison pour 8 à 1 400 € la semaine en été : la demande vient des vacances scolaires, réservées tôt. Minimum de 7 nuits en juillet-août, arrivée le samedi, et une remise si on réserve plus de 3 mois avant.
+:::
+
 ## Chambre d'hôtes
 - Petit-déjeuner inclus et mis en valeur dans le prix
 - Positionnement au-dessus du marché grâce à l'accueil
 - La note est ton premier levier de prix
+
+:::astuce
+En chambre d'hôtes, le petit-déjeuner fait partie du prix : compte son coût dans ton prix minimum avant toute remise.
+:::
 
 :::quiz
 ? Pour un studio en centre-ville, quel levier rapporte souvent le plus ?

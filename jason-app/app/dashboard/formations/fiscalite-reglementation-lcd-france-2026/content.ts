@@ -66,6 +66,12 @@ et en durcissant la fiscalité.
     obligatoire pour les nouveaux
     meublés de tourisme
 
+:::chiffres
+20 mai 2026 | numéro d'enregistrement obligatoire partout
+90 jours | plafond possible pour une résidence principale (au lieu de 120), si la commune le décide
+30 % | abattement micro-BIC d'un meublé non classé
+:::
+
 ## Ce que ça veut dire concrètement
 AVANT LA LOI LE MEUR (jusqu'en 2024)
 
@@ -129,6 +135,9 @@ Quelques idées reçues à corriger :
   pour la fiscalité, et depuis mai 2026
   pour l'enregistrement généralisé.
 
+:::retenir
+La loi Le Meur n'interdit pas la location courte durée : elle la déclare, la compte et la taxe davantage. Ta priorité : le numéro d'enregistrement, puis le choix de ton régime fiscal.
+:::
 
 ## Exercice
 **Exercice pratique :** Réponds à cette seule question : est-ce que ton logement est actuellement déclaré en mairie avec un numéro d'enregistrement ?
@@ -210,6 +219,10 @@ Option B : Guichet de ta mairie
 → Tu le saisis dans tes annonces
    sur chaque plateforme
 
+:::astuce
+Une fois le numéro reçu, copie-le dans une note de ton téléphone : tu devras l'ajouter sur chaque annonce (Airbnb, Booking, ton site) et le donner à ton outil de réservation.
+:::
+
 ## Les cas particuliers
 TU ES LOCATAIRE
 → Tu as besoin de l'accord écrit de ton propriétaire
@@ -232,6 +245,10 @@ TU LOUES TA RÉSIDENCE PRINCIPALE
 → Ta mairie peut l'avoir réduit à 90 nuits/an.
 → Airbnb bloque automatiquement dans certaines villes.
 → Vérifier auprès de ta mairie.
+
+:::erreur
+Mettre en location sans l'accord écrit de ton propriétaire quand tu es toi-même locataire. Le bail peut être résilié, et le propriétaire peut réclamer les loyers perçus.
+:::
 
 ## Le calendrier de sanctions
 AVANT LE 20 MAI 2026
@@ -358,6 +375,11 @@ RÉGIME RÉEL
 → Nécessite une comptabilité
   (souvent avec un expert-comptable)
 
+:::exemple
+Recettes de 12 000 € par an, logement non classé, peu de charges : le micro-BIC est simple et suffit souvent.
+Recettes de 20 000 €, logement acheté à crédit : le micro-BIC n'est plus possible sans classement, et le régime réel permet de déduire intérêts et amortissements.
+:::
+
 ## L'immatriculation : une étape obligatoire
 Que tu choisisses micro-BIC ou réel,
 tu dois t'immatriculer dès le début
@@ -378,6 +400,9 @@ Si tu n'es pas immatriculé :
 → Tu t'exposes à des redressements fiscaux
 → Aucune protection en cas de contrôle
 
+:::astuce
+L'immatriculation est gratuite sur le guichet unique. Méfie-toi des sites qui te la facturent : ce sont des intermédiaires dont tu n'as pas besoin.
+:::
 
 ## Exercice
 **Exercice pratique :** Vérifie si tu es immatriculé en tant que LMNP. Tu devrais avoir un numéro SIRET. Si ce n'est pas le cas, va sur **inpi.fr** et déclare ton activité. Ça prend 20 minutes et c'est gratuit.
@@ -429,6 +454,11 @@ Chambres d'hôtes              50%       83 600€
 Pour les revenus 2025, le plafond
 de 83 600€ était de 77 700€.
 
+:::exemple
+Meublé non classé, 14 000 € de recettes : abattement de 30 %, soit 4 200 €. Revenu imposable : 9 800 €.
+Le même logement classé : abattement de 50 %, soit 7 000 €. Revenu imposable : 7 000 €.
+:::
+
 ## Ce que ça veut dire en pratique
 Exemple concret, meublé NON classé :
 
@@ -475,6 +505,10 @@ Solution : soit faire classer ton logement
 (plafond de 83 600€ en 2026),
 soit adopter le régime réel
 (souvent plus avantageux de toute façon).
+
+:::erreur
+Ne compter que les recettes d'Airbnb. Le plafond de 15 000 € s'apprécie sur toutes tes recettes de location : toutes plateformes et réservations directes.
+:::
 
 ## Comment se déclarer en micro-BIC
 La déclaration micro-BIC est simple :
@@ -571,6 +605,10 @@ Total amortissement : ~6 900€/an
   les amortissements seuls couvrent 57%
   de tes recettes → base imposable très réduite.
 
+:::exemple
+Appartement acheté 200 000 €, dont 30 000 € de terrain (non amortissable). Les 170 000 € restants, amortis sur 30 ans : environ 5 670 € par an à déduire. Le chiffre exact dépend de la répartition faite avec ton comptable.
+:::
+
 ## Comparatif chiffré : micro-BIC vs réel
 Exemple : appartement à crédit
 → Recettes brutes : 18 000€/an
@@ -622,6 +660,10 @@ Le micro-BIC reste pertinent si :
 → Tu veux la simplicité maximale
 
 Attention : le régime réel implique une liasse fiscale à produire chaque année (formulaires 2031-SD et annexes 2033). Pour une situation simple, un outil en ligne dédié comme décla.fr peut suffire (environ 220€/an en 2026) sans passer par un expert-comptable (500€ à 1 200€/an selon les cas). Pour une situation plus complexe (SCI, plusieurs biens, revente prévue), un expert-comptable spécialisé LMNP reste recommandé. Voir la formation "Déclarer sa LMNP seul avec décla.fr" pour le détail.
+
+:::erreur
+Amortir le terrain. Seuls la construction, les travaux et le mobilier s'amortissent : le terrain ne perd pas de valeur aux yeux du fisc.
+:::
 
 ## Exercice
 
@@ -725,6 +767,10 @@ Dans tous les cas :
   sur les travaux éventuels à planifier.
   Un DPE coûte entre 100€ et 250€.
 
+:::astuce
+Le DPE est valable 10 ans. Range-le avec tes papiers de location : la mairie ou un acheteur peuvent te le demander.
+:::
+
 ## Les passoires thermiques (G) en 2026
 Attention : LOGEMENTS NOTÉS G
 
@@ -748,6 +794,9 @@ Les logements F sont interdits à la location
 longue durée, mais restent autorisés
 en courte durée jusqu'en 2028.
 
+:::erreur
+Mettre en location un logement noté G sans avoir vérifié son DPE. Commence par connaître ta note : c'est elle qui fixe ton calendrier de travaux.
+:::
 
 ## Exercice
 **Exercice pratique :** Sais-tu quelle est la note DPE de ton logement ? Si tu ne l'as pas, contacte un diagnostiqueur certifié dans ta région. Le DPE est valable 10 ans. C'est un investissement de 100 à 250€ qui te donne une visibilité sur ta conformité jusqu'en 2034.
@@ -825,6 +874,12 @@ Avec classement (micro-BIC) :
   plusieurs milliers d'euros d'impôts
   et éviter la comptabilité.
 
+:::exemple
+Recettes de 25 000 € par an.
+Non classé : plafond de 15 000 € dépassé, régime réel obligatoire.
+Classé : tu restes au micro-BIC avec 50 % d'abattement, soit 12 500 € imposables, sans comptabilité.
+:::
+
 ## Comment obtenir le classement : les étapes
 ÉTAPE 1, Choisir un organisme agréé
 La liste est disponible sur atout-france.fr
@@ -873,6 +928,9 @@ Pour un hôte à 20 000€ de recettes,
 l'économie fiscale annuelle peut atteindre
 2 000 à 4 000€ → ROI en moins de 2 mois.
 
+:::astuce
+Avant la visite, fais le tour du logement avec la grille de classement d'Atout France : il manque souvent peu de choses (un rangement, un équipement) pour gagner une étoile.
+:::
 
 ## Exercice
 **Exercice pratique :** Si tes recettes annuelles dépassent 12 000-15 000€ et que ton logement n'est pas classé, explore le classement maintenant. Va sur **atout-france.fr**, trouve un organisme agréé dans ta région, et demande un devis. L'investissement se rentabilise généralement en quelques mois.
@@ -963,6 +1021,10 @@ DRIING / RÉSERVATION DIRECTE
 → À vérifier IMPÉRATIVEMENT pour
   tes canaux directs.
 
+:::retenir
+En réservation directe, c'est toi qui collectes la taxe de séjour et la reverses à la commune. Le simulateur « Taxe de séjour » (Outils & calculs) t'aide à l'estimer.
+:::
+
 ## Comment connaître le taux applicable
 ÉTAPE 1, Vérifier si ta commune
           a instauré la taxe de séjour
@@ -1007,6 +1069,9 @@ Pour Driing et la réservation directe :
 → Collecte-la au check-in ou avec le solde
 → Conserve une trace comptable
 
+:::exemple
+Tu ajoutes 1,50 € de taxe par nuit dans ton prix Airbnb, alors qu'Airbnb la collecte déjà pour ta commune : ton voyageur paie la taxe deux fois. Vérifie d'abord ce qu'Airbnb collecte dans tes paramètres.
+:::
 
 ## Exercice
 **Exercice pratique :** Vérifie maintenant dans ton tableau de bord Airbnb si la taxe de séjour est collectée automatiquement pour ta commune. Cherche "taxe de séjour" dans les paramètres. Si elle n'est pas collectée automatiquement, trouve le taux de ta commune sur taxesejour.impots.gouv.fr et configure-la.
@@ -1101,6 +1166,10 @@ Règle simple : déclare TOUT.
 Le redressement coûte bien plus cher
 que l'impôt économisé.
 
+:::exemple
+Airbnb déclare 11 000 € pour toi. Tu as aussi encaissé 3 000 € en direct. Tu déclares 14 000 €, pas 11 000 € : les réservations directes ne sont transmises par personne, mais elles sont imposables.
+:::
+
 ## Le risque du contrôle fiscal en LCD
 Le contrôle fiscal en LCD existe.
 
@@ -1124,6 +1193,9 @@ La meilleure protection :
 → Conserver tous les justificatifs.
 → Choisir le bon régime fiscal.
 
+:::astuce
+Garde chaque année les relevés annuels de tes plateformes : en cas de question du fisc, ce sont tes premières preuves.
+:::
 
 ## Exercice
 **Exercice pratique :** Vérification rapide : récupère tes relevés de versement Airbnb de l'année dernière. Compare le total reçu avec ce que tu as déclaré. Si tu n'as pas déclaré ces revenus ou si tu as omis les réservations directes, consulte un expert-comptable rapidement. Il est possible de régulariser avant un contrôle avec des pénalités réduites.
@@ -1193,6 +1265,10 @@ TOUT AU LONG DE L'ANNÉE
   (factures ménage, relevés plateforme,
    assurance, abonnements...)
 
+:::astuce
+Mets 4 rappels à l'année dans ton calendrier : janvier (relevés), avril (liasse si réel), mai (déclaration), novembre (CFE). Tu ne seras plus jamais pris de court.
+:::
+
 ## Les dates clés de 2026
 20 MAI 2026 ← Date critique
 → Numéro d'enregistrement obligatoire
@@ -1238,6 +1314,9 @@ Comment la consulter :
 → Sur impots.gouv.fr → Espace professionnel
 → Rubrique "Mes impôts professionnels"
 
+:::erreur
+Oublier la CFE parce qu'on ne l'a pas payée la première année. Elle arrive souvent à partir de la 2e année d'activité, avec un avis à consulter dans ton espace professionnel sur impots.gouv.fr.
+:::
 
 ## Exercice
 **Exercice pratique :** Crée un rappel dans ton téléphone ou agenda pour les 4 dates cruciales : janvier (récapitulatif recettes), mars-avril (liasse réel si applicable), mai-juin (déclaration revenus), décembre (CFE). Une alerte par an pour chaque date, c'est tout ce qu'il faut pour ne rien rater.
@@ -1313,6 +1392,10 @@ Chaque mois, 15 minutes :
 C'est tout. 15 minutes par mois.
 vs. Des heures de stress en mai lors
 de la déclaration.
+
+:::exemple
+Le 1er de chaque mois : télécharger les relevés Airbnb et Booking, noter les deux totaux et les réservations directes dans un tableau, ranger les factures du mois. Quinze minutes, et ta déclaration de mai est prête.
+:::
 
 ## Les outils pour s'organiser facilement
 POUR LA COMPTABILITÉ LÉGÈRE (micro-BIC)
@@ -1412,6 +1495,10 @@ est fortement recommandé si :
   fiscale (redressement, demande
   de justificatifs...)
 
+:::exemple
+Un forfait LMNP spécialisé coûte souvent quelques centaines d'euros par an. S'il te fait passer au réel avec des amortissements qui effacent l'impôt sur tes loyers, il se rembourse dès la première année.
+:::
+
 ## Comment choisir son expert-comptable LMNP
 Pas n'importe quel expert-comptable :
 cherches-en un SPÉCIALISÉ en LMNP.
@@ -1459,6 +1546,9 @@ Attention : ce que cette formation ne remplace pas :
 Tu as des doutes sur ta situation ?
 → Il peut t'orienter vers les bonnes ressources.
 
+:::retenir
+Ces leçons te donnent les bases. Pour une décision qui engage plusieurs années (régime, classement, statut), fais valider ton cas par un professionnel.
+:::
 
 ## Exercice
 **L'action finale de cette formation :**

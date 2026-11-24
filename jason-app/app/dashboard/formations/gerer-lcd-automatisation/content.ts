@@ -95,6 +95,10 @@ TOTAL                           _____ h/semaine
 → Identifie la tâche la plus chronophage.
   C'est ta première priorité d'automatisation.
 
+:::exemple
+Semaine type d'un hôte avec 2 logements : messages 3 h, remise des clés 2 h, ménage à coordonner 1 h 30, calendriers 1 h, prix 30 min. Total : 8 h. Les deux premiers postes font plus de la moitié : c'est par eux qu'on commence.
+:::
+
 ## L'ordre d'automatisation recommandé
 Ne tente pas de tout automatiser
 en même temps.
@@ -120,6 +124,9 @@ PHASE 3 (mois 2-3)
   Ne passe pas à la phase 2 avant
   d'avoir stabilisé la phase 1.
 
+:::erreur
+Tout automatiser la même semaine. Si un message part avec un mauvais code d'accès, tu ne sais plus d'où vient l'erreur. Une automatisation à la fois, testée, puis la suivante.
+:::
 
 ## Exercice
 **Exercice pratique :** Fais l'audit de tes tâches LCD maintenant. Remplis le tableau de la slide 4 honnêtement. Note ton total hebdomadaire. Identifie ta tâche la plus chronophage, c'est là que tu commences dans les leçons suivantes.
@@ -174,6 +181,11 @@ PMS (Property Management System)
   Passe au PMS quand tu gères 5+ biens
   ou quand tu as une équipe à coordonner.
 
+:::exemple
+**1 logement sur Airbnb et Booking :** un channel manager suffit, pour ne jamais louer deux fois la même nuit.
+**5 logements avec équipe de ménage :** un PMS (outil de gestion complet) devient utile pour les plannings, les messages et la facturation.
+:::
+
 ## Les outils recommandés selon ton profil
 PROFIL 1, HÔTE SOLO 1-3 LOGEMENTS
 → Smoobu (français, intuitif, 20-30€/mois)
@@ -225,6 +237,9 @@ LES ERREURS D'OUTIL LES PLUS FRÉQUENTES :
      coûte plus cher que les gains.
      Choisis bien et reste.
 
+:::astuce
+Profite des essais gratuits : connecte un seul logement, laisse tourner une semaine, et regarde si l'outil te fait vraiment gagner du temps avant de payer.
+:::
 
 ## Exercice
 **Exercice pratique :** Identifie ton profil (1, 2 ou 3) et note les 2 outils recommandés pour toi. Inscris-toi à un essai gratuit de l'un d'eux cette semaine. Pas besoin de tout configurer maintenant, juste explorer l'interface. La prise en main progressive est toujours meilleure que la migration totale précipitée.
@@ -327,6 +342,11 @@ Timing : le jour du départ (après l'heure de checkout)
 Contenu : remerciement + invitation à l'avis
           + lien réservation directe Driing
 
+:::exemple
+« Bonjour {prénom_voyageur}, demain c'est le grand jour ! L'adresse : {adresse}. Le code de la boîte à clés : {code}. Le wifi : {réseau}, mot de passe {mot_de_passe}. Je reste joignable au {téléphone}. Bonne route ! »
+Tout ce dont le voyageur a besoin, au bon moment, sans qu'il ait à demander.
+:::
+
 ## Comment configurer les messages automatiques
 AVEC UN PMS / CHANNEL MANAGER :
 → Menu "Automatisation" ou "Messages"
@@ -381,6 +401,9 @@ AVANT que la question soit posée :
   Moins de messages = plus de temps
   ET meilleur taux de réponse Airbnb.
 
+:::astuce
+Relis tes 20 derniers messages reçus : les questions qui reviennent doivent avoir leur réponse dans un message automatique.
+:::
 
 ## Exercice
 **Exercice pratique :** Rédige maintenant le message J-1 (instructions d'arrivée) de façon complète. Inclus le code d'accès, les instructions de stationnement, le Wi-Fi, le lien livret Driing et ton numéro. C'est le message le plus important car il évite 50% des questions pendant le séjour. Configure-le en envoi automatique dès aujourd'hui.
@@ -473,6 +496,10 @@ SUPERHOTE
   pendant que tu te concentre sur
   la relation humaine quand c'est nécessaire.
 
+:::erreur
+Laisser une IA répondre seule à une réclamation ou à une demande d'annulation. Garde ces messages pour toi : un mot de travers coûte un avis.
+:::
+
 ## La règle des plages horaires
 Même sans IA, tu peux préserver
 ta vie personnelle avec une règle simple :
@@ -499,6 +526,9 @@ Communique-le clairement :
   à la satisfaction voyageur.
   Un voyageur prévenu est un voyageur patient.
 
+:::exemple
+Réponse automatique hors horaires : « Merci pour votre message ! Je réponds entre 8 h et 20 h. En cas d'urgence pendant votre séjour, appelez le {téléphone}. » Le voyageur est rassuré, et tu dors.
+:::
 
 ## Exercice
 **Exercice pratique :** Configure maintenant un message d'accusé de réception automatique sur Airbnb pour les demandes de réservation et les messages entrants. Même une phrase simple : "Merci pour votre message, je reviens vers vous très prochainement !" maintient ton taux de réponse sans te forcer à répondre immédiatement.
@@ -593,6 +623,10 @@ SOLUTION 3, INTERPHONE CONNECTÉ (immeubles)
 → Application mobile pour ouvrir à distance
 → Solution si remplacement de serrure impossible
 
+:::exemple
+Arrivée prévue à 16 h, le voyageur arrive à 23 h 30 après un train en retard. Avec une boîte à clés, il entre seul ; sans, tu te déplaces en pleine nuit.
+:::
+
 ## Comment intégrer la serrure connectée dans ton automatisation
 L'intérêt de la serrure connectée
 va bien au-delà de la remise de clés.
@@ -617,6 +651,9 @@ Outils qui s'intègrent nativement :
 → Igloohome + la plupart des PMS
 → Vérifie la compatibilité avant l'achat.
 
+:::astuce
+Un code différent par séjour, valable de l'heure d'arrivée à l'heure de départ : l'ancien voyageur ne peut plus entrer, et tu n'as rien à changer à la main.
+:::
 
 ## Exercice
 **Exercice pratique :** Si tu n'as pas encore d'accès autonome : commande cette semaine une boîte à clés (30-50€ sur Amazon) comme solution immédiate. Si tu veux aller plus loin : consulte les intégrations de ton PMS pour voir quelle serrure connectée est compatible. La boîte à clés te fait gagner du temps dès demain.
@@ -698,6 +735,10 @@ OPTION 4, WHATSAPP + CALENDRIER PARTAGÉ (simple)
 → Il voit les arrivées et départs en temps réel.
 → Accord verbal sur les délais d'intervention.
 
+:::astuce
+Demande une photo par pièce à la fin de chaque ménage. En 30 secondes, tu vérifies à distance, et tu as une preuve en cas de litige.
+:::
+
 ## La checklist de ménage : l'outil qui garantit la qualité
 Automatiser la coordination ne suffit pas.
 Il faut aussi garantir la qualité.
@@ -735,6 +776,9 @@ VÉRIFICATION FINALE
 □ Photos de chaque pièce envoyées
 □ Rapport d'incident si constaté
 
+:::exemple
+Extrait de checklist : lits faits avec le linge propre, salle de bain sans cheveux ni traces, poubelles vidées, consommables complétés (papier, savon, café), photo de chaque pièce envoyée à la fin.
+:::
 
 ## Exercice
 **Exercice pratique :** Crée la checklist ménage de ton logement avec les éléments de la slide 4, adaptée à ta configuration. Partage-la avec ton prestataire cette semaine. Et crée un calendrier Google partagé avec lui si ce n'est pas déjà fait, c'est la solution gratuite la plus rapide à mettre en place pour la coordination.
@@ -816,6 +860,10 @@ RÈGLE GÉNÉRALE :
 → 2+ logements : investis dans Pricelabs ou Beyond
   (ROI positif dès le 1er mois en général)
 
+:::retenir
+Un outil de prix ajuste, il ne décide pas à ta place : prix minimum, prix de base et événements locaux restent à toi.
+:::
+
 ## Les règles de base à configurer
 Même avec un outil automatique,
 quelques règles manuelles sont nécessaires :
@@ -845,6 +893,9 @@ BLOCAGES CALENDRIER
   Sinon l'outil peut proposer tes dates
   personnelles à des voyageurs.
 
+:::exemple
+Charges fixes 900 € par mois pour 18 nuits louées : 50 € par nuit. Ajoute le coût d'un séjour réparti par nuit : ton prix minimum est autour de 60 €. L'outil ne descendra jamais en dessous.
+:::
 
 ## Exercice
 **Exercice pratique :** Si tu n'as pas encore de tarification dynamique : active l'outil "Prix intelligents" gratuit d'Airbnb dès aujourd'hui. Définis ton prix minimum (charges + ménage + marge minimale). C'est la version simple, gratuite, et qui améliore déjà tes revenus sur les périodes de forte demande.
@@ -918,6 +969,12 @@ Tu n'as pas besoin d'un reporting complexe.
   en 5 minutes = tu pilotes vraiment
   ton activité.
 
+:::exemple
+Mars : 20 nuits louées sur 31, 1 900 € de revenus.
+Occupation : 65 %. Revenu par nuit disponible : 1 900 ÷ 31 = 61 €.
+Note moyenne 4,8. Temps passé : 6 h. Cinq chiffres, une ligne dans ton tableau.
+:::
+
 ## Le Google Sheet de pilotage (gratuit et suffisant)
 Crée un Google Sheet avec ces onglets :
 
@@ -973,6 +1030,9 @@ une action immédiate :
 → Briefe à nouveau ton équipe ménage.
    Ajoute des éléments à la checklist.
 
+:::astuce
+Mets une couleur dans ton tableau : rouge si la note passe sous 4,5 ou si l'occupation tombe sous 30 %. Tu vois le problème d'un coup d'œil.
+:::
 
 ## Exercice
 **Exercice pratique :** Crée ton Google Sheet de pilotage maintenant avec les 4 onglets. Remplis-le avec les données de tes 3 derniers mois. Ça prend 20 minutes. Ce tableau devient ton tableau de bord permanent, 15 minutes par semaine pour le maintenir à jour.
@@ -1030,6 +1090,10 @@ FIN DU MOIS, 30 MIN
 → Analyse des métriques du mois
 → 1 action d'amélioration identifiée
 
+:::retenir
+Une routine courte et fixe vaut mieux que de longues sessions au hasard : lundi 30 minutes, mercredi et vendredi 15 minutes, un point mensuel.
+:::
+
 ## Les notifications à activer (et celles à désactiver)
 NOTIFICATIONS À ACTIVER :
 → Nouvelle réservation
@@ -1049,6 +1113,10 @@ NOTIFICATIONS À DÉSACTIVER
   une action immédiate, elle ne doit pas
   t'interrompre en temps réel.
   Traite-la dans ta plage horaire dédiée.
+
+:::erreur
+Garder toutes les notifications activées. Ton téléphone sonne pour tout, tu ne vois plus l'urgence au milieu du reste.
+:::
 
 ## Ce que tu fais avec les heures récupérées
 Une fois ton système en place,
@@ -1139,6 +1207,10 @@ SEMAINE 8, BILAN
 □ Mesurer le temps gagné (nouveau total)
 □ Identifier ce qui reste à améliorer
 □ 1 action pour le mois suivant
+
+:::astuce
+Note la date de début de chaque semaine du plan dans ton calendrier dès aujourd'hui. Un plan sans date reste une intention.
+:::
 
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :

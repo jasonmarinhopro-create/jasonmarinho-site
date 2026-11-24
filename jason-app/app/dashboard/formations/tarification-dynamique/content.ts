@@ -56,6 +56,10 @@ En pratique, un prix fixe :
   15 à 25% = 2 250 à 3 750€ perdus
   chaque année avec un prix fixe.
 
+:::exemple
+Prix fixe à 90 € toute l'année. Le week-end d'un grand concert en ville, les logements voisins partent à 160 € : ton calendrier se remplit en une heure, à 90 €. Sur 3 nuits, tu laisses 210 € sur la table sans t'en rendre compte.
+:::
+
 ## La logique de la tarification dynamique
 La tarification dynamique s'inspire
 directement de l'hôtellerie et des compagnies aériennes.
@@ -106,6 +110,12 @@ RevPAN (Revenu Par nuit Available)
   car elle combine taux d'occupation et prix
 → En hausse = tu optimises vraiment
 
+:::chiffres
+Occupation | nuits louées ÷ nuits disponibles
+Prix moyen | revenu ÷ nuits louées
+Revenu par nuit disponible | revenu ÷ nuits disponibles
+:::
+
 ## L'équilibre à trouver entre occupation et prix
 L'erreur classique : maximiser le taux d'occupation.
 Ce n'est pas l'objectif.
@@ -128,6 +138,11 @@ La bonne question n'est pas :
 La bonne question est :
 "Comment maximiser mes revenus par nuit disponible ?"
 
+:::exemple
+**Mois A :** 25 nuits à 80 € = 2 000 €.
+**Mois B :** 20 nuits à 105 € = 2 100 €, avec 5 ménages et 5 arrivées en moins.
+Un calendrier plein n'est pas toujours le plus rentable.
+:::
 
 ## Exercice
 **Exercice pratique :** Calcule ton RevPAN actuel. Prends tes revenus bruts des 3 derniers mois et divise par le nombre de nuits disponibles (pas seulement louées). C'est ton point de départ. Dans 3 mois avec une stratégie de tarification dynamique, ce chiffre doit être en hausse.
@@ -183,6 +198,14 @@ Prix minimum = (X / nuits disponibles mois) + Y + marge min
 → Exemple : 800€ charges + 60€ ménage
   / 20 nuits disponibles = 100€ minimum
 
+:::exemple
+Charges fixes du mois : 900 € (crédit, charges, abonnements). Objectif réaliste : 18 nuits louées. 900 ÷ 18 = 50 € par nuit pour couvrir le fixe. Ajoute le coût d'un séjour (ménage, linge, consommables) réparti par nuit : ton plancher est autour de 60 à 65 €.
+:::
+
+:::erreur
+Fixer le prix minimum au prix le plus bas vu chez un voisin. Ses charges ne sont pas les tiennes : ton plancher se calcule avec tes chiffres.
+:::
+
 ## Le prix de base : ton point de départ dynamique
 Le prix de base est le tarif "neutre"
 autour duquel l'outil de tarification dynamique
@@ -211,6 +234,10 @@ COMMENT LE FIXER :
 → Si ce n'est pas le cas :
   tes charges sont trop élevées
   ou ton marché est trop compétitif.
+
+:::astuce
+Le prix de base est ton prix d'un mardi ordinaire hors vacances. C'est sur lui que l'outil applique les hausses et les baisses : s'il est faux, tout le reste l'est aussi.
+:::
 
 ## Les facteurs qui font monter la demande
 L'outil de tarification dynamique ajuste
@@ -318,6 +345,10 @@ QUAND L'UTILISER :
   Prix maximum (optionnel)
   → Et laisse l'algorithme faire le reste.
 
+:::erreur
+Activer la tarification intelligente d'Airbnb sans prix minimum. L'outil cherche à remplir : sans plancher, il peut descendre sous ce que te coûte une nuit.
+:::
+
 ## PriceLabs : le leader du marché
 PriceLabs est l'outil de tarification dynamique
 le plus utilisé en France en 2026.
@@ -389,6 +420,15 @@ Idéal pour      Débutants,      Optimisateurs,  Conciergeries,
   2+ logements ou tu veux optimiser → Pricelabs
   Conciergerie ou tu cherches la simplicité → Beyond
 
+:::chiffres
+Gratuit | tarification intelligente Airbnb
+15 à 20 $ | PriceLabs, par logement et par mois
+Environ 1 % | Beyond, des revenus
+:::
+
+:::astuce
+Teste un outil pendant un mois sur une seule annonce, en notant ton revenu par nuit disponible avant et après. Tu décides sur tes chiffres, pas sur une publicité.
+:::
 
 ## Exercice
 **Exercice pratique :** Si tu n'as pas encore activé de tarification dynamique : active la tarification intelligente Airbnb aujourd'hui avec ton prix minimum configuré. C'est gratuit et ça améliore déjà les revenus. Si tu veux aller plus loin : inscris-toi à l'essai gratuit de Pricelabs (hello.pricelabs.co) cette semaine.
@@ -468,6 +508,10 @@ SÉJOUR MINIMUM PAR DÉFAUT
 → 1-2 nuits par défaut.
 → Tu affineras par période ensuite.
 
+:::exemple
+Paramètres de départ pour un T2 : prix de base 85 €, prix minimum 62 €, prix maximum 190 €, hausse du week-end + 15 %. Tu affineras après un mois de résultats.
+:::
+
 ## ÉTAPE 3 : Configurer les règles saisonnières
 C'est là que ta stratégie se construit.
 
@@ -522,6 +566,9 @@ Comment ajouter un événement manuellement :
 → Ajuste le prix de base si le taux
   d'occupation est trop bas ou trop haut.
 
+:::astuce
+Mets un rappel chaque lundi : 5 minutes pour regarder les 30 prochains jours. Un outil se surveille, il ne se pilote pas tout seul.
+:::
 
 ## Exercice
 **Exercice pratique :** Si tu utilises déjà Pricelabs ou Beyond : vérifie que ton prix minimum est bien configuré et correct. Si tu démarres : configure le prix minimum ET le prix de base cette semaine. C'est la configuration minimale qui protège ta rentabilité dès le premier jour d'utilisation.
@@ -617,6 +664,10 @@ SOLUTION AUTOMATIQUE :
   de ton abonnement et récupère
   des revenus que tu perds sans le savoir.
 
+:::exemple
+Une réservation part le dimanche, la suivante arrive le mardi : la nuit du lundi est seule. Avec un minimum de 2 nuits, elle ne se vendra jamais. Autorise 1 nuit sur ces trous (même à un prix un peu plus haut) : c'est du revenu en plus.
+:::
+
 ## Règles recommandées par période
 HAUTE SAISON (juillet-août, grandes vacances)
 → Minimum 3-5 nuits les weekends
@@ -640,6 +691,9 @@ DERNIÈRE MINUTE (J-3 à J-7)
 → L'outil le gère automatiquement
   si tu actives les règles last-minute
 
+:::astuce
+Minimum plus long en haute saison (3 à 7 nuits selon ta destination), plus court en basse saison. Le minimum suit la demande, comme le prix.
+:::
 
 ## Exercice
 **Exercice pratique :** Regarde ton calendrier des 3 prochains mois. Identifie les nuits orphelines actuelles, des nuits vides entre deux réservations. Si ton outil de pricing ne les gère pas automatiquement, configure dès maintenant un minimum de 1 nuit pour ces dates spécifiques. Chaque nuit orpheline récupérée = revenu pur.
@@ -697,6 +751,10 @@ TYPES D'ÉVÉNEMENTS À SUIVRE :
 → Portes ouvertes d'universités
 → Élections avec équipes politiques
 
+:::erreur
+Découvrir l'événement le jour où tout est loué. Les dates des grands rendez-vous sont publiées des mois à l'avance.
+:::
+
 ## Comment anticiper les événements locaux
 MÉTHODE SIMPLE : le calendrier annuel
 
@@ -722,6 +780,10 @@ RÈGLE D'OR :
 
 → Pour les événements modérés :
   ouvre normalement mais avec une majoration.
+
+:::exemple
+Ouvre l'agenda des grands événements de ta ville (salons, festivals, matchs) pour les 12 prochains mois et note les dates dans ton calendrier. Monte tes prix sur ces dates dès maintenant : les premiers à réserver sont souvent ceux qui connaissent l'événement.
+:::
 
 ## Lire les données de marché de ton outil
 Pricelabs et Beyond donnent accès
@@ -806,6 +868,10 @@ IMPACT :
   mais certitude de remplissage.
   À utiliser avec parcimonie.
 
+:::exemple
+Remise de 8 % pour une réservation faite plus de 90 jours avant l'arrivée : sur 600 €, tu offres 48 €, mais la semaine est vendue et tu peux préparer le reste de la saison sereinement.
+:::
+
 ## La remise last-minute : ne pas laisser de nuits vides
 La pire situation en LCD :
 une nuit vide la veille pour demain.
@@ -837,6 +903,10 @@ Attention : toujours avec ton prix minimum
 comme plancher. La remise last-minute
 ne doit jamais tomber sous ce seuil.
 
+:::erreur
+Une remise de dernière minute trop forte et trop tôt. Les voyageurs apprennent à attendre, et tu perds des réservations au bon prix.
+:::
+
 ## La règle des "jours adjacents"
 Un concept peu connu mais très efficace :
 
@@ -863,6 +933,9 @@ SOLUTION :
 → Active cette règle dans ton outil.
   C'est du revenu récupéré automatiquement.
 
+:::astuce
+Une nuit libre entre deux réservations vaut mieux à prix réduit que vide : c'est l'endroit idéal pour une petite remise.
+:::
 
 ## Exercice
 **Exercice pratique :** Configure maintenant les remises last-minute dans ton outil (ou dans les Promotions Airbnb si tu n'as pas encore de Pricelabs/Beyond). Utilise les taux de la slide 3 : -5% à J-7, -10% à J-3, -15% à J-1. Garde ton prix minimum comme plancher absolu. Ces règles tournent seules et récupèrent des revenus que tu perds actuellement.
@@ -936,6 +1009,13 @@ CHIFFRE 4, FENÊTRE DE RÉSERVATION MOYENNE
   de plus en plus tard → ajuste tes
   remises last-minute
 
+:::exemple
+Octobre : 18 nuits louées sur 31, revenu 1 620 €.
+Occupation : 18 ÷ 31 = 58 %. Prix moyen : 1 620 ÷ 18 = 90 €.
+Revenu par nuit disponible : 1 620 ÷ 31 = 52 €.
+C'est ce dernier chiffre qu'on compare d'un mois sur l'autre.
+:::
+
 ## Quand ajuster son prix de base
 Le prix de base doit être ajusté
 en fonction des signaux du marché.
@@ -961,6 +1041,10 @@ RÈGLE PRATIQUE :
 → Ne change pas plusieurs paramètres
   en même temps (impossible de savoir
   ce qui a fonctionné).
+
+:::astuce
+Compare toujours un mois au même mois de l'année précédente, jamais à celui d'avant : la saison change tout.
+:::
 
 ## Les outils de benchmarking concurrentiel
 Pour savoir si ta stratégie est juste,
@@ -1045,6 +1129,10 @@ RÈGLE ABSOLUE :
   + coûts variables du séjour
   + marge minimale.
 
+:::exemple
+Sans prix minimum, un outil peut proposer 45 € une semaine creuse de novembre, alors qu'une nuit te coûte 55 €. Chaque réservation te fait perdre de l'argent.
+:::
+
 ## Erreur 2 : Laisser tourner l'outil sans le regarder
 Un outil de tarification dynamique
 n'est pas du "set and forget" complet.
@@ -1093,6 +1181,9 @@ La bonne approche :
 → Si ton logement est moins bon :
   compense par le prix jusqu'à amélioration.
 
+:::retenir
+Les prix des voisins sont une information, pas une consigne. Ton logement, tes avis et tes charges sont différents.
+:::
 
 ## Exercice
 **Exercice pratique :** Vérification rapide : ouvre ton outil de pricing ou ton tableau de bord Airbnb. Est-ce que tu as un prix minimum configuré ? Est-il au bon niveau (charges + ménage + marge) ? Si ce n'est pas le cas ou si tu n'es pas sûr : recalcule-le avec la formule de la leçon 1.2 et mets-le à jour maintenant.
@@ -1152,6 +1243,10 @@ SEMAINE 4, SUIVI
 □ Premier ajustement du prix de base
   si nécessaire
 
+:::astuce
+Fais une seule chose par semaine : prix minimum, puis prix de base, puis saisons, puis remises. Changer tout d'un coup t'empêche de savoir ce qui a marché.
+:::
+
 ## Ce que tu peux attendre comme résultats
 RÉSULTATS RÉALISTES EN 3 MOIS :
 
@@ -1178,6 +1273,10 @@ RÉSULTATS RÉALISTES EN 6 MOIS :
 → Tu loues plus cher en haute demande
   ET tu remplis mieux en basse demande
  , simultanément.
+
+:::retenir
+La tarification dynamique ne promet pas un chiffre : elle t'évite de vendre trop bas quand la demande est forte, et de rester vide quand elle est faible.
+:::
 
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :
