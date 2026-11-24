@@ -12,6 +12,7 @@
 // encore signé à 7 jours de l'arrivée, plafonds fiscaux calculés sur les mêmes
 // recettes que Mes finances (avant : seulement les saisies manuelles), plus
 // d'emoji ni de tiret cadratin, liens vers les bonnes pages.
+import { allRows } from '@/lib/supabase/all-rows'
 import 'server-only'
 import { FISCAL_PARAMS_2026 } from '@/lib/lcd/fiscal-params'
 import { getServiceClient } from '@/lib/supabase/service'
@@ -133,17 +134,21 @@ async function rulePlafondsFiscaux(userId: string, today: string): Promise<numbe
   const annee = today.slice(0, 4)
   const debut = `${annee}-01-01`
   const fin = `${annee}-12-31`
+  // Lecture par paquets (24/11/2026) : au-delà de 1 000 lignes, les recettes
+  // étaient sous-comptées et l'alerte de plafond pouvait ne jamais partir.
+  const rows = <T,>(q: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>) =>
+    allRows<T>(q).then(r => ({ data: r.rows }))
   const [{ data: logements }, { data: sejours }, { data: contracts }, { data: entries }] = await Promise.all([
     db.from('logements').select('pays, type_logement, classement_etoiles').eq('user_id', userId),
-    db.from('sejours')
+    rows((from, to) => db.from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, commission_montant, contrat_plateforme, a_declarer, created_at')
-      .eq('user_id', userId).is('annule_at', null).gte('date_arrivee', debut).lte('date_arrivee', fin).limit(3000),
-    db.from('contracts')
+      .eq('user_id', userId).is('annule_at', null).gte('date_arrivee', debut).lte('date_arrivee', fin).order('id').range(from, to)),
+    rows((from, to) => db.from('contracts')
       .select('id, sejour_id, statut, montant_loyer, date_arrivee, date_depart, logement_nom, logement_id, locataire_prenom, locataire_nom, stripe_payment_enabled, stripe_payment_status, created_at')
-      .eq('user_id', userId).neq('statut', 'annule').gte('date_arrivee', debut).lte('date_arrivee', fin).limit(3000),
-    db.from('revenus_entries')
+      .eq('user_id', userId).neq('statut', 'annule').gte('date_arrivee', debut).lte('date_arrivee', fin).order('id').range(from, to)),
+    rows((from, to) => db.from('revenus_entries')
       .select('id, logement_nom, montant, date_paiement, mode_paiement, type_paiement, description, a_declarer')
-      .eq('user_id', userId).gte('date_paiement', debut).lte('date_paiement', fin).limit(3000),
+      .eq('user_id', userId).gte('date_paiement', debut).lte('date_paiement', fin).order('id').range(from, to)),
   ])
   const fr = (logements ?? []).filter(l => (l.pays ?? 'FR') === 'FR')
   if (fr.length === 0) return 0

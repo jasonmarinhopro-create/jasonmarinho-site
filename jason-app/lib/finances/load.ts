@@ -4,6 +4,7 @@
 import 'server-only'
 import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
+import { allRows } from '@/lib/supabase/all-rows'
 import { getProfile } from '@/lib/queries/profile'
 import { getActiveProperty, ALL_PROPERTIES } from '@/lib/queries/active-property'
 import { parisToday } from '@/lib/stripe/deposit-window'
@@ -54,47 +55,58 @@ export const loadFinances = cache(async (): Promise<FinanceData | null> => {
   const today = parisToday()
   const since = `${Number(today.slice(0, 4)) - 2}-01-01`
 
-  // Objectif par logement : colonne ajoutée par la migration 112 (tolérée absente)
-  let objectifParLogement = true
-  let logRes = await supabase.from('logements').select(`${LOGEMENT_COLS}, objectif_ca_annuel`).eq('user_id', userId).order('created_at', { ascending: true })
-  if (logRes.error) {
-    objectifParLogement = false
-    logRes = await supabase.from('logements').select(LOGEMENT_COLS).eq('user_id', userId).order('created_at', { ascending: true }) as typeof logRes
-  }
+  // Lecture par paquets de 1 000 (24/11/2026) : PostgREST ne renvoie jamais
+  // plus de 1 000 lignes, même avec .limit(3000) ; un compte très actif sur
+  // 2 ans perdait des recettes sans le savoir. Tri stable (id en dernier).
+  const pages = <T,>(q: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>) =>
+    allRows<T>(q).then(r => ({ data: r.rows, error: r.error }))
 
-  const [active, sejoursRes, contractsRes, entriesRes, chargesRes, objectifRes, feedsRes, eventsRes] = await Promise.all([
+  // Objectif par logement : colonne ajoutée par la migration 112 (tolérée
+  // absente). Lu en même temps que le reste (avant : un aller-retour de plus).
+  let objectifParLogement = true
+  const [logFirst, active, sejoursRes, contractsRes, entriesRes, chargesRes, objectifRes, feedsRes, eventsRes] = await Promise.all([
+    supabase.from('logements').select(`${LOGEMENT_COLS}, objectif_ca_annuel`).eq('user_id', userId).order('created_at', { ascending: true }),
     getActiveProperty(),
-    supabase
+    pages((from, to) => supabase
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, commission_montant, contrat_plateforme, a_declarer, created_at, voyageurs(prenom, nom, source)')
       .eq('user_id', userId)
       .is('annule_at', null)
       .gte('date_arrivee', since)
       .order('date_arrivee', { ascending: false })
-      .limit(3000),
-    supabase
+      .order('id')
+      .range(from, to)),
+    pages((from, to) => supabase
       .from('contracts')
       .select('id, sejour_id, statut, montant_loyer, date_arrivee, date_depart, logement_nom, logement_id, locataire_prenom, locataire_nom, stripe_payment_enabled, stripe_payment_status, created_at')
       .eq('user_id', userId)
       .neq('statut', 'annule')
       .gte('date_arrivee', since)
-      .limit(3000),
-    supabase
+      .order('id')
+      .range(from, to)),
+    pages((from, to) => supabase
       .from('revenus_entries')
       .select('id, logement_nom, montant, date_paiement, mode_paiement, type_paiement, description, a_declarer')
       .eq('user_id', userId)
       .gte('date_paiement', since)
-      .limit(3000),
+      .order('id')
+      .range(from, to)),
     loadCharges(supabase, userId),
     supabase.from('revenus_objectifs').select('objectif_ca_annuel').eq('user_id', userId).maybeSingle(),
     supabase.from('ical_feeds').select('id, url, name').eq('user_id', userId),
-    supabase
+    pages((from, to) => supabase
       .from('ical_events')
       .select('id, feed_id, title, description, start_date, end_date')
       .eq('user_id', userId)
       .gte('end_date', since)
-      .limit(3000),
+      .order('id')
+      .range(from, to)),
   ])
+  let logRes = logFirst
+  if (logRes.error) {
+    objectifParLogement = false
+    logRes = await supabase.from('logements').select(LOGEMENT_COLS).eq('user_id', userId).order('created_at', { ascending: true }) as typeof logRes
+  }
 
   const rawLogements = (logRes.data ?? []) as Array<Record<string, unknown>>
   const logements: LogementFin[] = rawLogements.map(l => ({
@@ -113,7 +125,7 @@ export const loadFinances = cache(async (): Promise<FinanceData | null> => {
     voyageur_source: s.voyageurs?.source ?? null,
   }))
   const allLines = buildRevenueLines({ sejours, contracts: contractsRes.data ?? [], entries: entriesRes.data ?? [], today })
-  const allCharges = buildChargeLines(chargesRes.data ?? [], today)
+  const allCharges = buildChargeLines((chargesRes.data ?? []) as unknown as Parameters<typeof buildChargeLines>[0], today)
   const ical = icalReservationsForDisplay(rawLogements as any, feedsRes.data ?? [], eventsRes.data ?? [])
   const allOccupation = buildOccupation(allLines, ical.map(r => ({ id: r.id, logementName: r.logementName, dateArrivee: r.dateArrivee, dateDepart: r.dateDepart, platform: r.platform })))
 
@@ -161,7 +173,10 @@ export const loadFinances = cache(async (): Promise<FinanceData | null> => {
 // que la migration manque, relecture sans ces colonnes (charges ponctuelles).
 async function loadCharges(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
   const cols = 'id, logement_nom, logement_id, montant, date_charge, categorie, description, deductible, duree_amortissement_annees'
-  const res = await supabase.from('revenus_charges').select(`${cols}, frequence, date_fin`).eq('user_id', userId).limit(3000)
+  const read = (c: string) => allRows<Record<string, unknown>>((from, to) =>
+    supabase.from('revenus_charges').select(c).eq('user_id', userId).order('id').range(from, to) as unknown as PromiseLike<{ data: Record<string, unknown>[] | null; error: { message: string } | null }>,
+  ).then(r => ({ data: r.rows, error: r.error }))
+  const res = await read(`${cols}, frequence, date_fin`)
   if (!res.error) return res
-  return supabase.from('revenus_charges').select(cols).eq('user_id', userId).limit(3000)
+  return read(cols)
 }
