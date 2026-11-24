@@ -13,7 +13,11 @@ import Link from 'next/link'
 import {
   ArrowLeft, ArrowRight, X, Clock, BookOpen, Target, Check, CheckCircle, XCircle,
   BookmarkSimple, NotePencil, ChatCircle, Certificate, CaretDown, Lightning, Trophy,
+  Coins, CalendarBlank, Camera, GoogleLogo, Star, ChatsCircle, FileText, Scales, Calculator,
+  ShieldCheck, House, Broom, InstagramLogo, ChartLineUp, Wrench, Key, UsersThree, Lightbulb,
+  Warning, PencilSimpleLine, Crosshair, MapPin, Wallet,
 } from '@phosphor-icons/react/dist/ssr'
+import { stepTheme, type Theme } from '@/lib/formations/illustration'
 import {
   enrollInFormation, updateFormationProgress, saveLessonNote, toggleLessonBookmark,
   voteLesson, answerLessonQuestion, planModuleAction, saveFormationBilan, toggleFormationFavorite,
@@ -232,6 +236,7 @@ export default function FormationView({
       {view.kind === 'lesson' && lessonById.get(view.id) && (
         <LessonPlayer
           key={view.id}
+          cover={cover}
           formationTitle={formation.title}
           entry={lessonById.get(view.id)!}
           steps={stepsById.get(view.id) ?? []}
@@ -475,6 +480,19 @@ function Bilan({ step, onClose, onDone, onSkip }: { step: 0 | 1; onClose: () => 
 
 /* ─────────────────────────── Leçon en étapes ─────────────────────────── */
 
+// Illustration de l'étape (24/11/2026) : icône du thème sur la couverture de la formation
+const THEME_ICON: Record<Theme, typeof Coins> = {
+  prix: Coins, calendrier: CalendarBlank, photo: Camera, google: GoogleLogo, avis: Star, message: ChatsCircle,
+  contrat: FileText, loi: Scales, fiscal: Calculator, securite: ShieldCheck, maison: House, menage: Broom,
+  reseaux: InstagramLogo, stats: ChartLineUp, outil: Wrench, cle: Key, equipe: UsersThree, idee: Lightbulb,
+  alerte: Warning, exercice: PencilSimpleLine, cible: Crosshair, livre: BookOpen, carte: MapPin, argent: Wallet,
+}
+
+function StepArt({ theme, bg }: { theme: Theme; bg: string }) {
+  const Icon = THEME_ICON[theme]
+  return <span className="fv-art" style={{ background: bg }} aria-hidden="true"><span className="fv-art-ic"><Icon size={30} weight="duotone" /></span></span>
+}
+
 function LessonPlayer(p: {
   formationTitle: string; entry: { lesson: Lesson; module: Module }; steps: Step[]; step: number; setStep: (s: number) => void
   lessonIndex: number; totalLessons: number; done: boolean; quizCount: number; quiz: QuizState
@@ -483,6 +501,7 @@ function LessonPlayer(p: {
   onComplete: () => void; onClose: () => void; onNext: () => void; objectif: string | null; niveau: string | null
   notes: Record<string, string>; bookmarked: boolean; vote: 1 | -1 | null; formationId: string | null; formationSlug: string
   relatedArticles: Array<{ label: string; slug: string }>; currentUserId: string | null; currentUserName: string | null
+  cover: string
 }) {
   const { lesson, module } = p.entry
   const steps = p.steps.length ? p.steps : [{ kind: 'content', title: null, blocks: [] } as Step]
@@ -561,6 +580,7 @@ function LessonPlayer(p: {
           <div className="fv-stage-in" key={p.step}>
             {s.kind === 'content' && (
               <>
+                <StepArt theme={stepTheme(p.step === 0 ? null : s.title, lesson.title)} bg={p.cover} />
                 <span className="fv-k">{p.step === 0 ? `Module ${module.id} · Leçon ${p.lessonIndex + 1} sur ${p.totalLessons}` : lesson.title}</span>
                 <h2 className="fv-h">{p.step === 0 ? lesson.title : (s.title ?? lesson.title)}</h2>
                 {p.step === 0 && <span className="fv-meta"><Clock size={13} /> {lesson.duration} · {steps.length} étapes{p.quizCount > 0 ? ` · ${p.quizCount} questions` : ''}</span>}
@@ -788,6 +808,9 @@ const CSS = `
 .fv-prog i.n { background: linear-gradient(90deg, var(--accent-text) 50%, var(--surface-2) 50%); }
 .fv-count { font-size: 12.5px; font-weight: 700; color: var(--text-3); font-variant-numeric: tabular-nums; }
 .fv-lesson-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 24px; padding: 0 clamp(16px, 3vw, 32px); }
+.fv-art { position: relative; display: grid; place-items: center; width: 100%; height: 112px; border-radius: 20px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); animation: fvArt .45s ease both; }
+.fv-art-ic { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; color: #fff; background: rgba(0,0,0,.22); box-shadow: 0 10px 24px -12px rgba(0,0,0,.6); }
+@keyframes fvArt { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: none; } }
 .fv-stage { flex: 1; display: flex; justify-content: center; padding: 44px 0 24px; }
 .fv-full > .fv-stage { padding: 44px clamp(16px, 3vw, 32px) 24px; }
 .fv-stage-in { width: 100%; max-width: 660px; display: flex; flex-direction: column; gap: 16px; animation: fvStep .3s ease both; }
@@ -884,7 +907,7 @@ const CSS = `
   .fv-sheet { margin-top: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fv-stage-in, .fv-sheet, .fv-medal { animation: none; }
+  .fv-stage-in, .fv-sheet, .fv-medal, .fv-art { animation: none; }
   .fv-burst { display: none; }
 }
 `

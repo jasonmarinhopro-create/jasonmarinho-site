@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { parseLesson, countQuiz, readingMinutes, headingId } from './blocks'
 
 describe('parseLesson', () => {
-  it('joint les lignes consécutives en un paragraphe', () => {
+  it('lignes consécutives : un paragraphe qui garde ses retours à la ligne', () => {
     const b = parseLesson('45% des propriétaires sous-évaluent\nou surévaluent leurs tarifs.\n\nDeuxième.')
     expect(b).toEqual([
-      { type: 'p', text: '45% des propriétaires sous-évaluent ou surévaluent leurs tarifs.' },
+      { type: 'p', text: '45% des propriétaires sous-évaluent\nou surévaluent leurs tarifs.' },
       { type: 'p', text: 'Deuxième.' },
     ])
   })
@@ -21,8 +21,7 @@ describe('parseLesson', () => {
     const b = parseLesson('- a\n- b\n✅ oui\n❌ non\n→ Toujours plein, mais\n  en basse saison\n1. un\n2. deux')
     expect(b).toEqual([
       { type: 'list', style: 'dot', items: ['a', 'b'] },
-      { type: 'list', style: 'good', items: ['oui'] },
-      { type: 'list', style: 'bad', items: ['non'] },
+      { type: 'compare', good: ['oui'], bad: ['non'] },
       { type: 'list', style: 'arrow', items: ['Toujours plein, mais en basse saison'] },
       { type: 'steps', items: ['un', 'deux'] },
     ])
@@ -66,5 +65,37 @@ describe('parseLesson', () => {
     expect(readingMinutes('mot '.repeat(460))).toBe(2)
     expect(readingMinutes('')).toBe(1)
     expect(headingId('Écrire à ses voyageurs !')).toBe('h-ecrire-a-ses-voyageurs')
+  })
+
+  it('cartes numérotées en grille, liste rattachée à la carte', () => {
+    const b = parseLesson('**① Nom**\nTon vrai nom.\n\n**② Services**\nListe :\n- Ménage\n- Accueil\n\n**③ Description** (voir leçon 6)')
+    expect(b).toHaveLength(1)
+    const g = b[0] as { type: string; items: Array<{ num: string; title: string; note: string; body: string[]; list: unknown }> }
+    expect(g.type).toBe('cards')
+    expect(g.items.map(c => c.num)).toEqual(['1', '2', '3'])
+    expect(g.items[1].list).toEqual({ style: 'dot', items: ['Ménage', 'Accueil'] })
+    expect(g.items[2]).toMatchObject({ title: 'Description', note: '(voir leçon 6)', body: [] })
+  })
+
+  it('à faire / à éviter côte à côte, encadrés repérés, message type, phrase clé', () => {
+    const b = parseLesson([
+      '✅ Répondre vite', '❌ Ignorer', '',
+      '**Exemple :** 100 € la nuit.', '',
+      '> **Piège :** oublier la taxe.', '',
+      '> *« Bonjour, voici le code. »*', '> *Bonne arrivée.*', '',
+      '> Une photo vaut **mille mots**.',
+    ].join('\n'))
+    expect(b[0]).toEqual({ type: 'compare', good: ['Répondre vite'], bad: ['Ignorer'] })
+    expect(b[1]).toEqual({ type: 'callout', kind: 'exemple', title: 'Exemple', text: ['100 € la nuit.'] })
+    expect(b[2]).toEqual({ type: 'callout', kind: 'erreur', title: 'Piège', text: ['oublier la taxe.'] })
+    expect(b[3]).toEqual({ type: 'message', lines: ['*« Bonjour, voici le code. »*', '*Bonne arrivée.*'] })
+    expect(b[4]).toEqual({ type: 'punch', text: 'Une photo vaut **mille mots**.' })
+  })
+
+  it('titre numéroté en pastille, exercice encadré', () => {
+    const b = parseLesson('### Étape 2, Contacter le voyageur\nTexte.\n### Exercice, action immédiate\nFais-le.\n- a')
+    expect(b[0]).toMatchObject({ type: 'h3', text: 'Contacter le voyageur', badge: 'Étape 2' })
+    expect(b[2]).toMatchObject({ type: 'exercise', title: 'action immédiate' })
+    expect((b[2] as { blocks: unknown[] }).blocks).toHaveLength(2)
   })
 })

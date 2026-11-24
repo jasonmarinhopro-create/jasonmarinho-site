@@ -67,6 +67,19 @@ Maquettes de référence : artefact « Formations, maquettes complètes » (tél
 - **Leçon** : plus d'espace sous la barre de progression (44 px), et chaque nouvelle étape remonte tous les conteneurs qui défilent (le début de l'étape restait caché sous la barre).
 - Vérifié sur une page d'aperçu locale avec données fictives (non commitée) à 1920, 1280 et 390 px, clair et sombre : aucun débordement.
 
+## Mise en forme automatique des leçons (24/11/2026)
+
+Jason, sur capture : « Tu as détruit le visuel des formations, ce n'est que du texte alors qu'avant c'était vivant avec des astuces, des textes surlignés, des exemples ». Cause : le lecteur du 23/11 joignait les lignes en un seul paragraphe et affichait les « > » comme une simple citation ; le texte des leçons, lui, était intact. Corrigé dans le moteur (`lib/formations/blocks.ts`, `enrich()`, testé), sans toucher au texte ni republier la base :
+- **Carte numérotée** : paragraphe qui commence par un titre en gras (« **① Nom** », « **1. Nom** », « **Avantages** ») suivi de texte, ou d'une liste si le texte finit par « : ». Plusieurs à la suite : grille de cartes.
+- **À faire / À éviter** : liste ✅ suivie d'une liste ❌ (ou l'inverse), côte à côte.
+- **Citation « > »** : « « … » » ou « *« … »* » = message type avec bouton Copier (lignes « > » consécutives réunies) ; « **Astuce :** », « **Piège :** », « Attention : »… = encadré titré (astuce, erreur, exemple, à retenir) ; sinon phrase clé surlignée en grand.
+- **Paragraphe** « **Exemple :** … », « Attention : … », « Par exemple, … » : encadré. Le gras est surligné en jaune, l'italique en vert, les retours à la ligne sont gardés.
+- **Titres** « Étape 2, … », « Option B : … », « 5. … », « ③ … » : pastille ; titre « Exercice… » : la suite jusqu'au titre suivant est encadrée « À toi de jouer ».
+- **Bloc ```** : carte « Modèle » avec bouton Copier.
+- **Illustration de l'étape** : bandeau en tête de chaque étape, couverture de la formation et icône du thème (`lib/formations/illustration.ts`, testé : prix, photo, Google, fiscalité, contrat…).
+
+Pour écrire une leçon : utiliser ces motifs (ils suffisent), en plus des blocs `:::`. Mesure sur les 268 leçons : 63 cartes ou grilles, 59 messages types, 13 « à faire / à éviter », environ 220 encadrés, 273 phrases clés, 163 exercices.
+
 ## Faits vérifiés le 23/11/2026 (à réutiliser dans les autres formations)
 
 - **Airbnb** : frais uniques à la charge de l'hôte, 15,5 %, pour tous les hôtes de l'UE depuis le 13/10/2026 (plus de frais voyageur à part ; avant : environ 3 % hôte + frais voyageur). Sans numéro de TVA, la TVA de 20 % s'ajoute aux frais : 18,6 % ; 100 € affichés = 81,40 € reçus (84,50 € avec un numéro de TVA). Une autre session avait déjà corrigé les autres formations sur ce point le 23/11 (commit « commission Airbnb à jour »). Toute formation qui parle de « 3 % » ou « 4 % hôte » ou de « frais de service voyageur 14 % » est à corriger. Sources : Airbnb « Simplifying Airbnb service fees », Hostfully, Smoobu.
