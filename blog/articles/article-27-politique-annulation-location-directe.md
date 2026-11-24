@@ -4,7 +4,7 @@ slug: "politique-annulation-location-directe-hote"
 category: "Revenus"
 date: "2026-03-25"
 readTime: "6 min de lecture"
-description: "Comment définir une politique d'annulation claire pour tes réservations directes, rassurer tes voyageurs et te protéger en cas d'annulation de dernière minute."
+description: "Comment définir une politique d'annulation claire pour tes réservations directes, rassurer tes voyageurs et te protéger des annulations tardives."
 ---
 
 # Gérer les annulations en location directe : quelle politique adopter et comment l'appliquer

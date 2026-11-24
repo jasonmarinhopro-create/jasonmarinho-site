@@ -1,6 +1,7 @@
 export default {
   slug: 'saisonnalite-tarif-region-france-lcd-2026',
   title: 'Saisonnalité LCD par région française : la grille tarifaire 2026',
+  seoTitle: 'Saisonnalité LCD par région : la grille tarifaire 2026',
   description: 'Pic estival en Méditerranée, double saison en montagne, événements en ville : les profils saisonniers français et la méthode pour fixer tes écarts de prix.',
   keywords: 'saisonnalité LCD France, tarif Airbnb région 2026, prix nuit haute saison, basse saison tourisme France',
   date: '2026-04-25',

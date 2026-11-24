@@ -1,6 +1,7 @@
 export default {
   slug: 'repondre-avis-5-etoiles-airbnb-transformer-reservations',
   title: 'Répondre à un avis 5 étoiles Airbnb : 6 techniques pour transformer chaque commentaire en levier de réservation',
+  seoTitle: 'Répondre à un avis 5 étoiles Airbnb : 6 techniques',
   description: 'Répondre à tes avis positifs Airbnb : 6 techniques pour transformer chaque commentaire 5 étoiles en argument pour les prochains voyageurs.',
   keywords: 'répondre avis Airbnb, avis 5 étoiles Airbnb, réponse hôte Airbnb, avis positif location courte durée, gestion avis Airbnb',
   date: '2026-09-16',

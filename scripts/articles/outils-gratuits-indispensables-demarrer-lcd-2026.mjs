@@ -1,6 +1,7 @@
 export default {
   slug: 'outils-gratuits-indispensables-demarrer-lcd-2026',
   title: 'Outils gratuits indispensables pour démarrer en LCD en 2026 : la liste complète',
+  seoTitle: 'Outils gratuits pour démarrer en LCD en 2026',
   description: 'Tu lances ton activité LCD avec un budget limité ? Voici les 12 outils gratuits incontournables pour gérer Airbnb, automatiser et tracker en 2026.',
   keywords: 'outils gratuits LCD 2026, outils Airbnb gratuits, démarrer location courte durée, logiciels hôte gratuits',
   date: '2026-04-25',

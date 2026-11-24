@@ -1,6 +1,7 @@
 export default {
   slug: 'email-marketing-newsletter-hote-lcd',
   title: 'Email marketing pour hôte LCD : newsletter qui fait revenir tes voyageurs',
+  seoTitle: 'Newsletter pour hôte LCD : faire revenir tes voyageurs',
   description: 'Une newsletter mensuelle bien faite génère 8-12% de retours fidèles. Voici la structure type, les outils gratuits et la conformité RGPD pour démarrer.',
   keywords: 'newsletter hôte LCD, email marketing Airbnb, fidélisation voyageurs email, Brevo MailChimp hôte',
   date: '2026-04-25',

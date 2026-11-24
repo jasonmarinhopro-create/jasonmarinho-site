@@ -1,6 +1,7 @@
 export default {
   slug: 'stationnement-voyageurs-lcd-6-solutions-eviter-conflits-voisins',
   title: 'Stationnement voyageurs en LCD : 6 solutions selon ta zone pour éviter conflits et mauvais avis',
+  seoTitle: 'Stationnement des voyageurs en LCD : 6 solutions',
   description: 'Place privée, parking loué, carte résident, consignes, annonce : 6 solutions pour le stationnement de tes voyageurs en LCD sans conflit avec les voisins.',
   keywords: 'stationnement voyageurs lcd, parking airbnb, place de parking location courte duree, carte residente voyageur, plu stationnement, conflit voisin parking lcd',
   date: '2026-06-22',

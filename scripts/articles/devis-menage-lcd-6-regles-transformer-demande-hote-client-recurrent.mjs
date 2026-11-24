@@ -2,7 +2,7 @@ export default {
   slug: 'devis-menage-lcd-6-regles-transformer-demande-hote-client-recurrent',
   title: 'Devis ménage LCD : 6 règles pour transformer la demande d\'un hôte en client récurrent',
   seoTitle: 'Devis ménage LCD : convertir une demande en client',
-  description: "Réponse rapide, demande décodée, prix clair, récurrence, petit plus, relance : 6 règles pour transformer la demande d'un hôte en contrat ménage LCD récurrent.",
+  description: "Réponse rapide, demande décodée, prix clair, récurrence, petit plus, relance : 6 règles pour transformer la demande d'un hôte en contrat ménage récurrent.",
   keywords: 'devis ménage LCD, convertir demande hôte, prestataire ménage Airbnb, contrat récurrent ménage, tarif turnover LCD, client fidèle ménage',
   date: '2026-10-28',
   categorySlug: 'ressources',

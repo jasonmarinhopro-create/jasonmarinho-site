@@ -21,7 +21,16 @@ import { spawnSync } from 'child_process'
 function seoTitle(art) {
   const base = art.seoTitle || art.title
   const withBrand = `${base} | Jason Marinho`
-  return withBrand.length <= 60 ? withBrand : base
+  if (withBrand.length <= 60) return withBrand
+  // 24/11/2026 : un titre trop long est refusé plutôt que coupé par Google
+  if (base.length > 60) throw new Error(`Titre de ${base.length} caractères : ajoute seoTitle (60 caractères au plus, mot-clé en tête) dans la source de l'article`)
+  return base
+}
+
+// Description : 155 caractères au plus (24/11/2026), sinon Google la coupe
+function verifierDescription(art) {
+  const n = (art.description || '').length
+  if (n < 70 || n > 155) throw new Error(`Description de ${n} caractères : vise 140 à 155 caractères`)
 }
 
 
@@ -451,6 +460,8 @@ const required = ['slug', 'title', 'description', 'categorySlug', 'date', 'readT
 for (const field of required) {
   if (art[field] === undefined) throw new Error(`Champ manquant dans la config : ${field}`)
 }
+verifierDescription(art)
+seoTitle(art)
 if (!CATEGORIES[art.categorySlug]) {
   throw new Error(`categorySlug invalide "${art.categorySlug}". Valeurs acceptées : ${Object.keys(CATEGORIES).join(', ')}`)
 }

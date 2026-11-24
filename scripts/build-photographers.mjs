@@ -25,6 +25,7 @@ import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref, v3Prix } from './lib/fic
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 import { writeRegionPages, sitemapAvec } from './lib/annuaire-region.mjs'
+import { titreSeo, descSeo } from './lib/seo-texte.mjs'
 
 // Options en version courte pour « En bref »
 const OPTION_COURTE = { drone: 'drone', visite_3d: 'visite 3D', reels: 'vidéos courtes', crepuscule: 'crépuscule', mise_en_scene: 'mise en scène' }
@@ -148,7 +149,8 @@ export function buildFichePage(p) {
   const mLabel = metierLabel(metier)
   const mShort = metier === 'photo_video' ? 'Photographe & vidéaste' : mLabel
   const opts = readOptions(p.options).map(k => OPTIONS_VISUELLES.find(o => o.key === k))
-  const title = `${displayName} · ${mShort} LCD ${p.ville} | Jason Marinho`
+  // 60 caractères au plus (scripts/lib/seo-texte.mjs, 24/11/2026)
+  const title = titreSeo([`${displayName} · ${mShort} LCD ${p.ville} | Jason Marinho`, `${displayName} · ${mShort} LCD ${p.ville}`, `${displayName} · ${mLabel} LCD ${p.ville}`, `${displayName} · Photographe LCD ${p.ville}`, `${displayName}, ${p.ville}`])
   const tarif = fmtTarif(p)
   const optsTxt = opts.length ? ` ${opts.map(o => o.label).join(', ')}.` : ''
   const desc = `${displayName}, ${mLabel.toLowerCase()} spécialisé location courte durée à ${p.ville}${p.zone_couverte ? ' et ' + p.zone_couverte : ''}.${p.specialite ? ' ' + p.specialite + '.' : ''}${optsTxt}${tarif ? ' Tarifs ' + tarif + '.' : ''}`

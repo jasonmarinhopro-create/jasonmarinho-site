@@ -1,6 +1,7 @@
 export default {
   slug: 'stripe-paiement-direct-lcd-mise-en-place',
   title: 'Stripe pour la réservation directe LCD : mise en place et paramétrage 2026',
+  seoTitle: 'Stripe pour la réservation directe : mise en place',
   description: 'Stripe permet d\'encaisser les paiements voyageurs en direct, sans passer par Airbnb. Voici comment l\'intégrer en 30 min, frais inclus.',
   keywords: 'Stripe Airbnb direct, paiement réservation directe LCD, encaissement direct hôte, paramétrage Stripe location',
   date: '2026-04-25',

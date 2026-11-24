@@ -1,6 +1,7 @@
 export default {
   slug: 'sortir-mauvais-client-conciergerie-procedure',
   title: 'Sortir un mauvais client de conciergerie : la procédure en 5 étapes',
+  seoTitle: 'Conciergerie : se séparer d\'un mauvais client',
   description: '5-10% des clients propriétaires sont toxiques (exigeants, mauvais payeurs, irrespectueux). Voici la procédure pour les sortir proprement, sans drame.',
   keywords: 'mauvais client conciergerie, propriétaire toxique LCD, terminer mandat conciergerie, gérer client difficile',
   date: '2026-04-25',

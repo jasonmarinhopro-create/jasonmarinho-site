@@ -1,6 +1,7 @@
 export default {
   slug: 'photographe-airbnb-tarifs-comment-choisir',
   title: 'Photographe Airbnb : combien ça coûte et comment bien le choisir en 2026',
+  seoTitle: 'Photographe Airbnb : tarifs et comment le choisir',
   description: 'Photographe Airbnb : fourchettes de prix indicatives, ce que comprend une séance, critères pour choisir un pro de la LCD et erreurs à éviter.',
   keywords: 'photographe Airbnb, photographe location courte durée, tarif photographe immobilier, photos annonce Airbnb, photographe LCD',
   date: '2026-07-05',

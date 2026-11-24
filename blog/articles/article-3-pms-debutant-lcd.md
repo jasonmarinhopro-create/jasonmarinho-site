@@ -4,7 +4,7 @@ slug: "pms-logiciel-gestion-location-courte-duree-debutant"
 category: "Automatisation"
 date: "2026-03-25"
 readTime: "8 min de lecture"
-description: "Smoobu, Lodgify, Hostaway, Beds24 : comparatif des PMS pour hôtes LCD débutants et conciergeries. Comment choisir selon ton nombre de logements et ton budget."
+description: "Smoobu, Lodgify, Hostaway, Beds24 : comparatif des PMS pour hôtes LCD débutants et conciergeries. Comment choisir selon tes logements et ton budget."
 ---
 
 # PMS pour débutant : quel logiciel choisir selon ton profil LCD ?

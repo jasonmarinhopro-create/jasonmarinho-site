@@ -1,7 +1,8 @@
 export default {
   slug: 'superhost-airbnb-criteres-methode-2026',
   title: 'Devenir Superhost Airbnb : les 4 critères à valider et la méthode pour y arriver en 2026',
-  description: 'Note 4,8, taux de réponse 90 %, annulations sous 1 %, 10 séjours : les 4 critères du statut Superhost Airbnb 2026 et la méthode pour les valider sans stress.',
+  seoTitle: 'Devenir Superhost Airbnb en 2026 : critères et méthode',
+  description: 'Note 4,8, taux de réponse 90 %, annulations sous 1 %, 10 séjours : les 4 critères du statut Superhost Airbnb 2026 et la méthode pour les valider.',
   keywords: 'superhost airbnb 2026, devenir superhost, statut superhost airbnb, critères superhost, location courte durée',
   date: '2026-05-04',
   categorySlug: 'visibilite',

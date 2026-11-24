@@ -1,7 +1,8 @@
 export default {
   slug: 'accueillir-famille-enfants-airbnb-equipement',
   title: 'Accueillir une famille avec enfants en LCD : 15 équipements qui font la différence',
-  description: 'Les familles avec enfants représentent 30% du marché LCD. Voici les 15 équipements qui les fidélisent et te démarquent dans les recherches "logement famille".',
+  seoTitle: 'Famille avec enfants en LCD : 15 équipements clés',
+  description: 'Voici les 15 équipements qui fidélisent les familles avec enfants et démarquent ton logement LCD dans les recherches des parents.',
   keywords: 'famille avec enfants Airbnb, accueil enfants LCD, équipement bébé location, kit enfant Airbnb',
   date: '2026-04-25',
   categorySlug: 'experience',

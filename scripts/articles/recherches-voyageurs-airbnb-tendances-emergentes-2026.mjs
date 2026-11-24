@@ -1,7 +1,8 @@
 export default {
   slug: 'recherches-voyageurs-airbnb-tendances-emergentes-2026',
   title: 'Recherches voyageurs Airbnb 2026 : 5 tendances émergentes à capter',
-  description: 'Les voyageurs Airbnb cherchent en 2026 ce qu\'ils ne cherchaient pas en 2024. Voici 5 tendances émergentes et comment positionner ton annonce pour les capter.',
+  seoTitle: 'Recherches Airbnb 2026 : 5 tendances émergentes',
+  description: 'Les voyageurs Airbnb cherchent en 2026 ce qu\'ils ne cherchaient pas en 2024. 5 tendances émergentes et comment positionner ton annonce pour les capter.',
   keywords: 'tendances Airbnb 2026, voyageurs émergents LCD, slow travel Airbnb, workation 2026, tendances LCD',
   date: '2026-04-25',
   categorySlug: 'visibilite',

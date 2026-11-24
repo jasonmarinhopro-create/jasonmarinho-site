@@ -1,6 +1,7 @@
 export default {
   slug: 'climatisation-canicule-lcd-6-actions-preparer-ete',
   title: 'Climatisation et canicule en LCD : 6 actions pour préparer ton logement à l\'été 2026',
+  seoTitle: 'Canicule en LCD : 6 actions pour préparer l\'été',
   description: 'Vagues de chaleur, voyageurs exigeants, avis sur la température : 6 actions pour garder ta location courte durée agréable pendant l\'été.',
   keywords: 'climatisation airbnb, canicule location courte durée, clim mobile lcd, confort thermique meublé tourisme, isolation thermique été',
   date: '2026-05-22',

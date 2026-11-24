@@ -1,6 +1,7 @@
 export default {
   slug: 'photos-avant-apres-home-staging-lcd',
   title: 'Photos avant-après home staging LCD : 5 transformations à 200 €',
+  seoTitle: 'Home staging LCD : 5 transformations à 200 €',
   description: 'Le home staging avant photos peut booster ton CTR de 30-50%. Voici 5 transformations à moins de 200€ qui changent tout, avec exemples avant/après.',
   keywords: 'home staging Airbnb, photo avant après LCD, valoriser logement Airbnb, décorer petit budget LCD',
   date: '2026-04-25',

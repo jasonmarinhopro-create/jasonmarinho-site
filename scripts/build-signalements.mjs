@@ -15,6 +15,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { titreSeo, descSeo } from './lib/seo-texte.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -112,7 +113,7 @@ function buildFichePage(item) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escHtml(title)} | Signalement voyageur LCD : Jason Marinho</title>
+<title>${escHtml(titreSeo([`${title} | Signalement voyageur LCD : Jason Marinho`, `${title} | Signalement voyageur LCD`, `${title} : signalement voyageur`, title]))}</title>
 <meta name="description" content="${escHtml(desc)}">
 <link rel="canonical" href="${canonical}">
 <meta property="og:title" content="${escHtml(title)}">
@@ -323,7 +324,7 @@ function buildListPage(items) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Signalements voyageurs publics LCD · Base communauté | Jason Marinho</title>
+<title>Signalements voyageurs LCD : la base de la communauté</title>
 <meta name="description" content="Base communautaire des signalements voyageurs Airbnb et Booking, anonymisés. ${items.length} signalements actifs partagés par les hôtes LCD pour alerter et protéger.">
 <link rel="canonical" href="https://jasonmarinho.com/securite/signalements">
 <meta property="og:title" content="Signalements voyageurs publics LCD · Base communauté">

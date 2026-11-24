@@ -1,6 +1,7 @@
 export default {
   slug: 'salon-lcd-7-regles-espace-vie-coeur-experience-voyageur',
   title: 'Salon en LCD : 7 règles pour transformer ton espace de vie en cœur d\'expérience voyageur',
+  seoTitle: 'Salon en LCD : 7 règles pour un espace de vie réussi',
   description: 'Canapé, éclairage, télé, rangements, décoration : 7 règles pour faire du salon de ta location courte durée une pièce où l\'on a envie de rester.',
   keywords: 'salon location courte durée, salon airbnb, canapé lcd, aménagement salon lcd, décoration salon airbnb, pièce à vivre location saisonnière',
   date: '2026-08-12',

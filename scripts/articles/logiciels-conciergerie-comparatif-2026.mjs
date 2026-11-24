@@ -1,6 +1,7 @@
 export default {
   slug: 'logiciels-conciergerie-comparatif-2026',
   title: 'Logiciels conciergerie LCD : comparatif des 5 PMS leaders en 2026',
+  seoTitle: 'Logiciels de conciergerie LCD : comparatif 2026',
   description: 'Hostfully, Hospitable, Smoobu, Lodgify, Guesty : test terrain des 5 PMS leaders pour conciergerie multi-mandats en 2026.',
   keywords: 'logiciel conciergerie Airbnb, PMS conciergerie LCD, Hostfully Guesty 2026, comparatif PMS hôtelier',
   date: '2026-04-25',

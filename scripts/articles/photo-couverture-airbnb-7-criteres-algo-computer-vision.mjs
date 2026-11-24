@@ -1,6 +1,7 @@
 export default {
   slug: 'photo-couverture-airbnb-7-criteres-algo-computer-vision',
   title: 'Photo de couverture Airbnb : les 7 critères de l\'algo Computer Vision en 2026',
+  seoTitle: 'Photo de couverture Airbnb : les 7 critères de l\'algo',
   description: 'L\'algorithme Computer Vision d\'Airbnb analyse ta photo de couverture sur 7 critères précis. Voici comment passer chaque critère et booster ton CTR de 30 %.',
   keywords: 'photo couverture Airbnb, computer vision Airbnb 2026, optimiser première photo Airbnb, CTR annonce Airbnb, algorithme photos Airbnb',
   date: '2026-04-25',

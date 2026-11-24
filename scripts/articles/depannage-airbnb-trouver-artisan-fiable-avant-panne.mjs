@@ -2,7 +2,7 @@ export default {
   slug: 'depannage-airbnb-trouver-artisan-fiable-avant-panne',
   title: 'Dépannage Airbnb : 7 réflexes pour trouver ton artisan avant la première panne',
   seoTitle: 'Dépannage Airbnb : trouver ton artisan avant la panne',
-  description: 'Fuite, panne de courant, serrure bloquée entre deux voyageurs : 7 réflexes pour choisir un plombier ou un électricien fiable avant l\'urgence, devis compris.',
+  description: 'Fuite, panne de courant, serrure bloquée entre deux voyageurs : 7 réflexes pour choisir un plombier ou un électricien fiable avant l\'urgence.',
   keywords: 'dépannage airbnb, plombier location courte durée, électricien airbnb, artisan location saisonnière, panne logement airbnb, arnaque dépannage',
   date: '2026-10-31',
   categorySlug: 'experience',

@@ -1,6 +1,7 @@
 export default {
   slug: 'check-in-tardif-4-solutions-sans-cles',
   title: 'Check-in tardif Airbnb : 4 solutions sans clé ni présence physique',
+  seoTitle: 'Check-in tardif Airbnb : 4 solutions sans clé',
   description: '60% des voyageurs business arrivent après 21h. Voici les 4 solutions pour gérer un check-in tardif sans te déplacer ni t\'embêter.',
   keywords: 'check-in autonome Airbnb, arrivée tardive LCD, self check-in 2026, code accès logement Airbnb',
   date: '2026-04-25',

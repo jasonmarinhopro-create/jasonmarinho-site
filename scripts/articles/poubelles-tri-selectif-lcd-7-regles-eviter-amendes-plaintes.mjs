@@ -1,6 +1,7 @@
 export default {
   slug: 'poubelles-tri-selectif-lcd-7-regles-eviter-amendes-plaintes',
   title: 'Poubelles et tri sélectif en LCD : 7 règles pour éviter amendes, plaintes voisins et avis négatifs',
+  seoTitle: 'Poubelles et tri sélectif en LCD : 7 règles',
   description: 'Biodéchets, jours de collecte, horaires, tri des emballages : 7 règles pour gérer les poubelles de ta location courte durée sans amende ni plainte.',
   keywords: 'poubelles location courte durée, tri sélectif Airbnb, bio-déchets LCD 2024, amende tri poubelles, gestion déchets meublé tourisme',
   date: '2026-07-20',

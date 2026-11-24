@@ -1,6 +1,7 @@
 export default {
   slug: 'sejours-longs-lcd-strategie-revenus-basse-saison',
   title: 'Séjours longs en LCD : la stratégie complète pour booster ton taux d\'occupation de 15 % en basse saison',
+  seoTitle: 'Séjours longs en LCD : remplir la basse saison',
   description: 'Séjours à la semaine ou au mois en basse saison : tarifs, calendrier, annonce. La méthode pour remplir ton logement sans brader tes revenus.',
   keywords: 'séjours longs location courte durée, location semaine mois LCD, taux occupation basse saison, tarif hebdomadaire mensuel Airbnb, stratégie longs séjours hôte',
   date: '2026-04-24',

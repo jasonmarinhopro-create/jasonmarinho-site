@@ -2,7 +2,7 @@ export default {
   slug: 'logement-lcd-ski-7-regles-saison-2026-2027-fideliser-voyageurs',
   title: "Logement LCD au ski : 7 règles pour réussir la saison 2026-2027 et faire revenir tes voyageurs",
   seoTitle: "Logement LCD au ski : 7 règles pour la saison 2026-2027",
-  description: "Dates vacances, équipement ski, chauffage, livret, tarifs, bulletin avalanche, fidélisation : 7 règles pour un logement LCD au ski qui remplit en 2026-2027.",
+  description: "Vacances, équipement ski, chauffage, livret, tarifs, bulletin avalanche, fidélisation : 7 règles pour un logement LCD au ski qui remplit en 2026-2027.",
   keywords: "logement ski lcd, location courte durée montagne, saison hiver airbnb, vacances hiver 2027, bulletin avalanche, loi montagne chaînes, fidéliser voyageurs ski",
   date: '2026-11-23',
   categorySlug: 'experience',

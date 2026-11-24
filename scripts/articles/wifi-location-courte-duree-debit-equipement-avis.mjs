@@ -1,7 +1,8 @@
 export default {
   slug: 'wifi-location-courte-duree-debit-equipement-avis',
   title: 'WiFi en LCD : 6 actions pour une connexion qui booste tes avis voyageurs',
-  description: 'Le WiFi est l\'un des équipements les plus recherchés sur Airbnb. Voici 6 actions concrètes pour offrir une connexion rapide, fiable et sécurisée en LCD en 2026.',
+  seoTitle: 'Wi-Fi en LCD : 6 actions pour une bonne connexion',
+  description: 'Le WiFi est l\'un des équipements les plus recherchés sur Airbnb. 6 actions concrètes pour offrir une connexion rapide, fiable et sécurisée en LCD.',
   keywords: 'wifi airbnb, débit internet location courte durée, badge wifi rapide airbnb, équipement lcd télétravail, fibre meublé tourisme',
   date: '2026-05-08',
   categorySlug: 'experience',

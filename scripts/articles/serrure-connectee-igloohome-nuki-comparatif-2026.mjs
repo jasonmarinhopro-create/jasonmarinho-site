@@ -1,6 +1,7 @@
 export default {
   slug: 'serrure-connectee-igloohome-nuki-comparatif-2026',
   title: 'Serrure connectée LCD : Igloohome vs Nuki vs Master Lock : comparatif 2026',
+  seoTitle: 'Serrure connectée LCD : Igloohome vs Nuki en 2026',
   description: 'Test terrain des 3 serrures connectées les plus utilisées par les hôtes LCD. Prix, autonomie, intégrations Airbnb, fiabilité et ROI réel.',
   keywords: 'serrure connectée Airbnb, Igloohome LCD, Nuki location courte durée, smart lock hôte 2026, check-in autonome',
   date: '2026-04-25',

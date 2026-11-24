@@ -1,6 +1,7 @@
 export default {
   slug: 'guide-fiscal-debutant-hote-airbnb-2026',
   title: 'Guide fiscal débutant 2026 : déclarer ses revenus Airbnb sans erreur',
+  seoTitle: 'Déclarer ses revenus Airbnb en 2026 : guide débutant',
   description: 'Tu débutes en LCD et la fiscalité te fait peur ? Voici le guide pas à pas pour déclarer tes revenus Airbnb en 2026, sans erreur ni complexité inutile.',
   keywords: 'déclarer revenus Airbnb 2026, fiscalité débutant LCD, micro-BIC première déclaration, impôts location courte durée',
   date: '2026-04-25',

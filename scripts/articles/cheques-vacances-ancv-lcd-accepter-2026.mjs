@@ -1,6 +1,7 @@
 export default {
   slug: 'cheques-vacances-ancv-lcd-accepter-2026',
   title: 'Chèques-vacances ANCV en LCD : 5 étapes pour les accepter et capter 4,8 millions de voyageurs en 2026',
+  seoTitle: 'Chèques-vacances ANCV en LCD : les accepter en 2026',
   description: 'Inscription, conditions, papier ou Connect, visibilité : 5 étapes pour accepter les chèques-vacances ANCV dans ta location courte durée en 2026.',
   keywords: 'chèques vacances ANCV location courte durée, accepter chèques vacances meublé tourisme, ANCV Connect hôte LCD, conventionnement ANCV professionnel tourisme, classement Atout France chèques vacances',
   date: '2026-07-08',

@@ -1,6 +1,7 @@
 export default {
   slug: 'scaler-conciergerie-5-30-mandats-process',
   title: 'Scaler une conciergerie de 5 à 30 mandats : les process à mettre en place',
+  seoTitle: 'Passer de 5 à 30 mandats en conciergerie',
   description: 'Passer de 5 à 30 mandats demande une vraie industrialisation. Voici les 7 process à mettre en place pour scaler sans perdre en qualité.',
   keywords: 'scaler conciergerie LCD, faire grandir conciergerie Airbnb, process conciergerie multi-biens',
   date: '2026-04-25',

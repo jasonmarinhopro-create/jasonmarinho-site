@@ -1,6 +1,7 @@
 export default {
   slug: 'regime-reel-vs-micro-bic-decision-2026',
   title: 'Micro-BIC ou régime réel en LCD : la décision avec calculs en 2026',
+  seoTitle: 'Micro-BIC ou régime réel en LCD : que choisir en 2026 ?',
   description: 'Micro-BIC à 30 % (50 % si classé) ou régime réel ? Le réel peut te faire économiser 1500 à 4000€/an. Calculs concrets pour décider.',
   keywords: 'micro-BIC LCD, régime réel Airbnb, abattement 30% Airbnb, déduction frais LCD 2026',
   date: '2026-04-25',

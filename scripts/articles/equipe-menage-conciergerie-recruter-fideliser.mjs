@@ -1,6 +1,7 @@
 export default {
   slug: 'equipe-menage-conciergerie-recruter-fideliser',
   title: 'Équipe ménage conciergerie : recruter, former, fidéliser en 2026',
+  seoTitle: 'Équipe ménage de conciergerie : recruter et fidéliser',
   description: 'Le ménage est le poste #1 de coûts d\'une conciergerie LCD. Voici comment recruter une équipe fiable, la former en 2 semaines, et la garder sur la durée.',
   keywords: 'recruter ménage Airbnb, équipe ménage conciergerie, fidéliser personnel LCD, salaire ménage conciergerie 2026',
   date: '2026-04-25',

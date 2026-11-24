@@ -2,6 +2,8 @@ export default {
   slug: 'eclairage-lcd-7-regles-confort-photos-avis',
 
   title: 'Éclairage en LCD : 7 règles pour transformer ton logement, tes photos et tes avis',
+
+  seoTitle: 'Éclairage en LCD : 7 règles pour le confort et les photos',
   description: 'Niveaux de lumière, température de couleur, variateurs, sources multiples : 7 règles d\'éclairage pour ta LCD, pour le confort, les photos et les avis.',
   keywords: 'éclairage location courte durée, ampoules LCD, lumière Airbnb, photos annonce LCD, température Kelvin, dimmer LCD',
   date: '2026-06-01',

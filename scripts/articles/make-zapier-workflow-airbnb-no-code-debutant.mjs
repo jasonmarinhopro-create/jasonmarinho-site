@@ -1,6 +1,7 @@
 export default {
   slug: 'make-zapier-workflow-airbnb-no-code-debutant',
   title: 'Make ou Zapier pour Airbnb : automatiser ses flows en no-code',
+  seoTitle: 'Make ou Zapier pour Airbnb : automatiser sans coder',
   description: 'Make et Zapier permettent d\'automatiser des dizaines de tâches Airbnb sans coder. Comparatif, exemples concrets et 5 workflows à mettre en place.',
   keywords: 'Make Airbnb, Zapier location courte durée, no-code Airbnb, automation hôte LCD 2026, workflow Airbnb',
   date: '2026-04-25',

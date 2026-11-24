@@ -4,7 +4,7 @@ slug: "amenager-logement-location-courte-duree-petit-budget"
 category: "Expérience"
 date: "2026-03-25"
 readTime: "8 min de lecture"
-description: "IKEA, Vinted, Leboncoin : comment équiper et décorer ton logement LCD sans exploser ton budget, en priorisant ce qui impacte vraiment les avis et les photos."
+description: "IKEA, Vinted, Leboncoin : comment équiper et décorer ton logement LCD sans exploser ton budget, en priorisant ce qui compte pour les avis et les photos."
 ---
 
 # Aménager son logement pour la LCD avec un petit budget

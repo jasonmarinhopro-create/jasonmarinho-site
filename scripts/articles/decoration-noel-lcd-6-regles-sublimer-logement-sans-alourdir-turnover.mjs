@@ -2,7 +2,7 @@ export default {
   slug: 'decoration-noel-lcd-6-regles-sublimer-logement-sans-alourdir-turnover',
   title: "Décoration de Noël en LCD : 6 règles pour sublimer ton logement sans alourdir ton turnover",
   seoTitle: "Déco de Noël en LCD : 6 règles sans alourdir ton turnover",
-  description: "Volume, style, sécurité, stockage, impact ménage, photos : 6 règles concrètes pour décorer ton logement LCD pour Noël sans plomber ton turnover ni tes avis.",
+  description: "Volume, style, sécurité, stockage, ménage, photos : 6 règles concrètes pour décorer ton logement LCD pour Noël sans plomber ton turnover ni tes avis.",
   keywords: "decoration noel airbnb, deco noel location courte duree, sapin lcd, guirlandes lcd, turnover noel, photos hiver airbnb",
   date: '2026-11-20',
   categorySlug: 'experience',

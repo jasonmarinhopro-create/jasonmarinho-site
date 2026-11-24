@@ -1,6 +1,7 @@
 export default {
   slug: 'tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur',
   title: 'TV et streaming en LCD : 6 règles pour équiper ton logement sans compte piraté ni voyageur frustré',
+  seoTitle: 'TV et streaming en LCD : 6 règles pour bien équiper',
   description: 'Smart TV, Netflix, Chromecast, TNT, réinitialisation : 6 règles pour équiper la télé de ta LCD sans compte piraté ni voyageur devant un écran figé.',
   keywords: 'TV location courte durée, streaming Airbnb, Netflix Airbnb, Chromecast LCD, compte piraté hôte, smart TV location, chaîne TNT LCD',
   date: '2026-07-24',

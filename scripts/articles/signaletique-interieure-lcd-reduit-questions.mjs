@@ -1,7 +1,8 @@
 export default {
   slug: 'signaletique-interieure-lcd-reduit-questions',
   title: 'Signalétique intérieure LCD : réduire les questions voyageurs de 50 %',
-  description: 'Une bonne signalétique intérieure (notes, étiquettes, panneaux) réduit les questions voyageurs de 50%. Voici les 12 affichages indispensables et leur format.',
+  seoTitle: 'Signalétique en LCD : moins de questions voyageurs',
+  description: 'Une bonne signalétique intérieure (notes, étiquettes, panneaux) réduit les questions des voyageurs. Voici les 12 affichages indispensables et leur format.',
   keywords: 'signalétique Airbnb, étiquettes logement LCD, panneaux information voyageurs, livret accueil',
   date: '2026-04-25',
   categorySlug: 'experience',

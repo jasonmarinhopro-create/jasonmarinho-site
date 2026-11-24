@@ -1,6 +1,7 @@
 export default {
   slug: 'formulaire-fiche-police-lcd-obligatoire',
   title: 'Fiche de police LCD : remplir et conserver le formulaire obligatoire',
+  seoTitle: 'Fiche de police LCD : le formulaire obligatoire',
   description: 'La fiche de police pour les voyageurs étrangers est obligatoire en LCD. Modèle, données à collecter, durée de conservation et risques en cas de manquement.',
   keywords: 'fiche police Airbnb, fiche police étranger LCD, formulaire voyageur étranger location, obligation hôte 2026',
   date: '2026-04-25',

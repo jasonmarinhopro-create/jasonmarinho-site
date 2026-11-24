@@ -183,7 +183,9 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   }
   if (g && TAX_INTENT.includes(slug)) {
     const l4 = g.lignes.find(l => l.label.includes('4 étoiles'))
-    const desc = nb(`Taxe de séjour ${a} en ${AN} : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé. Grille officielle, exemple chiffré et qui la collecte.`)
+    // 155 caractères au plus (audit du 24/11/2026) : la fin se raccourcit si besoin.
+    const debutDesc = `Taxe de séjour ${a} en ${AN} : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé.`
+    const desc = nb([' Grille officielle, exemple chiffré et qui la collecte.', ' Grille officielle et exemple chiffré.', ' Grille officielle.', ''].map(f => debutDesc + f).find(d => d.length <= 155) || debutDesc)
     html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
     html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
     // Titre (audit SEO du 18/11/2026) : ces guides sortent en place 5 à 9 sur

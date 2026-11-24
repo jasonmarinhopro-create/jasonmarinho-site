@@ -1,6 +1,7 @@
 export default {
   slug: 'instagram-reels-tiktok-lcd-attirer-voyageurs',
   title: 'Instagram Reels & TikTok pour LCD : 6 formats vidéo qui convertissent',
+  seoTitle: 'Reels et TikTok en LCD : 6 formats vidéo qui marchent',
   description: 'Les vidéos courtes Instagram et TikTok génèrent 3x plus d\'engagement que les photos pour la LCD. Voici 6 formats testés et la stratégie de publication.',
   keywords: 'Instagram Reels Airbnb, TikTok LCD, vidéo location courte durée, contenu vidéo hôte 2026',
   date: '2026-04-25',

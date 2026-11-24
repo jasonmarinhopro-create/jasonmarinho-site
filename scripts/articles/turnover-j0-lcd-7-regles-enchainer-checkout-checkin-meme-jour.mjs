@@ -2,6 +2,8 @@ export default {
   slug: 'turnover-j0-lcd-7-regles-enchainer-checkout-checkin-meme-jour',
 
   title: 'Turnover J+0 en LCD : 7 règles pour enchaîner un check-out et un check-in le même jour sans stress',
+
+  seoTitle: 'Turnover le jour même en LCD : 7 règles',
   description: 'Check-out 11 h, check-in 15 h : 7 règles pour organiser un turnover LCD le même jour sans épuiser ton équipe ménage ni décevoir un voyageur pressé.',
   keywords: 'turnover airbnb même jour, check-in check-out lcd, planning ménage location courte durée, coordination ménage airbnb, back-to-back airbnb, turnover j+0 lcd, gestion ménage haute saison lcd',
   date: '2026-08-26',

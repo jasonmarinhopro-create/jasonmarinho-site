@@ -1,6 +1,7 @@
 export default {
   slug: 'objets-oublies-voyageurs-lcd-7-regles-gerer-retours',
   title: 'Objets oubliés par voyageurs en LCD : 7 règles pour gérer les retours sans perdre du temps',
+  seoTitle: 'Objets oubliés en LCD : 7 règles pour les retours',
   description: 'Téléphone, chargeur, doudou : 7 règles pour gérer les objets oubliés par tes voyageurs en LCD sans y passer ton week-end ni payer les frais.',
   keywords: 'objets oublies airbnb, retour objet voyageur lcd, procedure objets perdus location courte duree, frais envoi objet oublie, livret accueil objets oublies',
   date: '2026-06-17',

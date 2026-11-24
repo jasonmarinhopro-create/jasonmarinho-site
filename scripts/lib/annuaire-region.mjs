@@ -23,6 +23,7 @@ import { slugRegion } from './villes-hub.mjs'
 import { VILLES_LOCAL } from '../data/villes-local.mjs'
 import { officialGrid, fmtTarif, TAXE_SOURCE_URL } from './taxe-officielle.mjs'
 import { tourismeSection, chiffres } from './communes-donnees.mjs'
+import { descSeo } from './seo-texte.mjs'
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const plain = s => String(s ?? '').replace(/<[^>]+>/g, '')
@@ -63,7 +64,7 @@ const TEXTES = {
     h1: z => `Photographes et vidéastes LCD <em>${esc(z)}</em>`,
     title: z => `Photographe LCD ${z}`,
     lead: z => `Des photographes et vidéastes qui connaissent la location courte durée, ${z}. Contact direct, sans commission : choisis une fiche ou cherche ta ville.`,
-    desc: (z, n) => `${n ? `${n} photographe${n > 1 ? 's' : ''} et vidéaste${n > 1 ? 's' : ''}` : 'Photographes et vidéastes'} spécialisés location courte durée ${z} : photos, tarifs, règles locales, calendrier, contact direct sans commission.`,
+    desc: (z, n) => descSeo(`${n ? `${n} photographe${n > 1 ? 's' : ''} et vidéaste${n > 1 ? 's' : ''}` : 'Photographes et vidéastes'} spécialisés location courte durée ${z}`, ['photos', 'tarifs', 'règles locales', 'calendrier'], 'contact direct sans commission'),
     guide: 'Chaque ville a son guide : tarifs constatés sur place, photos indispensables et questions à poser au photographe.',
     conseilsTitre: 'Les conseils photo, ville par ville',
   },
@@ -72,7 +73,7 @@ const TEXTES = {
     h1: z => `Équipes de ménage LCD <em>${esc(z)}</em>`,
     title: z => `Ménage Airbnb ${z}`,
     lead: z => `Des équipes habituées aux rotations entre deux voyageurs, ${z}. Contact direct, sans commission : choisis une fiche ou cherche ta ville.`,
-    desc: (z, n) => `${n ? `${n} équipe${n > 1 ? 's' : ''} de ménage` : 'Équipes de ménage'} spécialisées location courte durée ${z} : prestations, règles locales, calendrier, contact direct sans commission.`,
+    desc: (z, n) => descSeo(`${n ? `${n} équipe${n > 1 ? 's' : ''} de ménage` : 'Équipes de ménage'} spécialisées location courte durée ${z}`, ['prestations', 'règles locales', 'calendrier'], 'contact direct sans commission'),
     guide: 'Chaque ville a son guide : tarifs constatés sur place, checklist et questions à poser à l’équipe de ménage.',
     conseilsTitre: 'Les conseils ménage, ville par ville',
   },
@@ -81,7 +82,7 @@ const TEXTES = {
     h1: z => `Dépannage et maintenance LCD <em>${esc(z)}</em>`,
     title: z => `Dépannage LCD ${z}`,
     lead: z => `Plombiers, électriciens, serruriers qui interviennent entre deux voyageurs, ${z}. Contact direct, sans commission : choisis une fiche ou cherche ta ville.`,
-    desc: (z, n) => `${n ? `${n} pro${n > 1 ? 's' : ''} du dépannage` : 'Pros du dépannage'} pour la location courte durée ${z} : zone d’intervention, règles locales, calendrier, contact direct sans commission.`,
+    desc: (z, n) => descSeo(`${n ? `${n} pro${n > 1 ? 's' : ''} du dépannage` : 'Pros du dépannage'} pour la location courte durée ${z}`, ['zone d’intervention', 'règles locales', 'calendrier'], 'contact direct sans commission'),
     guide: 'Chaque ville a son guide : les bons réflexes avant d’appeler et les questions à poser à l’artisan.',
     conseilsTitre: null,
   },

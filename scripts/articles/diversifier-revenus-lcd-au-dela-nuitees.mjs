@@ -1,6 +1,7 @@
 export default {
   slug: 'diversifier-revenus-lcd-au-dela-nuitees',
   title: 'Diversifier ses revenus LCD : 7 sources au-delà du tarif nuitée',
+  seoTitle: 'Diversifier ses revenus LCD : 7 sources en plus',
   description: 'Gagner plus avec ta location courte durée sans plus de nuits : 7 sources de revenus en plus des nuitées et comment les mettre en place.',
   keywords: 'revenus LCD diversifier, ancillary revenue Airbnb, sources revenus complémentaires hôte, monétiser logement LCD',
   date: '2026-04-25',

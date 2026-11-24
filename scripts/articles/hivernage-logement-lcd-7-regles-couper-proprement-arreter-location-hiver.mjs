@@ -2,7 +2,7 @@ export default {
   slug: 'hivernage-logement-lcd-7-regles-couper-proprement-arreter-location-hiver',
   title: 'Hivernage de ton logement LCD : 7 règles pour couper proprement si tu arrêtes la location cet hiver',
   seoTitle: 'Hivernage logement LCD : 7 règles pour couper proprement',
-  description: 'Eau, chauffage, assurance, visites : 7 règles concrètes pour hiverner ton logement LCD si tu coupes la location cet hiver, sans sinistre ni mauvaise surprise.',
+  description: 'Eau, chauffage, assurance, visites : 7 règles concrètes pour hiverner ton logement LCD si tu coupes la location cet hiver, sans sinistre ni surprise.',
   keywords: 'hivernage location saisonnière, couper eau chauffage logement LCD, assurance habitation logement inoccupé, protection gel plomberie Airbnb, résidence secondaire fermée hiver',
   date: '2026-11-02',
   categorySlug: 'ressources',

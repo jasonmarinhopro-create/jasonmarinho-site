@@ -1,6 +1,7 @@
 export default {
   slug: 'lmnp-vs-lmp-changement-2026-impact',
   title: 'LMNP ou LMP en 2026 : ce qui change pour les hôtes Airbnb français',
+  seoTitle: 'LMNP ou LMP en 2026 : ce qui change pour les hôtes',
   description: 'Le statut LMNP a perdu de son avantage en 2025-2026. Quelle différence concrète avec LMP, comment basculer et quel impact fiscal selon ton profil.',
   keywords: 'LMNP 2026, LMP location courte durée, statut fiscal Airbnb, loueur meublé professionnel non professionnel',
   date: '2026-04-25',

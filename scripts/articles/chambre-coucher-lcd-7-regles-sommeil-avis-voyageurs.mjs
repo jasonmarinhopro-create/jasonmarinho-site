@@ -1,6 +1,7 @@
 export default {
   slug: 'chambre-coucher-lcd-7-regles-sommeil-avis-voyageurs',
   title: 'Chambre à coucher en LCD : 7 règles pour offrir un sommeil impeccable et faire grimper tes avis voyageurs',
+  seoTitle: 'Chambre en LCD : 7 règles pour un sommeil parfait',
   description: 'Matelas, literie, obscurité, silence, température : 7 règles pour une chambre où tes voyageurs dorment bien, et des avis qui le disent.',
   keywords: 'chambre location courte durée, matelas airbnb, literie lcd, sommeil voyageur airbnb, chambre à coucher meublé de tourisme, obscurité chambre lcd',
   date: '2026-08-10',

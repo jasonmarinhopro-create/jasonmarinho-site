@@ -1,6 +1,7 @@
 export default {
   slug: 'punaises-de-lit-lcd-prevenir-detecter-reagir',
   title: 'Punaises de lit en LCD : 6 actions pour prévenir, détecter et réagir sans ruiner ta réputation',
+  seoTitle: 'Punaises de lit en LCD : prévenir, détecter, réagir',
   description: 'Prévention entre les séjours, détection, traitement par un pro certifié, obligations : 6 actions contre les punaises de lit en LCD sans casser tes avis.',
   keywords: 'punaises de lit airbnb, punaises de lit location courte durée, traitement punaises de lit, loi elan punaises, prévention punaises de lit lcd, détection punaises de lit',
   date: '2026-05-25',

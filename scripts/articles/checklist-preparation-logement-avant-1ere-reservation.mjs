@@ -1,6 +1,7 @@
 export default {
   slug: 'checklist-preparation-logement-avant-1ere-reservation',
   title: 'Checklist préparation logement LCD : 47 points avant ta 1ère réservation',
+  seoTitle: 'Checklist LCD : 47 points avant ta 1ère réservation',
   description: 'Avant ta première réservation Airbnb : la liste complète des points à vérifier dans ton logement, classés par priorité et téléchargeable.',
   keywords: 'checklist logement Airbnb, préparation 1ère réservation LCD, équipement Airbnb obligatoire, démarrer location courte durée',
   date: '2026-04-25',

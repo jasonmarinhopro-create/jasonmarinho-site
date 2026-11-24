@@ -1,6 +1,7 @@
 export default {
   slug: 'securiser-compte-airbnb-phishing-piratage-2026',
   title: 'Sécuriser ton compte Airbnb : 6 réflexes pour éviter le phishing et le piratage en 2026',
+  seoTitle: 'Sécuriser son compte Airbnb contre le phishing',
   description: 'Hameçonnage, compte hôte piraté, réservations détournées : 6 réflexes pour sécuriser ton compte Airbnb et protéger ton activité en 2026.',
   keywords: 'sécuriser compte airbnb, phishing airbnb hôte, piratage compte airbnb, double authentification airbnb, 2fa airbnb, arnaque hôte airbnb',
   date: '2026-06-29',

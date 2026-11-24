@@ -1,6 +1,7 @@
 export default {
   slug: 'capteurs-iot-lcd-bruit-temperature-utile-ou-pas',
   title: 'Capteurs IoT pour LCD : bruit, température, ouverture : utile ou gadget ?',
+  seoTitle: 'Capteurs de bruit et IoT en LCD : utile ou gadget ?',
   description: 'Capteurs de bruit, sondes de température, détecteurs d\'ouverture : ce qui protège vraiment ton logement en LCD et ce qui relève du marketing.',
   keywords: 'capteur bruit Airbnb, IoT location courte durée, NoiseAware Minut, monitoring logement Airbnb',
   date: '2026-04-25',

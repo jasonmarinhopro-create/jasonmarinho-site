@@ -1,6 +1,7 @@
 export default {
   slug: 'automatiser-caution-swikly-youka-test-terrain',
   title: 'Automatiser sa caution LCD : SwikLy vs Youka vs solution maison',
+  seoTitle: 'Caution LCD : Swikly vs Youka vs solution maison',
   description: 'Test terrain des 3 solutions pour gérer ta caution voyageur sans friction. Tarifs, fiabilité, expérience voyageur, intégrations Airbnb/Booking.',
   keywords: 'caution Airbnb automatique, SwikLy LCD, Youka caution location, dépôt garantie hôte 2026',
   date: '2026-04-25',

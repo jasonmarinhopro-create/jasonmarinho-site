@@ -1,6 +1,7 @@
 export default {
   slug: 'optimiser-annonce-airbnb',
   title: 'Optimiser son annonce Airbnb : les 8 éléments qui font vraiment la différence',
+  seoTitle: 'Optimiser son annonce Airbnb : les 8 éléments clés',
   description: 'Titre, photos, description, prix, équipements, réactivité, avis, règles : les 8 leviers pour remonter dans Airbnb et obtenir plus de réservations.',
   keywords: 'optimiser annonce Airbnb, algorithme Airbnb, visibilité Airbnb, taux de conversion, hôte LCD',
   date: '2025-03-01',

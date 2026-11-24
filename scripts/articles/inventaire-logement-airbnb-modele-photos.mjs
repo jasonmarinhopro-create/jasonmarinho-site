@@ -1,6 +1,7 @@
 export default {
   slug: 'inventaire-logement-airbnb-modele-photos',
   title: 'Inventaire logement Airbnb : le modèle photo qui te protège des litiges',
+  seoTitle: 'Inventaire logement Airbnb : le modèle anti-litiges',
   description: 'Un inventaire photo précis te protège en cas de litige voyageur sur un objet manquant ou cassé. Voici le modèle complet et la méthode en 30 minutes.',
   keywords: 'inventaire Airbnb, état des lieux LCD, protection litige voyageur, preuve dégât Airbnb',
   date: '2026-04-25',

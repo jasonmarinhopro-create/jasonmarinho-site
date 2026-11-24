@@ -1,6 +1,7 @@
 export default {
   slug: 'assurance-lcd-5-garanties-indispensables-2026',
   title: 'Assurance LCD : les 5 garanties indispensables en 2026 (et celles inutiles)',
+  seoTitle: 'Assurance LCD : les 5 garanties indispensables 2026',
   description: 'Ton assurance habitation classique ne couvre PAS la location courte durée. Voici les 5 garanties dédiées LCD à exiger et les pièges à éviter.',
   keywords: 'assurance Airbnb, assurance LCD, assurance location courte durée 2026, garantie hôte Airbnb',
   date: '2026-04-25',

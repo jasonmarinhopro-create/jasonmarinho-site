@@ -23,6 +23,7 @@ import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref, v3Prix } from './lib/fic
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 import { writeRegionPages, sitemapAvec } from './lib/annuaire-region.mjs'
+import { titreSeo, descSeo } from './lib/seo-texte.mjs'
 
 // Taille de l'équipe en version courte pour « En bref »
 const EQUIPE_COURTE = { solo: ['Solo', 'une seule personne'], duo: ['Duo', 'deux personnes'], equipe_3_5: ['3 à 5', 'personnes dans l’équipe'], equipe_6_plus: ['6 et plus', 'personnes dans l’équipe'] }
@@ -164,7 +165,8 @@ function memberSince(createdAt) {
 // Exportée pour les fiches d'exemple (scripts/build-exemples-fiches.mjs)
 export function buildFichePage(c) {
   const displayName = nomAffiche(c.pseudo || c.full_name)
-  const title = `${displayName} · Équipe ménage LCD ${c.ville} | Jason Marinho`
+  // 60 caractères au plus (scripts/lib/seo-texte.mjs, 24/11/2026)
+  const title = titreSeo([`${displayName} · Équipe ménage LCD ${c.ville} | Jason Marinho`, `${displayName} · Équipe ménage LCD ${c.ville}`, `${displayName} · Ménage LCD ${c.ville}`, `${displayName}, ${c.ville}`])
   const forfait = fmtForfait(c)
   const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
   const desc = `${displayName}, équipe de ménage spécialisée location courte durée à ${c.ville}${c.zone_couverte ? ' et ' + c.zone_couverte : ''}.${forfait ? ' Forfait turnover ' + forfait + '.' : ''}${heure ? ' Tarif horaire ' + heure + '.' : ''}`

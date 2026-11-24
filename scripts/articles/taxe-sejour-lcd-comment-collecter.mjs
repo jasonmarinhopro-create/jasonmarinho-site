@@ -1,6 +1,7 @@
 export default {
   slug: 'taxe-sejour-lcd-comment-collecter',
   title: 'Taxe de séjour en LCD : comment la collecter sans erreur en 2026',
+  seoTitle: 'Taxe de séjour LCD : la collecter sans erreur en 2026',
   description: 'La taxe de séjour est due par chaque voyageur. Plateformes vs collecte directe, montant, déclaration : le guide pratique pour ne pas se tromper.',
   keywords: 'taxe séjour LCD, taxe séjour Airbnb 2026, comment collecter taxe séjour, déclaration taxe séjour mairie',
   date: '2026-04-25',

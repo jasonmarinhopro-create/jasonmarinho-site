@@ -1,6 +1,7 @@
 export default {
   slug: 'blog-hote-lcd-strategie-trafic-organique',
   title: 'Blog d\'hôte LCD : la stratégie pour générer du trafic organique en 2026',
+  seoTitle: 'Blog d\'hôte LCD : attirer du trafic Google en 2026',
   description: 'Un blog d\'hôte LCD bien fait peut générer 100-500 visiteurs par mois en SEO local. Voici la stratégie : sujets, fréquence, structure, gain attendu.',
   keywords: 'blog hôte LCD, SEO blog Airbnb, trafic organique location courte durée, contenu hôte 2026',
   date: '2026-04-25',

@@ -1,6 +1,7 @@
 export default {
   slug: 'cheminee-poele-bois-lcd-7-regles-autoriser-hiver-sans-risque',
   title: 'Cheminée et poêle à bois en LCD : 7 règles pour laisser tes voyageurs profiter du feu en sécurité et en règle',
+  seoTitle: 'Cheminée et poêle à bois en LCD : 7 règles',
   description: 'Ramonage, assurance, bois sec, règlement voyageur : 7 règles concrètes pour autoriser cheminée ou poêle à bois en LCD sans risque cet hiver.',
   keywords: 'cheminée LCD, poêle à bois location courte durée, ramonage Airbnb, assurance cheminée LCD, chauffage bois voyageur, bois sec location, sécurité feu Airbnb',
   date: '2026-09-14',

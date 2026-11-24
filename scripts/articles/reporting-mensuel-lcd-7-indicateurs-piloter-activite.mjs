@@ -1,6 +1,7 @@
 export default {
   slug: 'reporting-mensuel-lcd-7-indicateurs-piloter-activite',
   title: 'Reporting mensuel LCD : 7 indicateurs à suivre chaque mois pour piloter ton activité',
+  seoTitle: 'Reporting mensuel LCD : les 7 indicateurs à suivre',
   description: 'Occupation, prix moyen, RevPAR, canaux, avis, coût d\'acquisition, marge : les 7 chiffres à relever chaque mois pour piloter ta location courte durée.',
   keywords: 'reporting mensuel LCD, KPI location courte durée, tableau de bord hôte Airbnb, ADR RevPAR taux occupation, indicateurs performance LCD',
   date: '2026-09-21',

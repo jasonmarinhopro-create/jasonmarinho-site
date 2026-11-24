@@ -1,6 +1,7 @@
 export default {
   slug: 'optimiser-annonce-booking-com-2026-classement',
   title: 'Optimiser son annonce Booking.com en 2026 : 9 leviers de classement',
+  seoTitle: 'Optimiser son annonce Booking.com : 9 leviers en 2026',
   description: 'Booking.com a 9 critères majeurs de classement en 2026. Voici comment les optimiser un par un, avec impact mesuré et ordre de priorité.',
   keywords: 'optimiser Booking 2026, classement Booking.com, ranking annonce Booking, algorithme Booking hôte',
   date: '2026-04-25',
