@@ -10,7 +10,20 @@ export function isHeavyLayoutHref(href: string): boolean {
   return HEAVY_LAYOUTS.some(p => href === p || href.startsWith(p + '/') || href.startsWith(p + '?') || href.startsWith(p + '#'))
 }
 
+// Accueil (24/11/2026, mesuré par l'audit --net et le chronomètre serveur) :
+// la page est à la racine du dashboard, son squelette est au même niveau que
+// le layout commun, donc le préchargement ne s'arrête pas au squelette et
+// calcule l'Accueil entier (home_state, 1,5 à 6,5 s quand la base est
+// chargée) à CHAQUE page ouverte, juste parce que le lien « Accueil » du menu
+// est à l'écran. Pas de préchargement : au clic, le squelette s'affiche.
+const ROOT_PAGES = ['/dashboard']
+
+export function isRootPageHref(href: string): boolean {
+  const path = href.split(/[?#]/)[0].replace(/\/$/, '')
+  return ROOT_PAGES.includes(path)
+}
+
 /** Valeur de `prefetch` pour un <Link> au href calculé */
 export function prefetchFor(href: string): false | undefined {
-  return isHeavyLayoutHref(href) ? false : undefined
+  return isHeavyLayoutHref(href) || isRootPageHref(href) ? false : undefined
 }

@@ -338,8 +338,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     const hrefs = adminMode
       ? adminGroups.flatMap(g => g.items.map(i => i.href))
       : navGroups.flatMap(g => g.items.map(i => i.href))
-          // Mes finances : son layout calcule déjà les chiffres, trop lourd à précharger
-          .filter(h => !h.startsWith('/dashboard/finances'))
+          // Mes finances (layout qui calcule les chiffres) et Accueil (calcul
+          // complet) : trop lourds à précharger (lib/nav/prefetch.ts)
+          .filter(h => prefetchFor(h) !== false)
     const t = window.setTimeout(() => hrefs.forEach(h => { try { router.prefetch(h) } catch { /* ignore */ } }), 150)
     return () => window.clearTimeout(t)
   }, [mobileOpen, adminMode, router])

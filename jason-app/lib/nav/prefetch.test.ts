@@ -11,6 +11,12 @@ describe('liens vers une section au layout lourd', () => {
   it('les autres pages restent préchargées', () => {
     expect(isHeavyLayoutHref('/dashboard/financement')).toBe(false)
     expect(isHeavyLayoutHref('/dashboard/reservations')).toBe(false)
-    expect(prefetchFor('/dashboard')).toBeUndefined()
+    expect(prefetchFor('/dashboard/reservations')).toBeUndefined()
+  })
+
+  it("l'Accueil n'est jamais préchargé (calcul complet à chaque page)", () => {
+    expect(prefetchFor('/dashboard')).toBe(false)
+    expect(prefetchFor('/dashboard?x=1')).toBe(false)
+    expect(prefetchFor('/dashboard/calendrier')).toBeUndefined()
   })
 })
