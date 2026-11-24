@@ -181,6 +181,8 @@
   .cp-r{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 22px;background:var(--cr);border-left:2px dashed rgba(0,76,63,.22);min-width:132px;text-align:center}
   .cp-pct{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2.2rem,4vw,2.8rem);line-height:1;color:var(--g)}
   .cp-r small{font-size:12px;color:var(--tl);margin-top:6px}
+  [data-bf][hidden],[data-nbf][hidden]{display:none!important}
+  .hero .cp.bf{margin-top:24px}
   .cp.bf{background:var(--yl)}
   .cp.bf .cp-r{background:var(--y);border-left-color:rgba(61,46,0,.25)}
   .cp.bf .cp-pct{color:var(--gd)}
@@ -381,14 +383,23 @@
       <span class="lbl"><i class="ph-bold ph-currency-eur"></i>Prix · Outils LCD 2026</span>
       <h1 class="h1"><em>Lodgify</em> prix 2026 : ce que tu vas vraiment payer</h1>
       <p class="lead">Tarif par logement, mensuel ou annuel, frais de réservation, coûts annexes : la grille Lodgify expliquée simplement, avec un calculateur pour savoir en combien de réservations directes l'abonnement est remboursé.</p>
-      <div class="trust"><span><i class="ph-bold ph-house-line"></i>Prix par logement</span><span><i class="ph-bold ph-calendar-check"></i>Essai gratuit 7 jours</span><span><i class="ph-bold ph-tag"></i>-15 % avec JASON15</span></div>
+      <div class="trust"><span><i class="ph-bold ph-house-line"></i>Prix par logement</span><span><i class="ph-bold ph-calendar-check"></i>Essai gratuit 7 jours</span><span><i class="ph-bold ph-tag"></i><span data-nbf hidden>-15 % avec JASON15</span><span data-bf>-65 % avec JASON65</span></span></div>
+      <div class="cp bf" data-bf>
+        <div class="cp-l">
+          <span class="cp-tag"><i class="ph-bold ph-timer"></i> Black Friday · jusqu'au 12 décembre</span>
+          <div class="cp-code"><strong>JASON65</strong><button type="button" class="copy" data-copy="JASON65"><i class="ph ph-copy"></i><span>Copier</span></button></div>
+          <p class="cp-sub">-65 % sur Professional et Ultimate, en paiement annuel ou tous les 2 ans, pour les nouveaux clients. Ajoute le code au paiement. Ensuite, JASON15 reprend.</p>
+          <a class="cp-go" href="https://www.lodgify.com/fr/tarifs/?afmc=uhp" target="_blank" rel="sponsored noopener">Profiter de l'offre<i class="ph-bold ph-arrow-up-right"></i></a><span class="cp-aff">Lien affilié</span>
+        </div>
+        <div class="cp-r"><div class="cp-pct">-65 %</div><small>Black Friday</small></div>
+      </div>
     </div>
     <div class="vcard">
       <div class="k"><i class="ph-bold ph-receipt"></i>La grille en un coup d'œil</div>
       <h2>Par logement et par mois, <em>en annuel</em></h2>
       <div class="plans">
         <div class="pl"><div><b>Starter</b><small>Démarrer, petit budget</small></div><div class="pr">~13 €</div></div>
-        <div class="pl hot"><div><b>Professional<span class="tag">Le plus courant</span></b><small>~28 € avec JASON15</small></div><div class="pr">~33 €</div></div>
+        <div class="pl hot"><div><b>Professional<span class="tag">Le plus courant</span></b><small><span data-nbf hidden>~28 € avec JASON15</span><span data-bf>-65 % avec JASON65</span></small></div><div class="pr">~33 €</div></div>
         <div class="pl"><div><b>Ultimate</b><small>L'offre la plus complète</small></div><div class="pr">~49 €</div></div>
       </div>
       <div class="cta-row"><a href="https://www.lodgify.com/fr/tarifs/?afmc=uhp" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-tag"></i>Grille officielle</a><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Démo gratuite</a></div>
@@ -403,7 +414,7 @@
   <div class="fact"><i class="ph-bold ph-house-line"></i><span>Facturation</span><b>Par logement et par mois</b></div>
   <div class="fact"><i class="ph-bold ph-calendar"></i><span>Annuel ou mensuel</span><b>L'annuel, 15 à 30 % moins cher</b></div>
   <div class="fact"><i class="ph-bold ph-percent"></i><span>Frais de réservation</span><b>1,9 %, supprimés à l'été 2026</b></div>
-  <div class="fact"><i class="ph-bold ph-tag"></i><span>Code promo</span><b><a href="/code-promo-lodgify">-15 % avec JASON15</a></b></div>
+  <div class="fact"><i class="ph-bold ph-tag"></i><span>Code promo</span><b><a href="/code-promo-lodgify"><span data-nbf hidden>-15 % avec JASON15</span><span data-bf>-65 % avec JASON65</span></a></b></div>
 </div>
 
 <section id="grille">
@@ -411,12 +422,12 @@
   <h2>La grille <em>Lodgify 2026</em> en bref</h2>
   <p>Lodgify facture <strong>par logement et par mois</strong>. Le prix baisse nettement si tu paies à l'année. Voici les prix relevés en août 2026 en facturation annuelle :</p>
   <div class="tiers">
-    <div class="ti"><h3>Starter</h3><div class="amt">~13 €<small>/ logement / mois</small></div><p>Démarrer avec un site et la synchronisation des plateformes, petit budget.</p><div class="code no">Code JASON15 non valable</div></div>
-    <div class="ti hot"><span class="pop">Le plus courant</span><h3>Professional</h3><div class="amt">~33 €<small>/ logement / mois</small></div><p>Plus d'automatisations et de fonctions de gestion.</p><div class="code">~28 € avec JASON15</div></div>
-    <div class="ti"><h3>Ultimate</h3><div class="amt">~49 €<small>/ logement / mois</small></div><p>L'offre la plus complète.</p><div class="code">-15 % avec JASON15</div></div>
+    <div class="ti"><h3>Starter</h3><div class="amt">~13 €<small>/ logement / mois</small></div><p>Démarrer avec un site et la synchronisation des plateformes, petit budget.</p><div class="code no"><span data-nbf hidden>Code JASON15 non valable</span><span data-bf>Code JASON65 non valable</span></div></div>
+    <div class="ti hot"><span class="pop">Le plus courant</span><h3>Professional</h3><div class="amt">~33 €<small>/ logement / mois</small></div><p>Plus d'automatisations et de fonctions de gestion.</p><div class="code"><span data-nbf hidden>~28 € avec JASON15</span><span data-bf>-65 % avec JASON65</span></div></div>
+    <div class="ti"><h3>Ultimate</h3><div class="amt">~49 €<small>/ logement / mois</small></div><p>L'offre la plus complète.</p><div class="code"><span data-nbf hidden>-15 % avec JASON15</span><span data-bf>-65 % avec JASON65</span></div></div>
   </div>
   <div class="note"><i class="ph-bold ph-warning"></i><span><strong>Une grille qui bouge souvent.</strong> Lodgify modifie régulièrement ses formules : certains relevés de septembre 2026 en dollars montrent par exemple une grille à quatre formules, et le contenu de chaque formule change aussi. Avant de t'engager, vérifie toujours <a href="https://www.lodgify.com/fr/tarifs/?afmc=uhp" target="_blank" rel="sponsored noopener">la grille officielle Lodgify</a> (lien affilié).</span></div>
-  <div class="note" style="background:#fff;border-color:var(--bd);color:var(--tm)"><i class="ph-bold ph-tag" style="color:var(--g)"></i><span><strong style="color:var(--td)">-15 % avec le code JASON15</strong> sur Professional et Ultimate, en paiement annuel ou tous les 2 ans, jusqu'au 1er octobre 2027 : environ 28 € au lieu de 33 € par logement et par mois en Professional, d'après les prix relevés en août 2026. <a href="/code-promo-lodgify" style="color:var(--g)">Conditions et calcul de l'économie</a>.<span data-bf hidden> <strong style="color:var(--td)">Black Friday :</strong> -65 % avec JASON65 jusqu'au 12 décembre, sur Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients.</span></span></div>
+  <div class="note" style="background:#fff;border-color:var(--bd);color:var(--tm)"><i class="ph-bold ph-tag" style="color:var(--g)"></i><span><span data-bf><strong style="color:var(--td)">Black Friday : -65 % avec le code JASON65</strong> jusqu'au 12 décembre, sur Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. Ensuite, </span><strong style="color:var(--td)">-15 % avec le code JASON15</strong> sur Professional et Ultimate, en paiement annuel ou tous les 2 ans, jusqu'au 1er octobre 2027 : environ 28 € au lieu de 33 € par logement et par mois en Professional, d'après les prix relevés en août 2026. <a href="/code-promo-lodgify" style="color:var(--g)">Conditions et calcul de l'économie</a>.</span></div>
 </section>
 
 <section id="mensuel-annuel">
@@ -424,7 +435,7 @@
   <h2>Mensuel ou annuel : <em>la vraie différence</em></h2>
   <div class="vs2">
     <div class="m"><span>Paiement au mois</span><b>15 à 30 % plus cher</b><p>D'après les grilles publiées. Sur une formule à 33 € en annuel, plusieurs dizaines d'euros de plus par logement et par an.</p></div>
-    <div class="a"><span>Paiement à l'année</span><b>Le meilleur prix</b><p>Et c'est le seul (avec le paiement tous les 2 ans) qui ouvre droit au code JASON15.</p></div>
+    <div class="a"><span>Paiement à l'année</span><b>Le meilleur prix</b><p>Et c'est le seul (avec le paiement tous les 2 ans) qui ouvre droit au code JASON15<span data-bf> et au code Black Friday JASON65</span>.</p></div>
   </div>
   <p>Ma recommandation : utilise l'essai gratuit et, si besoin, un ou deux mois en mensuel pour valider l'outil sur ton logement. Passe à l'annuel une fois convaincu.</p>
 </section>
@@ -471,8 +482,8 @@
     <h3>Vérifier les prix pour ton cas</h3>
     <p>La démo gratuite permet de poser toutes tes questions de prix à un conseiller.</p>
     <div class="cta-row"><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-video-camera"></i>Réserver une démo gratuite</a><a href="https://app.lodgify.com/signup/fr/?afmc=ui1" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-rocket"></i>Essai gratuit 7 jours</a></div>
-    <div class="code"><strong>JASON15</strong><span>-15 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, jusqu'au 1er octobre 2027. <a href="/code-promo-lodgify">Conditions du code</a> · <a href="/partenaires/lodgify">Offre partenaire</a></span></div>
-    <p class="bfl" data-bf hidden><strong>Black Friday :</strong> -65 % avec le code JASON65 jusqu'au 12 décembre, sur Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. <a href="/code-promo-lodgify">Voir l'offre</a></p>
+    <div class="code" data-bf><strong>JASON65</strong><span>-65 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, pour les nouveaux clients, jusqu'au 12 décembre inclus. Ensuite, le code JASON15 reprend. <a href="/code-promo-lodgify">Conditions</a> · <a href="/partenaires/lodgify">Offre partenaire</a></span></div>
+    <div class="code" data-nbf hidden><strong>JASON15</strong><span>-15 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, jusqu'au 1er octobre 2027. <a href="/code-promo-lodgify">Conditions du code</a> · <a href="/partenaires/lodgify">Offre partenaire</a></span></div>
     <p class="aff-n">Liens affiliés : si tu t'abonnes via ces liens, je perçois une commission, sans aucun surcoût pour toi.</p>
   </div>
 </section>
@@ -518,13 +529,21 @@
 
 <div id="footer-mount"></div>
 <script>
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-copy]'); if (!b) return;
+  var sp = b.querySelector('span');
+  var done = function(){ b.classList.add('ok'); sp.textContent = 'Copié'; setTimeout(function(){ b.classList.remove('ok'); sp.textContent = 'Copier'; }, 2000); };
+  if (navigator.clipboard) navigator.clipboard.writeText(b.getAttribute('data-copy')).then(done, function(){});
+});
+</script>
+<script>
 (function(){
   // Black Friday JASON65 (e-mail de Lodgify du 30/10/2026) : du 12/11 au 12/12/2026 inclus
   try {
-    var now = Date.now();
-    if (now >= Date.parse('2026-11-12T00:00:00+01:00') && now < Date.parse('2026-12-13T00:00:00+01:00')) {
-      document.querySelectorAll('[data-bf]').forEach(function(el){ el.hidden = false; });
-    }
+    // Pendant l'offre, JASON65 passe devant ; le 13/12, JASON15 revient seul.
+    var now = Date.now(), on = now >= Date.parse('2026-11-12T00:00:00+01:00') && now < Date.parse('2026-12-13T00:00:00+01:00');
+    document.querySelectorAll('[data-bf]').forEach(function(el){ el.hidden = !on; });
+    document.querySelectorAll('[data-nbf]').forEach(function(el){ el.hidden = on; });
   } catch (e) {}
   function f(){
     var n = Math.max(1, +document.getElementById('c-n').value || 1), p = Math.max(0, +document.getElementById('c-p').value || 0),
