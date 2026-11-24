@@ -64,6 +64,10 @@ export interface HubData {
   weekDays: boolean[]       // lundi à dimanche : au moins une leçon ce jour-là
   todayIndex: number        // 0 = lundi
   actions: HubAction[]
-  stats: { lessons: number; actionsDone: number; goodPct: number | null }
+  stats: { lessons: number; actionsDone: number; goodPct: number | null; good: number; answered: number; minutes: number }
+  /** Leçons faites par jour sur 12 semaines (84 cases, du lundi d'il y a 11 semaines à aujourd'hui) */
+  activity: number[]
+  /** Progression par objectif du catalogue (leçons faites / leçons) */
+  byObjectif: Array<{ key: string; label: string; done: number; total: number }>
   saved: HubSaved[]
 }

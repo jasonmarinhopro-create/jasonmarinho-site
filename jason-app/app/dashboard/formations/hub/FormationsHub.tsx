@@ -15,11 +15,12 @@ import { usePathname } from 'next/navigation'
 import {
   Sun, Path, SquaresFour, UserCircle, ArrowRight, CalendarCheck, MagnifyingGlass,
   Check, Lock, Certificate, BookmarkSimple, NotePencil, BookOpen, Trophy, Target, Sparkle, Clock,
+  Medal, Lightning, Fire,
 } from '@phosphor-icons/react/dist/ssr'
 import InlineStyle from '@/components/ui/InlineStyle'
 import HubTabBar from '@/components/layout/HubTabBar'
 import FormationIcon from '@/components/formations/FormationIcon'
-import { OBJECTIFS } from '@/lib/formations/objectifs'
+import { OBJECTIFS, coverBackground } from '@/lib/formations/objectifs'
 import { HUB_TABS, type HubData, type HubFormation, type HubTab } from './types'
 
 const TAB_ICONS: Record<HubTab, typeof Sun> = { aujourdhui: Sun, parcours: Path, catalogue: SquaresFour, moi: UserCircle }
@@ -463,21 +464,167 @@ function Catalogue({ data, suggest }: { data: HubData; suggest: React.ReactNode 
 
 /* ───────────────────────── Moi ───────────────────────── */
 
+// Niveaux d'apprenant (24/11/2026) : seuils en leçons faites, réels et simples
+const LEVELS = [
+  { min: 0, name: 'Curieux' },
+  { min: 5, name: 'Apprenti' },
+  { min: 20, name: 'Confirmé' },
+  { min: 50, name: 'Expert' },
+  { min: 120, name: 'Maître hôte' },
+]
+
 function Moi({ data }: { data: HubData }) {
   const finished = data.formations.filter(f => f.progress >= 100)
+  const inProgress = data.formations.filter(f => f.progress > 0 && f.progress < 100).sort((x, y) => y.progress - x.progress)
   const doneActions = data.actions.filter(a => a.doneAt)
+  const st = data.stats
   const wins = [
     ...doneActions.map(a => ({ t: a.title, s: a.formationTitle ? `Action faite · ${a.formationTitle}` : 'Action faite' })),
     ...finished.map(f => ({ t: `Formation terminée : ${f.title}`, s: f.objectif })),
   ]
+  const lvlIdx = LEVELS.reduce((acc, l, i) => (st.lessons >= l.min ? i : acc), 0)
+  const lvl = LEVELS[lvlIdx]
+  const nextLvl = LEVELS[lvlIdx + 1]
+  const lvlPct = nextLvl ? Math.round(((st.lessons - lvl.min) / (nextLvl.min - lvl.min)) * 100) : 100
+  const hours = Math.floor(st.minutes / 60)
+  const mins = st.minutes % 60
+  const timeLabel = hours ? `${hours} h${mins ? ` ${String(mins).padStart(2, '0')}` : ''}` : `${mins} min`
+  const weeksActive = Array.from({ length: 12 }, (_, w) => data.activity.slice(w * 7, w * 7 + 7).some(n => n > 0)).filter(Boolean).length
+  const maxDay = Math.max(1, ...data.activity)
+  const weekSums = Array.from({ length: 12 }, (_, w) => data.activity.slice(w * 7, w * 7 + 7).reduce((a, n) => a + n, 0))
+  const totalAct = weekSums.reduce((a, n) => a + n, 0)
+  const thisWeek = weekSums[11]
+  const bestWeek = Math.max(...weekSums)
+  const nextCert = inProgress[0]
+  const nextCertLeft = nextCert ? Math.max(1, Math.round(nextCert.lessons * (1 - nextCert.progress / 100))) : 0
+
+  const milestones = [
+    { t: 'Première leçon', v: st.lessons, goal: 1, Icon: BookOpen },
+    { t: '10 leçons', v: st.lessons, goal: 10, Icon: BookOpen },
+    { t: '50 leçons', v: st.lessons, goal: 50, Icon: Medal },
+    { t: 'Première action', v: st.actionsDone, goal: 1, Icon: Lightning },
+    { t: '5 actions faites', v: st.actionsDone, goal: 5, Icon: Lightning },
+    { t: 'Première formation terminée', v: finished.length, goal: 1, Icon: Certificate },
+    { t: '3 formations terminées', v: finished.length, goal: 3, Icon: Trophy },
+    { t: '25 bonnes réponses', v: st.good, goal: 25, Icon: Target },
+    { t: '4 semaines actives', v: weeksActive, goal: 4, Icon: Fire },
+  ]
+  const unlocked = milestones.filter(m => m.v >= m.goal).length
+
   return (
     <div className="fh-moi">
-      <div className="fh-stats">
-        <div><b>{data.stats.lessons}</b><small>{data.stats.lessons > 1 ? 'leçons faites' : 'leçon faite'}</small></div>
-        <div><b>{finished.length}</b><small>{finished.length > 1 ? 'formations terminées' : 'formation terminée'}</small></div>
-        <div><b>{data.stats.actionsDone}</b><small>{data.stats.actionsDone > 1 ? 'actions faites' : 'action faite'}</small></div>
-        <div><b>{data.stats.goodPct === null ? '-' : `${data.stats.goodPct} %`}</b><small>bonnes réponses</small></div>
+      <section className="fm-hero">
+        <div className="fm-hero-l">
+          <span className="fm-k">{data.firstName ? `Ton parcours, ${data.firstName}` : 'Ton parcours'}</span>
+          <div className="fm-lvl">
+            <span className="fm-lvl-badge"><Medal size={26} weight="fill" /></span>
+            <span>
+              <b>Niveau {lvlIdx + 1} · {lvl.name}</b>
+              <small>{nextLvl ? `Encore ${nextLvl.min - st.lessons} leçon${nextLvl.min - st.lessons > 1 ? 's' : ''} pour devenir ${nextLvl.name}` : 'Le plus haut niveau, bravo.'}</small>
+            </span>
+          </div>
+          <span className="fm-lvl-bar"><i style={{ width: `${lvlPct}%` }} /></span>
+        </div>
+        <div className="fm-hero-stats">
+          <div><b>{timeLabel}</b><small>d&apos;apprentissage</small></div>
+          <div><b>{st.lessons}</b><small>{st.lessons > 1 ? 'leçons faites' : 'leçon faite'}</small></div>
+          <div><b>{finished.length}</b><small>{finished.length > 1 ? 'formations terminées' : 'formation terminée'}</small></div>
+          <div><b>{st.actionsDone}</b><small>{st.actionsDone > 1 ? 'actions faites' : 'action faite'}</small></div>
+          <div><b>{st.goodPct === null ? '-' : `${st.goodPct} %`}</b><small>{st.answered ? `de bonnes réponses (${st.good}/${st.answered})` : 'de bonnes réponses'}</small></div>
+        </div>
+      </section>
+
+      <div className="fm-row">
+        <section className="fh-card fm-act">
+          <div className="fm-act-h"><span className="fh-sec" style={{ marginTop: 0 }}>Ton activité · 12 semaines</span><b>{weeksActive} semaine{weeksActive > 1 ? 's' : ''} active{weeksActive > 1 ? 's' : ''}</b></div>
+          <div className="fm-act-body">
+          <div className="fm-heat-wrap">
+          <div className="fm-days" aria-hidden="true">{['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => <span key={i}>{d}</span>)}</div>
+          <div className="fm-heat" role="img" aria-label={`Leçons faites sur 12 semaines, ${weeksActive} semaines actives`}>
+            {Array.from({ length: 12 }, (_, w) => (
+              <div key={w} className="fm-heat-col">
+                {data.activity.slice(w * 7, w * 7 + 7).map((n, d) => (
+                  <i key={d} title={n ? `${n} leçon${n > 1 ? 's' : ''}` : undefined} className={n === 0 ? '' : n / maxDay > 0.66 ? 'l3' : n / maxDay > 0.33 ? 'l2' : 'l1'} />
+                ))}
+              </div>
+            ))}
+          </div>
+          </div>
+          <div className="fm-act-sum">
+            <div><b>{totalAct}</b><small>leçons en 12 semaines</small></div>
+            <div><b>{thisWeek}</b><small>cette semaine</small></div>
+            <div><b>{bestWeek}</b><small>ta meilleure semaine</small></div>
+          </div>
+          </div>
+          <div className="fm-heat-leg"><span>Moins</span><i /><i className="l1" /><i className="l2" /><i className="l3" /><span>Plus</span></div>
+        </section>
+
+        <section className="fh-card fm-next">
+          <span className="fh-sec" style={{ marginTop: 0 }}>Prochaine attestation</span>
+          {nextCert ? (
+            <Link href={lessonHref(nextCert.slug)} className="fm-next-in">
+              <span className="fm-ring" style={{ ['--p' as string]: `${nextCert.progress}` }}><b>{nextCert.progress} %</b></span>
+              <span className="fh-row-m">
+                <b>{nextCert.title}</b>
+                <small>Plus que {nextCertLeft} leçon{nextCertLeft > 1 ? 's' : ''} environ</small>
+                <span className="fh-more" style={{ marginTop: 6 }}>Continuer <ArrowRight size={13} weight="bold" /></span>
+              </span>
+            </Link>
+          ) : (
+            <div className="fh-empty"><Certificate size={20} /><span>Commence une formation : ton attestation t&apos;attend à la fin.</span></div>
+          )}
+        </section>
       </div>
+
+      {data.byObjectif.length > 0 && (
+        <section className="fh-sect">
+          <div className="fh-sect-h"><span className="fh-sec">Tes compétences</span></div>
+          <div className="fm-skills">
+            {data.byObjectif.map(o => {
+              const pct = o.total ? Math.round((o.done / o.total) * 100) : 0
+              return (
+                <div key={o.key} className="fm-skill">
+                  <span className="fm-skill-cov" style={{ background: coverBackground(OBJ_SLUG[o.key] ?? '', 0.25) }} aria-hidden="true" />
+                  <span className="fh-row-m">
+                    <b>{o.label}</b>
+                    <small>{o.done} leçon{o.done > 1 ? 's' : ''} sur {o.total}</small>
+                    <span className="fh-mini" style={{ marginTop: 6 }}><i style={{ width: `${pct}%` }} /></span>
+                  </span>
+                  <span className="fm-skill-p">{pct} %</span>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      <section className="fh-sect">
+        <div className="fh-sect-h"><span className="fh-sec">Tes jalons · {unlocked} sur {milestones.length}</span></div>
+        <div className="fm-ms">
+          {milestones.map((m, i) => {
+            const ok = m.v >= m.goal
+            return (
+              <div key={i} className={`fm-m${ok ? ' ok' : ''}`}>
+                <span className="fm-m-ic">{ok ? <m.Icon size={20} weight="fill" /> : <Lock size={16} weight="fill" />}</span>
+                <b>{m.t}</b>
+                {ok ? <small>Débloqué</small> : (
+                  <>
+                    <span className="fh-mini"><i style={{ width: `${Math.round((Math.min(m.v, m.goal) / m.goal) * 100)}%` }} /></span>
+                    <small>{Math.min(m.v, m.goal)} / {m.goal}</small>
+                  </>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      {inProgress.length > 0 && (
+        <section className="fh-sect">
+          <div className="fh-sect-h"><span className="fh-sec">En cours · {inProgress.length}</span></div>
+          <div className="fh-cards">{inProgress.slice(0, 4).map(f => <FCard key={f.slug} f={f} sub={f.next ? `Prochaine : ${f.next.title}` : undefined} />)}</div>
+        </section>
+      )}
 
       <div className="fh-moi-grid">
         <div className="fh-col">
@@ -503,7 +650,7 @@ function Moi({ data }: { data: HubData }) {
               ))}
             </div>
           ) : (
-            <div className="fh-empty"><BookmarkSimple size={20} /><span>Garde une leçon ou une formation en favori, ou prends une note : tout se retrouve ici.</span></div>
+            <div className="fh-empty"><BookmarkSimple size={20} /><span>Pendant une leçon, l&apos;icône signet la garde ici ; tes notes aussi.</span></div>
           )}
         </div>
 
@@ -526,6 +673,12 @@ function Moi({ data }: { data: HubData }) {
       </div>
     </div>
   )
+}
+
+// Une formation par objectif, pour la vignette de la compétence
+const OBJ_SLUG: Record<string, string> = {
+  gagner: 'mettre-le-bon-prix-lcd', visible: 'google-my-business-lcd', accueillir: 'livret-accueil-digital',
+  proteger: 'securiser-reservations-eviter-mauvais-voyageurs', fiscalite: 'fiscalite-reglementation-lcd-france-2026', conciergerie: 'creer-conciergerie-lcd',
 }
 
 const CSS = `
@@ -694,6 +847,66 @@ a.fh-hero:hover { transform: translateY(-2px); box-shadow: 0 24px 48px -26px rgb
 .fh-saved-ic { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; display: grid; place-items: center; background: var(--surface-2); color: var(--text-2); }
 .fh-empty { display: flex; gap: 10px; align-items: center; padding: 14px 16px; border-radius: 16px; border: 1px dashed var(--border); color: var(--text-3); font-size: 13px; line-height: 1.45; }
 .fh-empty svg { flex-shrink: 0; }
+
+/* Moi (24/11/2026) */
+.fm-hero { display: grid; grid-template-columns: minmax(260px, .9fr) minmax(0, 1.6fr); gap: 24px; align-items: center; padding: clamp(20px, 2.4vw, 30px); border-radius: 24px; color: #F3F8F5; background: radial-gradient(circle at 100% 0%, rgba(255,213,107,.18) 0 24%, transparent 25%), linear-gradient(155deg, #004C3F, #0B6B57); box-shadow: 0 18px 40px -26px rgba(0,60,45,.8); }
+.fm-hero-l { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.fm-k { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: #FFD56B; }
+.fm-lvl { display: flex; gap: 14px; align-items: center; }
+.fm-lvl-badge { width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; color: #3A2A00; background: radial-gradient(circle at 35% 30%, #FFF1C4, #FFD56B 55%, #E5B53F); box-shadow: 0 10px 24px -10px rgba(255,213,107,.8); animation: fmPop .6s ease both; }
+@keyframes fmPop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+.fm-lvl b { display: block; font-family: var(--font-fraunces), serif; font-weight: 400; font-size: clamp(22px, 2.2vw, 28px); color: #fff; line-height: 1.15; }
+.fm-lvl small { display: block; font-size: 13px; color: rgba(243,248,245,.82); margin-top: 3px; }
+.fm-lvl-bar { display: block; height: 8px; border-radius: 99px; background: rgba(255,255,255,.2); overflow: hidden; max-width: 360px; }
+.fm-lvl-bar i { display: block; height: 100%; background: #FFD56B; border-radius: 99px; }
+.fm-hero-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.fm-hero-stats div { padding: 14px 10px; border-radius: 16px; background: rgba(255,255,255,.10); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); text-align: center; min-width: 0; }
+.fm-hero-stats b { display: block; font-family: var(--font-fraunces), serif; font-weight: 500; font-size: clamp(22px, 2vw, 30px); color: #fff; line-height: 1.1; white-space: nowrap; }
+.fm-hero-stats small { display: block; font-size: 11.5px; color: rgba(243,248,245,.8); line-height: 1.3; margin-top: 4px; overflow-wrap: anywhere; }
+.fm-row { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 16px; align-items: stretch; }
+.fm-act-h { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); }
+.fm-act-h b { color: var(--text); }
+.fm-act-body { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.fm-heat-wrap { display: flex; gap: 6px; min-width: 0; }
+.fm-days { display: grid; grid-template-rows: repeat(7, 22px); gap: 5px; font-size: 10px; color: var(--text-muted); align-items: center; }
+.fm-heat { display: grid; grid-template-columns: repeat(12, 22px); gap: 5px; }
+.fm-act-sum { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 10px; }
+.fm-act-sum div { display: flex; align-items: baseline; gap: 10px; padding: 10px 14px; border-radius: 14px; background: var(--surface-2); }
+.fm-act-sum b { font-family: var(--font-fraunces), serif; font-weight: 500; font-size: 24px; color: var(--text); min-width: 34px; }
+.fm-act-sum small { font-size: 12.5px; color: var(--text-3); }
+.fm-heat-col { display: grid; grid-template-rows: repeat(7, 22px); gap: 5px; }
+.fm-heat i, .fm-heat-leg i { display: block; width: 22px; height: 22px; border-radius: 6px; background: var(--surface-2); }
+.fm-heat i.l1, .fm-heat-leg i.l1 { background: rgba(99,214,131,.35); }
+.fm-heat i.l2, .fm-heat-leg i.l2 { background: rgba(99,214,131,.65); }
+.fm-heat i.l3, .fm-heat-leg i.l3 { background: var(--accent-text); }
+.fm-heat-leg { display: flex; align-items: center; justify-content: flex-end; gap: 4px; font-size: 11px; color: var(--text-3); }
+.fm-heat-leg i { width: 12px; height: 12px; aspect-ratio: auto; border-radius: 3px; }
+.fm-next { justify-content: flex-start; }
+.fm-next .fm-next-in { flex: 1; }
+.fm-next-in { display: flex; gap: 16px; align-items: center; text-decoration: none; }
+.fm-ring { --p: 0; position: relative; width: 104px; height: 104px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; }
+.fm-ring::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(#E5B53F calc(var(--p) * 1%), var(--surface-2) 0); -webkit-mask: radial-gradient(closest-side, transparent 78%, #000 79%); mask: radial-gradient(closest-side, transparent 78%, #000 79%); }
+.fm-ring b { font-family: var(--font-fraunces), serif; font-weight: 500; font-size: 19px; color: var(--text); }
+.fm-skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.fm-skill { display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); }
+.fm-skill-cov { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; }
+.fm-skill-p { font-family: var(--font-fraunces), serif; font-size: 20px; color: var(--text); flex-shrink: 0; }
+.fm-ms { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+@media (min-width: 1500px) { .fm-ms { grid-template-columns: repeat(9, minmax(0, 1fr)); } }
+.fm-m { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 7px; padding: 16px 12px; border-radius: 18px; background: var(--surface); border: 1px dashed var(--border); }
+.fm-m b { font-size: 13px; color: var(--text-2); line-height: 1.3; }
+.fm-m small { font-size: 11.5px; color: var(--text-3); }
+.fm-m .fh-mini { width: 80%; }
+.fm-m-ic { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--text-muted); }
+.fm-m.ok { border: 1px solid rgba(229,181,63,.45); background: linear-gradient(170deg, rgba(255,213,107,.12), var(--surface) 70%); }
+.fm-m.ok b { color: var(--text); }
+.fm-m.ok small { color: #B58A1C; font-weight: 700; }
+[data-theme=light] .fm-m.ok small { color: #8A6A10; }
+.fm-m.ok .fm-m-ic { color: #3A2A00; background: radial-gradient(circle at 35% 30%, #FFF1C4, #FFD56B 55%, #E5B53F); box-shadow: 0 8px 18px -10px rgba(229,181,63,.9); }
+@media (max-width: 1100px) { .fm-hero { grid-template-columns: minmax(0, 1fr); } .fm-row { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 1100px) { .fm-skills { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .fm-hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fm-hero-stats div:first-child { grid-column: span 2; } .fm-skills { grid-template-columns: minmax(0, 1fr); } .fm-heat { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; flex: 1; } .fm-heat-wrap { width: 100%; } .fm-heat-col, .fm-days { gap: 3px; grid-template-rows: repeat(7, auto); } .fm-heat i { width: auto; height: auto; aspect-ratio: 1; } .fm-act-sum { flex-direction: row; min-width: 0; } .fm-act-sum div { flex: 1; flex-direction: column; gap: 0; padding: 8px 10px; } }
+@media (prefers-reduced-motion: reduce) { .fm-lvl-badge { animation: none; } }
 
 .fh-bar { display: none; }
 .fh a:focus-visible, .fh button:focus-visible, .fh input:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }

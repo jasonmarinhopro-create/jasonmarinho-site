@@ -14,7 +14,7 @@ import { weekStartParis, WEEKLY_GOAL } from '@/lib/formations/revision'
 import { parseLesson } from '@/lib/formations/blocks'
 import { lessonSteps } from '@/lib/formations/steps'
 import { computeSignals } from '@/lib/formations/signals'
-import { coverBackground, objectifLabel, objectifOf } from '@/lib/formations/objectifs'
+import { coverBackground, objectifLabel, objectifOf, OBJECTIFS } from '@/lib/formations/objectifs'
 import { PARCOURS } from '@/lib/formations/parcours'
 import { FORMATION_CONTENT_MAP } from '@/app/dashboard/admin/formations/[slug]/contentMap'
 import TitleSetter from '@/components/layout/TitleSetter'
@@ -73,7 +73,7 @@ export default async function FormationsPage({ searchParams }: { searchParams: {
 
   const [
     cached, ufRes, favRes, unlockedSlugs, logRes, logementsRes, contractsRes,
-    sejoursNextRes, sejoursCountRes, answersRes, actionsRes, bookmarksRes, notesRes, totalLessonsRes,
+    sejoursNextRes, sejoursCountRes, answersRes, actionsRes, bookmarksRes, notesRes, totalLessonsRes, activityRes,
   ] = await Promise.all([
     getCachedPublishedFormations(),
     supabase.from('user_formations').select('formation_id, progress, completed_lessons, completed_at').eq('user_id', userId),
@@ -89,6 +89,9 @@ export default async function FormationsPage({ searchParams }: { searchParams: {
     supabase.from('user_lesson_bookmarks').select('formation_slug, formation_title, lesson_id, lesson_title').eq('user_id', userId).order('created_at', { ascending: false }).limit(20),
     supabase.from('user_lesson_notes').select('formation_id, lesson_id, content, updated_at').eq('user_id', userId).neq('content', '').order('updated_at', { ascending: false }).limit(5),
     supabase.from('user_lesson_completion_log').select('id', { count: 'exact', head: true }).eq('user_id', userId),
+    // Activité des 12 dernières semaines (onglet Moi)
+    supabase.from('user_lesson_completion_log').select('completed_at').eq('user_id', userId)
+      .gte('completed_at', new Date(new Date(weekStart).getTime() - 77 * 86400000).toISOString()).limit(1000),
   ])
 
   const active = new Set(ACTIVE_SLUGS)
@@ -195,6 +198,34 @@ export default async function FormationsPage({ searchParams }: { searchParams: {
     if (f) saved.push({ kind: 'note', label: n.content.slice(0, 90), sub: fBySlug.get(f.slug)?.title ?? f.title, href: `/dashboard/formations/${f.slug}?lecon=${n.lesson_id}` })
   }
 
+  // Moi : activité sur 12 semaines, temps d'apprentissage, progression par objectif
+  const actStart = new Date(weekStart).getTime() - 77 * 86400000
+  const activity = new Array(84).fill(0) as number[]
+  for (const r of (activityRes.data ?? []) as Array<{ completed_at: string }>) {
+    const i = Math.floor((new Date(r.completed_at).getTime() - actStart) / 86400000)
+    if (i >= 0 && i < 84) activity[i]++
+  }
+  const minutesOf = (d: string) => {
+    const h = /(\d+)\s*h\s*(\d+)?/i.exec(d)
+    if (h) return Number(h[1]) * 60 + Number(h[2] ?? 0)
+    const m = /(\d+)\s*min/i.exec(d)
+    return m ? Number(m[1]) : 0
+  }
+  let minutes = 0
+  const objDone = new Map<string, { done: number; total: number }>()
+  for (const f of published) {
+    const content = FORMATION_CONTENT_MAP[f.slug]
+    if (!content) continue
+    const done = new Set((ufById.get(f.id)?.completed_lessons ?? []) as number[])
+    const lessons = content.modules.flatMap(m => m.lessons)
+    const k = objectifOf(f.slug)
+    const o = objDone.get(k) ?? { done: 0, total: 0 }
+    o.total += lessons.length
+    for (const l of lessons) if (done.has(l.id)) { o.done++; minutes += minutesOf(l.duration) }
+    objDone.set(k, o)
+  }
+  const byObjectif = OBJECTIFS.map(o => ({ key: o.key, label: o.label, ...(objDone.get(o.key) ?? { done: 0, total: 0 }) })).filter(o => o.total > 0)
+
   const data: HubData = {
     firstName: profile.full_name?.split(' ')[0] ?? '',
     plan,
@@ -212,7 +243,12 @@ export default async function FormationsPage({ searchParams }: { searchParams: {
       lessons: totalLessonsRes.count ?? 0,
       actionsDone: actionsRaw.filter(a => a.done_at).length,
       goodPct: answers.length ? Math.round((answers.filter(a => a.correct).length / answers.length) * 100) : null,
+      good: answers.filter(a => a.correct).length,
+      answered: answers.length,
+      minutes,
     },
+    activity,
+    byObjectif,
     saved,
   }
 

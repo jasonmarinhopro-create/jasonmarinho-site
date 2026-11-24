@@ -15,7 +15,7 @@ import {
   BookmarkSimple, NotePencil, ChatCircle, Certificate, CaretDown, Lightning, Trophy,
   Coins, CalendarBlank, Camera, GoogleLogo, Star, ChatsCircle, FileText, Scales, Calculator,
   ShieldCheck, House, Broom, InstagramLogo, ChartLineUp, Wrench, Key, UsersThree, Lightbulb,
-  Warning, PencilSimpleLine, Crosshair, MapPin, Wallet,
+  Warning, PencilSimpleLine, Crosshair, MapPin, Wallet, Play,
 } from '@phosphor-icons/react/dist/ssr'
 import { stepTheme, type Theme } from '@/lib/formations/illustration'
 import {
@@ -301,36 +301,101 @@ function Fiche(p: {
   const ctaLabel = p.finished ? 'Revoir les leçons' : started ? 'Reprendre' : 'Commencer'
   const ctaSub = p.finished ? null : p.resume ? (started ? p.resume.title : `Première leçon : ${p.resume.title}`) : null
   const nextDur = p.resume ? f.modules.flatMap(m => m.lessons).find(l => l.id === p.resume!.lessonId)?.duration : null
-  const curModule = p.resume ? f.modules.find(m => m.lessons.some(l => l.id === p.resume!.lessonId))?.id : null
+  const curModule = p.resume && started ? f.modules.find(m => m.lessons.some(l => l.id === p.resume!.lessonId))?.id : null
 
+  // Ce que contient la formation (questions, actions par module, aperçu de la 1re leçon)
+  const info = useMemo(() => {
+    let quiz = 0
+    const moduleAction: Record<number, string> = {}
+    let bref: string[] = []
+    let firstQuiz: { question: string; options: string[] } | null = null
+    f.modules.forEach((m, mi) => m.lessons.forEach((l, li) => {
+      const bs = parseLesson(l.content)
+      for (const x of bs) {
+        if (x.type === 'quiz') {
+          quiz++
+          if (!firstQuiz && mi === 0 && li === 0) firstQuiz = { question: x.question, options: [x.options.find(o => o.correct)!.text, ...x.options.filter(o => !o.correct).map(o => o.text)].slice(0, 2) }
+        }
+        if (x.type === 'action') moduleAction[m.id] = x.title
+        if (x.type === 'bref' && mi === 0 && li === 0) bref = x.items.slice(0, 3)
+      }
+    }))
+    return { quiz, moduleAction, bref, firstQuiz: firstQuiz as { question: string; options: string[] } | null }
+  }, [f])
+  const first = f.modules[0]?.lessons[0]
+
+  const start = () => (p.finished ? p.onLesson(f.modules[0].lessons[0].id) : p.onStart())
   const cta = (
-    <button type="button" className="fv-btn" onClick={() => (p.finished ? p.onLesson(f.modules[0].lessons[0].id) : p.onStart())}>
+    <button type="button" className="fv-btn" onClick={start}>
       {ctaLabel}{nextDur && !p.finished ? ` · ${nextDur}` : ''}
     </button>
   )
+  const strip = (t: string) => t.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1')
 
   return (
-    <div className="fv-fiche">
-      <div className="fv-cover" style={{ background: p.cover }}>
-        <div className="fv-cover-nav">
-          <Link href="/dashboard/formations" className="fv-round" aria-label="Toutes les formations"><ArrowLeft size={17} weight="bold" /></Link>
-          <button type="button" className={`fv-round${p.favorite ? ' on' : ''}`} onClick={p.onFav} aria-label={p.favorite ? 'Retirer des favoris' : 'Garder en favori'} aria-pressed={p.favorite}>
-            <BookmarkSimple size={17} weight={p.favorite ? 'fill' : 'bold'} />
-          </button>
-        </div>
-        <span className="fv-cover-tag">{objectifLabel(p.slug)} · {f.level}</span>
-        <h1 className="fv-cover-t">{f.title}</h1>
-      </div>
-
-      <div className="fv-fiche-grid">
-        <div className="fv-fiche-main">
-          <h1 className="fv-mobile-t">{f.title}</h1>
-          <div className="fv-metas">
-            <span><Clock size={14} /> {f.duration}</span>
-            <span><BookOpen size={14} /> {p.total} leçons</span>
-            {p.actionsTotal > 0 && <span><Target size={14} /> {p.actionsTotal} actions</span>}
+    <div className="fv-fiche fx">
+      <InlineStyle css={FX_CSS} />
+      <section className="fx-hero" style={{ background: p.cover }}>
+        <div className="fx-hero-shade" aria-hidden="true" />
+        <div className="fx-hero-in">
+          <div className="fx-hero-l">
+            <div className="fv-cover-nav">
+              <Link href="/dashboard/formations" className="fv-round" aria-label="Toutes les formations"><ArrowLeft size={17} weight="bold" /></Link>
+              <button type="button" className={`fv-round fx-mob-only${p.favorite ? ' on' : ''}`} onClick={p.onFav} aria-label={p.favorite ? 'Retirer des favoris' : 'Garder en favori'} aria-pressed={p.favorite}>
+                <BookmarkSimple size={17} weight={p.favorite ? 'fill' : 'bold'} />
+              </button>
+            </div>
+            <span className="fv-cover-tag">{objectifLabel(p.slug)} · {f.level}</span>
+            <h1 className="fx-title">{f.title}</h1>
+            <p className="fx-lead">{f.description}</p>
+            <div className="fx-chips">
+              <span><Clock size={14} weight="bold" /> {f.duration}</span>
+              <span><BookOpen size={14} weight="bold" /> {p.total} leçons</span>
+              {info.quiz > 0 && <span><Target size={14} weight="bold" /> {info.quiz} questions</span>}
+              {p.actionsTotal > 0 && <span><Lightning size={14} weight="fill" /> {p.actionsTotal} actions</span>}
+              <span><Certificate size={14} weight="fill" /> Attestation</span>
+            </div>
+            <div className="fx-cta">
+              <button type="button" className="fx-ybtn" onClick={start}>
+                {started && !p.finished ? <ArrowRight size={17} weight="bold" /> : <Play size={16} weight="fill" />}
+                {ctaLabel}{nextDur && !p.finished ? ` · ${nextDur}` : ''}
+              </button>
+              <a href="#programme" className="fx-ghost">Voir le programme</a>
+            </div>
+            {started && (
+              <div className="fx-prog">
+                <span className="fx-prog-bar"><i style={{ width: `${p.progress}%` }} /></span>
+                <b>{p.progress} %</b>
+              </div>
+            )}
           </div>
-          <p className="fv-promise">{f.description}</p>
+
+          {first && (
+            <div className="fx-preview" aria-hidden="true">
+              <div className="fx-pv-top"><i className="d" /><i className="n" /><i /><i /><i /></div>
+              <span className="fx-pv-k">Leçon 1 · {first.duration}</span>
+              <b className="fx-pv-t">{first.title}</b>
+              {info.bref.length > 0 && (
+                <div className="fx-pv-bref">
+                  <span>En bref</span>
+                  <ol>{info.bref.map((x, i) => <li key={i}>{strip(x)}</li>)}</ol>
+                </div>
+              )}
+              {info.firstQuiz && (
+                <div className="fx-pv-quiz">
+                  <span><Target size={11} weight="fill" /> Vérifie</span>
+                  <b>{info.firstQuiz.question}</b>
+                  {info.firstQuiz.options.map((o, i) => <em key={i} className={i === 0 ? 'on' : ''}>{o}</em>)}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <div className="fx-grid">
+        <div className="fx-main">
+          <h1 className="fv-mobile-t">{f.title}</h1>
 
           {p.finished && (
             <button type="button" className="fv-done-banner" onClick={p.onFin}>
@@ -340,78 +405,114 @@ function Fiche(p: {
             </button>
           )}
 
-          {started && !p.finished && (
-            <div className="fv-goalcard">
-              <div className="fv-goalrow"><span>{p.objectif ? `Ton objectif : ${p.objectif}` : 'Ta progression'}</span><b>{p.progress} %</b></div>
-              <span className="fv-mini"><i style={{ width: `${p.progress}%` }} /></span>
-            </div>
-          )}
-
-          <span className="fv-sec">Tu sauras</span>
-          <ul className="fv-can">{f.objectifs.map((o, i) => <li key={i}><CheckCircle size={19} weight="fill" />{o}</li>)}</ul>
-
-          <span className="fv-sec">Programme · {f.modules.length} modules</span>
-          <div className="fv-mods">
-            {f.modules.map(m => {
-              const doneN = m.lessons.filter(l => p.completed.includes(l.id)).length
-              const allDone = doneN === m.lessons.length
-              const isCur = m.id === curModule && !p.finished
-              const isOpen = open === m.id
-              return (
-                <div key={m.id} className={`fv-mod${isCur ? ' cur' : ''}`}>
-                  <button type="button" className="fv-mod-h" onClick={() => setOpen(isOpen ? null : m.id)} aria-expanded={isOpen}>
-                    <span className={`fv-nd${allDone ? ' d' : isCur ? ' n' : ''}`}>{allDone ? <Check size={13} weight="bold" /> : m.id}</span>
-                    <span className="fv-mod-m">
-                      <b>{m.title}</b>
-                      <small>
-                        {allDone ? `${m.lessons.length} sur ${m.lessons.length}` : isCur ? `Leçon ${doneN + 1} sur ${m.lessons.length} · en cours` : `${m.lessons.length} leçon${m.lessons.length > 1 ? 's' : ''} · ${m.duration}`}
-                        {p.actions[m.id]?.when === 'done' ? ' · action faite' : ''}
-                      </small>
-                    </span>
-                    <CaretDown size={14} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s', flexShrink: 0 }} />
-                  </button>
-                  {isOpen && (
-                    <div className="fv-mod-l">
-                      {m.lessons.map(l => (
-                        <button key={l.id} type="button" onClick={() => p.onLesson(l.id)} className="fv-mod-lesson">
-                          <span className={`fv-dot${p.completed.includes(l.id) ? ' d' : ''}`}>{p.completed.includes(l.id) && <Check size={9} weight="bold" />}</span>
-                          <span style={{ flex: 1 }}>{l.title}</span>
-                          <small>{l.duration}</small>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+          <section>
+            <h2 className="fx-h">Ce que tu sauras faire</h2>
+            <div className="fx-can">
+              {f.objectifs.map((o, i) => (
+                <div key={i} className="fx-can-i" style={{ animationDelay: `${i * 60}ms` }}>
+                  <span className="fx-can-n"><CheckCircle size={20} weight="fill" /></span>
+                  <span>{o}</span>
                 </div>
-              )
-            })}
-          </div>
+              ))}
+            </div>
+          </section>
 
-          {p.finished && p.recommendedNext.length > 0 && (
-            <>
-              <span className="fv-sec">Pour aller plus loin</span>
-              <div className="fv-mods">
-                {p.recommendedNext.map(r => (
-                  <Link key={r.slug} href={`/dashboard/formations/${r.slug}`} className="fv-mod-h" style={{ textDecoration: 'none' }}>
-                    <span className="fv-cov" style={{ background: coverBackground(r.slug, 0.22) }} />
-                    <span className="fv-mod-m"><b>{r.title}</b>{r.reason && <small>{r.reason}</small>}</span>
-                    <ArrowRight size={15} />
+          <section>
+            <h2 className="fx-h">Comment tu vas apprendre</h2>
+            <div className="fx-how">
+              <div><span className="fx-how-ic"><BookOpen size={20} weight="duotone" /></span><b>Lire l&apos;essentiel</b><small>Des leçons courtes qui commencent par « En bref »</small></div>
+              <div><span className="fx-how-ic"><Target size={20} weight="duotone" /></span><b>Vérifier</b><small>{info.quiz > 0 ? `${info.quiz} questions pour ancrer ce que tu lis` : 'Des questions pour ancrer ce que tu lis'}</small></div>
+              <div><span className="fx-how-ic"><Lightning size={20} weight="duotone" /></span><b>Passer à l&apos;action</b><small>{p.actionsTotal > 0 ? `${p.actionsTotal} actions à faire dans l'app` : 'Une action concrète à chaque étape'}</small></div>
+              <div><span className="fx-how-ic"><Certificate size={20} weight="duotone" /></span><b>Ton attestation</b><small>À ton nom, à ajouter à ton profil LinkedIn</small></div>
+            </div>
+          </section>
+
+          <section id="programme" className="fx-anchor">
+            <h2 className="fx-h">Programme <small>{f.modules.length} modules · {p.total} leçons</small></h2>
+            <div className="fx-tl">
+              {f.modules.map(m => {
+                const doneN = m.lessons.filter(l => p.completed.includes(l.id)).length
+                const allDone = doneN === m.lessons.length
+                const isCur = m.id === curModule && !p.finished
+                const isOpen = open === m.id || (open === null && (isCur || (!started && m.id === f.modules[0].id)))
+                const act = info.moduleAction[m.id]
+                return (
+                  <div key={m.id} className={`fx-mod${isCur ? ' cur' : ''}${allDone ? ' done' : ''}`}>
+                    <span className="fx-mod-n">{allDone ? <Check size={16} weight="bold" /> : m.id}</span>
+                    <div className="fx-mod-card">
+                      <button type="button" className="fx-mod-h" onClick={() => setOpen(isOpen ? -1 : m.id)} aria-expanded={isOpen}>
+                        <span className="fx-mod-m">
+                          <small className="fx-mod-k">Module {m.id}{isCur ? ' · en cours' : allDone ? ' · terminé' : ''}</small>
+                          <b>{m.title}</b>
+                          <small>{m.lessons.length} leçon{m.lessons.length > 1 ? 's' : ''} · {m.duration}{doneN > 0 && !allDone ? ` · ${doneN} faite${doneN > 1 ? 's' : ''}` : ''}</small>
+                        </span>
+                        <span className="fx-mod-bar" aria-hidden="true"><i style={{ width: `${Math.round((doneN / m.lessons.length) * 100)}%` }} /></span>
+                        <CaretDown size={15} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .2s', flexShrink: 0 }} />
+                      </button>
+                      {isOpen && (
+                        <div className="fx-mod-l">
+                          {m.lessons.map(l => {
+                            const d = p.completed.includes(l.id)
+                            return (
+                              <button key={l.id} type="button" onClick={() => p.onLesson(l.id)} className={`fx-les${d ? ' d' : ''}`}>
+                                <span className="fx-les-ic">{d ? <Check size={11} weight="bold" /> : <Play size={10} weight="fill" />}</span>
+                                <span style={{ flex: 1, minWidth: 0 }}>{l.title}</span>
+                                <small>{l.duration}</small>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      )}
+                      {act && (
+                        <div className={`fx-mod-act${p.actions[m.id]?.when === 'done' ? ' d' : ''}`}>
+                          <Lightning size={14} weight="fill" />
+                          <span><b>{p.actions[m.id]?.when === 'done' ? 'Action faite' : 'Action du module'}</b> · {act}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+
+          {p.recommendedNext.length > 0 && (
+            <section>
+              <h2 className="fx-h">{p.finished ? 'Pour aller plus loin' : 'Va bien avec'}</h2>
+              <div className="fx-next">
+                {p.recommendedNext.slice(0, 3).map(r => (
+                  <Link key={r.slug} href={`/dashboard/formations/${r.slug}`} className="fx-next-c">
+                    <span className="fx-next-cov" style={{ background: coverBackground(r.slug, 0.6) }} />
+                    <span className="fx-next-b"><small>{objectifLabel(r.slug)}</small><b>{r.title}</b>{r.reason && <em>{r.reason}</em>}</span>
                   </Link>
                 ))}
               </div>
-            </>
+            </section>
           )}
         </div>
 
-        <aside className="fv-fiche-side">
-          <div className="fv-panel">
-            {started && <div className="fv-goalrow"><span>{p.objectif ? `Objectif : ${p.objectif}` : 'Progression'}</span><b>{p.progress} %</b></div>}
-            {started && <span className="fv-mini"><i style={{ width: `${p.progress}%` }} /></span>}
+        <aside className="fx-side">
+          <div className="fx-panel">
+            <div className="fx-ring" style={{ ['--p' as string]: `${p.progress}` }}>
+              <b>{p.progress} %</b><small>{p.finished ? 'terminée' : started ? 'fait' : 'à découvrir'}</small>
+            </div>
+            {p.objectif && <div className="fx-obj"><Target size={14} weight="fill" /> {p.objectif}</div>}
             {cta}
             {ctaSub && <small className="fv-muted" style={{ textAlign: 'center' }}>{ctaSub}</small>}
-            <div className="fv-metas small">
-              {p.actionsTotal > 0 && <span><Target size={13} /> {p.actionsDone} action{p.actionsDone > 1 ? 's' : ''} sur {p.actionsTotal}</span>}
-              {p.score.total > 0 && <span><Check size={13} /> {p.score.good} bonne{p.score.good > 1 ? 's' : ''} réponse{p.score.good > 1 ? 's' : ''} sur {p.score.total}</span>}
+            <div className="fx-side-stats">
+              <span><b>{p.completed.length}/{p.total}</b><small>leçons</small></span>
+              <span><b>{p.actionsDone}/{p.actionsTotal}</b><small>actions</small></span>
+              <span><b>{p.score.total > 0 ? `${Math.round((p.score.good / p.score.total) * 100)} %` : '-'}</b><small>réussite</small></span>
             </div>
+            <button type="button" className={`fx-fav${p.favorite ? ' on' : ''}`} onClick={p.onFav} aria-pressed={p.favorite}>
+              <BookmarkSimple size={15} weight={p.favorite ? 'fill' : 'regular'} /> {p.favorite ? 'Dans tes favoris' : 'Garder en favori'}
+            </button>
+          </div>
+          <div className="fx-cert" aria-hidden="true">
+            <span className="fx-cert-k">Attestation de suivi</span>
+            <b>{f.title}</b>
+            <small>Délivrée à ton nom quand tu termines la formation</small>
+            <span className="fx-cert-seal"><Certificate size={20} weight="fill" /></span>
           </div>
         </aside>
       </div>
@@ -423,6 +524,137 @@ function Fiche(p: {
     </div>
   )
 }
+
+const FX_CSS = `
+.fx { gap: 26px; }
+@media (max-width: 767px) { .fx { gap: 0; } }
+.fx-hero { position: relative; border-radius: 28px; overflow: hidden; min-height: 400px; display: flex; }
+.fx-hero-shade { position: absolute; inset: 0; background: linear-gradient(100deg, rgba(0,30,24,.78) 0%, rgba(0,30,24,.55) 45%, rgba(0,30,24,.10) 100%); }
+.fx-hero-in { position: relative; flex: 1; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr); gap: 32px; align-items: center; padding: 22px clamp(22px, 3vw, 40px) clamp(26px, 3vw, 40px); }
+.fx-hero-l { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.fx-hero-l .fv-cover-nav { margin-bottom: 4px; }
+.fx-title { font-family: var(--font-fraunces), serif; font-weight: 400; font-size: clamp(32px, 3.6vw, 52px); line-height: 1.05; letter-spacing: -.5px; color: #fff; margin: 0; max-width: 20ch; }
+.fx-lead { margin: 0; font-size: 16px; line-height: 1.6; color: rgba(255,255,255,.88); max-width: 58ch; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.fx-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.fx-chips span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; background: rgba(255,255,255,.14); color: #fff; font-size: 12.5px; font-weight: 600; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+.fx-cta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 6px; }
+.fx-ybtn { display: inline-flex; align-items: center; gap: 9px; padding: 15px 26px; border-radius: 16px; border: 0; background: #FFD56B; color: #2A2100; font: inherit; font-weight: 700; font-size: 15.5px; cursor: pointer; box-shadow: 0 14px 30px -14px rgba(255,213,107,.8); transition: transform .15s, box-shadow .15s; }
+.fx-ybtn:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -14px rgba(255,213,107,.9); }
+.fx-ghost { display: inline-flex; align-items: center; padding: 14px 20px; border-radius: 16px; color: #fff; font-weight: 600; font-size: 14.5px; text-decoration: none; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.45); }
+.fx-ghost:hover { background: rgba(255,255,255,.1); }
+.fx-prog { display: flex; align-items: center; gap: 12px; max-width: 420px; }
+.fx-prog-bar { flex: 1; height: 8px; border-radius: 99px; background: rgba(255,255,255,.22); overflow: hidden; }
+.fx-prog-bar i { display: block; height: 100%; background: #FFD56B; border-radius: 99px; }
+.fx-prog b { color: #fff; font-size: 14px; }
+.fx-preview { justify-self: end; width: 100%; max-width: 340px; border-radius: 22px; padding: 16px; background: var(--bg); color: var(--text); box-shadow: 0 30px 60px -28px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.12); transform: rotate(2deg); animation: fxFloat 6s ease-in-out infinite; display: flex; flex-direction: column; gap: 10px; }
+@keyframes fxFloat { 0%, 100% { transform: rotate(2deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-8px); } }
+.fx-pv-top { display: flex; gap: 4px; }
+.fx-pv-top i { flex: 1; height: 5px; border-radius: 99px; background: var(--surface-2); }
+.fx-pv-top i.d { background: var(--accent-text); }
+.fx-pv-top i.n { background: linear-gradient(90deg, var(--accent-text) 50%, var(--surface-2) 50%); }
+.fx-pv-k { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text); }
+.fx-pv-t { font-family: var(--font-fraunces), serif; font-weight: 400; font-size: 19px; line-height: 1.2; }
+.fx-pv-bref { border-radius: 14px; padding: 11px 13px; background: var(--accent-bg); border: 1px solid var(--accent-border); }
+.fx-pv-bref span { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 6px; }
+.fx-pv-bref ol { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; line-height: 1.45; color: var(--text); }
+.fx-pv-quiz { display: flex; flex-direction: column; gap: 6px; border-radius: 14px; padding: 11px 13px; border: 1.5px solid var(--accent-border); }
+.fx-pv-quiz span { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text); }
+.fx-pv-quiz b { font-size: 13px; line-height: 1.35; }
+.fx-pv-quiz em { font-style: normal; font-size: 12px; padding: 7px 10px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text-2); }
+.fx-pv-quiz em.on { border: 1.5px solid var(--success-1); background: var(--success-bg); color: var(--text); }
+.fx-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: start; }
+.fx-main { display: flex; flex-direction: column; gap: 34px; min-width: 0; }
+.fx-main section { display: flex; flex-direction: column; gap: 14px; }
+.fx-h { margin: 0; font-family: var(--font-fraunces), serif; font-weight: 400; font-size: clamp(22px, 2vw, 28px); color: var(--text); display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.fx-h small { font-family: inherit; font-size: 13px; color: var(--text-3); font-weight: 500; }
+.fx-anchor { scroll-margin-top: calc(var(--header-h) + 16px); }
+.fx-can { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 10px; }
+.fx-can-i { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); font-size: 14.5px; line-height: 1.5; color: var(--text); animation: fxIn .4s ease both; }
+.fx-can-n { color: var(--success-1); flex-shrink: 0; margin-top: 1px; }
+@keyframes fxIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.fx-how { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; counter-reset: h; }
+.fx-how div { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 18px; background: linear-gradient(160deg, var(--surface), var(--bg)); border: 1px solid var(--border); }
+.fx-how div::after { counter-increment: h; content: counter(h); position: absolute; top: 12px; right: 14px; font-family: var(--font-fraunces), serif; font-size: 28px; line-height: 1; color: var(--border); }
+.fx-how-ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-bg); color: var(--accent-text); margin-bottom: 4px; }
+.fx-how b { font-size: 14.5px; color: var(--text); }
+.fx-how small { font-size: 12.5px; color: var(--text-3); line-height: 1.45; }
+.fx-tl { display: flex; flex-direction: column; }
+.fx-mod { position: relative; display: flex; gap: 16px; padding-bottom: 14px; }
+.fx-mod::before { content: ""; position: absolute; left: 21px; top: 46px; bottom: 0; width: 2px; background: var(--border); }
+.fx-mod:last-child::before { display: none; }
+.fx-mod.done::before { background: var(--accent-text); }
+.fx-mod-n { width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0; display: grid; place-items: center; font-family: var(--font-fraunces), serif; font-size: 19px; background: var(--surface); border: 1px solid var(--border); color: var(--text-2); }
+.fx-mod.done .fx-mod-n { background: var(--accent-text); border: 1px solid var(--accent-text); color: var(--bg); }
+.fx-mod.cur .fx-mod-n { background: #FFD56B; border: 1px solid #FFD56B; color: #2A2100; box-shadow: 0 0 0 5px rgba(255,213,107,.22); }
+.fx-mod-card { flex: 1; min-width: 0; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); overflow: hidden; transition: border .15s, box-shadow .15s; }
+.fx-mod-card:hover { border: 1px solid var(--accent-border); }
+.fx-mod.cur .fx-mod-card { border: 1px solid var(--accent-border); box-shadow: 0 18px 36px -28px rgba(0,60,45,.8); }
+.fx-mod-h { width: 100%; display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 0; background: none; font: inherit; color: var(--text-2); text-align: left; cursor: pointer; }
+.fx-mod-m { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.fx-mod-k { font-size: 10.5px !important; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text) !important; }
+.fx-mod-m b { font-size: 15.5px; color: var(--text); line-height: 1.3; }
+.fx-mod-m small { font-size: 12.5px; color: var(--text-3); }
+.fx-mod-bar { width: 90px; height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; flex-shrink: 0; }
+.fx-mod-bar i { display: block; height: 100%; background: var(--accent-text); }
+.fx-mod-l { display: flex; flex-direction: column; padding: 0 12px 10px; border-top: 1px solid var(--border); }
+.fx-les { display: flex; gap: 12px; align-items: center; padding: 10px 6px; border: 0; background: none; font: inherit; font-size: 14px; color: var(--text-2); text-align: left; cursor: pointer; border-radius: 10px; }
+.fx-les:hover { background: var(--accent-bg); color: var(--text); }
+.fx-les small { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.fx-les-ic { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; background: var(--surface-2); color: var(--text-3); }
+.fx-les.d .fx-les-ic { background: var(--accent-text); color: var(--bg); }
+.fx-mod-act { display: flex; align-items: flex-start; gap: 8px; padding: 10px 16px; font-size: 13px; line-height: 1.45; color: var(--text-2); background: rgba(255,213,107,.10); border-top: 1px dashed rgba(229,181,63,.45); }
+.fx-mod-act svg { color: #E5B53F; flex-shrink: 0; margin-top: 2px; }
+.fx-mod-act b { color: var(--text); }
+.fx-mod-act.d { background: var(--success-bg); }
+.fx-mod-act.d svg { color: var(--success-1); }
+.fx-next { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.fx-next-c { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--surface); border: 1px solid var(--border); text-decoration: none; transition: transform .2s, box-shadow .2s; }
+.fx-next-c:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -24px rgba(0,0,0,.45); }
+.fx-next-cov { display: block; height: 96px; }
+.fx-next-b { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px 14px; }
+.fx-next-b small { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent-text); }
+.fx-next-b b { font-size: 14px; color: var(--text); line-height: 1.3; }
+.fx-next-b em { font-style: normal; font-size: 12px; color: var(--text-3); }
+.fx-side { position: sticky; top: calc(var(--header-h) + 16px); display: flex; flex-direction: column; gap: 14px; }
+.fx-panel { display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 20px; border-radius: 22px; background: var(--surface); border: 1px solid var(--border); box-shadow: 0 24px 48px -36px rgba(0,0,0,.5); }
+.fx-ring { --p: 0; position: relative; align-self: center; width: 118px; height: 118px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.fx-ring::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(var(--accent-text) calc(var(--p) * 1%), var(--surface-2) 0); -webkit-mask: radial-gradient(closest-side, transparent 80%, #000 81%); mask: radial-gradient(closest-side, transparent 80%, #000 81%); }
+.fx-ring b { font-family: var(--font-fraunces), serif; font-weight: 500; font-size: 26px; color: var(--text); line-height: 1; }
+.fx-ring small { font-size: 11.5px; color: var(--text-3); margin-top: 3px; }
+.fx-obj { display: flex; gap: 7px; align-items: flex-start; font-size: 13px; line-height: 1.4; color: var(--text-2); padding: 9px 11px; border-radius: 12px; background: var(--accent-bg); }
+.fx-obj svg { color: var(--accent-text); flex-shrink: 0; margin-top: 2px; }
+.fx-side-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.fx-side-stats span { display: flex; flex-direction: column; align-items: center; padding: 9px 4px; border-radius: 12px; background: var(--surface-2); }
+.fx-side-stats b { font-size: 15px; color: var(--text); }
+.fx-side-stats small { font-size: 11px; color: var(--text-3); }
+.fx-fav { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: none; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--text-2); cursor: pointer; }
+.fx-fav.on { color: var(--accent-text); border: 1px solid var(--accent-border); background: var(--accent-bg); }
+.fx-cert { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 18px 18px 20px; border-radius: 10px; background: #FBFAF6; color: #14201C; box-shadow: inset 0 0 0 2px #004C3F, inset 0 0 0 7px #FBFAF6, inset 0 0 0 8px rgba(0,76,63,.35), 0 20px 40px -30px rgba(0,0,0,.6); transform: rotate(-1.2deg); }
+.fx-cert-k { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #8A6A10; }
+.fx-cert b { font-family: var(--font-fraunces), serif; font-weight: 500; font-size: 17px; line-height: 1.2; padding-right: 34px; }
+.fx-cert small { font-size: 11.5px; color: #4A5A54; }
+.fx-cert-seal { position: absolute; right: 14px; bottom: 14px; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; color: #3A2A00; background: radial-gradient(circle at 35% 30%, #FFF1C4, #FFD56B 55%, #E5B53F); }
+.fx-mob-only { display: none; }
+@media (max-width: 1180px) { .fx-hero-in { grid-template-columns: minmax(0, 1fr); } .fx-preview { display: none; } .fx-how { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 1000px) { .fx-grid { grid-template-columns: minmax(0, 1fr); } .fx-side { position: static; } }
+@media (max-width: 767px) {
+  .fx-hero { border-radius: 0; min-height: 0; }
+  .fx-hero-in { padding: 14px 16px 26px; }
+  .fx-hero-shade { background: rgba(0,30,24,.62); }
+  .fx-title, .fx-cta, .fx-prog { display: none; }
+  .fx-lead { font-size: 14px; -webkit-line-clamp: 2; }
+  .fx-mob-only { display: grid; }
+  .fx-grid { margin-top: -20px; position: relative; background: var(--bg); border-radius: 22px 22px 0 0; padding: 18px 16px 0; gap: 24px; }
+  .fx-main { gap: 26px; }
+  .fx-side { display: none; }
+  .fx-how { grid-template-columns: minmax(0, 1fr); }
+  .fx-mod-bar { display: none; }
+  .fx-mod { gap: 10px; }
+  .fx-mod-n { width: 36px; height: 36px; font-size: 16px; }
+  .fx-mod::before { left: 17px; top: 38px; }
+}
+@media (prefers-reduced-motion: reduce) { .fx-preview, .fx-can-i { animation: none; } .fx-ybtn, .fx-next-c { transition: none; } }
+`
 
 /* ─────────────────────────── Bilan de départ ─────────────────────────── */
 
