@@ -1,50 +1,30 @@
 'use client'
 
-import Link from 'next/link'
-import { useState, useTransition, useEffect, useRef } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Robot, Trash, ArrowClockwise, CheckCircle, XCircle, MagnifyingGlass,
+  Robot, Trash, CheckCircle, XCircle, MagnifyingGlass,
   GraduationCap, Lightning, Users, X, Heart,
-  House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
-  CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
-  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase, Camera, Sparkle, Wrench,
+  House, SpinnerGap,
+  Crown, Star, Pulse, Bell, DownloadSimple, Briefcase, Camera, Sparkle, Wrench,
   UserPlus, SquaresFour, Rows,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   adminCreateAccount, changeUserPlan, deleteUser, deleteAllBots,
-  getMemberDetails, toggleContributor, toggleInvestor, updateMemberName,
+  toggleContributor, toggleInvestor, updateMemberName,
 } from '../actions'
 import AdminHero from '../_ui/AdminHero'
+import { HostCard, HostPanel, HOST_CSS, hostLevel, type HostView } from './HostCards'
+import InlineStyle from '@/components/ui/InlineStyle'
 import { sinceLabel, activityLevel } from '@/lib/admin/activity'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-interface UserFormation {
-  id: string; progress: number; enrolled_at: string
-  formation: { id: string; title: string; slug: string } | null
-}
-
-interface Member {
-  id: string; email: string; full_name: string | null
-  role: string; driing_status: string; plan: string
-  is_contributor: boolean; is_investor: boolean | null
-  is_photographer?: boolean; is_cleaner?: boolean; is_depannage?: boolean
-  created_at: string
-  user_formations: UserFormation[]
-  /** Dernière visite (visite notée par l'app, connexion ou action) */
-  last_seen_at?: string | null
-  last_action?: { at: string; label: string } | null
+type Member = HostView & {
+  driing_status: string
   /** Au moins un logement (19/11/2026, filtre « sans logement » de la Vue d'ensemble) */
   has_logement?: boolean
-}
-
-interface MemberDetails {
-  voyageurs: number; favorites: number; customizations: number
-  signalements: number; suggestions: number; sejours: number
-  communityGroupsCount: number; communityTotalReach: number
-  auditsCount: number; auditsCompleted: number
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -71,44 +51,9 @@ function ActivityLine({ m }: { m: Member }) {
 }
 
 /** Encadré des cartes et du panneau : inscription, dernière visite, dernière action */
-function ActivityStrip({ m, style }: { m: Member; style?: React.CSSProperties }) {
-  const now = new Date()
-  const level = activityLevel(m.last_seen_at ?? null, now)
-  const color = LEVEL_COLOR[level]
-  return (
-    <div style={{ ...s.strip, ...style }}>
-      <div style={{ minWidth: 0 }}>
-        <div style={s.stripLabel}>Inscrit</div>
-        <div style={s.stripValue}>{formatDate(m.created_at)}</div>
-      </div>
-      <div style={{ minWidth: 0 }}>
-        <div style={s.stripLabel}>Dernière visite</div>
-        <span suppressHydrationWarning style={{ ...s.visitPill, color, background: `color-mix(in srgb, ${color} 12%, transparent)` }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: color, flexShrink: 0 }} />
-          {m.last_seen_at ? sinceLabel(m.last_seen_at, now) : 'Jamais revenu'}
-        </span>
-      </div>
-      <div style={{ gridColumn: '1 / -1', minWidth: 0 }}>
-        <div style={s.stripLabel}>Dernière action</div>
-        {m.last_action ? (
-          <div style={{ ...s.stripValue, fontWeight: 500, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={m.last_action.label} suppressHydrationWarning>
-            {m.last_action.label} <span style={{ color: 'var(--text-muted)' }}>· {formatDate(m.last_action.at)}</span>
-          </div>
-        ) : (
-          <div style={{ ...s.stripValue, fontWeight: 500, color: 'var(--text-muted)' }}>Rien dans l’app pour l’instant</div>
-        )}
-      </div>
-    </div>
-  )
-}
-
 function initials(name: string | null, email: string) {
   if (name) return name.split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)
   return email[0].toUpperCase()
-}
-
-function toTitleCase(s: string) {
-  return s.replace(/\S+/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase())
 }
 
 function isBotLike(name: string | null, email: string): boolean {
@@ -132,20 +77,14 @@ function palette(str: string) {
   return PALETTE[h]
 }
 
-const PLANS = [
-  { value: 'decouverte', label: 'Découverte' },
-  { value: 'standard',   label: 'Standard' },
-  { value: 'driing',     label: 'Membre Driing' },
-] as const
-
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function MembresUI({ members, monthlyRevenue, initialFilter = 'all' }: { members: Member[]; monthlyRevenue: number; initialFilter?: string }) {
+export default function MembresUI({ members, monthlyRevenue, nowMs, initialFilter = 'all' }: { members: Member[]; monthlyRevenue: number; nowMs: number; initialFilter?: string }) {
   const router = useRouter()
   const [search, setSearch]       = useState('')
   const [filterPlan, setFilterPlan] = useState<string>(initialFilter)
-  // Tri : inscription la plus récente (par défaut) ou dernière visite
-  const [sortBy, setSortBy] = useState<'inscription' | 'visite'>('inscription')
+  // Tri : dernière visite (par défaut depuis les fiches carrées, 24/11/2026), inscription ou avancement
+  const [sortBy, setSortBy] = useState<'inscription' | 'visite' | 'avancement'>('visite')
   // Vue grille vs liste : la grille reste lisible pour une cinquantaine de
   // membres, mais ne scale pas (une carte = ~150px de haut) une fois qu'on
   // passe à plusieurs centaines. Persisté par appareil, pas de valeur par
@@ -173,24 +112,9 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
   const [createInvestor, setCreateInvestor] = useState(false)
   const [createFeedback, setCreateFeedback] = useState<{ type: 'ok'|'err'; msg: string } | null>(null)
 
-  // Side panel
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
-  const [memberDetails, setMemberDetails]   = useState<MemberDetails | null>(null)
-  const [detailsLoading, setDetailsLoading] = useState(false)
-
-  useEffect(() => {
-    if (!selectedMember) return
-    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') setSelectedMember(null) }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [selectedMember])
-
-  async function openPanel(member: Member) {
-    setSelectedMember(member); setMemberDetails(null); setDetailsLoading(true)
-    const result = await getMemberDetails(member.id)
-    if (!('error' in result)) setMemberDetails(result as MemberDetails)
-    setDetailsLoading(false)
-  }
+  // Panneau de l'hôte (données déjà chargées par la page : plus de lecture au clic)
+  const [openId, setOpenId] = useState<string | null>(null)
+  const selectedMember = members.find(m => m.id === openId) ?? null
 
   function notify(id: string, type: 'ok'|'err', msg: string) {
     setFeedback({ id, type, msg }); setTimeout(() => setFeedback(null), 3000)
@@ -270,31 +194,37 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
       (filterPlan === 'contrib'      && m.is_contributor) ||
       (filterPlan === 'investor'     && !!m.is_investor) ||
       (filterPlan === 'pro'          && isPro(m)) ||
+      (filterPlan === 'actif'        && m.role !== 'admin' && hostLevel(m, nowMs) === 'actif') ||
+      (filterPlan === 'tiede'        && m.role !== 'admin' && hostLevel(m, nowMs) === 'tiede') ||
       (filterPlan === 'sans-logement' && m.role !== 'admin' && m.has_logement === false)
     return matchSearch && matchPlan
   })
   if (sortBy === 'visite') {
     const t = (m: Member) => (m.last_seen_at ? Date.parse(m.last_seen_at) : 0)
     filtered.sort((a, b) => t(b) - t(a))
+  } else if (sortBy === 'avancement') {
+    filtered.sort((a, b) => (b.journey?.done ?? -1) - (a.journey?.done ?? -1))
   }
 
   const totalBots      = members.filter(m => isBotLike(m.full_name, m.email)).length
   const totalDriing    = members.filter(m => m.plan === 'driing').length
   const totalStandard  = members.filter(m => m.plan === 'standard').length
   const totalDecouv    = members.filter(m => m.plan !== 'driing' && m.plan !== 'standard').length
-  const totalContrib   = members.filter(m => m.is_contributor).length
   const totalInvestors = members.filter(m => m.is_investor).length
   const totalPros      = members.filter(isPro).length
   const totalSansLogement = members.filter(m => m.role !== 'admin' && m.has_logement === false).length
+  const totalActifs = members.filter(m => m.role !== 'admin' && hostLevel(m, nowMs) === 'actif').length
+  const totalTiedes = members.filter(m => m.role !== 'admin' && hostLevel(m, nowMs) === 'tiede').length
 
   return (
     <div style={s.wrap}>
       {dialog}
+      <InlineStyle css={HOST_CSS} />
       <AdminHero
         section="Hôtes"
         title="Tes hôtes,"
         em="au même endroit"
-        desc={`${members.length} comptes hôtes, dont ${totalStandard} en Standard et ${totalDriing} Driing. Les comptes qui n’ont qu’une fiche pro sont dans Pros. Clique sur un hôte pour voir son activité, changer sa formule ou ses accès.`}
+        desc={`${members.length} comptes hôtes, dont ${totalStandard} en Standard (${monthlyRevenue.toFixed(2).replace('.', ',')} € par mois) et ${totalDriing} Driing. Les comptes qui n’ont qu’une fiche pro sont dans Pros. Clique sur une fiche pour voir où en est l’hôte, changer sa formule ou ses accès.`}
       />
       {/* dangerouslySetInnerHTML : React échappe les apostrophes/quotes du CSS
           en texte JSX → mismatch d'hydratation (même fix que le check-in) */}
@@ -333,11 +263,11 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
           { filter: 'all',          icon: <Users size={16} />,                     value: members.length,     label: 'hôtes',         color: 'var(--text)' },
           { filter: 'standard',     icon: <Star size={16} weight="fill" />,        value: totalStandard,      label: 'Standard',      color: 'var(--accent-text)' },
           { filter: 'driing',       icon: <Lightning size={16} weight="fill" />,   value: totalDriing,        label: 'Driing',        color: '#B7791F' },
-          { filter: 'contrib',      icon: <Heart size={16} weight="fill" />,       value: totalContrib,       label: 'contributeurs', color: '#B83A7C' },
+          { filter: 'actif',        icon: <Pulse size={16} weight="fill" />,       value: totalActifs,        label: 'vus cette semaine', color: 'var(--accent-text)' },
+          { filter: 'tiede',        icon: <Bell size={16} weight="fill" />,        value: totalTiedes,        label: 'à relancer',    color: '#B7791F' },
+          { filter: 'sans-logement', icon: <House size={16} weight="fill" />,      value: totalSansLogement,  label: 'sans logement', color: '#A4502A' },
           { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#6E5446' },
-          { filter: 'pro',          icon: <Camera size={16} weight="fill" />,      value: totalPros,          label: 'aussi pros',    color: '#A4502A' },
-          { filter: 'sans-logement', icon: <House size={16} weight="fill" />,      value: totalSansLogement,  label: 'sans logement', color: '#B7791F' },
-          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${monthlyRevenue.toFixed(2).replace('.', ',')} €`, label: 'par mois', color: 'var(--accent-text)' },
+          { filter: 'pro',          icon: <Camera size={16} weight="fill" />,      value: totalPros,          label: 'aussi pros',    color: '#B83A7C' },
         ].map(({ filter: f, icon, value, label, color }) => {
           const active = f !== null && filterPlan === f && f !== 'all'
           return (
@@ -444,12 +374,13 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
 
         <select
           value={sortBy}
-          onChange={e => setSortBy(e.target.value as 'inscription' | 'visite')}
+          onChange={e => setSortBy(e.target.value as 'inscription' | 'visite' | 'avancement')}
           style={{ ...s.planSelect, width: 'auto', flexShrink: 0 }}
           aria-label="Trier les membres"
         >
           <option value="inscription">Inscription la plus récente</option>
           <option value="visite">Dernière visite</option>
+          <option value="avancement">Avancement</option>
         </select>
       </div>
 
@@ -467,7 +398,7 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
             <MemberListRow
               key={m.id} member={m}
               isPending={isPending}
-              onOpenPanel={openPanel}
+              onOpenPanel={(m: Member) => setOpenId(m.id)}
               onDelete={async () => {
                 if (!(await confirmDelete(m))) return
                 action(m.id, () => deleteUser(m.id), 'Supprimé')
@@ -476,33 +407,35 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
           ))}
         </div>
       ) : (
-        <div style={s.grid}>
+        <div className="jm-host-grid">
           {filtered.map(m => (
-            <MemberCard
-              key={m.id} member={m}
-              isPending={isPending}
-              feedback={feedback?.id === m.id ? feedback : null}
-              onOpenPanel={openPanel}
-              onChangePlan={(plan) => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
-              onToggleContrib={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
-              onToggleInvestor={() => action(m.id, () => toggleInvestor(m.id, !m.is_investor), m.is_investor ? 'Investisseur retiré' : 'Investisseur activé')}
-              onDelete={async () => {
-                if (!(await confirmDelete(m))) return
-                action(m.id, () => deleteUser(m.id), 'Supprimé')
-              }}
-              onSaveName={(name) => action(m.id, () => updateMemberName(m.id, name), 'Nom mis à jour')}
-            />
+            <HostCard key={m.id} m={m} nowMs={nowMs} selected={openId === m.id} onOpen={() => setOpenId(m.id)} />
           ))}
         </div>
       )}
 
-      {/* ── Side panel ── */}
-      <MemberDetailPanel
-        member={selectedMember}
-        details={memberDetails}
-        loading={detailsLoading}
-        onClose={() => setSelectedMember(null)}
-      />
+      {/* ── Panneau de l'hôte ── */}
+      {selectedMember && (() => {
+        const m = selectedMember
+        return (
+          <HostPanel
+            m={m}
+            nowMs={nowMs}
+            busy={isPending}
+            feedback={feedback?.id === m.id ? feedback : null}
+            onClose={() => setOpenId(null)}
+            onChangePlan={(plan) => action(m.id, () => changeUserPlan(m.id, plan), 'Formule mise à jour')}
+            onToggleContrib={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
+            onToggleInvestor={() => action(m.id, () => toggleInvestor(m.id, !m.is_investor), m.is_investor ? 'Investisseur retiré' : 'Investisseur activé')}
+            onDelete={async () => {
+              if (!(await confirmDelete(m))) return
+              setOpenId(null)
+              action(m.id, () => deleteUser(m.id), 'Supprimé')
+            }}
+            onSaveName={(name) => action(m.id, () => updateMemberName(m.id, name), 'Nom mis à jour')}
+          />
+        )
+      })()}
 
       {/* ── Modal création manuelle de compte ── */}
       {showCreateModal && (
@@ -552,237 +485,6 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
     </div>
   )
 }
-
-// ── Member Card ───────────────────────────────────────────────────────────────
-
-interface MemberCardProps {
-  member: Member
-  isPending: boolean
-  feedback: { type: 'ok'|'err'; msg: string } | null
-  onOpenPanel: (m: Member) => void
-  onChangePlan: (plan: string) => void
-  onToggleContrib: () => void
-  onToggleInvestor: () => void
-  onDelete: () => void
-  onSaveName: (name: string) => void
-}
-
-function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan, onToggleContrib, onToggleInvestor, onDelete, onSaveName }: MemberCardProps) {
-  const router   = useRouter()
-  const pal      = palette(m.full_name || m.email)
-  const ini      = initials(m.full_name, m.email)
-  const isAdmin  = m.role === 'admin'
-  const isDriing = m.plan === 'driing'
-  const suspect  = isBotLike(m.full_name, m.email)
-  const formations = m.user_formations?.length ?? 0
-
-  // Inline name editing
-  const [editingName, setEditingName] = useState(false)
-  const [nameValue, setNameValue]     = useState(m.full_name || '')
-  const [displayName, setDisplayName] = useState(m.full_name || '')
-  const nameInputRef = useRef<HTMLInputElement>(null)
-
-  function startEdit() {
-    setNameValue(displayName)
-    setEditingName(true)
-    setTimeout(() => nameInputRef.current?.focus(), 10)
-  }
-  function cancelEdit() { setEditingName(false); setNameValue(displayName) }
-  function applyTitleCase() { setNameValue(prev => toTitleCase(prev)) }
-  function saveName() {
-    const trimmed = nameValue.trim()
-    setEditingName(false)
-    if (!trimmed || trimmed === (m.full_name || '')) return
-    setDisplayName(trimmed)
-    onSaveName(trimmed)
-  }
-
-  const isStandard = m.plan === 'standard'
-  const planColor  = isAdmin ? '#B7791F' : isDriing ? '#B7791F' : isStandard ? 'var(--accent-text)' : 'var(--text-2)'
-  const planBg     = isAdmin ? 'color-mix(in srgb, #B7791F 14%, transparent)' : isDriing ? 'color-mix(in srgb, #B7791F 14%, transparent)' : isStandard ? 'color-mix(in srgb, var(--accent-text) 14%, transparent)' : 'var(--border)'
-  const planBorder = isAdmin ? 'color-mix(in srgb, #B7791F 35%, transparent)' : isDriing ? 'color-mix(in srgb, #B7791F 35%, transparent)' : isStandard ? 'color-mix(in srgb, var(--accent-text) 32%, transparent)' : 'var(--border)'
-  const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
-
-  return (
-    <div
-      className="jm-membre-card"
-      // Charger la fiche uniquement au clic : son rendu lance plusieurs
-      // lectures admin et ne doit pas partir sur un simple survol.
-      style={{ ...s.card, cursor: 'pointer', ...(suspect ? { border: '1px solid var(--danger-border)' } : {}) }}
-      onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
-      title="Ouvrir la fiche complète"
-    >
-
-      {/* ── Identity ── */}
-      <div style={s.cardTop}>
-        {/* Avatar */}
-        <div style={{ ...s.avatar, background: pal.bg, border: `1.5px solid ${suspect ? 'color-mix(in srgb, var(--danger) 35%, transparent)' : pal.border}` }}>
-          <span style={{ ...s.avatarText, color: suspect ? 'var(--danger)' : pal.text }}>
-            {suspect ? <Robot size={18} /> : ini}
-          </span>
-        </div>
-
-        {/* Name + email + date */}
-        <div style={s.identity}>
-          {editingName ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }} onClick={e => e.stopPropagation()}>
-              <input
-                ref={nameInputRef}
-                value={nameValue}
-                onChange={e => setNameValue(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') cancelEdit() }}
-                onBlur={saveName}
-                style={s.nameInput}
-              />
-              <button
-                onMouseDown={e => { e.preventDefault(); applyTitleCase() }}
-                style={s.titleCaseBtn} title="Normaliser la casse (Title Case)"
-              >
-                <TextAa size={13} />
-              </button>
-            </div>
-          ) : (
-            <div style={s.nameRow}>
-              <span style={s.name}>{displayName || m.email.split('@')[0]}</span>
-              {!isAdmin && (
-                <button onClick={e => { e.stopPropagation(); startEdit() }} style={s.editNameBtn} title="Modifier le nom">
-                  <PencilSimple size={11} />
-                </button>
-              )}
-            </div>
-          )}
-          <span style={s.email}>{m.email}</span>
-        </div>
-
-        {/* Plan badge, top right */}
-        <div style={{ ...s.planBadge, background: planBg, color: planColor, border: `1px solid ${planBorder}` }}>
-          {isAdmin ? <Crown size={11} weight="fill" /> : isDriing ? <Star size={11} weight="fill" /> : null}
-          {planLabel}
-        </div>
-      </div>
-
-      <ActivityStrip m={m} />
-
-      {/* ── Chips row ── */}
-      <div style={s.chipsRow} onClick={e => e.stopPropagation()}>
-        {m.is_investor && (
-          <span style={s.investorChip}><Briefcase size={10} weight="fill" /> Investisseur</span>
-        )}
-        {m.is_photographer && (
-          <span style={s.photographerChip}><Camera size={10} weight="fill" /> Photographe</span>
-        )}
-        {m.is_cleaner && (
-          <span style={s.cleanerChip}><Sparkle size={10} weight="fill" /> Ménage</span>
-        )}
-        {m.is_depannage && (
-          <span style={s.depannageChip}><Wrench size={10} weight="fill" /> Dépannage</span>
-        )}
-        {m.is_contributor && (
-          <span style={s.contribChip}><Heart size={10} weight="fill" /> Contributeur</span>
-        )}
-        {formations > 0 && (
-          <button onClick={() => onOpenPanel(m)} style={s.formChip} title="Voir les formations">
-            <GraduationCap size={11} />
-            {formations} formation{formations > 1 ? 's' : ''}
-          </button>
-        )}
-        {formations === 0 && !m.is_contributor && !m.is_investor && !m.is_photographer && !m.is_cleaner && !m.is_depannage && (
-          <span style={s.emptyChip}>Aucune formation commencée</span>
-        )}
-      </div>
-
-      {/* ── Separator ── */}
-      <div style={s.sep} />
-
-      {/* ── Actions ── */}
-      <div style={s.actions} onClick={e => e.stopPropagation()}>
-        {/* Feedback overlay */}
-        {feedback ? (
-          <FeedbackPill type={feedback.type} msg={feedback.msg} />
-        ) : (
-          <>
-            {/* Plan selector */}
-            {!isAdmin && (
-              <select
-                value={m.plan || 'decouverte'}
-                disabled={isPending}
-                onChange={e => onChangePlan(e.target.value)}
-                style={s.planSelect}
-              >
-                {PLANS.map(p => (
-                  // Pas de background inline : le browser utilise les couleurs
-                  // de la color-scheme (root) pour rendre les options. Hardcoder
-                  // #040d0b cassait le rendu en light mode (texte foncé sur
-                  // fond foncé = invisible).
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            {/* Investor toggle */}
-            {!isAdmin && (
-              <button
-                disabled={isPending}
-                onClick={onToggleInvestor}
-                style={{
-                  ...s.actionBtn,
-                  ...(m.is_investor
-                    ? { background: 'color-mix(in srgb, #6E5446 10%, transparent)', borderColor: 'color-mix(in srgb, #6E5446 28%, transparent)', color: '#6E5446' }
-                    : {}
-                  ),
-                }}
-                title={m.is_investor ? 'Retirer le profil investisseur' : 'Marquer comme investisseur'}
-              >
-                <Briefcase size={13} weight={m.is_investor ? 'fill' : 'regular'} />
-              </button>
-            )}
-
-            {/* Contributor toggle */}
-            {!isAdmin && (
-              <button
-                disabled={isPending}
-                onClick={onToggleContrib}
-                style={{
-                  ...s.actionBtn,
-                  ...(m.is_contributor
-                    ? { background: 'color-mix(in srgb, #B83A7C 10%, transparent)', borderColor: 'color-mix(in srgb, #B83A7C 25%, transparent)', color: '#B83A7C' }
-                    : {}
-                  ),
-                }}
-                title={m.is_contributor ? 'Retirer le badge contributeur' : 'Marquer comme contributeur'}
-              >
-                <Heart size={13} weight={m.is_contributor ? 'fill' : 'regular'} />
-              </button>
-            )}
-
-            {/* View activity (aperçu rapide en side panel — la carte entière
-                ouvre déjà la fiche complète au clic) */}
-            <button onClick={() => onOpenPanel(m)} className="jm-action-btn" style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Aperçu rapide de l'activité">
-              <Users size={13} />
-            </button>
-
-            {/* Delete */}
-            {!isAdmin && (
-              <button
-                disabled={isPending}
-                onClick={onDelete}
-                className="jm-action-btn"
-                style={{ ...s.actionBtn, ...s.actionBtnDanger }}
-                title="Supprimer"
-              >
-                <Trash size={13} />
-              </button>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// ── Member List Row (vue liste, plus compacte que les cartes) ──────────────────
 
 interface MemberListRowProps {
   member: Member
@@ -865,225 +567,6 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
 }
 
 // ── Side panel ────────────────────────────────────────────────────────────────
-
-interface PanelProps {
-  member: Member | null; details: MemberDetails | null
-  loading: boolean; onClose: () => void
-}
-
-function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
-  const open = !!member
-  const pal  = member ? palette(member.full_name || member.email) : PALETTE[0]
-  const ini  = member ? initials(member.full_name, member.email) : '?'
-
-  const planDisplay: Record<string, { label: string; color: string; bg: string }> = {
-    driing:     { label: 'Membre Driing', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 14%, transparent)' },
-    standard:   { label: 'Standard',      color: 'var(--accent-text)', bg: 'color-mix(in srgb, var(--accent-text) 14%, transparent)' },
-    decouverte: { label: 'Découverte',    color: 'var(--text-2)', bg: 'var(--border)' },
-  }
-  const planCfg = planDisplay[member?.plan ?? 'decouverte'] ?? planDisplay.decouverte
-
-  const statTiles = details ? [
-    { icon: <UsersFour size={14} />,    value: details.voyageurs,      label: 'Voyageurs',       color: '#6E5446' },
-    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: 'var(--accent-text)' },
-    { icon: <BookmarkSimple size={14} />, value: details.favorites,    label: 'Gabarits favoris', color: 'var(--accent-text)' },
-    { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#B7791F' },
-    { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: 'var(--danger)' },
-    { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#B7791F' },
-    { icon: <UsersFour size={14} />,    value: details.communityGroupsCount, label: 'Groupes FB',  color: '#6E5446' },
-    { icon: <MagnifyingGlass size={14} />, value: details.auditsCount,        label: 'Audits GBP',  color: '#B7791F' },
-  ] : []
-
-  // Format reach (245 000 → "245 k")
-  function fmtReach(n: number): string {
-    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')} M`
-    if (n >= 1_000) return `${Math.round(n / 1_000)} k`
-    return String(n)
-  }
-
-  return (
-    <>
-      <div
-        onClick={onClose}
-        style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
-          backdropFilter: 'blur(3px)', zIndex: 150,
-          opacity: open ? 1 : 0, pointerEvents: open ? 'auto' : 'none',
-          transition: 'opacity 0.25s',
-        }}
-      />
-      <div
-        role="dialog" aria-modal="true"
-        onClick={e => e.stopPropagation()}
-        style={{
-          position: 'fixed', top: 0, right: 0, bottom: 0,
-          width: 'min(420px, 94vw)',
-          background: 'var(--bg-2)',
-          borderLeft: '1px solid var(--border-2)',
-          boxShadow: open ? '-24px 0 64px rgba(0,0,0,0.45)' : 'none',
-          zIndex: 160, display: 'flex', flexDirection: 'column',
-          transform: open ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.3s cubic-bezier(0.32,0,0.15,1)',
-          overflowY: 'hidden',
-        }}
-      >
-        {/* Header */}
-        <div style={ps.header}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={ps.headerTitle}>Activité membre</span>
-            <button onClick={onClose} style={ps.closeBtn}><X size={18} weight="bold" /></button>
-          </div>
-          {member && (
-            <Link href={`/dashboard/admin/membres/${member.id}`} style={ps.viewFullBtn}>
-              <ArrowSquareOut size={13} /> Voir la fiche complète
-            </Link>
-          )}
-        </div>
-
-        <div style={ps.divider} />
-
-        <div style={ps.body}>
-          {member && (
-            <>
-              {/* Identity */}
-              <div style={ps.identityBlock}>
-                <div style={{ ...ps.bigAvatar, background: pal.bg, border: `2px solid ${pal.border}` }}>
-                  <span style={{ ...ps.bigAvatarText, color: pal.text }}>{ini}</span>
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={ps.memberName}>{member.full_name || '-'}</div>
-                  <div style={ps.memberEmail}>{member.email}</div>
-                  <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
-                    <span style={{ ...ps.planPill, background: planCfg.bg, color: planCfg.color }}>
-                      {planCfg.label}
-                    </span>
-                    {member.role === 'admin' && (
-                      <span style={{ ...ps.planPill, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F' }}>Admin</span>
-                    )}
-                    {member.is_investor && (
-                      <span style={{ ...ps.planPill, background: 'color-mix(in srgb, #6E5446 12%, transparent)', color: '#6E5446' }}>Investisseur</span>
-                    )}
-                    {member.is_contributor && (
-                      <span style={{ ...ps.planPill, background: 'color-mix(in srgb, #B83A7C 10%, transparent)', color: '#B83A7C' }}>Contributeur</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <ActivityStrip m={member} style={{ margin: '0 22px 18px' }} />
-
-              <div style={ps.divider} />
-
-              {/* Stats */}
-              <div style={ps.section}>
-                <div style={ps.sectionLabel}>Activité sur la plateforme</div>
-                {loading ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 0' }}>
-                    <SpinnerGap size={18} color="var(--accent-text)" style={{ animation: 'spin 0.8s linear infinite' }} />
-                    <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>Chargement…</span>
-                  </div>
-                ) : details ? (
-                  <>
-                    <div style={ps.statsGrid}>
-                      {statTiles.map(tile => (
-                        <div key={tile.label} style={{ ...ps.statTile, borderColor: `color-mix(in srgb, ${tile.color} 13%, transparent)`, background: `color-mix(in srgb, ${tile.color} 3%, transparent)` }}>
-                          <span style={{ color: tile.color }}>{tile.icon}</span>
-                          <span style={{ ...ps.statNum, color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
-                            {tile.value}
-                          </span>
-                          <span style={ps.statLabel}>{tile.label}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Récap visuel rapide */}
-                    {(details.communityGroupsCount > 0 || details.auditsCount > 0) && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px' }}>
-                        {details.communityGroupsCount > 0 && (
-                          <div style={{
-                            display: 'flex', alignItems: 'center', gap: '10px',
-                            padding: '10px 12px', borderRadius: '10px',
-                            background: 'var(--info-bg)',
-                            border: '1px solid color-mix(in srgb, #6E5446 18%, transparent)',
-                          }}>
-                            <UsersFour size={14} color="#6E5446" weight="fill" />
-                            <span style={{ flex: 1, fontSize: '12.5px', color: 'var(--text)' }}>
-                              <strong>{details.communityGroupsCount}</strong> groupe{details.communityGroupsCount > 1 ? 's' : ''} Facebook rejoint{details.communityGroupsCount > 1 ? 's' : ''}
-                            </span>
-                            {details.communityTotalReach > 0 && (
-                              <span style={{ fontSize: '11px', fontWeight: 600, color: '#6E5446' }}>
-                                Portée {fmtReach(details.communityTotalReach)}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                        {details.auditsCount > 0 && (
-                          <div style={{
-                            display: 'flex', alignItems: 'center', gap: '10px',
-                            padding: '10px 12px', borderRadius: '10px',
-                            background: 'color-mix(in srgb, #B7791F 6%, transparent)',
-                            border: '1px solid color-mix(in srgb, #B7791F 18%, transparent)',
-                          }}>
-                            <MagnifyingGlass size={14} color="#B7791F" weight="fill" />
-                            <span style={{ flex: 1, fontSize: '12.5px', color: 'var(--text)' }}>
-                              <strong>{details.auditsCount}</strong> audit{details.auditsCount > 1 ? 's' : ''} GBP
-                              {details.auditsCompleted > 0 && (
-                                <span style={{ color: 'var(--text-3)' }}> · {details.auditsCompleted} complété{details.auditsCompleted > 1 ? 's' : ''}</span>
-                              )}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <p style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '12px 0' }}>Impossible de charger.</p>
-                )}
-              </div>
-
-              {/* Formations */}
-              <div style={ps.divider} />
-              <div style={ps.section}>
-                <div style={ps.sectionLabel}>Formations ({member.user_formations?.length ?? 0})</div>
-                {(member.user_formations?.length ?? 0) === 0 ? (
-                  <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Aucune formation commencée.</p>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    {member.user_formations.map(uf => (
-                      <div key={uf.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                        <GraduationCap size={14} color="var(--accent-text)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {uf.formation?.title ?? 'Formation inconnue'}
-                          </div>
-                          <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            Inscrit le {formatDate(uf.enrolled_at)}
-                            {uf.progress === 100 && (
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--accent-text)', background: 'var(--accent-bg)', padding: '1px 6px', borderRadius: '100px' }}>
-                                Terminée
-                              </span>
-                            )}
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{ flex: 1, height: '4px', background: 'var(--border)', borderRadius: '100px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? 'var(--accent-text)' : 'var(--accent-text)', transition: 'width 0.3s' }} />
-                            </div>
-                            <span style={{ fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' }}>{uf.progress}%</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </>
-  )
-}
-
-// ── FeedbackPill ──────────────────────────────────────────────────────────────
 
 function FeedbackPill({ type, msg }: { type: 'ok'|'err'; msg: string }) {
   const c = type === 'ok' ? 'var(--accent-text)' : 'var(--danger)'
@@ -1392,47 +875,4 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid var(--danger-border)',
     color: 'var(--danger)',
   },
-}
-
-// Panel styles
-const ps: Record<string, React.CSSProperties> = {
-  header: { padding: '20px 22px 16px', flexShrink: 0 },
-  headerTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
-  closeBtn: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '8px', width: '32px', height: '32px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'var(--text-3)',
-  },
-  viewFullBtn: {
-    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-    borderRadius: '9px', padding: '8px 14px',
-    fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
-    textDecoration: 'none', width: '100%', boxSizing: 'border-box',
-  },
-  divider: { height: '1px', background: 'var(--border)', flexShrink: 0 },
-  body: {
-    flex: 1, overflowY: 'auto',
-    scrollbarWidth: 'thin', scrollbarColor: 'var(--border) transparent',
-  } as React.CSSProperties,
-
-  identityBlock: { padding: '20px 22px', display: 'flex', alignItems: 'flex-start', gap: '14px' },
-  bigAvatar: {
-    width: '54px', height: '54px', flexShrink: 0, borderRadius: '16px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-  },
-  bigAvatarText: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 600 },
-  memberName: { fontSize: '16px', fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  memberEmail: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  memberSince: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' },
-  planPill: { fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px' },
-
-  section: { padding: '18px 22px' },
-  sectionLabel: { fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '14px' },
-
-  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px' },
-  statTile: { display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', border: '1px solid', borderRadius: '10px' },
-  statNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, lineHeight: 1 },
-  statLabel: { fontSize: '10px', color: 'var(--text-3)', lineHeight: 1.3 },
 }

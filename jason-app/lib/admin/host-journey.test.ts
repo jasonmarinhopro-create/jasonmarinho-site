@@ -44,3 +44,24 @@ describe('hostFeed', () => {
     expect(f.map(x => x.label)).toEqual(['Revenu saisi', 'Formation commencée', 'Logement ajouté'])
   })
 })
+
+describe('usageFromRows (page Hôtes)', () => {
+  it('rebâtit l’usage et le même parcours que la fiche membre', async () => {
+    const { usageFromRows, hostJourney } = await import('./host-journey')
+    const u = usageFromRows([
+      { kind: 'logement', n: '2', last: '2026-11-01T00:00:00Z' },
+      { kind: 'calendrier', n: 1, last: '2026-11-02T00:00:00Z' },
+      { kind: 'contrat', n: 2, last: '2026-11-03T00:00:00Z' },
+      { kind: 'contrat_signe', n: 1, last: null },
+    ], { accountId: 'acct_x', onboarded: false })
+    expect(u.logements).toEqual({ n: 2, last: '2026-11-01T00:00:00Z' })
+    expect(u.paiementsEnLigne).toBe('commence')
+    const j = hostJourney(u)
+    expect(j.done).toBe(3)
+    expect(j.steps.find(s => s.key === 'paiements')!.state).toBe('en_cours')
+  })
+  it('aucune ligne : rien de fait', async () => {
+    const { usageFromRows, hostJourney } = await import('./host-journey')
+    expect(hostJourney(usageFromRows([], { accountId: null, onboarded: null })).done).toBe(0)
+  })
+})

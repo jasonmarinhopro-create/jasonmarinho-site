@@ -141,3 +141,35 @@ export function hostFeed(u: HostUsage, extra: FeedItem[] = []): FeedItem[] {
     .filter((x): x is FeedItem => !!x && !Number.isNaN(Date.parse(x.at)))
     .sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
 }
+
+/** Ligne de la fonction SQL admin_hosts_usage (page Hôtes, 24/11/2026) */
+export interface HostUsageRow { kind: string; n: number | string; last: string | null }
+
+/**
+ * Usage d'un hôte à partir des lignes de admin_hosts_usage : même forme que la
+ * fiche membre (member-host-load.ts), pour calculer le parcours dans la liste.
+ * Les sources que la liste ne lit pas (événements, déclarations, objectif,
+ * notifications) restent à zéro : elles ne comptent dans aucune des 7 étapes.
+ */
+export function usageFromRows(rows: HostUsageRow[], stripe: { accountId: string | null; onboarded: boolean | null }): HostUsage {
+  const get = (kind: string): Usage => {
+    const r = rows.find(x => x.kind === kind)
+    return { n: r ? Number(r.n) || 0 : 0, last: r?.last ?? null }
+  }
+  const zero: Usage = { n: 0, last: null }
+  return {
+    logements: get('logement'),
+    calendriers: { ...get('calendrier'), enErreur: get('calendrier_erreur').n },
+    reservationsImportees: get('importee').n,
+    sejours: get('sejour'),
+    voyageurs: get('voyageur'),
+    contrats: { ...get('contrat'), signes: get('contrat_signe').n },
+    paiementsEnLigne: stripe.onboarded ? 'actif' : stripe.accountId ? 'commence' : 'non',
+    revenus: get('revenu'),
+    charges: { ...get('charge'), recurrentes: 0 },
+    objectif: false,
+    evenements: zero,
+    declarations: zero,
+    notifications: 0,
+  }
+}
