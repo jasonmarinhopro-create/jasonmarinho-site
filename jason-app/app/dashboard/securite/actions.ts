@@ -57,10 +57,6 @@ export async function reportGuest(formData: {
   full_name?: string
   incident_type: string
   description: string
-  /** OPT-IN explicite : version anonymisée publiée après modération. */
-  make_public?: boolean
-  public_summary?: string
-  public_city?: string
 }): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -70,17 +66,11 @@ export async function reportGuest(formData: {
   const rl = await rateLimit('reportGuest', user.id, 5, 60 * 60 * 1000)
   if (!rl.allowed) return { error: 'Trop de signalements en peu de temps. Réessaie dans une heure.' }
 
-  const { incident_type, description, make_public, public_summary, public_city } = formData
+  const { incident_type, description } = formData
   const ids = reportIdentifiers(formData)
   if (!ids) return { error: 'Remplis au moins un champ : e-mail, téléphone ou nom.' }
   if (!incident_type?.trim()) return { error: 'Choisis un motif.' }
   if (!description || description.trim().length < 20) return { error: 'La description doit faire au moins 20 caractères.' }
-
-  const publicSummaryClean = make_public && public_summary ? public_summary.trim().slice(0, 600) : null
-  const publicCityClean = make_public && public_city ? public_city.trim().slice(0, 80) : null
-  if (make_public && (!publicSummaryClean || publicSummaryClean.length < 30)) {
-    return { error: 'Le résumé public anonymisé doit faire au moins 30 caractères.' }
-  }
 
   const row = {
     identifier: ids.identifier,
@@ -90,11 +80,9 @@ export async function reportGuest(formData: {
     description: description.trim().slice(0, 2000),
     reporter_id: user.id,
     is_validated: false,
-    public_visible: !!make_public,
-    public_summary: publicSummaryClean,
-    public_city: publicCityClean,
-    public_month: make_public ? new Date().toISOString().slice(0, 7) : null,
-    moderation_status: make_public ? 'pending' : 'private',
+    // Plus de publication sur le site (Jason, 24/11/2026) : la base reste privée.
+    public_visible: false,
+    moderation_status: 'private',
   }
 
   // Un seul enregistrement par signalement, avec tous les identifiants
@@ -128,7 +116,6 @@ export async function reportGuest(formData: {
           ...(email ? [{ label: 'E-mail signalé', value: escHtml(email) }] : []),
           ...(phone ? [{ label: 'Téléphone signalé', value: escHtml(phone) }] : []),
           ...(ids.name ? [{ label: 'Nom signalé', value: escHtml(ids.name) }] : []),
-          { label: 'Publication anonymisée', value: make_public ? 'Demandée' : 'Non' },
         ], '#C2344A')}
         ${emailCitation(description.trim())}
         ${emailBtn('https://app.jasonmarinho.com/dashboard/admin/signalements', 'Relire le signalement', 'primary')}
@@ -141,11 +128,8 @@ export async function reportGuest(formData: {
   return { success: true }
 }
 
-/**
- * Retire un de MES signalements. Directement s'il n'est pas publié sur le
- * site ; sinon, demande à Jason (la page publique doit être retirée proprement).
- */
-export async function withdrawMyReport(id: string): Promise<{ success?: boolean; requested?: boolean; error?: string }> {
+/** Retire un de MES signalements (plus de page publique depuis le 24/11/2026). */
+export async function withdrawMyReport(id: string): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié.' }
@@ -153,21 +137,11 @@ export async function withdrawMyReport(id: string): Promise<{ success?: boolean;
   const admin = getServiceClient()
   const { data: report } = await admin
     .from('reported_guests')
-    .select('id, incident_type, moderation_status')
+    .select('id')
     .eq('id', id)
     .eq('reporter_id', user.id)
     .maybeSingle()
   if (!report) return { error: 'Signalement introuvable.' }
-
-  if (report.moderation_status === 'approved') {
-    await notifyJason(user.id, user.email ?? '', {
-      title: "Un hôte retire son signalement publié",
-      intro: "L'hôte qui a fait ce signalement souhaite le retirer. Il est publié sur le site : à retirer depuis la modération.",
-      entryId: id,
-      detail: report.incident_type,
-    })
-    return { requested: true }
-  }
 
   const { error } = await admin.from('reported_guests').delete().eq('id', id).eq('reporter_id', user.id)
   if (error) return { error: error.message }
@@ -185,7 +159,7 @@ export async function contestReport(params: { entry_id: string; reason?: string 
 
   await notifyJason(user.id, user.email ?? '', {
     title: 'Signalement contesté par un hôte',
-    intro: "Un hôte pense que ce signalement est faux ou ne vise pas la bonne personne. À vérifier dans la modération.",
+    intro: "Un hôte pense que ce signalement est faux ou ne vise pas la bonne personne. À vérifier dans le QG, onglet Signalements.",
     entryId: params.entry_id,
     detail: params.reason?.trim().slice(0, 500),
   })

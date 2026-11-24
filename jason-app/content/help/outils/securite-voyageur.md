@@ -19,7 +19,7 @@ Le résultat te dit clairement ce qu'il en est :
 - **Que des bons retours** : seulement des témoignages positifs.
 - **1 signalement : sois vigilant**, **2 ou 3 : prudence**, **4 et plus : risque élevé**. Tu lis le motif, le mois et les faits décrits par l'hôte.
 
-> Un signalement est un témoignage d'hôte relu avant publication, pas une décision de justice. Décide en regardant aussi le profil et vos échanges.
+> Un signalement est un témoignage d'hôte relu avant d'apparaître dans la base, pas une décision de justice. Décide en regardant aussi le profil et vos échanges.
 
 Un signalement te semble faux ou vise la mauvaise personne ? Clique sur **Ce signalement te semble faux ?** : Jason le vérifie.
 
@@ -41,11 +41,11 @@ Choisis **J'ai eu un problème** ou **Tout s'est bien passé**, puis remplis :
 
 Chaque signalement est **relu par Jason** avant d'apparaître dans les recherches. Les autres hôtes ne voient pas qui l'a fait. Tu peux aussi le signaler depuis la fiche du voyageur (bouton **Signaler**).
 
-Pour un problème, tu peux cocher **Publier aussi une version anonymisée sur jasonmarinho.com** : seul ton résumé est publié (ni nom, ni e-mail, ni téléphone, ni date exacte), après relecture.
+Rien n'est publié sur le site : les signalements restent dans la base des membres.
 
 ## Mes signalements
 
-Tu retrouves ce que tu as envoyé et son état : **En relecture**, **Visible par les hôtes**, **Publié anonymisé** ou **Non retenu**. La corbeille retire un signalement. S'il est publié sur le site, Jason le retire et te le confirme par e-mail.
+Tu retrouves ce que tu as envoyé et son état : **En relecture** ou **Visible par les hôtes**. La corbeille retire un signalement.
 
 ## Les arnaques du moment
 

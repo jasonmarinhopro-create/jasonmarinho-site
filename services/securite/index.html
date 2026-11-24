@@ -183,7 +183,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 </script>
 <!-- JSONLD-AUTO:END -->
 <script type="application/ld+json">
-{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Qui peut consulter la base ?", "acceptedAnswer": {"@type": "Answer", "text": "Les membres de la plateforme Jason Marinho. La création de compte est gratuite, et la recherche est ouverte à tous les membres."}}, {"@type": "Question", "name": "Comment chercher un voyageur ?", "acceptedAnswer": {"@type": "Answer", "text": "Avec son e-mail, son téléphone ou son prénom et son nom. Le téléphone marche dans tous les formats (06 12 34 56 78 ou +33 6 12 34 56 78). Pour un nom, la recherche porte sur le prénom et le nom exacts : l'e-mail et le téléphone restent plus sûrs, à cause des homonymes."}}, {"@type": "Question", "name": "Comment signaler un voyageur ?", "acceptedAnswer": {"@type": "Answer", "text": "Depuis ton espace membre, dans Sécurité voyageur ou sur la fiche du voyageur : au moins un moyen de le retrouver, le motif et les faits. Jason relit chaque signalement avant qu'il apparaisse dans les recherches des autres hôtes."}}, {"@type": "Question", "name": "Que faire si le voyageur n'est pas dans la base ?", "acceptedAnswer": {"@type": "Answer", "text": "Ça veut seulement dire qu'aucun hôte de la communauté ne l'a encore signalé. Regarde aussi son profil et vos échanges, et protège la réservation avec un contrat signé, un paiement par lien et une caution."}}, {"@type": "Question", "name": "Les signalements sont-ils anonymes ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui pour l'hôte qui signale : les autres hôtes ne voient pas qui l'a fait. Seul Jason a accès aux informations complètes pour gérer les litiges éventuels."}}, {"@type": "Question", "name": "Un signalement me concerne, comment le contester ?", "acceptedAnswer": {"@type": "Answer", "text": "Un signalement publié sur le site peut être contesté sur la page dédiée : la demande est traitée sous 48 h. Pour une question sur tes données, écris à contact@jasonmarinho.com."}}]}
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Qui peut consulter la base ?", "acceptedAnswer": {"@type": "Answer", "text": "Les membres de la plateforme Jason Marinho. La création de compte est gratuite, et la recherche est ouverte à tous les membres."}}, {"@type": "Question", "name": "Comment chercher un voyageur ?", "acceptedAnswer": {"@type": "Answer", "text": "Avec son e-mail, son téléphone ou son prénom et son nom. Le téléphone marche dans tous les formats (06 12 34 56 78 ou +33 6 12 34 56 78). Pour un nom, la recherche porte sur le prénom et le nom exacts : l'e-mail et le téléphone restent plus sûrs, à cause des homonymes."}}, {"@type": "Question", "name": "Comment signaler un voyageur ?", "acceptedAnswer": {"@type": "Answer", "text": "Depuis ton espace membre, dans Sécurité voyageur ou sur la fiche du voyageur : au moins un moyen de le retrouver, le motif et les faits. Jason relit chaque signalement avant qu'il apparaisse dans les recherches des autres hôtes."}}, {"@type": "Question", "name": "Que faire si le voyageur n'est pas dans la base ?", "acceptedAnswer": {"@type": "Answer", "text": "Ça veut seulement dire qu'aucun hôte de la communauté ne l'a encore signalé. Regarde aussi son profil et vos échanges, et protège la réservation avec un contrat signé, un paiement par lien et une caution."}}, {"@type": "Question", "name": "Les signalements sont-ils anonymes ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui pour l'hôte qui signale : les autres hôtes ne voient pas qui l'a fait. Seul Jason a accès aux informations complètes pour gérer les litiges éventuels."}}, {"@type": "Question", "name": "Un signalement me concerne, comment le contester ?", "acceptedAnswer": {"@type": "Answer", "text": "Écris à contact@jasonmarinho.com en indiquant ce qui te concerne : la demande est traitée sous 48 h, et le signalement est corrigé ou retiré s'il n'est pas fondé."}}]}
 </script>
 <script defer src="/nav.js"></script>
 <script type="application/ld+json">
@@ -203,12 +203,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     <p class="sub">Avant d'accepter une réservation, cherche son e-mail, son téléphone ou son nom dans la base tenue par les hôtes de la communauté. Chaque signalement est relu avant d'apparaître.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Accéder à la base <i class="ph-bold ph-arrow-right"></i></a>
-      <a href="/securite/signalements" class="btn-ol">Voir les signalements publics</a>
-    </div>
-    <!-- Compteur live mis à jour par scripts/build-signalements.mjs au build Vercel -->
-    <div id="sig-count" style="display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:7px 16px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;font-size:13px;font-weight:600;color:#FFD56B">
-      <i class="ph-bold ph-shield-check"></i>
-      <span><!--SIGNALEMENTS_COUNT:START-->0<!--SIGNALEMENTS_COUNT:END--> signalements publics anonymisés</span>
     </div>
   </div>
 </header>
@@ -361,7 +355,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         </div>
         <div class="faq-item">
           <div class="faq-q">Un signalement me concerne, comment le contester ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-          <div class="faq-a">Un signalement publié sur le site peut être contesté sur <a href="/securite/contester-signalement" style="color:var(--g)">la page dédiée</a> : la demande est traitée sous 48 h. Pour une question sur tes données, écris à contact@jasonmarinho.com.</div>
+          <div class="faq-a">Écris à contact@jasonmarinho.com en indiquant ce qui te concerne : la demande est traitée sous 48 h, et le signalement est corrigé ou retiré s'il n'est pas fondé.</div>
         </div>
       </div>
     </div>
@@ -476,7 +470,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 <script>
-(function(){var c=document.getElementById('sig-count');if(c&&/^\s*0\s/.test(c.textContent))c.style.display='none';})();
 document.querySelectorAll('.faq-q').forEach(function(q){
   q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open');});
 });

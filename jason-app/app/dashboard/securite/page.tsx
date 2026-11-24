@@ -78,9 +78,7 @@ export default async function SecuritePage({ searchParams }: {
     incident_type: r.incident_type,
     reported_at: r.reported_at,
     positive: isPositive(r.incident_type),
-    statut: r.moderation_status === 'approved' ? 'publie'
-      : r.moderation_status === 'rejected' || r.moderation_status === 'removed' ? 'refuse'
-      : r.is_validated ? 'valide' : 'relecture',
+    statut: r.is_validated ? 'valide' : 'relecture',
   }))
 
   return (

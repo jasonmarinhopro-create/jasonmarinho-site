@@ -4,7 +4,6 @@ import { requireAdmin } from '@/lib/admin/require-admin'
 import { createClient } from '@/lib/supabase/server'
 import AdminQG, { type QGTab } from './AdminQG'
 import { loadDemandesQG } from './demandes-load'
-import { getModerationQueue } from '../signalements/moderation-actions'
 
 export const metadata = { title: 'QG Admin, Jason Marinho' }
 export const dynamic = 'force-dynamic'
@@ -15,14 +14,12 @@ export default async function AdminQGPage({ searchParams }: { searchParams: { on
   const supabase = await createClient()
   await requireAdmin()
 
-  // 4 fetchs en parallèle (service role bypass RLS) + getModerationQueue
-  // pour la file de modération des signalements publics anonymisés.
+  // Fetchs en parallèle (service role bypass RLS).
   const admin = getServiceClient()
   const [
     { data: driingMembers },
     { data: reports },
     { data: suggestions },
-    moderation,
     demandes,
   ] = await Promise.all([
     admin
@@ -41,7 +38,6 @@ export default async function AdminQGPage({ searchParams }: { searchParams: { on
       .select('id, type, message, user_email, user_id, created_at, treated_at')
       .order('created_at', { ascending: false })
       .limit(500),
-    getModerationQueue(),
     loadDemandesQG(),
   ])
   const onglet = TABS.includes(searchParams.onglet as QGTab) ? searchParams.onglet as QGTab : (searchParams.demande ? 'hotes' : null)
@@ -52,7 +48,6 @@ export default async function AdminQGPage({ searchParams }: { searchParams: { on
       initialDriing={driingMembers ?? []}
       initialReports={reports ?? []}
       initialSuggestions={suggestions ?? []}
-      moderation={moderation}
       demandes={demandes}
       initialTab={onglet}
       initialDemandeId={demandeId}

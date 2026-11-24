@@ -17,6 +17,6 @@ describe('sitemaps de l’indexation', () => {
   })
 
   it('suit les 5 sitemaps de robots.txt', () => {
-    expect(SITEMAPS.map(s => s.file)).toEqual(['sitemap.xml', 'sitemap-photographes.xml', 'sitemap-menages.xml', 'sitemap-depannage.xml', 'sitemap-signalements.xml'])
+    expect(SITEMAPS.map(s => s.file)).toEqual(['sitemap.xml', 'sitemap-photographes.xml', 'sitemap-menages.xml', 'sitemap-depannage.xml'])
   })
 })

@@ -25,7 +25,6 @@ import {
   setSuggestionTreated,
 } from '../actions'
 import SignalementsAdmin from '../signalements/SignalementsAdmin'
-import ModerationQueue from '../signalements/ModerationQueue'
 
 // ─── Types ────────────────────────────────────────────────────────────
 interface DriingMember {
@@ -54,22 +53,10 @@ interface Suggestion {
 export type QGTab = 'hotes' | 'driing' | 'reports' | 'suggestions'
 type Tab = QGTab
 
-// Type retourné par getModerationQueue (signalements publics anonymisés).
-// On accepte un type lâche ici pour ne pas dupliquer les définitions
-// déjà présentes dans moderation-actions.ts (ModerationQueue les utilise).
-interface ModerationData {
-  pending: Array<any>
-  removalRequests: Array<any>
-  approved: Array<any>
-  approvedCount: number
-  error?: string
-}
-
 interface Props {
   initialDriing: DriingMember[]
   initialReports: Report[]
   initialSuggestions: Suggestion[]
-  moderation: ModerationData
   demandes: DemandesQGData
   initialTab: QGTab | null
   initialDemandeId: string | null
@@ -93,7 +80,7 @@ function daysSince(iso: string): number {
 }
 
 // ─── Component ────────────────────────────────────────────────────────
-export default function AdminQG({ initialDriing, initialReports, initialSuggestions, moderation, demandes, initialTab, initialDemandeId }: Props) {
+export default function AdminQG({ initialDriing, initialReports, initialSuggestions, demandes, initialTab, initialDemandeId }: Props) {
   const [driing, setDriing] = useState(initialDriing)
   const [reports, setReports] = useState(initialReports)
   const [suggestions, setSuggestions] = useState(initialSuggestions)
@@ -103,18 +90,14 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
   const { confirm, dialog } = useConfirm()
 
   // Counts pour les badges + auto-sélection de la tab prioritaire.
-  // Le badge "Signalements" agrège : reports privés non validés +
-  // signalements publics en attente de modération + demandes de retrait
-  // (toutes ces actions tombent visuellement dans la même tab).
+  // Le badge "Signalements" compte les signalements non validés.
   const [hotesCount, setHotesCount] = useState(() => demandes.demandes.filter(d => d.aTraiter).length)
   const counts = useMemo(() => ({
     hotes: hotesCount,
     driing: driing.filter(m => m.driing_status === 'pending').length,
-    reports: reports.filter(r => !r.is_validated).length
-      + moderation.pending.length
-      + moderation.removalRequests.length,
+    reports: reports.filter(r => !r.is_validated).length,
     suggestions: suggestions.filter(sg => !sg.treated_at).length,
-  }), [driing, reports, suggestions, moderation, hotesCount])
+  }), [driing, reports, suggestions, hotesCount])
 
   const totalPending = counts.hotes + counts.driing + counts.reports + counts.suggestions
 
@@ -359,25 +342,8 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
         </div>
       )}
 
-      {/* ── REPORTS ──
-          1) ModerationQueue : signalements PUBLICS (opt-in anonymisé) en
-             attente de modération + demandes de retrait. Couvre le SLA 48h
-             et expose le bouton "Forcer rebuild" du site statique.
-          2) SignalementsAdmin embedded : console privée historique (KPIs,
-             filtres En attente/Validés, édition d'identifiant, Valider/Supprimer).
-          Les deux apparaissent dans la même tab "Signalements" pour
-          centraliser tout l'admin signalement au même endroit. */}
-      {tab === 'reports' && (
-        <>
-          <ModerationQueue
-            pending={moderation.pending}
-            removalRequests={moderation.removalRequests}
-            approved={moderation.approved ?? []}
-            approvedCount={moderation.approvedCount}
-          />
-          <SignalementsAdmin initialReports={reports} embedded />
-        </>
-      )}
+      {/* ── REPORTS ── console des signalements (validation avant d'apparaître dans la base) */}
+      {tab === 'reports' && <SignalementsAdmin initialReports={reports} embedded />}
 
       {/* ── SUGGESTIONS ── */}
       {tab === 'suggestions' && (

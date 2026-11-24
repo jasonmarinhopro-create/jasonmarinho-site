@@ -24,7 +24,7 @@ export interface MyReport {
   incident_type: string
   reported_at: string
   positive: boolean
-  statut: 'relecture' | 'valide' | 'publie' | 'refuse'
+  statut: 'relecture' | 'valide' | 'refuse'
 }
 
 export interface UpcomingGuest {
@@ -89,7 +89,6 @@ const VERDICT: Record<Verdict, { color: string; bg: string; border: string; icon
 const STATUT: Record<MyReport['statut'], { label: string; color: string; bg: string }> = {
   relecture: { label: 'En relecture', color: AMBER, bg: 'rgba(255,213,107,0.16)' },
   valide: { label: 'Visible par les hôtes', color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
-  publie: { label: 'Publié anonymisé', color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
   refuse: { label: 'Non retenu', color: 'var(--text-3)', bg: 'var(--bg-2)' },
 }
 
@@ -134,7 +133,7 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
   // ── Signaler / témoigner ────────────────────────────────────────────
   const formRef = useRef<HTMLDivElement>(null)
   const [mode, setMode] = useState<'probleme' | 'positif' | null>(prefill ? 'probleme' : null)
-  const emptyForm = { email: '', phone: '', full_name: '', incident_type: '', description: '', make_public: false, public_summary: '', public_city: '' }
+  const emptyForm = { email: '', phone: '', full_name: '', incident_type: '', description: '' }
   const [form, setForm] = useState({ ...emptyForm, ...(prefill ?? {}) })
   const [formError, setFormError] = useState('')
   const [sent, setSent] = useState<'probleme' | 'positif' | null>(null)
@@ -163,7 +162,7 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
     if (!incident) { setFormError('Choisis un motif.'); return }
     setFormError('')
     startSend(async () => {
-      const res = await reportGuest({ ...form, incident_type: incident, make_public: mode === 'probleme' && form.make_public })
+      const res = await reportGuest({ ...form, incident_type: incident })
       if (res.error) { setFormError(res.error); return }
       setSent(mode)
       setMode(null)
@@ -182,7 +181,6 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
       const res = await withdrawMyReport(id)
       setConfirmWithdraw(null)
       if (res.error) { setWithdrawMsg(m => ({ ...m, [id]: res.error! })); return }
-      if (res.requested) { setWithdrawMsg(m => ({ ...m, [id]: 'Publié sur le site : Jason le retire et te confirme par e-mail.' })); return }
       setMine(list => list.filter(r => r.id !== id))
     })
   }
@@ -307,7 +305,7 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
 
           <div style={{ padding: '12px clamp(14px,2vw,20px)', borderTop: '1px solid var(--border)', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 12, color: 'var(--text-3)', lineHeight: 1.5, flex: '1 1 300px' }}>
-              Témoignages d&apos;hôtes relus avant publication. Ce ne sont pas des décisions de justice.
+              Témoignages d&apos;hôtes relus avant d&apos;apparaître dans la base. Ce ne sont pas des décisions de justice.
             </span>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <button type="button" style={ui.btnGhost} onClick={() => openForm('probleme', search.label)}><Warning size={14} /> Signaler ce voyageur</button>
@@ -427,33 +425,6 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
                     </span>
                   </label>
 
-                  {mode === 'probleme' && (
-                    <div style={s.optIn}>
-                      <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={form.make_public} onChange={e => setForm(f => ({ ...f, make_public: e.target.checked }))} style={{ marginTop: 3, accentColor: 'var(--accent-text)', width: 16, height: 16, flexShrink: 0 }} />
-                        <span>
-                          <strong style={{ fontSize: 13.5, color: 'var(--text)' }}>Publier aussi une version anonymisée sur jasonmarinho.com</strong>
-                          <span style={{ display: 'block', fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.5, marginTop: 2 }}>
-                            Pour prévenir les hôtes hors de l&apos;app. Ni nom, ni e-mail, ni téléphone, ni date exacte : seulement ton résumé, relu par Jason.
-                          </span>
-                        </span>
-                      </label>
-                      {form.make_public && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
-                          <textarea
-                            value={form.public_summary}
-                            onChange={e => setForm(f => ({ ...f, public_summary: e.target.value }))}
-                            rows={3}
-                            maxLength={600}
-                            placeholder="Résumé public, sans aucune donnée personnelle (30 caractères minimum)."
-                            aria-label="Résumé public anonymisé"
-                            style={{ ...s.input, resize: 'vertical' }}
-                          />
-                          <input value={form.public_city} onChange={e => setForm(f => ({ ...f, public_city: e.target.value }))} placeholder="Ville (facultatif, sans rue ni quartier)" aria-label="Ville" style={s.input} />
-                        </div>
-                      )}
-                    </div>
-                  )}
 
                   {formError && <p role="alert" style={{ margin: 0, fontSize: 13.5, color: RED, fontWeight: 600 }}>{formError}</p>}
 
@@ -543,8 +514,7 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
           <div style={{ display: 'flex', gap: 10, fontSize: 12, color: 'var(--text-3)', lineHeight: 1.55, padding: '0 4px' }}>
             <Info size={14} style={{ flexShrink: 0, marginTop: 2 }} />
             <span>
-              Base réservée aux membres, traitée selon le RGPD. Une personne signalée peut demander le retrait d&apos;un signalement public sur{' '}
-              <a href="https://jasonmarinho.com/securite/contester-signalement" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-2)' }}>cette page</a>.
+              Base réservée aux membres, traitée selon le RGPD : rien n&apos;est publié sur le site. Une personne signalée peut demander une correction ou un retrait à contact@jasonmarinho.com.
               En cas de litige grave, la base ne remplace pas une plainte ou un avocat.
             </span>
           </div>
@@ -590,7 +560,6 @@ const s: Record<string, React.CSSProperties> = {
     width: '100%', background: 'var(--bg)', border: '1px solid var(--border-2)', borderRadius: 10, padding: '10px 12px',
     fontFamily: 'inherit', fontSize: 14, color: 'var(--text)', outline: 'none', minWidth: 0,
   },
-  optIn: { padding: '12px 14px', borderRadius: 12, background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(183,121,31,0.25)' },
   iconBtn: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-3)', cursor: 'pointer' },
   details: { borderRadius: 12, border: '1px solid var(--border)', background: 'var(--bg)' },
   summary: { display: 'flex', alignItems: 'center', gap: 8, padding: '11px 12px', cursor: 'pointer', fontSize: 13.5, fontWeight: 600, color: 'var(--text)', listStyle: 'none' },

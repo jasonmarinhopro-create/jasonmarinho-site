@@ -96,6 +96,21 @@
   ],
   "redirects": [
     {
+      "source": "/securite/signalements/:path*",
+      "destination": "/services/securite",
+      "permanent": true
+    },
+    {
+      "source": "/securite/signalements",
+      "destination": "/services/securite",
+      "permanent": true
+    },
+    {
+      "source": "/securite/contester-signalement",
+      "destination": "/services/securite",
+      "permanent": true
+    },
+    {
       "source": "/calculateurs",
       "destination": "/services/simulateurs",
       "permanent": true

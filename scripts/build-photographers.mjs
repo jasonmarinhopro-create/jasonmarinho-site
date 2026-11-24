@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Build script : génère l'annuaire public des photographes LCD et les
- * fiches individuelles SEO friendly. Idem pattern build-signalements.
+ * fiches individuelles SEO friendly.
  *
  * - /annuaires/photographes/index.html : liste filtrable (l'annuaire)
  * - /annuaires/photographes/[slug]/index.html : fiche individuelle

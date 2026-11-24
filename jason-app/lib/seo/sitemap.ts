@@ -3,9 +3,9 @@
 // sitemap est un format assez simple pour une extraction par regex.
 //
 // 24/11/2026 (Jason : « je vois encore que 619 pages, fais en sorte que tout
-// soit bien paramétré ») : l'indexation suit les 5 sitemaps déclarés dans
+// soit bien paramétré ») : l’indexation suit les sitemaps déclarés dans
 // robots.txt, pas seulement sitemap.xml. Les fiches des pros (photographes,
-// ménage, dépannage) et les signalements y sont comptés, avec leur famille.
+// ménage, dépannage) y sont comptées, avec leur famille.
 
 export type FamilleSitemap = 'site' | 'pros'
 
@@ -20,7 +20,6 @@ export const SITEMAPS: { file: string; famille: FamilleSitemap }[] = [
   { file: 'sitemap-photographes.xml', famille: 'pros' },
   { file: 'sitemap-menages.xml', famille: 'pros' },
   { file: 'sitemap-depannage.xml', famille: 'pros' },
-  { file: 'sitemap-signalements.xml', famille: 'site' },
 ]
 
 export function parseSitemap(xml: string, famille: FamilleSitemap = 'site'): SitemapEntry[] {

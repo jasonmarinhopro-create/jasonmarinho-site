@@ -4,7 +4,6 @@
 # les étapes vivent ici. Ajouter une étape = une ligne.
 set -e
 node scripts/sync-counts.mjs
-node scripts/build-signalements.mjs
 node scripts/build-photographers.mjs
 node scripts/build-cleaners.mjs
 node scripts/build-depannage.mjs

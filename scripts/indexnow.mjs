@@ -21,7 +21,7 @@ import { execSync } from 'node:child_process'
 
 const HOST = 'jasonmarinho.com'
 const KEY = '865bcb5953fc837fdc237ea257a83fb9'
-const SITEMAPS = ['sitemap.xml', 'sitemap-photographes.xml', 'sitemap-menages.xml', 'sitemap-depannage.xml', 'sitemap-signalements.xml']
+const SITEMAPS = ['sitemap.xml', 'sitemap-photographes.xml', 'sitemap-menages.xml', 'sitemap-depannage.xml']
 const TOUT = process.argv.includes('--tout')
 const A_BLANC = process.argv.includes('--a-blanc')
 const pause = ms => new Promise(r => setTimeout(r, ms))
