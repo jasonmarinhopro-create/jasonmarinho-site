@@ -11,7 +11,7 @@
 // parcours et « Moi » sur deux colonnes.
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import {
   Sun, Path, SquaresFour, UserCircle, ArrowRight, CalendarCheck, MagnifyingGlass,
   Check, Lock, Certificate, BookmarkSimple, NotePencil, BookOpen, Trophy, Target, Sparkle, Clock,
@@ -50,7 +50,17 @@ export default function FormationsHub({ data, initialTab, initialParcours, revis
   suggest: React.ReactNode
 }) {
   const [tab, setTab] = useState<HubTab>(initialTab)
+  const [objectif, setObjectif] = useState<string | null>(initialParcours)
   const pathname = usePathname() ?? '/dashboard/formations'
+  const sp = useSearchParams()
+
+  // L'onglet suit l'adresse (24/11/2026) : un lien vers ?onglet=… sur la même
+  // page changeait l'adresse sans changer l'écran (« rien ne se passe »).
+  useEffect(() => {
+    const t = sp?.get('onglet') as HubTab | null
+    setTab(t && HUB_TABS.some(x => x.key === t) ? t : 'aujourdhui')
+    setObjectif(sp?.get('objectif') ?? null)
+  }, [sp])
 
   useEffect(() => {
     const onPop = () => {
@@ -61,12 +71,14 @@ export default function FormationsHub({ data, initialTab, initialParcours, revis
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
-  function go(t: HubTab) {
+  function go(t: HubTab, obj: string | null = null) {
     setTab(t)
+    setObjectif(obj)
     const url = new URL(window.location.href)
     if (t === 'aujourdhui') url.searchParams.delete('onglet')
     else url.searchParams.set('onglet', t)
-    url.searchParams.delete('objectif')
+    if (obj) url.searchParams.set('objectif', obj)
+    else url.searchParams.delete('objectif')
     window.history.pushState({}, '', url.pathname + url.search)
     window.scrollTo({ top: 0 })
   }
@@ -91,7 +103,7 @@ export default function FormationsHub({ data, initialTab, initialParcours, revis
 
       <div className="fh-body" key={tab}>
         {tab === 'aujourdhui' && <Today data={data} revision={revision} goTab={go} />}
-        {tab === 'parcours' && <Parcours data={data} initial={initialParcours} />}
+        {tab === 'parcours' && <Parcours key={objectif ?? ''} data={data} initial={objectif} />}
         {tab === 'catalogue' && <Catalogue data={data} suggest={suggest} />}
         {tab === 'moi' && <Moi data={data} />}
       </div>
@@ -140,7 +152,7 @@ function FCard({ f, sub }: { f: HubFormation; sub?: string }) {
 
 /* ───────────────────────── Aujourd'hui ───────────────────────── */
 
-function Today({ data, revision, goTab }: { data: HubData; revision: React.ReactNode; goTab: (t: HubTab) => void }) {
+function Today({ data, revision, goTab }: { data: HubData; revision: React.ReactNode; goTab: (t: HubTab, obj?: string | null) => void }) {
   const r = data.resume
   const rf = r ? data.formations.find(f => f.slug === r.slug) : undefined
   const planned = data.actions.filter(a => !a.doneAt && a.dueAt).slice(0, 2)
@@ -251,7 +263,7 @@ function Today({ data, revision, goTab }: { data: HubData; revision: React.React
           </Link>
         ))}
 
-        {current ? <ParcoursMini data={data} slug={current.slug} /> : (
+        {current ? <ParcoursMini data={data} slug={current.slug} onOpen={() => goTab('parcours', current.slug)} /> : (
           <button type="button" className="fh-card fh-row fh-btnrow" onClick={() => goTab('parcours')}>
             <span className="fh-ic"><Path size={18} weight="fill" /></span>
             <span className="fh-row-m"><b>Choisis un parcours</b><small>Un objectif, les formations dans le bon ordre</small></span>
@@ -263,13 +275,13 @@ function Today({ data, revision, goTab }: { data: HubData; revision: React.React
   )
 }
 
-function ParcoursMini({ data, slug }: { data: HubData; slug: string }) {
+function ParcoursMini({ data, slug, onOpen }: { data: HubData; slug: string; onOpen: () => void }) {
   const p = data.parcours.find(x => x.slug === slug)!
   const fs = p.formations.map(s => data.formations.find(f => f.slug === s)).filter(Boolean) as HubFormation[]
   const cur = fs.findIndex(f => f.progress < 100)
   const start = Math.max(0, Math.min(cur < 0 ? 0 : cur - 1, fs.length - 3))
   return (
-    <Link href={`/dashboard/formations?onglet=parcours&objectif=${p.slug}`} prefetch={false} className="fh-card" style={{ textDecoration: 'none' }}>
+    <button type="button" onClick={onOpen} className="fh-card fh-btnrow" style={{ textDecoration: 'none' }}>
       <span className="fh-sec" style={{ marginTop: 0 }}>Ton parcours · {PARCOURS_SHORT[p.slug] ?? p.title}</span>
       <div className="fh-path">
         {fs.slice(start, start + 3).map((f, k) => {
@@ -283,7 +295,7 @@ function ParcoursMini({ data, slug }: { data: HubData; slug: string }) {
         })}
       </div>
       <span className="fh-more">Voir le parcours ({fs.filter(f => f.progress >= 100).length}/{fs.length}) <ArrowRight size={13} weight="bold" /></span>
-    </Link>
+    </button>
   )
 }
 
