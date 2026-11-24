@@ -24,6 +24,11 @@ on:
         description: 'Nombre d’ouvertures de chaque page (2 = compare 1re et 2e ouverture)'
         required: false
         default: '1'
+      net:
+        description: 'Relever les pages que chaque page fait calculer (préchargements)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -50,5 +55,6 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ONLY: ${{ inputs.only }}
           REPEAT: ${{ inputs.repeat }}
+          NET: ${{ inputs.net && '1' || '' }}
         run: |
-          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --repeat "${REPEAT:-1}" --out /tmp/audit.json
+          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --repeat "${REPEAT:-1}" ${NET:+--net} --out /tmp/audit.json

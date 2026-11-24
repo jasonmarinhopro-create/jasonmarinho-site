@@ -42,6 +42,9 @@ const CONC = Number(opt('--conc', MODE === 'app' ? '2' : '6'))
 // --repeat N (24/11/2026) : chaque page ouverte N fois, pour distinguer une
 // lenteur réelle d'un premier chargement à froid (1re ouverture vs suivantes).
 const REPEAT = Math.max(1, Number(opt('--repeat', '1')) || 1)
+// Relevé des requêtes de pages (RSC) faites par la page affichée (24/11/2026) :
+// quelles autres pages elle fait calculer au serveur (préchargements des liens).
+const NET = process.argv.includes('--net')
 const ADMIN_EMAIL = 'djason.marinho@gmail.com' // même constante que jason-app/lib/queries/profile.ts
 
 // Faux positifs connus, jamais signalés
@@ -172,6 +175,7 @@ async function main() {
     if (REPEAT > 1) { const once = [...jobs]; for (let k = 1; k < REPEAT; k++) jobs.push(...once) }
   }
   const seenPass = new Map()
+  const netLog = []
   const dynamicSeen = new Set()
   const dynamicFrom = new Set()
 
@@ -191,6 +195,14 @@ async function main() {
       // Page neuve à chaque adresse : une redirection côté navigateur de la
       // page précédente ne peut plus interrompre la suivante (1er audit du 20/11)
       const page = await ctx.newPage()
+      const rsc = []
+      if (NET && MODE === 'app') {
+        page.on('request', req => {
+          const h = req.headers()
+          if (!h['rsc'] && !h['next-router-prefetch']) return
+          rsc.push(`${pattern(req.url())}${h['next-router-prefetch'] ? ' (préchargement)' : ''}`)
+        })
+      }
       try {
         await page.setViewportSize({ width: WIDTHS[0], height: 900 })
         let resp = await page.goto(u, { waitUntil: 'load', timeout: 60_000 }).catch(async e => {
@@ -223,6 +235,7 @@ async function main() {
         }
         // Ouvertures suivantes : seul le temps compte (les défauts sont déjà relevés)
         if (pass > 1) { results.push({ u: MODE === 'app' ? pattern(page.url()) : page.url(), w: 0, pass, status: resp?.status(), ttfb, loadMs, timing: true }); await page.close().catch(() => {}); continue }
+        if (NET && MODE === 'app') netLog.push({ u: pattern(u), rsc: [...rsc] })
         for (const w of WIDTHS) {
           if (w !== WIDTHS[0]) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(450) }
           const r = await page.evaluate(`(${detect.toString()})(true)`)
@@ -246,6 +259,11 @@ async function main() {
   await browser.close()
   await closeSession()
   report(results, stuck)
+  if (NET) {
+    const lines = ['### Requêtes de pages faites par chaque page (--net)', '']
+    for (const n of netLog) lines.push(`- ${n.u} : ${n.rsc.length ? n.rsc.join(', ') : 'aucune'}`)
+    console.log(lines.join('\n'))
+  }
 }
 
 function report(results, stuck = new Set()) {
