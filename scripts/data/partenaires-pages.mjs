@@ -115,10 +115,21 @@ export const PAGES = [
       { icon: 'globe', k: 'Le cœur du produit', v: 'Ton site, sans coder' },
       { icon: 'plugs-connected', k: 'Channel manager', v: 'Airbnb, Booking, Vrbo, Expedia' },
       { icon: 'calendar-check', k: 'Pour tester', v: 'Essai 7 jours et démo gratuite' },
-      { icon: 'tag', k: 'Code promo', v: '-15 % avec JASON15', href: '/code-promo-lodgify' },
+      { icon: 'tag', k: 'Code promo', v: '-15 % avec JASON15', vBf: '-65 % avec JASON65', href: '/code-promo-lodgify' },
     ],
     // Black Friday Lodgify (e-mail de Lodgify du 30/10/2026), affiché entre ces deux dates
-    bf: { du: '2026-11-12T00:00:00+01:00', au: '2026-12-13T00:00:00+01:00', texte: '<strong>Black Friday :</strong> -65 % avec le code JASON65 jusqu\'au 12 décembre, sur Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. <a href="/code-promo-lodgify">Voir l\'offre</a>' },
+    // Jason (24/11/2026) : le code Black Friday passe devant JASON15 pendant l'offre,
+    // JASON15 revient seul le 13/12 (titre, accroche, coupon, carte, encadré du bas).
+    bf: {
+      du: '2026-11-12T00:00:00+01:00', au: '2026-12-13T00:00:00+01:00',
+      code: 'JASON65', pct: '-65 %', pctSous: 'Black Friday',
+      points: ['Offre valable jusqu\'au 12 décembre inclus, puis JASON15 reprend'],
+      tag: 'Black Friday · jusqu\'au 12 décembre',
+      sous: 'Sur Professional et Ultimate, en paiement annuel ou tous les 2 ans, pour les nouveaux clients. Ajoute le code au paiement.',
+      h1: 'Lodgify : ton site de réservation directe, <em>-65 % pour le Black Friday</em>',
+      lead: "Lodgify te donne ton propre site de réservation, relié à Airbnb, Booking.com et Vrbo, sans rien coder. Jusqu'au 12 décembre, le code Black Friday JASON65 remplace mon code habituel JASON15 : c'est le moment de te lancer.",
+      texte: '-65 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, pour les nouveaux clients, jusqu\'au 12 décembre inclus. Ensuite, le code JASON15 reprend. <a href="/code-promo-lodgify">Conditions</a> · <a href="/lodgify-avis">Mon avis sur Lodgify</a>',
+    },
     pourquoi: {
       titre: 'Pourquoi je recommande <em>Lodgify</em>',
       items: [

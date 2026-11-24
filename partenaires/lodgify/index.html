@@ -160,6 +160,7 @@
   .cp-r{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 22px;background:var(--cr);border-left:2px dashed rgba(0,76,63,.22);min-width:132px;text-align:center}
   .cp-pct{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2.2rem,4vw,2.8rem);line-height:1;color:var(--g)}
   .cp-r small{font-size:12px;color:var(--tl);margin-top:6px}
+  [data-bf][hidden],[data-nbf][hidden]{display:none!important}
   .cp.bf{background:var(--yl)}
   .cp.bf .cp-r{background:var(--y);border-left-color:rgba(61,46,0,.25)}
   .cp.bf .cp-pct{color:var(--gd)}
@@ -457,11 +458,19 @@
       </nav>
       <div class="duo" aria-hidden="true"><span class="lg">L</span><span class="x">×</span><span class="jm">JM</span></div>
       <span class="lbl"><i class="ph-bold ph-handshake"></i>Partenaire · Site de réservation directe</span>
-      <h1 class="h1">Lodgify : ton site de réservation directe, <em>15 % moins cher</em></h1>
-      <p class="lead">Lodgify te donne ton propre site de réservation, relié à Airbnb, Booking.com et Vrbo, sans rien coder. C'est l'outil que je conseille aux hôtes qui veulent moins dépendre des plateformes, et Lodgify a créé pour toi le code JASON15.</p>
+      <h1 class="h1"><span data-nbf hidden>Lodgify : ton site de réservation directe, <em>15 % moins cher</em></span><span data-bf>Lodgify : ton site de réservation directe, <em>-65 % pour le Black Friday</em></span></h1>
+      <p class="lead"><span data-nbf hidden>Lodgify te donne ton propre site de réservation, relié à Airbnb, Booking.com et Vrbo, sans rien coder. C'est l'outil que je conseille aux hôtes qui veulent moins dépendre des plateformes, et Lodgify a créé pour toi le code JASON15.</span><span data-bf>Lodgify te donne ton propre site de réservation, relié à Airbnb, Booking.com et Vrbo, sans rien coder. Jusqu'au 12 décembre, le code Black Friday JASON65 remplace mon code habituel JASON15 : c'est le moment de te lancer.</span></p>
     </div>
     <aside class="offer2" aria-label="Offre Lodgify">
-      <div class="cp" id="code">
+      <div class="cp bf" data-bf>
+        <div class="cp-l">
+          <span class="cp-tag"><i class="ph-bold ph-timer"></i> Black Friday · jusqu'au 12 décembre</span>
+          <div class="cp-code"><strong>JASON65</strong><button type="button" class="copy" data-copy="JASON65"><i class="ph ph-copy"></i><span>Copier</span></button></div>
+          <p class="cp-sub">Sur Professional et Ultimate, en paiement annuel ou tous les 2 ans, pour les nouveaux clients. Ajoute le code au paiement.</p>
+        </div>
+        <div class="cp-r"><div class="cp-pct">-65 %</div><small>Black Friday</small></div>
+      </div>
+      <div class="cp" id="code" data-nbf hidden>
         <div class="cp-l">
           <span class="cp-tag"><i class="ph-bold ph-gift"></i> Offre partenaire</span>
           <div class="cp-code"><strong>JASON15</strong><button type="button" class="copy" data-copy="JASON15"><i class="ph ph-copy"></i><span>Copier</span></button></div>
@@ -470,7 +479,7 @@
         <div class="cp-r"><div class="cp-pct">-15 %</div><small>sur ton abonnement</small></div>
       </div>
       <ul class="pts">
-        <li><i class="ph-bold ph-check-circle"></i><span>Code valable jusqu'au 1er octobre 2027</span></li>
+        <li><i class="ph-bold ph-check-circle"></i><span><span data-nbf hidden>Code valable jusqu'au 1er octobre 2027</span><span data-bf>Offre valable jusqu'au 12 décembre inclus, puis JASON15 reprend</span></span></li>
         <li><i class="ph-bold ph-check-circle"></i><span>Essai gratuit de 7 jours pour tester avant de payer</span></li>
         <li><i class="ph-bold ph-check-circle"></i><span>Démo gratuite avec un conseiller qui applique le code</span></li>
       </ul>
@@ -486,7 +495,7 @@
   <div class="fact"><i class="ph-bold ph-globe"></i><span>Le cœur du produit</span><b>Ton site, sans coder</b></div>
   <div class="fact"><i class="ph-bold ph-plugs-connected"></i><span>Channel manager</span><b>Airbnb, Booking, Vrbo, Expedia</b></div>
   <div class="fact"><i class="ph-bold ph-calendar-check"></i><span>Pour tester</span><b>Essai 7 jours et démo gratuite</b></div>
-  <div class="fact"><i class="ph-bold ph-tag"></i><span>Code promo</span><b><a href="/code-promo-lodgify">-15 % avec JASON15</a></b></div>
+  <div class="fact"><i class="ph-bold ph-tag"></i><span>Code promo</span><b><a href="/code-promo-lodgify"><span data-nbf hidden>-15 % avec JASON15</span><span data-bf>-65 % avec JASON65</span></a></b></div>
 </div>
 
 <section id="pourquoi">
@@ -557,11 +566,12 @@
 
 <section id="essayer">
   <div class="go">
-    <h3>-15 % avec JASON15</h3>
-    <p>sur Professional et Ultimate, en paiement annuel ou tous les 2 ans.</p>
+    <h3><span data-nbf hidden>-15 % avec JASON15</span><span data-bf>-65 % avec JASON65</span></h3>
+    <p><span data-nbf hidden>sur Professional et Ultimate, en paiement annuel ou tous les 2 ans.</span><span data-bf>Sur Professional et Ultimate, en paiement annuel ou tous les 2 ans, pour les nouveaux clients. Ajoute le code au paiement.</span></p>
     <div class="cta-row"><a href="https://app.lodgify.com/signup/fr/?afmc=ui1" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Essai gratuit 7 jours</a><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Réserver une démo gratuite</a></div>
-    <div class="code"><strong>JASON15</strong><span>-15 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, jusqu'au 1er octobre 2027. <a href="/code-promo-lodgify">Conditions du code</a> · <a href="/lodgify-avis">Mon avis sur Lodgify</a></span></div>
-    <p class="bfl" data-bf data-bf-from="2026-11-12T00:00:00+01:00" data-bf-to="2026-12-13T00:00:00+01:00" hidden><strong>Black Friday :</strong> -65 % avec le code JASON65 jusqu'au 12 décembre, sur Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. <a href="/code-promo-lodgify">Voir l'offre</a></p>
+    <div class="code" data-bf><strong>JASON65</strong><span>-65 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, pour les nouveaux clients, jusqu'au 12 décembre inclus. Ensuite, le code JASON15 reprend. <a href="/code-promo-lodgify">Conditions</a> · <a href="/lodgify-avis">Mon avis sur Lodgify</a></span></div>
+    <div class="code" data-nbf hidden><strong>JASON15</strong><span>-15 % sur Professional et Ultimate en paiement annuel ou tous les 2 ans, jusqu'au 1er octobre 2027. <a href="/code-promo-lodgify">Conditions du code</a> · <a href="/lodgify-avis">Mon avis sur Lodgify</a></span></div>
+    
     <p class="aff-n">Lien affilié : Lodgify me verse une commission si tu t'abonnes, sans aucun surcoût pour toi. <a href="/code-promo-lodgify" style="color:inherit;text-decoration:underline">Conditions du code</a>.</p>
   </div>
 </section>
@@ -611,10 +621,9 @@ document.addEventListener('click', function(e){
 <script>
 (function(){
   try {
-    var now = Date.now();
-    document.querySelectorAll('[data-bf]').forEach(function(el){
-      if (now >= Date.parse(el.getAttribute('data-bf-from')) && now < Date.parse(el.getAttribute('data-bf-to'))) el.hidden = false;
-    });
+    var now = Date.now(), on = now >= Date.parse('2026-11-12T00:00:00+01:00') && now < Date.parse('2026-12-13T00:00:00+01:00');
+    document.querySelectorAll('[data-bf]').forEach(function(el){ el.hidden = !on; });
+    document.querySelectorAll('[data-nbf]').forEach(function(el){ el.hidden = on; });
   } catch (e) {}
 })();
 </script>

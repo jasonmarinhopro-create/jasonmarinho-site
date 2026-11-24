@@ -337,6 +337,7 @@ const CSS2 = `
   .cp-r{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 22px;background:var(--cr);border-left:2px dashed rgba(0,76,63,.22);min-width:132px;text-align:center}
   .cp-pct{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2.2rem,4vw,2.8rem);line-height:1;color:var(--g)}
   .cp-r small{font-size:12px;color:var(--tl);margin-top:6px}
+  [data-bf][hidden],[data-nbf][hidden]{display:none!important}
   .cp.bf{background:var(--yl)}
   .cp.bf .cp-r{background:var(--y);border-left-color:rgba(61,46,0,.25)}
   .cp.bf .cp-pct{color:var(--gd)}
@@ -631,14 +632,21 @@ function pageV2(p) {
     const ic = yes ? 'check' : part ? 'minus' : 'info'
     return `<span class="r ${cls}"><i class="ph-bold ph-${ic}"></i><span>${c}</span></span>`
   }
-  const bfLine = p.bf ? `<p class="bfl" data-bf data-bf-from="${p.bf.du}" data-bf-to="${p.bf.au}" hidden>${p.bf.texte}</p>` : ''
+  // Offre temporaire (Black Friday) : si p.bf.code, le coupon, le titre, l'accroche,
+  // la carte « Code promo » et l'encadré du bas passent au code temporaire entre
+  // p.bf.du et p.bf.au, puis reviennent seuls au code habituel (script en bas de
+  // page). La page est écrite dans l'état du jour de la génération, le script corrige.
+  const bfNow = Date.now()
+  const bfOn = !!(p.bf && bfNow >= Date.parse(p.bf.du) && bfNow < Date.parse(p.bf.au))
+  const bfAttr = (promo) => promo ? `data-bf${bfOn ? '' : ' hidden'}` : `data-nbf${bfOn ? ' hidden' : ''}`
+  const bfSwap = (normal, promo, tag = 'span') => (p.bf && p.bf.code && promo) ? `<${tag} ${bfAttr(false)}>${normal}</${tag}><${tag} ${bfAttr(true)}>${promo}</${tag}>` : normal
+  const bfLine = p.bf && !p.bf.code ? `<p class="bfl" data-bf data-bf-from="${p.bf.du}" data-bf-to="${p.bf.au}" hidden>${p.bf.texte}</p>` : ''
   const bfScript = p.bf ? `<script>
 (function(){
   try {
-    var now = Date.now();
-    document.querySelectorAll('[data-bf]').forEach(function(el){
-      if (now >= Date.parse(el.getAttribute('data-bf-from')) && now < Date.parse(el.getAttribute('data-bf-to'))) el.hidden = false;
-    });
+    var now = Date.now(), on = now >= Date.parse('${p.bf.du}') && now < Date.parse('${p.bf.au}');
+    document.querySelectorAll('[data-bf]').forEach(function(el){ el.hidden = !on; });
+    document.querySelectorAll('[data-nbf]').forEach(function(el){ el.hidden = on; });
   } catch (e) {}
 })();
 </script>` : ''
@@ -665,11 +673,19 @@ document.addEventListener('click', function(e){
       </nav>
       <div class="duo" aria-hidden="true"><span class="lg">${p.mono}</span><span class="x">×</span><span class="jm">JM</span></div>
       <span class="lbl"><i class="ph-bold ph-handshake"></i>${p.eyebrow}</span>
-      <h1 class="h1">${p.h1}</h1>
-      <p class="lead">${p.lead}</p>
+      <h1 class="h1">${bfSwap(p.h1, p.bf && p.bf.h1)}</h1>
+      <p class="lead">${bfSwap(p.lead, p.bf && p.bf.lead)}</p>
     </div>
     <aside class="offer2" aria-label="Offre ${p.nom}">
-      ${o.code ? `<div class="cp" id="code">
+      ${p.bf && p.bf.code ? `<div class="cp bf" ${bfAttr(true)}>
+        <div class="cp-l">
+          <span class="cp-tag"><i class="ph-bold ph-timer"></i> ${p.bf.tag}</span>
+          <div class="cp-code"><strong>${p.bf.code}</strong><button type="button" class="copy" data-copy="${p.bf.code}"><i class="ph ph-copy"></i><span>Copier</span></button></div>
+          <p class="cp-sub">${p.bf.sous}</p>
+        </div>
+        <div class="cp-r"><div class="cp-pct">${p.bf.pct}</div><small>${p.bf.pctSous}</small></div>
+      </div>` : ''}
+      ${o.code ? `<div class="cp" id="code"${p.bf && p.bf.code ? ` ${bfAttr(false)}` : ''}>
         <div class="cp-l">
           <span class="cp-tag"><i class="ph-bold ph-gift"></i> Offre partenaire</span>
           <div class="cp-code"><strong${o.code.length > 9 ? ' class="long"' : ''}>${o.code}</strong><button type="button" class="copy" data-copy="${o.code}"><i class="ph ph-copy"></i><span>Copier</span></button></div>
@@ -678,7 +694,7 @@ document.addEventListener('click', function(e){
         <div class="cp-r">${o.pct ? `<div class="cp-pct">${o.pct}</div>` : '<div class="cp-pct"><i class="ph-bold ph-tag"></i></div>'}<small>${o.pctSous}</small></div>
       </div>` : `<div class="vcard ofc"><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">${o.titre}</p><p class="ofc-s">${o.sous}</p></div>`}
       <ul class="pts">
-${o.points.map(t => `        <li><i class="ph-bold ph-check-circle"></i><span>${t}</span></li>`).join('\n')}
+${o.points.map((t, i) => `        <li><i class="ph-bold ph-check-circle"></i><span>${bfSwap(t, p.bf && p.bf.points && p.bf.points[i])}</span></li>`).join('\n')}
       </ul>
       <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
       <p class="note2">${o.note}</p>
@@ -689,7 +705,7 @@ ${o.points.map(t => `        <li><i class="ph-bold ph-check-circle"></i><span>${
 <main class="bf-skip">
 ${p.faits ? `
 <div class="facts">
-${p.faits.map(f => `  <div class="fact"><i class="ph-bold ph-${f.icon}"></i><span>${f.k}</span><b>${f.href ? `<a href="${f.href}">${f.v}</a>` : f.v}</b></div>`).join('\n')}
+${p.faits.map(f => `  <div class="fact"><i class="ph-bold ph-${f.icon}"></i><span>${f.k}</span><b>${f.href ? `<a href="${f.href}">${bfSwap(f.v, f.vBf)}</a>` : bfSwap(f.v, f.vBf)}</b></div>`).join('\n')}
 </div>
 ` : '<div class="nofacts"></div>'}
 <section id="pourquoi">
@@ -744,10 +760,11 @@ ${p.limites.map(t => `    <div class="er"><b><i class="ph-bold ph-warning-circle
 
 <section id="essayer">
   <div class="go">
-    <h3>${o.titre}</h3>
-    <p>${o.sous}.</p>
+    <h3>${bfSwap(o.titre, p.bf && p.bf.code && `${p.bf.pct} avec ${p.bf.code}`)}</h3>
+    <p>${bfSwap(`${o.sous}.`, p.bf && p.bf.code && `${p.bf.sous}`)}</p>
     <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
-    ${o.code ? `<div class="code"><strong>${o.code}</strong><span>${o.codeTexte}</span></div>` : ''}
+    ${p.bf && p.bf.code ? `<div class="code" ${bfAttr(true)}><strong>${p.bf.code}</strong><span>${p.bf.texte}</span></div>` : ''}
+    ${o.code ? `<div class="code"${p.bf && p.bf.code ? ` ${bfAttr(false)}` : ''}><strong>${o.code}</strong><span>${o.codeTexte}</span></div>` : ''}
     ${bfLine}
     <p class="aff-n">${o.note}</p>
   </div>
