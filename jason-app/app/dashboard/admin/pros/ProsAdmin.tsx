@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {
   Briefcase, Camera, Broom, Wrench, Star, Eye, ChatCircle, CursorClick, MagnifyingGlass, X,
   SquaresFour, Rows, ArrowSquareOut, PresentationChart, UserCircle, EyeSlash, Trash, CheckCircle,
-  Warning, MapPin, CurrencyEur, Clock, Prohibit, Flask,
+  Warning, MapPin, CurrencyEur, Clock, Prohibit, Flask, Info, ClockCounterClockwise,
 } from '@phosphor-icons/react/dist/ssr'
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import { AMBER, PINK, BROWN, tint } from '../_ui/theme'
@@ -14,7 +14,7 @@ import InlineStyle from '@/components/ui/InlineStyle'
 import RelativeTime from '@/components/ui/RelativeTime'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import { METIERS, type ProKind } from '@/lib/pros/metiers'
-import { filterPros, sortPros, prosKpis, type AdminPro, type ProEtat, type ProFiltre, type ProTri } from '@/lib/pros/admin-list'
+import { filterPros, sortPros, prosKpis, isCounted, type AdminPro, type ProEtat, type ProFiltre, type ProTri } from '@/lib/pros/admin-list'
 import { setProHidden, deleteUnpaidPro } from './actions'
 
 const RUST = '#A4502A'
@@ -78,7 +78,8 @@ export default function ProsAdmin({ pros: initial, demo, errors, initialKind }: 
   const kpis = useMemo(() => prosKpis(pros, kind), [pros, kind])
   const list = useMemo(() => sortPros(filterPros(pros, { kind, filtre, q }), tri), [pros, kind, filtre, q, tri])
   const open = pros.find(p => p.id === openId) ?? demo.find(p => p.id === openId) ?? null
-  const count = (k: ProKind | 'tous') => pros.filter(p => k === 'tous' || p.kind === k).length
+  // Paiements à finaliser hors des comptes (Jason, 24/11/2026)
+  const count = (k: ProKind | 'tous') => pros.filter(p => isCounted(p) && (k === 'tous' || p.kind === k)).length
 
   const tabs = (['tous', 'photographer', 'cleaner', 'depannage'] as const).map(k => {
     const ui = k === 'tous' ? { label: 'Tous les pros', Icon: Briefcase } : KIND_UI[k]
@@ -97,9 +98,9 @@ export default function ProsAdmin({ pros: initial, demo, errors, initialKind }: 
   const etats: Array<{ f: ProFiltre; label: string; value: number; color: string; Icon: typeof Camera }> = [
     { f: 'active', label: 'en ligne', value: kpis.enLigne, color: 'var(--accent-text)', Icon: CheckCircle },
     { f: 'fondateur', label: 'Fondateur', value: kpis.fondateurs, color: AMBER, Icon: Star },
-    { f: 'pending_payment', label: 'paiement à finaliser', value: kpis.aFinaliser, color: AMBER, Icon: Clock },
     { f: 'hidden', label: 'masquées', value: kpis.masquees, color: 'var(--text-3)', Icon: EyeSlash },
     { f: 'cancelled', label: 'résiliées', value: kpis.resiliees, color: 'var(--danger)', Icon: Prohibit },
+    { f: 'pending_payment', label: 'paiements à finaliser', value: kpis.aFinaliser, color: AMBER, Icon: Clock },
   ]
 
   return (
@@ -125,6 +126,11 @@ export default function ProsAdmin({ pros: initial, demo, errors, initialKind }: 
                 </div>
               )
             })}
+            {kpis.placesEnAttente > 0 && (
+              <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
+                Dont {kpis.placesEnAttente} inscription{kpis.placesEnAttente > 1 ? 's' : ''} non payée{kpis.placesEnAttente > 1 ? 's' : ''} (place gardée 7 jours).
+              </span>
+            )}
             <span style={{ fontSize: 12.5, color: 'var(--text-3)', marginTop: 4 }}>
               Revenu des fiches payées : <strong style={{ color: 'var(--accent-text)' }}>{euros(kpis.annual)}</strong> par an
             </span>
@@ -141,11 +147,13 @@ export default function ProsAdmin({ pros: initial, demo, errors, initialKind }: 
       <div className="pa-kpis" style={s.kpis}>
         {etats.map(({ f, label, value, color, Icon }) => {
           const active = filtre === f
+          // Paiements à finaliser : tuile à part, en pointillés (hors des chiffres)
+          const apart = f === 'pending_payment'
           return (
-            <button key={f} type="button" onClick={() => setFiltre(active ? 'tous' : f)} aria-pressed={active} style={{
+            <button key={f} type="button" onClick={() => setFiltre(active ? 'tous' : f)} aria-pressed={active} title={apart ? 'Inscriptions jamais payées, hors des chiffres' : undefined} style={{
               ...s.kpi,
-              border: active ? '1px solid var(--accent-border)' : '1px solid var(--border)',
-              background: active ? 'var(--accent-bg)' : 'var(--surface)',
+              border: active ? '1px solid var(--accent-border)' : apart ? '1px dashed var(--border-2)' : '1px solid var(--border)',
+              background: active ? 'var(--accent-bg)' : apart ? 'transparent' : 'var(--surface)',
             }}>
               <Icon size={17} weight="fill" color={color} />
               <span style={{ ...s.kpiNum, color }}>{value}</span>
@@ -172,13 +180,20 @@ export default function ProsAdmin({ pros: initial, demo, errors, initialKind }: 
         </div>
       </div>
 
+      {filtre === 'pending_payment' && (
+        <div style={s.note}>
+          <Info size={16} weight="fill" color={AMBER} style={{ flexShrink: 0, marginTop: 1 }} />
+          <span>Inscriptions jamais payées : elles ne comptent ni dans les fiches ni dans les chiffres. Une inscription Fondateur garde sa place 7 jours, puis la libère. Tu peux supprimer celles qui ne reviendront pas.</span>
+        </div>
+      )}
+
       {filtre !== 'tous' || q ? (
-        <p style={s.count}>{list.length} fiche{list.length > 1 ? 's' : ''} sur {kpis.total}{filtre !== 'tous' && <> · <button type="button" onClick={() => { setFiltre('tous'); setQ('') }} style={s.reset}>tout afficher</button></>}</p>
+        <p style={s.count}>{list.length} fiche{list.length > 1 ? 's' : ''}{filtre === 'pending_payment' ? '' : ` sur ${kpis.total}`}{filtre !== 'tous' && <> · <button type="button" onClick={() => { setFiltre('tous'); setQ('') }} style={s.reset}>tout afficher</button></>}</p>
       ) : null}
 
       {list.length === 0 ? (
         <div style={s.empty}>
-          {pros.length === 0 && !errors.length ? 'Aucune inscription pour l’instant. Les 20 places Fondateur de chaque métier sont libres.' : 'Aucune fiche ne correspond.'}
+          {pros.filter(isCounted).length === 0 && filtre === 'tous' && !q && !errors.length ? 'Aucune inscription pour l’instant. Les 20 places Fondateur de chaque métier sont libres.' : 'Aucune fiche ne correspond.'}
         </div>
       ) : vue === 'grille' ? (
         <div className="pa-grid">
@@ -239,28 +254,48 @@ function EtatBadge({ etat, solid }: { etat: ProEtat; solid?: boolean }) {
   )
 }
 
+function demandesTip(p: AdminPro): string | undefined {
+  if (!p.demandes) return undefined
+  const { fiche, trouver, enAttente } = p.demandes
+  if (!fiche && !trouver) return 'Aucune demande reçue'
+  const parts = [`${fiche} depuis sa fiche`, `${trouver} par Trouver un pro`]
+  return parts.join(', ') + (enAttente ? `, ${enAttente} pas encore ouverte${enAttente > 1 ? 's' : ''}` : '')
+}
+
 function Card({ p, onOpen, showKind }: { p: AdminPro; onOpen: () => void; showKind: boolean }) {
   const ui = KIND_UI[p.kind]
+  const M = METIERS[p.kind]
   return (
-    <button type="button" onClick={onOpen} className="pa-card" style={s.card} aria-label={`Ouvrir la fiche de ${p.name}`}>
-      <div style={{ position: 'relative' }}>
-        <Cover p={p} size="lg" />
-        <span style={{ position: 'absolute', top: 10, left: 10, right: p.tier === 'fondateur' ? 48 : 10, display: 'flex' }}><EtatBadge etat={p.etat} solid /></span>
-        {p.tier === 'fondateur' && <span style={s.founder} title="Tarif Fondateur" aria-label="Fondateur"><Star size={12} weight="fill" /><span className="pa-ft">Fondateur</span></span>}
-      </div>
-      <div style={s.cardBody}>
-        {showKind && <span style={{ ...s.kind, color: ui.color }}><ui.Icon size={13} weight="fill" /> {ui.label}</span>}
-        <span style={s.cardName}>{p.name}</span>
-        <span style={s.cardMeta}><MapPin size={13} /> {p.ville || 'Ville non renseignée'}{p.villes > 1 ? ` · ${p.villes} villes` : ''}</span>
-        {p.detail && <span style={s.cardDetail}>{p.detail}</span>}
-        <div style={s.cardStats}>
-          <span title="Vues de la fiche"><Eye size={14} /> {fr(p.views)}</span>
-          <span title="Demandes reçues"><ChatCircle size={14} /> {fr(p.contacts)}</span>
-          <span title="Clics vers son site ou ses réseaux"><CursorClick size={14} /> {fr(p.clicks)}</span>
+    <div className="pa-card" style={s.card}>
+      <button type="button" onClick={onOpen} style={s.cardMain} aria-label={`Ouvrir la fiche de ${p.name}`}>
+        <div style={{ position: 'relative' }}>
+          <Cover p={p} size="lg" />
+          <span style={{ position: 'absolute', top: 10, left: 10, right: p.tier === 'fondateur' ? 48 : 10, display: 'flex' }}><EtatBadge etat={p.etat} solid /></span>
+          {p.tier === 'fondateur' && <span style={s.founder} title="Tarif Fondateur" aria-label="Fondateur"><Star size={12} weight="fill" /><span className="pa-ft">Fondateur</span></span>}
         </div>
-        <span style={s.cardFoot}>Inscrit <RelativeTime iso={p.createdAt} /></span>
+        <div style={s.cardBody}>
+          {showKind && <span style={{ ...s.kind, color: ui.color }}><ui.Icon size={13} weight="fill" /> {ui.label}</span>}
+          <span style={s.cardName}>{p.name}</span>
+          <span style={s.cardMeta}><MapPin size={13} /> {p.ville || 'Ville non renseignée'}{p.villes > 1 ? ` · ${p.villes} villes` : ''}</span>
+          {p.detail && <span style={s.cardDetail}>{p.detail}</span>}
+          <div style={s.cardStats}>
+            <span className="pa-tip" data-tip="Vues de la fiche"><Eye size={14} /> {fr(p.views)}</span>
+            <span className="pa-tip" data-tip={demandesTip(p) ?? 'Demandes reçues'}><ChatCircle size={14} /> {fr(p.contacts)}</span>
+            <span className="pa-tip" data-tip="Clics vers son site ou ses réseaux"><CursorClick size={14} /> {fr(p.clicks)}</span>
+          </div>
+          <span style={s.cardFoot}>
+            <ClockCounterClockwise size={13} />
+            {p.lastSeenAt ? <>Vu <RelativeTime iso={p.lastSeenAt} /></> : <>Jamais revenu dans l’app</>}
+          </span>
+        </div>
+      </button>
+      <div style={s.cardActions}>
+        {p.slug && p.etat === 'active'
+          ? <a href={`${SITE}${M.fiche(p.slug)}`} target="_blank" rel="noopener noreferrer" style={s.cardAction}><ArrowSquareOut size={14} weight="bold" /> Voir la fiche</a>
+          : <span style={{ ...s.cardAction, color: 'var(--text-3)', cursor: 'default' }} title="La fiche n’est pas en ligne"><EyeSlash size={14} /> Hors ligne</span>}
+        <Link prefetch={false} href={`${M.espace}?id=${p.id}`} style={{ ...s.cardAction, borderLeft: '1px solid var(--border)' }}><UserCircle size={14} weight="bold" /> Son espace</Link>
       </div>
-    </button>
+    </div>
   )
 }
 
@@ -279,9 +314,9 @@ function Line({ p, onOpen }: { p: AdminPro; onOpen: () => void }) {
       <span className="pa-l-etat" style={{ flex: '0 0 170px', display: 'flex', minWidth: 0 }}><EtatBadge etat={p.etat} /></span>
       <span className="pa-l-stats" style={{ ...s.cardStats, flex: '0 0 120px', margin: 0, padding: 0, border: 'none', flexWrap: 'nowrap' }}>
         <span><Eye size={14} /> {fr(p.views)}</span>
-        <span><ChatCircle size={14} /> {fr(p.contacts)}</span>
+        <span className="pa-tip" data-tip={demandesTip(p) ?? 'Demandes reçues'}><ChatCircle size={14} /> {fr(p.contacts)}</span>
       </span>
-      <span className="pa-l-date" style={{ ...s.lineSub, flex: '0 0 110px', textAlign: 'right' }}><RelativeTime iso={p.createdAt} /></span>
+      <span className="pa-l-date" style={{ ...s.lineSub, flex: '0 0 130px', textAlign: 'right' }}>{p.lastSeenAt ? <>Vu <RelativeTime iso={p.lastSeenAt} /></> : 'Jamais revenu'}</span>
     </button>
   )
 }
@@ -335,7 +370,6 @@ function Panel({ p, demo, onClose, onChange, onRemove }: {
     ...(p.detail ? [['Activité', p.detail] as [string, React.ReactNode]] : []),
     ...(p.tarif ? [['Tarif affiché', p.tarif] as [string, React.ReactNode]] : []),
     ['Inscrit le', dateFr(p.createdAt)],
-    ['Dernière mise à jour', dateFr(p.updatedAt)],
   ]
 
   return (
@@ -377,6 +411,37 @@ function Panel({ p, demo, onClose, onChange, onRemove }: {
               <div key={k} style={s.dlRow}><dt style={s.dt}>{k}</dt><dd style={s.dd}>{v}</dd></div>
             ))}
           </dl>
+          {p.demandes && (p.demandes.fiche + p.demandes.trouver) > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <span style={s.panelSection}>D’où viennent ses demandes</span>
+              <div style={s.split}>
+                <div style={{ ...s.splitBar, flex: Math.max(p.demandes.fiche, 0.0001), background: 'var(--accent-text)' }} />
+                <div style={{ ...s.splitBar, flex: Math.max(p.demandes.trouver, 0.0001), background: AMBER }} />
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 16px', fontSize: 13, color: 'var(--text-2)' }}>
+                <span><span style={{ ...s.dot, background: 'var(--accent-text)' }} /> {p.demandes.fiche} depuis sa fiche</span>
+                <span><span style={{ ...s.dot, background: AMBER }} /> {p.demandes.trouver} par Trouver un pro</span>
+                {p.demandes.enAttente > 0 && <span style={{ color: 'var(--text-3)' }}>{p.demandes.enAttente} pas encore ouverte{p.demandes.enAttente > 1 ? 's' : ''}</span>}
+              </div>
+            </div>
+          )}
+
+          {p.activity.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <span style={s.panelSection}>Son activité</span>
+              <ol style={s.timeline}>
+                {p.activity.map((e, i) => (
+                  <li key={e.label} style={s.tlItem}>
+                    <span style={{ ...s.tlDot, background: i === 0 ? 'var(--accent-text)' : 'var(--border-2)' }} />
+                    <span style={{ flex: 1, minWidth: 0, color: 'var(--text)' }}>{e.label}</span>
+                    <span style={{ color: 'var(--text-3)', whiteSpace: 'nowrap' }} title={dateFr(e.at)}><RelativeTime iso={e.at} /></span>
+                  </li>
+                ))}
+              </ol>
+              <span style={{ fontSize: 12, color: 'var(--text-3)' }}>Dates seulement : le contenu de ses demandes et de son carnet reste privé.</span>
+            </div>
+          )}
+
           {p.paid && <span style={{ fontSize: 12.5, color: 'var(--text-3)', display: 'flex', gap: 6, alignItems: 'center' }}><CurrencyEur size={13} /> Rapporte {euros(p.annual)} par an.</span>}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -413,6 +478,9 @@ const CSS = `
 .pa-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border: 1px solid var(--border-2) !important; }
 .pa-card:focus-visible, .pa-line:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
 .pa-line:hover { background: var(--surface-2) !important; }
+.pa-tip { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+.pa-tip:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: -6px; width: max-content; max-width: 220px; white-space: normal; text-align: center; padding: 7px 10px; border-radius: 9px; background: var(--text); color: var(--bg); font-size: 12px; font-weight: 500; line-height: 1.35; z-index: 5; pointer-events: none; box-shadow: var(--shadow-md); }
+.pa-card-act:hover { background: var(--surface-2); color: var(--text); }
 .pa-line + .pa-line { border-top: 1px solid var(--border) !important; }
 .pa-kpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .pa-panel { animation: paIn .22s ease; }
@@ -447,7 +515,17 @@ const s: Record<string, React.CSSProperties> = {
   count: { margin: 0, fontSize: 13, color: 'var(--text-3)' },
   reset: { border: 'none', background: 'none', padding: 0, color: 'var(--accent-text)', fontWeight: 600, cursor: 'pointer', fontSize: 13, fontFamily: 'inherit' },
   empty: { padding: '40px 20px', textAlign: 'center', color: 'var(--text-2)', background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: 16, fontSize: 14 },
-  card: { display: 'flex', flexDirection: 'column', padding: 0, borderRadius: 18, overflow: 'hidden', background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: 'var(--text)', minWidth: 0 },
+  card: { display: 'flex', flexDirection: 'column', borderRadius: 18, overflow: 'hidden', background: 'var(--surface)', border: '1px solid var(--border)', boxShadow: 'var(--card-shadow)', minWidth: 0 },
+  cardMain: { display: 'flex', flexDirection: 'column', flex: 1, padding: 0, border: 'none', background: 'transparent', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: 'var(--text)', minWidth: 0 },
+  cardActions: { display: 'flex', borderTop: '1px solid var(--border)' },
+  cardAction: { flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 8px', fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none', minWidth: 0, whiteSpace: 'nowrap' },
+  note: { display: 'flex', gap: 10, alignItems: 'flex-start', padding: '12px 14px', borderRadius: 12, background: tint(AMBER, 10), border: '1px solid var(--border)', fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5 },
+  split: { display: 'flex', gap: 3, height: 8, borderRadius: 999, overflow: 'hidden' },
+  splitBar: { height: '100%', borderRadius: 999, minWidth: 4 },
+  dot: { display: 'inline-block', width: 8, height: 8, borderRadius: 99, marginRight: 4 },
+  timeline: { listStyle: 'none', margin: 0, padding: '4px 14px', borderRadius: 14, border: '1px solid var(--border)', background: 'var(--surface)' },
+  tlItem: { display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', fontSize: 13.5, borderTop: '1px solid var(--border)' },
+  tlDot: { width: 9, height: 9, borderRadius: 99, flexShrink: 0 },
   cover: { height: 132, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   coverInit: { fontFamily: 'var(--font-fraunces), serif', fontSize: 40, fontWeight: 500, opacity: 0.85 },
   avatar: { width: 44, height: 44, borderRadius: 12, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' },
@@ -460,7 +538,7 @@ const s: Record<string, React.CSSProperties> = {
   cardMeta: { display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'var(--text-2)', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   cardDetail: { fontSize: 12.5, color: 'var(--text-3)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', overflowWrap: 'anywhere' },
   cardStats: { display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 'auto', paddingTop: 10, borderTop: '1px solid var(--border)', fontSize: 13, color: 'var(--text-2)' },
-  cardFoot: { fontSize: 12, color: 'var(--text-3)' },
+  cardFoot: { display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'var(--text-3)', marginTop: 2 },
   listBox: { display: 'flex', flexDirection: 'column', borderRadius: 16, overflow: 'hidden', background: 'var(--surface)', border: '1px solid var(--border)' },
   line: { display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', border: 'none', background: 'transparent', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit', color: 'var(--text)', width: '100%', flexWrap: 'nowrap', minWidth: 0 },
   lineSub: { fontSize: 12.5, color: 'var(--text-3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflowWrap: 'anywhere' },

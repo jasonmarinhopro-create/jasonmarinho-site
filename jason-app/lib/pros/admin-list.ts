@@ -6,12 +6,25 @@
 import { isUnpaidFiche } from '@/lib/pros/paid'
 import { isPaidPro, proAnnualPrice } from '@/lib/admin/revenue'
 import { metierLabel } from '@/lib/pros/visuel'
+import { estTrouverUnPro } from '@/lib/pros/suivi-activite'
+import { holdsSeat } from '@/lib/pros/founder-seats'
 import { SPECIALITES_DEPANNAGE, type ProKind } from '@/lib/pros/metiers'
 
 export type ProEtat = 'active' | 'pending_payment' | 'hidden' | 'cancelled'
 
+/** Demandes reçues, d'après la table des contacts (dates, origine et statut seulement) */
+export interface ProDemandes { fiche: number; trouver: number; enAttente: number; derniere: string | null }
+/** Une date d'activité du pro (jamais le contenu) */
+export interface ProEvent { label: string; at: string }
+
 export interface AdminPro {
   id: string
+  userId: string | null
+  /** Garde une place Fondateur (payée, ou inscrite il y a moins de 7 jours) */
+  holdsSeat: boolean
+  lastSeenAt: string | null
+  activity: ProEvent[]
+  demandes: ProDemandes | null
   kind: ProKind
   name: string
   fullName: string
@@ -49,7 +62,7 @@ const n = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0)
 const eur = (v: unknown) => `${Math.round(n(v))} €`
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function toAdminPro(kind: ProKind, r: Record<string, any>): AdminPro {
+export function toAdminPro(kind: ProKind, r: Record<string, any>, photoUrl?: string | null): AdminPro {
   const unpaid = isUnpaidFiche(r as { status: string | null; stripe_subscription_status?: string | null })
   const raw = String(r.status ?? '')
   // Une fiche jamais payée n'est pas « en ligne », même marquée active (20/10/2026)
@@ -72,6 +85,11 @@ export function toAdminPro(kind: ProKind, r: Record<string, any>): AdminPro {
   const paid = isPaidPro({ stripe_subscription_status: r.stripe_subscription_status ?? null })
   return {
     id: String(r.id),
+    userId: r.user_id ?? null,
+    holdsSeat: r.tier === 'fondateur' && holdsSeat({ status: unpaid ? 'pending_payment' : raw, created_at: String(r.created_at ?? '') }),
+    lastSeenAt: null,
+    activity: [],
+    demandes: null,
     kind,
     name: String(r.pseudo || r.full_name || 'Sans nom'),
     fullName: String(r.full_name ?? ''),
@@ -89,7 +107,7 @@ export function toAdminPro(kind: ProKind, r: Record<string, any>): AdminPro {
     views: n(r.views_count),
     contacts: n(r.contacts_count),
     clicks: n(r.instagram_clicks_count) + n(r.site_clicks_count) + n(r.portfolio_clicks_count),
-    photo: r.logo_url || photos[0] || null,
+    photo: photoUrl !== undefined ? photoUrl : (r.logo_url || photos[0] || null),
     detail,
     tarif,
     subStatus: r.stripe_subscription_status ?? null,
@@ -104,7 +122,11 @@ export function filterPros(list: AdminPro[], { kind, filtre, q }: { kind: ProKin
   const needle = q.trim().toLowerCase()
   return list.filter(p =>
     (kind === 'tous' || p.kind === kind) &&
-    (filtre === 'tous' || (filtre === 'fondateur' ? p.tier === 'fondateur' && p.etat !== 'cancelled' : p.etat === filtre)) &&
+    // Paiements à finaliser à part (24/11/2026, Jason : « tant que c'est pas payé on compte pas ») :
+    // visibles seulement avec leur filtre
+    (filtre === 'tous' ? p.etat !== 'pending_payment'
+      : filtre === 'fondateur' ? p.tier === 'fondateur' && (p.etat === 'active' || p.etat === 'hidden')
+      : p.etat === filtre) &&
     (!needle || [p.name, p.fullName, p.email ?? '', p.ville].some(v => v.toLowerCase().includes(needle))),
   )
 }
@@ -119,20 +141,49 @@ export function sortPros(list: AdminPro[], tri: ProTri): AdminPro[] {
   return out
 }
 
+/** Fiches comptées : tout sauf les paiements à finaliser */
+export const isCounted = (p: AdminPro) => p.etat !== 'pending_payment'
+
 /** Chiffres du haut : en ligne, places Fondateur prises par métier, paiements à finaliser, masquées, revenu */
-export function prosKpis(list: AdminPro[], kind: ProKind | 'tous') {
-  const scope = list.filter(p => kind === 'tous' || p.kind === kind)
-  const founders = (k: ProKind) => list.filter(p => p.kind === k && p.tier === 'fondateur' && p.etat !== 'cancelled').length
+export function prosKpis(all: AdminPro[], kind: ProKind | 'tous') {
+  const inKind = all.filter(p => kind === 'tous' || p.kind === kind)
+  const scope = inKind.filter(isCounted)
+  const founders = (k: ProKind) => all.filter(p => p.kind === k && p.holdsSeat).length
+  const foundersPending = (k: ProKind) => all.filter(p => p.kind === k && p.holdsSeat && p.etat === 'pending_payment').length
   return {
     total: scope.length,
     enLigne: scope.filter(p => p.etat === 'active').length,
-    aFinaliser: scope.filter(p => p.etat === 'pending_payment').length,
+    aFinaliser: inKind.filter(p => p.etat === 'pending_payment').length,
     masquees: scope.filter(p => p.etat === 'hidden').length,
     resiliees: scope.filter(p => p.etat === 'cancelled').length,
-    fondateurs: scope.filter(p => p.tier === 'fondateur' && p.etat !== 'cancelled').length,
+    fondateurs: scope.filter(p => p.tier === 'fondateur' && (p.etat === 'active' || p.etat === 'hidden')).length,
     placesFondateur: { photographer: founders('photographer'), cleaner: founders('cleaner'), depannage: founders('depannage') },
+    placesEnAttente: foundersPending('photographer') + foundersPending('cleaner') + foundersPending('depannage'),
     vues: scope.reduce((s, p) => s + p.views, 0),
     contacts: scope.reduce((s, p) => s + p.contacts, 0),
     annual: scope.reduce((s, p) => s + p.annual, 0),
   }
+}
+
+/** Demandes d'un pro : origine (sa fiche ou Trouver un pro), en attente, la plus récente */
+export function buildDemandes(rows: Array<{ created_at: string; source_url: string | null; status: string | null }>): ProDemandes {
+  const d: ProDemandes = { fiche: 0, trouver: 0, enAttente: 0, derniere: null }
+  for (const r of rows) {
+    if (estTrouverUnPro(r.source_url)) d.trouver++
+    else d.fiche++
+    if (!r.status || r.status === 'nouvelle') d.enAttente++
+    if (r.created_at && (!d.derniere || r.created_at > d.derniere)) d.derniere = r.created_at
+  }
+  return d
+}
+
+/** Historique d'un pro, le plus récent d'abord (dates seulement, sans doublon de libellé) */
+export function buildActivity(events: Array<{ label: string; at: string | null | undefined }>): ProEvent[] {
+  const best = new Map<string, string>()
+  for (const e of events) {
+    if (!e.at || Number.isNaN(Date.parse(e.at))) continue
+    const cur = best.get(e.label)
+    if (!cur || e.at > cur) best.set(e.label, e.at)
+  }
+  return [...best].map(([label, at]) => ({ label, at })).sort((a, b) => (a.at < b.at ? 1 : -1))
 }
