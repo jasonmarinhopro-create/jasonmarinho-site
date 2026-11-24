@@ -80,6 +80,10 @@ Jason, sur capture : « Tu as détruit le visuel des formations, ce n'est que du
 
 Pour écrire une leçon : utiliser ces motifs (ils suffisent), en plus des blocs `:::`. Mesure sur les 268 leçons : 63 cartes ou grilles, 59 messages types, 13 « à faire / à éviter », environ 220 encadrés, 273 phrases clés, 163 exercices.
 
+## Enrichissement des 22 formations (24/11/2026)
+
+Jason : « fais toutes les formations, commence par les plus ouvertes » (ordre suivi : fiche Google, Bon prix, réservation directe, tarification dynamique, fiscalité 2026, automatisation, annonce Airbnb, réseaux sociaux, basse saison, avis, audit, livret, puis les autres). 414 encadrés au total (`:::exemple`, `:::astuce`, `:::erreur`, `:::retenir`, `:::chiffres`), au moins un par leçon, ajoutés à la fin de la section concernée sans toucher au texte existant. Exemples chiffrés = calculs sur un cas fictif annoncé comme tel ; aucun chiffre de marché inventé. Faits vérifiés pour l'occasion : Stripe 1,5 % + 0,25 € (carte européenne standard) et 2,5 % + 0,25 € (Royaume-Uni) ; prospection par e-mail d'un particulier = accord préalable, sauf anciens clients pour des produits proches (CNIL) ; bail mobilité de 1 à 10 mois ; arrhes (perdues ou rendues au double) et acompte (engagement ferme) ; pas de droit de rétractation pour une location à date précise (Code de la consommation, L. 221-28). Outil : script `enrich.py` (titre de section ou `h3:` + type + texte), rejouable.
+
 ## Faits vérifiés le 23/11/2026 (à réutiliser dans les autres formations)
 
 - **Airbnb** : frais uniques à la charge de l'hôte, 15,5 %, pour tous les hôtes de l'UE depuis le 13/10/2026 (plus de frais voyageur à part ; avant : environ 3 % hôte + frais voyageur). Sans numéro de TVA, la TVA de 20 % s'ajoute aux frais : 18,6 % ; 100 € affichés = 81,40 € reçus (84,50 € avec un numéro de TVA). Une autre session avait déjà corrigé les autres formations sur ce point le 23/11 (commit « commission Airbnb à jour »). Toute formation qui parle de « 3 % » ou « 4 % hôte » ou de « frais de service voyageur 14 % » est à corriger. Sources : Airbnb « Simplifying Airbnb service fees », Hostfully, Smoobu.

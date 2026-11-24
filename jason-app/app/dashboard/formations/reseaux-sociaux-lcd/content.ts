@@ -88,6 +88,10 @@ BÉNÉFICE 3, FIDÉLISATION ET BOUCHE-À-OREILLE
   quand ils planifient leur prochain voyage.
 → Ils partagent ton compte avec leurs amis.
 
+:::erreur
+Ouvrir quatre comptes en même temps et les abandonner au bout d'un mois. Un réseau bien tenu rapporte plus que quatre comptes vides.
+:::
+
 ## Quelle plateforme choisir ?
 INSTAGRAM, LA PRIORITÉ ABSOLUE
 → Plateforme visuelle = idéale pour les logements
@@ -116,6 +120,11 @@ TikTok, OPTIONNEL
   Mieux vaut un seul canal bien géré
   que quatre canaux abandonnés.
 
+:::exemple
+**Maison familiale à la campagne :** Facebook (groupes locaux, parents) et Instagram pour l'ambiance.
+**Studio en ville pour voyageurs d'affaires :** LinkedIn et ta fiche Google comptent plus qu'Instagram.
+Choisis le réseau où sont tes voyageurs, pas celui que tu préfères.
+:::
 
 ## Exercice
 **Exercice pratique :** Recherche maintenant sur Instagram le hashtag de ta ville suivi de "location" ou "airbnb" (ex : #locationparis, #airbnblyon). Regarde les comptes qui apparaissent. Lesquels semblent attirer des voyageurs ? Note 2-3 éléments qui t'inspirent, ce sont tes premiers benchmarks.
@@ -199,6 +208,13 @@ PHOTO DE PROFIL
   (ou ta photo si tu valorises
    l'aspect humain de l'accueil)
 
+:::exemple
+« Maison de pêcheur rénovée à Étel
+4 voyageurs, jardin, port à 2 min
+Réservation directe sans frais ↓ »
+Qui, où, pour qui et quoi faire, en 3 lignes.
+:::
+
 ## Les 5 premiers posts : lancer son compte sur de bonnes bases
 Les 5 premiers posts définissent
 l'identité de ton compte.
@@ -227,6 +243,9 @@ POST 5, UNE PHOTO ATMOSPHÉRIQUE
 Ambiance de soirée, lumière du matin,
 quelque chose qui fait rêver.
 
+:::astuce
+Prépare tes 5 premières publications avant de lancer le compte : un visiteur qui arrive sur une page vide ne s'abonne pas.
+:::
 
 ## Exercice
 **Exercice pratique :** Crée maintenant ton compte Instagram dédié à ton logement. Passe-le en "Compte Professionnel" (Paramètres → Compte → Passer en compte professionnel). Rédige ta bio en 3 lignes avec le lien Driing. C'est ta page, la prochaine leçon t'apprend quoi y publier.
@@ -410,6 +429,10 @@ EXEMPLES :
   • Mentionne ton lien Driing en commentaire
     ou en bio ("Réservez en direct → lien en bio")
 
+:::exemple
+« Notre adresse du dimanche : le marché du port, de 8 h à 13 h. Les huîtres de chez Yannick, à 5 minutes à pied de la maison. » Un vrai conseil local donne envie de venir, et montre que tu connais le coin.
+:::
+
 ## TYPE 3 : Les témoignages voyageurs
 La preuve sociale est le contenu le plus convertissant.
 
@@ -432,6 +455,10 @@ EXEMPLES DE FORMATS :
   • Montre que de vraies personnes ont aimé
   • Répond aux doutes des futurs voyageurs
   • Crée un sentiment de communauté
+
+:::astuce
+Demande l'accord du voyageur avant de publier son avis ou sa photo, et n'affiche que son prénom.
+:::
 
 ## TYPES 4 ET 5 : Les coulisses et les offres
 TYPE 4, LES COULISSES (behind the scenes)
@@ -520,6 +547,10 @@ STRATÉGIE AVANCÉE (2-3h/semaine)
   peux tenir dans la durée.
   Commence minimaliste si tu débutes.
 
+:::retenir
+La régularité compte plus que la quantité : deux publications par semaine pendant un an valent mieux que dix par jour pendant une semaine.
+:::
+
 ## Le calendrier éditorial mensuel type
 UN MOIS DE CONTENU EN AVANCE :
 
@@ -548,6 +579,10 @@ SEMAINE 4
   partagé par un voyageur)
 → Stories : "Votre prochaine visite ?"
   avec sticker lien vers Driing
+
+:::exemple
+Semaine type à 2 publications : mardi une photo d'ambiance du logement, vendredi une adresse du quartier. Une fois par mois, un avis de voyageur et les dates encore libres.
+:::
 
 ## Les outils pour programmer ses posts
 Programmer à l'avance = moins de stress,
@@ -660,6 +695,10 @@ Exemples :
 → #coupleretreat #familyvacation
 → #logementcosy #chemineeauthentique
 
+:::exemple
+Mélange trois types : un lieu précis (#Etel, #RiaDEtel), un type de séjour (#WeekendBretagne, #GiteBretagne) et un public (#VoyagerEnFamille). Des mots que tes futurs voyageurs tapent vraiment.
+:::
+
 ## La géolocalisation : le tag que tu oublies toujours
 Sur chaque post, ajoute une localisation.
 C'est gratuit, ça prend 5 secondes
@@ -687,6 +726,9 @@ POURQUOI C'EST IMPORTANT :
   la même adresse, varie avec le quartier,
   la ville, les attractions proches.
 
+:::astuce
+Ajoute toujours le lieu à tes publications : la ville ou le site touristique proche, jamais l'adresse exacte du logement.
+:::
 
 ## Exercice
 **Exercice pratique :** Recherche sur Instagram les hashtags de ton secteur : tape #location + ta ville. Note les 5 hashtags les plus utilisés avec le plus de posts récents (pas trop génériques). Ce sont tes hashtags principaux à utiliser sur chaque post.
@@ -785,6 +827,10 @@ EXEMPLE DE PAGE LINKTREE POUR UN HÔTE :
   mettre à jour les liens sans changer
   ta bio Instagram.
 
+:::exemple
+Dans ton lien en bio, trois choix au plus : « Réserver en direct », « Voir les disponibilités », « Nous écrire ». Au-delà, le visiteur hésite et ne clique sur rien.
+:::
+
 ## Les stories à la une : ta vitrine permanente
 Les "stories à la une" (highlights)
 restent sur ton profil indéfiniment.
@@ -817,6 +863,9 @@ HIGHLIGHTS RECOMMANDÉS :
   toutes les infos à un voyageur qui découvre
   ton compte pour la première fois.
 
+:::astuce
+Crée 4 stories à la une : Le logement, Le quartier, Avis, Réserver. C'est ta vitrine permanente, toujours visible en haut du profil.
+:::
 
 ## Exercice
 **Exercice pratique :** Crée maintenant tes 3 premiers highlights : "Le logement", "Avis voyageurs" et "Réserver". Pour chacun : faites 1-2 stories dédiées et sauvegarde-les dans le highlight correspondant. Ces 3 highlights suffisent pour une première vitrine professionnelle.
@@ -899,6 +948,10 @@ COMMUNAUTÉ ENGAGÉE
     → Le voyageur est touché, partage à son tour.
     → Preuve sociale authentique.
 
+:::erreur
+Répondre aux commentaires des jours plus tard. Une réponse dans la journée montre qu'il y a quelqu'un derrière le compte, comme pour les messages de réservation.
+:::
+
 ## Le DM de bienvenue aux nouveaux abonnés
 Chaque nouvel abonné est un prospect potentiel.
 
@@ -926,6 +979,9 @@ N'hésitez pas si vous avez des questions !"
   pertinents par semaine : quelques minutes,
   potentiel de plusieurs réservations annuelles.
 
+:::exemple
+« Merci de nous suivre ! Si vous préparez un séjour dans le coin, je vous envoie volontiers nos dates libres. Bonne journée ! » Court, utile, sans pression.
+:::
 
 ## Exercice
 **Exercice pratique :** Cette semaine : réponds à tous les commentaires de tes derniers posts, même anciens. Et regarde si tu as des DM non répondus, chacun peut être un prospect. Pour les nouveaux abonnés dont le profil ressemble à un voyageur potentiel : envoie le message de bienvenue de la slide 4 à 3 d'entre eux.
@@ -999,6 +1055,10 @@ DIMANCHE, 5 MIN : ANALYSE
 
 TOTAL : 30 minutes/semaine
 
+:::astuce
+Programme tes publications de la semaine en une seule fois avec l'outil de programmation de Meta : 30 minutes le lundi, et le reste de la semaine tu ne fais que répondre.
+:::
+
 ## Les statistiques à regarder chaque semaine
 Dans les "Insights" de ton compte
 Instagram Pro :
@@ -1025,6 +1085,9 @@ CLICS SUR LE LIEN EN BIO
   pas une fois par heure.
   L'obsession des stats tue la créativité.
 
+:::exemple
+Chaque semaine, note deux chiffres : clics sur le lien en bio et messages reçus. Ce sont eux qui mènent à une réservation, pas le nombre de « J'aime ».
+:::
 
 ## Exercice
 **Exercice pratique :** Crée un rappel récurrent dans ton agenda pour chaque jour de ta routine : lundi création, mercredi engagement, vendredi stories, dimanche analyse. 30 minutes réparties sur 4 créneaux sont infiniment plus durables qu'une heure d'un coup le weekend.
@@ -1107,6 +1170,10 @@ RÉSULTATS RÉALISTES À 12 MOIS :
   C'est un moteur qui prend du temps
   à chauffer mais qui tourne ensuite
   de façon durable.
+
+:::retenir
+Les réseaux sociaux construisent une audience sur des mois. Les premières réservations directes viennent souvent d'abord des anciens voyageurs et des groupes locaux.
+:::
 
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :

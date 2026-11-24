@@ -78,6 +78,10 @@ pas celle d'un autre marché.
       professionnel ou d'un festival hivernal
       que tu n'exploites pas.
 
+:::exemple
+Reprends tes 12 derniers mois : nuits louées par mois, prix moyen, délai moyen entre réservation et arrivée, durée moyenne des séjours. Si novembre fait 6 nuits à 65 € réservées 5 jours avant, ton problème n'est pas que le prix : c'est la visibilité de dernière minute.
+:::
+
 ## La différence entre "basse saison structurelle" et "creux évitables"
 BASSE SAISON STRUCTURELLE
 → La demande est objectivement faible
@@ -100,6 +104,11 @@ CREUX ÉVITABLES
 → La basse saison structurelle se gère.
   Les creux évitables s'éliminent.
   Ne confonds pas les deux.
+
+:::exemple
+**Basse saison structurelle :** une station balnéaire en janvier, la demande est faible partout.
+**Creux évitable :** un mardi de novembre vide alors qu'un salon se tient en ville. Le premier se gère, le second se corrige.
+:::
 
 ## L'objectif réaliste de cette formation
 Cette formation ne va pas te promettre
@@ -240,6 +249,10 @@ son taux d'occupation hivernal en ajoutant
 "Fibre 500 Mbps + bureau dédié"
 dans son titre. Source : Welkomz, 2026
 
+:::exemple
+Ce que cherche un télétravailleur : un bon wifi (indique le débit mesuré), un vrai bureau avec une chaise confortable, du calme. Une photo du coin bureau et le débit dans le titre suffisent souvent à se démarquer.
+:::
+
 ## Les vacances scolaires : les micro-hautes-saisons cachées
 En basse saison apparente, il y a
 des semaines de forte demande cachées :
@@ -262,6 +275,9 @@ pendant ces micro-pics.
   de l'année prochaine.
   Ça prend 20 minutes et ça change tout.
 
+:::astuce
+Note les vacances des 3 zones scolaires dans ton calendrier : la Toussaint et les vacances d'hiver tombent en basse saison et créent des pics de demande familiale.
+:::
 
 ## Exercice
 **Exercice pratique :** Choisis le segment principal que tu vas cibler en basse saison. Télétravailleur, couple, pro en déplacement ou famille ? Note les 2-3 modifications concrètes que tu vas apporter à ton annonce pour parler directement à ce segment. On les met en place dans le module suivant.
@@ -358,6 +374,10 @@ te fait perdre de l'argent.
       = +15 à +20% de réservations
       selon les experts OptiRental.
 
+:::exemple
+Été : 120 € la nuit, minimum 5 nuits. Hiver : 85 € la nuit, minimum 2 nuits, remise de 15 % à la semaine. L'objectif change : remplir sans descendre sous ton prix minimum.
+:::
+
 ## La durée minimale de séjour : le levier le plus sous-utilisé
 En haute saison :
 → Minimum 3-7 nuits pour maximiser
@@ -412,6 +432,9 @@ Attention : renforcer la vérification des profils
     de Jason Marinho est particulièrement
     utile dans ces cas.
 
+:::erreur
+Baisser fortement le prix trois jours avant chaque week-end, tout l'hiver. Les voyageurs s'habituent à attendre. Préfère une petite remise ciblée sur les nuits vraiment isolées.
+:::
 
 ## Exercice
 **Exercice pratique :** Ouvre ton calendrier Airbnb pour tes 3 prochains mois creux. Fais ces 3 modifications maintenant : baisse le prix de base de 15-20%, réduis le séjour minimum à 1-2 nuits, active la réservation instantanée si elle ne l'est pas. Ce sont les 3 ajustements qui ont le plus d'impact immédiat sur le taux d'occupation.
@@ -482,6 +505,11 @@ sur ton classement.
 Change-le en octobre avant la basse saison,
 remets-le en version estivale en avril.
 
+:::exemple
+Été : « Maison avec piscine, 5 min de la plage ».
+Hiver : « Maison au calme avec cheminée et bureau, fibre ». Même maison, promesse adaptée à qui voyage en ce moment.
+:::
+
 ## Les photos à ajouter pour la basse saison
 Les photos que tu n'as peut-être pas
 mais qui font la différence en hiver :
@@ -508,6 +536,10 @@ mais qui font la différence en hiver :
   sont décisives. Mets une photo
   d'ambiance chaleureuse en première
   position pendant les mois d'hiver.
+
+:::astuce
+Fais tes photos d'hiver une fin d'après-midi : lampes allumées, plaid sur le canapé, feu dans la cheminée. L'ambiance chaleureuse vend le séjour d'hiver.
+:::
 
 ## La section "À savoir" : tes arguments basse saison
 La description et la section "À savoir"
@@ -582,6 +614,10 @@ vs le scénario sans stratégie :
 → La longue durée à -30% rapporte
   2x plus qu'un mois creux non optimisé.
 
+:::exemple
+Un mois loué 1 600 € à une infirmière en mission : un seul ménage, une seule arrivée, aucun trou dans le calendrier. Contre peut-être 10 nuits à 75 € en courts séjours, avec plusieurs ménages.
+:::
+
 ## Comment attirer les séjours longue durée
 ÉTAPE 1, Activer les remises longue durée
 Sur Airbnb :
@@ -604,6 +640,11 @@ Sur Airbnb :
   aux séjours de 28+ nuits.
 → Assure-toi que ton annonce
   y apparaît avec les bons paramètres.
+
+:::retenir
+Le bail mobilité permet de louer un meublé de 1 à 10 mois à une personne en formation, en stage, en mission ou en mutation. Vérifie les règles avant de te lancer.
+Source : service-public.fr, « Bail mobilité ».
+:::
 
 ## Les autres canaux pour la longue durée
 Airbnb n'est pas le seul canal
@@ -729,6 +770,10 @@ peu utilisés par les hôtes :
       dans les résultats.
     → À évaluer selon ta marge :
       Genius demande -10% minimum.
+
+:::astuce
+Sur Booking, les voyageurs d'affaires réservent souvent en semaine : ouvre les nuits du lundi au jeudi avec un minimum d'une nuit en basse saison.
+:::
 
 ## La réservation directe via Driing : l'arme anti-commission
 En basse saison, chaque euro de commission
@@ -871,6 +916,10 @@ d'accéder à ces segments directement :
     → Certains offices ont des accords
       avec des groupes ou des entreprises.
 
+:::astuce
+Commence par les entreprises qui accueillent des gens de passage : hôpitaux, centres de formation, chantiers, entreprises avec des stagiaires.
+:::
+
 ## Comment approcher une entreprise locale
 Script d'approche par email ou LinkedIn :
 
@@ -903,6 +952,9 @@ Bien cordialement,
   Mais une entreprise cliente régulière
   peut remplir plusieurs mois par an.
 
+:::exemple
+« Bonjour, j'ai un appartement meublé à 5 minutes de votre site. Pour vos intervenants et stagiaires, je propose un tarif à la semaine, ménage inclus. Puis-je vous envoyer une présentation ? » Court, concret, une seule demande.
+:::
 
 ## Exercice
 **Exercice pratique :** Identifie 3 entreprises de 50+ salariés situées à moins de 15 minutes de ton logement. Trouve le nom du responsable RH ou de l'office manager sur LinkedIn. Envoie le message d'approche à au moins 2 d'entre eux cette semaine. C'est long à convertir mais un seul client entreprise peut valoir 2 à 3 mois de basse saison.
@@ -988,6 +1040,11 @@ Cette offre est disponible jusqu'au [date].
   L'argument prix est mis en avant.
   L'action est claire.
 
+:::exemple
+Objet : « Une semaine au calme en novembre ? »
+« Bonjour Claire, vous étiez chez nous l'été dernier. En novembre, la maison est calme et la cheminée fonctionne : 3 nuits pour le prix de 2 sur les dates libres. Répondez simplement à ce message. »
+:::
+
 ## Segmenter pour mieux cibler
 Si tu as une base email de 30+ contacts,
 segmente tes envois :
@@ -1013,6 +1070,9 @@ SEGMENT 3, Voyageurs pros / télétravailleurs
   le profil = 3x plus de conversions
   qu'un email générique.
 
+:::erreur
+Écrire à des personnes qui n'ont pas donné leur accord. Tes anciens voyageurs peuvent recevoir une offre proche de leur séjour, avec un lien pour se désinscrire ; pour les autres, il faut leur accord préalable (règles de la CNIL).
+:::
 
 ## Exercice
 **Exercice pratique :** Récupère la liste de tes 20-30 derniers voyageurs (leurs prénoms et emails si tu les as via tes réservations directes ou Brevo). Rédige l'email basse saison avec l'offre directe Driing. Envoie-le cette semaine. Si tu n'as pas encore de base email, c'est le moment de commencer à la constituer pour la prochaine basse saison.
@@ -1113,6 +1173,10 @@ ont un impact direct sur la haute saison suivante.
       que tu remettrais à plus tard.
     → Budget : variable, souvent < 100€
 
+:::exemple
+Ajouter un vrai coin bureau (bureau, chaise, lampe) coûte quelques centaines d'euros et ouvre tout le segment des télétravailleurs pour l'hiver suivant.
+:::
+
 ## Les nouvelles photos : l'investissement le plus rentable
 Le retour sur investissement le plus élevé
 en LCD reste les photos professionnelles.
@@ -1135,6 +1199,9 @@ Coût d'un photographe pro LCD :
 → Rentabilisé en 1 à 2 réservations supplémentaires
   par mois sur l'année entière.
 
+:::astuce
+Fais tes travaux et tes nouvelles photos avant février : beaucoup de voyageurs réservent leur été pendant l'hiver.
+:::
 
 ## Exercice
 **Exercice pratique :** Fais la liste des 3 améliorations que tu reportes depuis l'été. Planifie-les pendant tes prochaines nuits vides de basse saison. Et si tu n'as pas eu de shooting photo professionnel depuis plus de 2 ans : c'est le moment de le faire. L'investissement se rentabilise dans les 2 premiers mois de haute saison.
@@ -1244,6 +1311,10 @@ Suis ces 3 chiffres chaque mois :
     directes (via Driing ou email)
     par mois de basse saison.
     Ce sont tes nuits les plus rentables.
+
+:::exemple
+Compare novembre à décembre de cette année avec la même période l'an dernier : nuits louées, revenu par nuit disponible, part des longs séjours. Trois chiffres suffisent pour savoir si le plan marche.
+:::
 
 ## Le récapitulatif de la formation
 CE QUE TU SAIS MAINTENANT FAIRE :

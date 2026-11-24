@@ -77,6 +77,10 @@ vérifie ces 8 points :
   le vendredi soir pour un weekend
   dans une ville festive
 
+:::exemple
+Demande reçue : « Bonjour, c'est pour moi et quelques amis samedi soir, on habite à côté. » Profil créé la veille, aucun avis, réservation d'une seule nuit un samedi. Plusieurs signaux en une phrase : pose des questions avant d'accepter.
+:::
+
 ## Les signaux d'alarme sur Booking
 Booking est la plateforme où le risque
 est le plus élevé côté profil voyageur.
@@ -131,6 +135,9 @@ Ce que cette question fait :
   Les profils à risque évitent
   souvent de répondre.
 
+:::astuce
+« Quel est le motif de votre séjour ? » Une réponse précise rassure ; une réponse floue ou agacée mérite une deuxième question.
+:::
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit de message de pré-réservation dans tes outils. Utilise la structure de la slide 5. Envoie-le à chaque nouvelle réservation Booking, et à toute réservation Airbnb qui présente au moins 2 signaux d'alarme. Note les réponses, ou les absences de réponse.
@@ -243,6 +250,10 @@ Comment se protéger :
   (ne jamais passer sur WhatsApp
   pour les litiges).
 
+:::exemple
+Scénario classique : le voyageur « paie trop » par virement et demande le remboursement de la différence, puis le premier paiement est annulé. Ne rembourse jamais avant que l'argent soit définitivement sur ton compte.
+:::
+
 ## Les demandes de paiement hors plateforme
 C'est l'arnaque la plus fréquente en LCD.
 
@@ -272,6 +283,9 @@ Sur Airbnb : signaler immédiatement
 via la messagerie plateforme.
 Airbnb supprime les comptes frauduleux.
 
+:::erreur
+Accepter un paiement hors d'Airbnb pour une réservation faite sur Airbnb. Tu perds la protection de la plateforme, et c'est contraire à ses règles.
+:::
 
 ## Exercice
 **Exercice pratique :** Ajoute ces deux règles dans ton règlement intérieur Airbnb maintenant :
@@ -365,6 +379,10 @@ INTERPRÉTATION :
 Score ≥ 4 → Accepte sans hésitation
 Score 1-3 → Demande des précisions
 Score ≤ 0 → Refus ou demande de vérification
+
+:::exemple
+Profil vérifié (+), 8 avis positifs d'hôtes (+), message de présentation détaillé (+), séjour de 4 nuits en semaine (+). Profil sans photo ni avis, 1 nuit le samedi, message de deux mots : à questionner avant d'accepter.
+:::
 
 ## Le service de vérification voyageurs
 Tu n'as pas le temps ou les outils
@@ -460,6 +478,11 @@ Sanction si non-respect :
   qui te protège en cas d'incident
   impliquant un voyageur étranger.
 
+:::retenir
+Pour un voyageur étranger, une fiche individuelle de police doit être remplie et conservée 6 mois (nom, date et lieu de naissance, nationalité, domicile habituel, date d'arrivée et de départ prévue).
+Source : Code de l'entrée et du séjour des étrangers, article R. 814-1.
+:::
+
 ## Vérification d'identité des voyageurs français : tes droits
 Pour les voyageurs français,
 la loi ne te oblige pas à demander
@@ -511,6 +534,10 @@ Format de stockage recommandé :
 → Ou outil spécialisé de check-in
   (Chekin, Superhote...) qui gère
   la conformité RGPD automatiquement.
+
+:::erreur
+Garder des copies de pièces d'identité dans ton téléphone pendant des années. Ne conserve que ce que la loi demande, le temps qu'elle demande, puis supprime.
+:::
 
 ## Comment intégrer la vérification dans ton processus
 Procédure en 4 étapes :
@@ -649,6 +676,10 @@ appliquons à toutes nos réservations."
   Elle présente la caution comme un processus,
   pas comme un jugement.
 
+:::exemple
+« Pour toutes nos réservations, nous demandons une empreinte bancaire de 300 € : rien n'est prélevé, elle est libérée automatiquement après votre départ si tout va bien. » Le mot « tous » rassure : ce n'est pas un soupçon contre lui.
+:::
+
 ## Que faire si le voyageur refuse la caution ?
 Si un voyageur refuse de verser la caution
 que tu as indiquée dans ton règlement :
@@ -777,6 +808,10 @@ trop tard :
 → AirCover est utile.
   Il n'est pas suffisant comme seule protection.
 
+:::erreur
+Compter sur AirCover pour l'usure normale (draps qui s'abîment, peinture qui se ternit). Ces frais font partie du coût de ton activité.
+:::
+
 ## Comment déclencher AirCover efficacement
 Si un dommage survient, respecte
 scrupuleusement cette procédure :
@@ -805,6 +840,10 @@ scrupuleusement cette procédure :
 → Si Airbnb propose un montant insuffisant :
   tu peux contester avec des preuves
   supplémentaires (devis d'artisan).
+
+:::astuce
+Prends des photos datées avant chaque arrivée et juste après chaque départ. Sans « avant », il est difficile de prouver un dégât.
+:::
 
 ## L'assurance complémentaire : est-elle nécessaire ?
 AirCover ne remplace pas une vraie
@@ -942,6 +981,9 @@ Un voyageur qui demande une exception
 accueillir quelqu'un à sa place...)
 est souvent celui qui posera problème.
 
+:::retenir
+Quelle que soit la plateforme : contrat ou conditions écrites, caution, photos avant et après, messages par écrit, assurance adaptée à la location courte durée.
+:::
 
 ## Exercice
 **Exercice pratique :** Évalue maintenant ta protection actuelle sur une échelle de 1 à 5 pour chaque règle d'or. Pour chaque règle notée ≤ 3, note l'action corrective à prendre cette semaine. Pas tout en même temps, une amélioration par semaine pendant 5 semaines suffit à avoir un système solide.
@@ -1039,6 +1081,9 @@ Cordialement,
 → Il prépare le dossier si tu dois
   aller plus loin avec la plateforme.
 
+:::exemple
+« Bonsoir, un voisin me signale du bruit. Je vous remercie de baisser le volume dès maintenant et de respecter le calme après 22 h, comme prévu au règlement. Merci de votre compréhension. » Ferme, poli, écrit.
+:::
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit "Incident nuisances" dans tes outils de messagerie avec le message de la slide 3 adapté à ton logement. Tu ne l'utiliseras peut-être jamais, mais le jour où tu en auras besoin, ne pas avoir à le rédiger à chaud sous le stress sera précieux.
@@ -1098,6 +1143,10 @@ DANS LES 14 JOURS :
 → Le délai de 14 jours est la règle
   la plus importante à retenir
   de toute cette formation.
+
+:::exemple
+Dans l'heure qui suit le départ : photos du dégât, photo de l'état d'avant (prise à l'arrivée), devis ou facture de remplacement, message au voyageur. Le tout dans le délai de la plateforme.
+:::
 
 ## Comment rédiger le message au voyageur après dommage
 Factuel, documenté, sans accusation directe :
@@ -1180,6 +1229,12 @@ NIVEAU 3, RÉPARATION (après le séjour)
   aux photos pré-arrivée
 → Activation des recours dans les 14 jours
 → Laisser un avis honnête sur le voyageur
+
+:::chiffres
+Avant | sélection et règles claires
+Pendant | contact rapide et écrit
+Après | photos, preuves et réclamation dans les délais
+:::
 
 ## Les outils technologiques de sécurité
 CAPTEURS DE BRUIT (recommandés si nuisances récurrentes)

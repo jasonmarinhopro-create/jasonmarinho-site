@@ -53,6 +53,10 @@ Avec un livret bien conçu :
 → Autant d'heures récupérées.
 → Des voyageurs plus autonomes et satisfaits.
 
+:::exemple
+Le wifi, le parking, la poubelle, l'heure de départ : quatre questions, posées par presque chaque voyageur. Sur 60 séjours par an, ce sont plus de 200 messages auxquels un livret répond à ta place.
+:::
+
 ## L'impact direct sur tes avis
 Le lien entre livret et avis n'est pas
 évident. Pourtant il est réel et direct.
@@ -77,6 +81,10 @@ Avec un livret complet :
 → Il repart avec le sentiment d'une
   expérience soignée et professionnelle
 → Il laisse un meilleur avis
+
+:::astuce
+Une arrivée sans stress fait souvent la note de l'arrivée et de la communication. Le livret prépare cette arrivée avant même que le voyageur ait les clés.
+:::
 
 ## Livret papier vs livret digital
 LIVRET PAPIER
@@ -212,6 +220,10 @@ TRÈS UTILE :
 
 → Moins c'est long, plus c'est lu.
 
+:::exemple
+« À votre arrivée » en 5 lignes : adresse exacte avec lien vers la carte, où se garer, comment entrer (code et emplacement de la boîte), le wifi, ton numéro en cas de souci.
+:::
+
 ## La section Activités : ta vraie valeur ajoutée
 C'est la section qui fait la différence
 entre un livret fonctionnel
@@ -238,6 +250,10 @@ des recommandations avec :
 → Ces recommandations deviennent souvent
   la partie la plus commentée dans les avis.
   "Les adresses de l'hôte étaient parfaites !"
+
+:::astuce
+Écris tes recommandations comme tu les donnerais à un ami : « la boulangerie de la place, le pain au levain sort à 7 h ». C'est ce que les guides ne disent pas.
+:::
 
 ## Le livre d'or : l'arme secrète du livret Driing
 Le livret Driing intègre un livre d'or
@@ -372,6 +388,10 @@ Bon séjour !"
 → Maximum 5-6 lignes.
   Chaleureux, personnel, concis.
 
+:::exemple
+« Bienvenue chez nous ! Tout ce qu'il faut savoir pour votre séjour est ici. Une question ? Écrivez-moi au 06 00 00 00 00, je réponds vite. Bon séjour ! »
+:::
+
 ## L'importance du nom du logement dans Driing
 Le nom que tu donnes à ton logement
 dans Driing est visible par tes voyageurs
@@ -453,6 +473,10 @@ Vérifiez si un disjoncteur a sauté."
 → Chaque information tient en 1 à 2 lignes.
   Pas de roman. Des instructions opérationnelles.
 
+:::erreur
+Donner le code d'accès sans dire où se trouve la boîte à clés. Le voyageur arrive de nuit, cherche dix minutes, et t'appelle.
+:::
+
 ## Section "Pendant votre séjour" : les essentiels
 Cette section répond aux questions
 du quotidien dans le logement.
@@ -512,6 +536,9 @@ dans ce livret ou sur [Plateforme]."
 → Mentionner le livre d'or à ce moment
   est le timing parfait pour un avis positif.
 
+:::exemple
+« Départ avant 11 h. Merci de lancer le lave-vaisselle, de sortir les poubelles (bac jaune pour le tri, à droite de l'entrée) et de laisser les clés dans la boîte. » Clair, sans liste interminable.
+:::
 
 ## Exercice
 **Exercice pratique :** Complète maintenant les 3 sections dans Driing. Prends 20 minutes. Chaque section doit tenir sur un écran de smartphone sans qu'on ait à scroller excessivement. Si une section est trop longue : supprime le superflu. Le voyageur lit vite, sur son téléphone, entre deux activités.
@@ -593,6 +620,11 @@ Commandez le pot-au-feu ou les œufs mayo.
 Arrivez avant 12h pour éviter la queue.
 [Lien Maps]"
 
+:::exemple
+**Faible :** « Restaurant Le Port, très bon. »
+**Utile :** « Le Port, 5 min à pied : poisson du jour, terrasse sur l'eau, réservez le samedi soir. » Où, quoi, et le conseil qui fait la différence.
+:::
+
 ## Le nombre idéal de recommandations
 Moins c'est plus.
 
@@ -615,6 +647,10 @@ Chacune choisie, personnelle, avec un tip.
   va le mentionner dans son avis.
   C'est de la publicité que tu ne peux
   pas acheter.
+
+:::astuce
+Mieux vaut 10 adresses que tu connais vraiment que 50 copiées d'un guide. Le voyageur te fait confiance pour choisir.
+:::
 
 ## La carte interactive Driing
 Le livret Driing intègre une carte
@@ -703,6 +739,10 @@ texte: Remplis les trois sections et tes recommandations, puis reviens cocher l'
        dans le livre d'or de votre livret : [lien]"
     → Timing parfait pour un avis positif.
 
+:::exemple
+Le lien du livret part trois fois : à la confirmation (préparer le séjour), la veille de l'arrivée (accès et parking), le matin du départ (consignes de sortie).
+:::
+
 ## Comment intégrer le lien Driing dans tes messages
 Dans tes gabarits de messages existants
 (disponibles dans la plateforme),
@@ -747,6 +787,10 @@ ou
 
 Coût : 1 cadre Ikea + impression = ~5€
 Impact : perçu comme hôte premium.
+
+:::astuce
+Pose le QR code du livret près de l'entrée et dans la cuisine : le voyageur le retrouve au moment où il a la question.
+:::
 
 ## Ce que voient les voyageurs sur leur téléphone
 Quand le voyageur ouvre le lien Driing :
@@ -850,6 +894,10 @@ LE QR CODE DANS LE LOGEMENT :
 → La subtilité : on ne demande pas un avis
   5 étoiles. On invite à partager son expérience.
   C'est différent, et ça convertit mieux.
+
+:::exemple
+« Un mot dans le livre d'or nous fait toujours plaisir, et si vous avez aimé votre séjour, un avis sur la plateforme nous aide énormément. » Une phrase, pas de condition.
+:::
 
 ## Les avis du livre d'or visibles par les futurs voyageurs
 Les avis déposés dans le livre d'or Driing
@@ -974,6 +1022,9 @@ Exemples :
   Les questions se réduisent
   à 1 ou 2 par séjour maximum.
 
+:::astuce
+Chaque fois qu'un voyageur te pose une question, demande-toi : la réponse est-elle dans le livret ? Si non, ajoute-la dans la journée.
+:::
 
 ## Exercice
 **Exercice pratique :** Regarde les messages reçus sur tes 3 derniers séjours. Note les 3 questions les plus fréquentes. Ajoute les réponses dans ton livret maintenant. Voilà tes premières mises à jour basées sur les données réelles de tes voyageurs.
@@ -1028,6 +1079,10 @@ Exemples :
     "tout était expliqué clairement",
     "on s'est senti vraiment bien accueillis".
     Ce sont les signaux que ton livret fonctionne.
+
+:::exemple
+Compare 3 mois avant et 3 mois après la mise en place du livret : nombre de messages par séjour, note « arrivée », note « communication ». Si les messages baissent, le livret fait son travail.
+:::
 
 ## L'impact sur la réservation directe
 Le livret Driing a un effet secondaire

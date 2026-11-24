@@ -81,6 +81,10 @@ Sur Airbnb, la politique d'annulation impacte surtout la conversion (pas le clas
 
 La suite de cette formation est bâtie sur ces 5 différences. À chaque module, on reviendra y faire référence.
 
+:::retenir
+Booking n'est pas un Airbnb bis : réservation instantanée, politique d'annulation au cœur du classement, clientèle plus européenne et plus professionnelle. Une annonce copiée-collée y réussit rarement.
+:::
+
 :::quiz
 ? Pourquoi ne pas copier ton annonce Airbnb à l'identique sur Booking ?
 - C'est interdit par la loi
@@ -166,6 +170,10 @@ Assurance LCD responsabilité civile en vigueur
 **Sans cette check-list complète**, inutile d'aller plus loin dans la formation : la plateforme refusera ta fiche ou la suspendra dans les semaines qui suivent.
 
 La bonne nouvelle ? Cette check-list est **la même pour Booking et Airbnb**. Tu la fais une fois, tu l'appliques partout.
+
+:::astuce
+Ajoute ton numéro d'enregistrement dans l'extranet avant toute chose : depuis le 20 mai 2026, les plateformes doivent pouvoir l'afficher.
+:::
 
 :::quiz
 ? Que transmet Booking à l'administration fiscale ?
@@ -287,6 +295,10 @@ Une fiche Booking prête à être indexée coche **chacune** de ces 8 sections �
 
 **Temps estimé la première fois : 2 à 3 heures** pour remplir proprement. C'est l'investissement initial qui conditionne 90 % de ton ROI Booking.
 
+:::astuce
+Avant de publier, ouvre ta fiche en tant que voyageur depuis ton téléphone : ce qui manque ou paraît vide saute aux yeux en 2 minutes.
+:::
+
 :::quiz
 ? Que se passe-t-il avec une fiche Booking incomplète ?
 - Rien ne change
@@ -324,6 +336,12 @@ Tu peux copier-coller ton annonce Airbnb sur Booking, je l'ai vu faire des dizai
 - **Pas d'émotion ou d'emoji** : Booking les filtre comme spam
 
 **Test** : prends 5 titres de concurrents en top position sur ton marché. Remarque la structure. C'est quasi toujours : TYPE + LIEU + BÉNÉFICE.
+
+:::exemple
+**Airbnb :** « Cocon lumineux avec terrasse, à deux pas du port »
+**Booking :** « Appartement 2 chambres avec terrasse, Vieux-Port, Marseille »
+Sur Booking, le voyageur compare des faits : type, capacité, lieu.
+:::
 
 ### La description courte (résumé)
 
@@ -478,6 +496,10 @@ Prends 3 chiffres :
 - Occupation potentielle : 78 %
 - Revenu : 47,25 × 0,78 × 30 j = 1 106 € (+2,4 %)
 
+:::exemple
+Nuit à 100 €, Genius niveau 1 à 10 % : tu reçois 90 € avant commission. Si Genius t'apporte 4 nuits de plus par mois qui seraient restées vides, ce sont 360 € gagnés contre 10 € de remise sur chaque nuit Genius.
+:::
+
 ### Ce que montre cet exemple
 
 Le gain dépend de ta marge et de ton marché :
@@ -601,6 +623,10 @@ Dans l'extranet Booking, section "Analyses" :
 
 **Règle** : fais **un changement à la fois**, attends 7 jours, mesure les 3 taux. Si un taux chute, tu sais ce qui a causé le problème.
 
+:::exemple
+Tu actives une politique d'annulation plus souple le 1er du mois. Compare les 4 semaines suivantes aux 4 précédentes : vues de la fiche, réservations, annulations. Un seul changement à la fois, sinon tu ne sais pas lequel a joué.
+:::
+
 ### À retenir
 
 - L'algorithme 2026 classe par **pertinence de recherche**, pas en absolu
@@ -698,6 +724,10 @@ Booking mesure le temps écoulé entre la réception d'un message voyageur et ta
 
 **3. Forme un binôme (si conciergerie)**. Un gestionnaire + un assistant en rotation. Couverture 7h-23h.
 
+:::astuce
+Prépare des réponses enregistrées dans l'application Booking Pulse pour les questions fréquentes : tu réponds en moins d'une minute, même en déplacement.
+:::
+
 ### Cas particuliers
 
 **Messages automatiques** : Booking compte les auto-replies comme des réponses humaines uniquement si elles apportent une vraie information (pas "Je vous réponds bientôt"). Un template qui répond à la question courante compte.
@@ -784,6 +814,10 @@ Ce qu'on observe en général : plus la politique est souple, plus les annulatio
 
 **Calcul net** : pour un logement à 100 € / nuit, 60 % d'occupation, la politique **Souple** peut rapporter plus que la politique Ferme, même après les annulations, parce qu'elle t'affiche à plus de voyageurs. Vérifie-le sur tes propres réservations.
 
+:::exemple
+Avec une annulation gratuite jusqu'à 5 jours avant, un voyageur annule une semaine plus tôt : tu as encore 7 jours pour relouer. Avec 1 jour, tu n'as presque aucune chance. Le délai compte autant que la politique.
+:::
+
 ### La stratégie hybride recommandée
 
 Booking permet de proposer **plusieurs politiques en parallèle** (tarifs différents) :
@@ -862,6 +896,10 @@ Solution : photos récentes et réalistes, description factuelle sans embellisse
 Solution : **toujours déclarer un no-show** immédiatement dans l'extranet (bouton "Signaler un problème").
 
 **4. Des messages agressifs ou non professionnels**. Booking lit les messages. Un ton agressif ou des refus humiliants sont détectés automatiquement. Ça alimente le score "comportement hôte" de manière invisible.
+
+:::erreur
+Annuler une réservation confirmée parce qu'un voyageur plus intéressant s'est présenté ailleurs. C'est l'action qui fait le plus chuter ta fiabilité, et Booking peut te facturer le relogement.
+:::
 
 ### Les 3 actions qui boostent le score
 
@@ -1018,6 +1056,10 @@ Si ta fiche n'apparaît pas parmi les 3 recommandées, **c'est un signal qu'il f
 
 Si elle apparaît mais avec un résumé qui ne te plaît pas ("appartement au centre, prix moyen"), c'est que ton texte ne met pas assez en avant tes vrais atouts.
 
+:::exemple
+Pose la question à une IA comme un voyageur : « Un appartement à Nice pour 4 avec parking près de la plage. » Puis regarde ta fiche : parking, capacité, distance de la plage y sont-ils écrits en chiffres ? S'il manque un fait, ajoute-le.
+:::
+
 ### À retenir
 
 - Réserver Booking depuis ChatGPT : un usage nouveau, en croissance
@@ -1068,6 +1110,12 @@ Une description optimisée pour ChatGPT × Booking est **aussi** une meilleure d
 - "Cuisine équipée : plaque induction 4 feux, four combiné micro-ondes, lave-vaisselle 12 couverts, cafetière Nespresso, grille-pain, bouilloire"
 
 L'IA **matche les chiffres avec les requêtes**. Un voyageur qui demande "salon > 20 m²" ne verra pas ta fiche si tu écris juste "grand salon".
+
+:::exemple
+**Adjectif :** « Appartement spacieux et proche de tout »
+**Chiffre :** « 65 m², 2 chambres, tram à 200 m, plage à 8 min à pied »
+Une IA comme un voyageur pressé retient le second.
+:::
 
 ### Principe 2, Énumérer exhaustivement
 
@@ -1220,6 +1268,10 @@ Un channel manager est un logiciel intermédiaire qui gère en temps réel les 2
 Coût : 10-30 €/mois selon la solution (voir leçon suivante).
 
 **Quand c'est indispensable** : à partir de 10+ réservations/mois ou si tu es sur 3+ plateformes.
+
+:::erreur
+Compter uniquement sur la synchronisation iCal, qui peut avoir du retard. Pendant ce délai, la même nuit peut être réservée sur les deux plateformes.
+:::
 
 ### 2. Synchronisation tarifaire (matrice de stratégie)
 
@@ -1375,6 +1427,10 @@ J'ai vu beaucoup d'hôtes souscrire à un CM dès qu'ils publient sur leur 2e pl
 
 **Règle** : reste sur iCal gratuit jusqu'à 15 réservations/mois. Au-delà, le CM se rentabilise en gain de temps et en évitant les doubles-bookings.
 
+:::erreur
+Passer à un channel manager le jour d'une grosse période de réservations. Fais la bascule au calme, vérifie chaque calendrier, puis laisse tourner une semaine en surveillant les doublons.
+:::
+
 ### Configuration Booking dans le CM (étapes communes)
 
 Peu importe le CM choisi, la config Booking se fait en 4 étapes :
@@ -1452,6 +1508,10 @@ Booking a des règles contractuelles **différentes d'Airbnb** sur les paiements
 - Ton score de fiabilité baisse (mauvaise gestion signalée)
 
 **Bonne pratique** : si à 23 h le voyageur n'est pas arrivé (ou sans contact), déclare le no-show **le soir même** via l'app mobile. Booking te contactera pour confirmer.
+
+:::astuce
+En cas de non-présentation, signale-la dans l'extranet dans le délai prévu par Booking : passé ce délai, tu ne peux plus facturer selon ta politique ni contester la commission.
+:::
 
 ### Piège 2, La caution (dépôt de garantie)
 

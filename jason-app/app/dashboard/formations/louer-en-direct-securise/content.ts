@@ -68,6 +68,10 @@ Aucune de ces briques n'est compliquée. Il faut juste les poser **une fois**, p
 ✅ Tu gardes la commission
 ❌ Tu n'as plus de service client pour arbitrer à ta place : d'où l'importance des preuves et du contrat
 
+:::exemple
+Ce qu'Airbnb faisait sans que tu le voies : encaisser le paiement, garder une caution, vérifier l'identité, arbitrer un litige, collecter la taxe de séjour. En direct, chacune de ces tâches devient la tienne : cette formation te montre comment.
+:::
+
 ## À retenir
 
 Le direct n'est pas « Airbnb en moins bien ». C'est un autre métier : tu deviens ta propre plateforme. Cette formation te donne les 8 briques, dans l'ordre.
@@ -107,6 +111,10 @@ Ne coupe pas Airbnb ou Booking du jour au lendemain. Ils t'apportent la visibili
 ### 1. Tes anciens voyageurs
 
 C'est la source la plus rentable. Un voyageur content qui revient l'année suivante n'a plus besoin de plateforme. Garde ses coordonnées (avec son accord, voir module 5) et donne-lui une raison de revenir en direct : un tarif fidélité, une nuit offerte, une arrivée plus tôt.
+
+:::exemple
+Un voyageur enchanté l'été dernier reçoit en janvier : « Les dates de juillet ouvrent, vous avez la priorité, et en direct c'est 5 % de moins. » C'est souvent la première réservation directe, et la plus simple.
+:::
 
 ### 2. Le bouche-à-oreille
 
@@ -218,6 +226,10 @@ Pour un logement haut de gamme, des arrivées autonomes ou beaucoup de réservat
 - Qu'il soit **conforme au RGPD** et héberge les données dans l'Union européenne si possible.
 - Que le voyageur soit **informé** avant la vérification (une phrase dans ton message de réservation suffit).
 
+:::erreur
+Demander une photo de la pièce d'identité par message et la garder dans ton téléphone. Si tu vérifies une identité, fais-le avec un outil sécurisé et ne conserve que ce que la loi demande.
+:::
+
 ## À retenir
 
 ✅ Voir la pièce, vérifier le nom, faire remplir la fiche de police aux étrangers
@@ -265,6 +277,10 @@ Le « voyageur » envoie une capture d'écran de virement (parfois aux couleurs 
 
 Le voyageur « se trompe » et paie plus que prévu (souvent par chèque ou virement qui sera annulé), puis te demande de lui rembourser la différence. Tu rembourses avec ton vrai argent, son paiement disparaît.
 
+:::exemple
+« J'ai fait un virement de 1 200 € au lieu de 800 €, pouvez-vous me rembourser 400 € ? » Le premier virement était faux ou sera annulé. Règle : aucun remboursement tant que l'argent n'est pas définitivement sur ton compte, vérifié dans ta banque.
+:::
+
 ### 3. Le contrat pré-signé avec ton RIB
 
 Tu envoies un contrat déjà signé avec ton RIB : l'escroc dispose alors de ta signature et de tes coordonnées bancaires pour monter une fausse demande de prélèvement ou de virement. Envoie le contrat **non signé**, c'est le voyageur qui signe en premier.
@@ -287,6 +303,10 @@ Mandat cash, coupons prépayés, crypto, virement vers un tiers : aucun voyageur
 ### Le signal qui ne trompe pas
 
 Une histoire compliquée, de l'urgence, et toi qui dois sortir de l'argent. Si les trois sont réunis, arrête l'échange. Tu peux signaler la personne dans **Sécurité voyageur** : la base protège les autres hôtes, et l'onglet des arnaques du moment t'aide à reconnaître les nouvelles techniques.
+
+:::retenir
+Un voyageur pressé qui insiste pour payer autrement, rembourser une différence ou signer un contrat déjà rempli : stop. L'urgence est l'outil préféré des escrocs.
+:::
 
 :::quiz
 ? Un voyageur envoie une capture de virement et te demande des frais de déblocage. Que faire ?
@@ -368,11 +388,22 @@ Entre un propriétaire particulier et un voyageur, **aucun plafond légal** n'es
 
 > Sources : guide-immobilier.fr (2026) ; décret n° 72-678 du 20 juillet 1972, qui encadre les agents immobiliers.
 
+:::exemple
+Séjour de 800 €, 30 % versés à la réservation (240 €).
+**Arrhes :** si le voyageur annule, il perd les 240 € ; si c'est toi qui annules, tu lui rends le double, 480 €.
+**Acompte :** la réservation est ferme des deux côtés, le solde reste dû en principe en cas d'annulation.
+:::
+
 ## Pas de droit de rétractation de 14 jours
 
 Une location de vacances pour des **dates précises** n'ouvre pas le droit de rétractation de 14 jours, même réservée en ligne. Ce sont **tes conditions d'annulation** qui s'appliquent : écris-les clairement.
 
 > Source : article L221-28, 12° du Code de la consommation (Légifrance).
+
+:::retenir
+Une location de vacances à une date précise n'ouvre pas de droit de rétractation de 14 jours. Ce sont tes conditions d'annulation écrites qui s'appliquent : écris-les clairement.
+Source : Code de la consommation, article L. 221-28.
+:::
 
 ## Le contrat dans l'app
 
@@ -432,6 +463,10 @@ Une carte ne reste bloquée qu'**environ 7 jours** (Visa, Mastercard, Amex pour 
 - Pour un séjour de **plus de 4 nuits**, préfère une caution par virement, à rembourser après le départ
 
 > Source : règles de durée d'autorisation des réseaux de cartes, documentation Stripe (vérifié le 05/10/2026).
+
+:::exemple
+Séjour du 1er au 10 août, empreinte prise le 25 juillet à la réservation : elle expire avant même l'arrivée. Prends-la juste avant l'arrivée, ou utilise un outil qui la renouvelle.
+:::
 
 ## Ce que fait l'app pour toi
 
@@ -505,6 +540,10 @@ La mise en location courte durée change le risque (plus de passage, des inconnu
 
 > Source : article L113-2 du Code des assurances (déclaration des circonstances qui aggravent le risque).
 
+:::astuce
+Envoie un e-mail à ton assureur : « Je loue ce logement en location courte durée, environ X nuits par an. Suis-je couvert ? » La réponse écrite vaut mieux qu'une conversation au téléphone.
+:::
+
 ## Les 3 grandes familles de contrats
 
 | Formule | Pour qui | À savoir |
@@ -575,6 +614,10 @@ Deux contrats au même prix peuvent couvrir des choses très différentes. Pose 
 - Demande **au moins 3 devis** : ton assureur actuel, un assureur en ligne, un courtier spécialisé en location saisonnière.
 - Mets les réponses dans un **tableau** avec ces 10 lignes. Le moins cher est rarement celui qui couvre le vol par un voyageur.
 - Garde les **conditions générales** et les **conditions particulières** : c'est elles qui comptent en cas de sinistre, pas la plaquette.
+
+:::exemple
+Deux offres à 25 € par mois : l'une plafonne les dégâts causés par un voyageur à 2 000 € avec 500 € de franchise, l'autre à 10 000 € avec 150 €. Même prix, protection très différente.
+:::
 
 ## Les preuves qui font payer l'assurance
 
@@ -661,6 +704,10 @@ La commune peut sanctionner un défaut de déclaration ou de reversement par des
 
 Si un voyageur annule sur une plateforme puis réserve chez toi en direct, vérifie que la taxe n'est pas collectée deux fois.
 
+:::exemple
+Taxe de 1,50 € par personne et par nuit, 2 adultes, 4 nuits : 1,50 × 2 × 4 = 12 €. Tu l'ajoutes sur la facture, tu la notes dans ton tableau, et tu la reverses à la commune à l'échéance fixée par elle.
+:::
+
 :::quiz
 ? En direct, qui reverse la taxe de séjour à la commune ?
 - Le voyageur directement
@@ -719,6 +766,10 @@ Tout **professionnel** qui vend un service à des consommateurs doit proposer gr
 Es-tu un professionnel ? Si tu loues de façon **habituelle**, pour en tirer un revenu (loueur en meublé, numéro SIRET), c'est très probablement le cas. Si tu loues ta résidence principale deux semaines par an, la question se discute. Dans le doute, adhérer à un médiateur coûte peu et te met en règle.
 
 > Sources : article L612-1 du Code de la consommation ; economie.gouv.fr, « Médiation de la consommation : vos principales obligations » ; la liste officielle des médiateurs est tenue par la CECMC.
+
+:::retenir
+Si tu loues en tant que professionnel à des particuliers, tu dois leur indiquer un médiateur de la consommation pour régler un litige à l'amiable.
+:::
 
 ## Le récapitulatif
 
@@ -789,6 +840,10 @@ Aucune loi ne t'oblige à passer par un juriste ou un avocat pour louer en direc
 - **Le médiateur de la consommation** : pour un désaccord avec un voyageur, c'est une étape gratuite pour lui avant le tribunal.
 - **Une consultation ponctuelle** avec un avocat en droit immobilier pour faire relire ton contrat une fois : c'est souvent suffisant, puis tu le réutilises.
 
+:::astuce
+Avant un avocat : la conciliation (gratuite), le médiateur de la consommation, ou les points-justice pour un premier conseil.
+:::
+
 ## La règle d'or du litige
 
 Un litige se gagne avec des **preuves** : contrat signé, état des lieux, photos datées, échanges écrits. Sans elles, même le meilleur avocat ne peut pas grand-chose. La formation **Gérer les incidents et litiges en LCD** te donne la méthode complète.
@@ -847,6 +902,10 @@ Un litige se gagne avec des **preuves** : contrat signé, état des lieux, photo
 | Médiateur choisi (si professionnel) | |
 | Process de vérification du voyageur | |
 | Modèle de message d'arrivée avec fiche de police | |
+
+:::astuce
+Imprime la liste et coche-la à ta première réservation directe. À la troisième, tu n'en auras plus besoin.
+:::
 
 ## Et maintenant ?
 

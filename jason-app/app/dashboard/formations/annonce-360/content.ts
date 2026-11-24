@@ -43,6 +43,10 @@ Les **canaux secondaires** jouent un rôle différent :
 - **Booking.com** capte une audience européenne et business qu'Airbnb touche moins bien, avec des séjours plus courts. Rentable si ton logement s'y prête, jamais au prix d'une fiche bâclée.
 - **Driing** fonctionne sur un modèle sans commission, adhésion annuelle plutôt que prélèvement par séjour. C'est ton canal direct : ta page a sa propre URL, tu peux y rediriger tes voyageurs directement (QR code dans le logement, lien en bio, réponse à un avis), sans avoir à construire ni maintenir un site à toi. Créer et faire vivre un vrai site (référencement, mises à jour, sécurité) est un métier à part entière, chronophage, que la quasi-totalité des hôtes n'ont ni le temps ni l'envie de faire sérieusement. Le volume de trafic sur Driing est aujourd'hui sans commune mesure avec Airbnb ou Booking, mais le coût marginal d'y être présent est quasi nul une fois ta page configurée : c'est un canal à faible friction, pas un pari lourd, et c'est lui qui joue le rôle de rétention et de marge dans ton portefeuille.
 
+:::exemple
+Hôte avec 70 % de ses nuits sur Airbnb, 20 % sur Booking, 10 % en direct. Canal héros : Airbnb, à soigner en premier. Canaux secondaires : Booking et le direct, à faire grandir sans négliger le héros.
+:::
+
 ### L'erreur classique : traiter tous les canaux à égalité
 
 Un hôte qui passe autant de temps à peaufiner sa fiche Driing que sa fiche Airbnb inverse la logique de rendement. Le bon réflexe : audite chaque canal une fois par trimestre, mais concentre 70 % de ton temps d'optimisation sur ton canal héros, 20 % sur le canal secondaire le plus prometteur, 10 % sur le reste, en mode "présent et propre" plutôt que "optimisé à fond".
@@ -94,6 +98,10 @@ La cannibalisation, c'est quand un canal secondaire capte des réservations qui 
 
 **Concrètement** : si tu n'as pas encore de channel manager et que tu gères 2 canaux ou plus à la main, c'est le premier chantier à lancer avant même de retoucher tes annonces.
 
+:::exemple
+Un voyageur trouve ton logement sur Airbnb, puis le même 10 % moins cher en direct : il réserve en direct, c'est voulu. Mais s'il le trouve moins cher sur Booking, tu paies une autre commission pour rien. Le direct doit être le moins cher, les plateformes entre elles cohérentes.
+:::
+
 :::quiz
 ? Que risques-tu si ton logement est toujours moins cher ailleurs ?
 - Plus de réservations partout
@@ -143,6 +151,10 @@ Le problème : ton annonce n'est jamais figée. Le marché change, la concurrenc
 ### Ce que l'inaction coûte réellement
 
 Sur une annonce à 10 000 vues mensuelles, faire passer le taux de clic de la photo de couverture de 3 % à 5 % représente 200 vues supplémentaires par mois. À un taux de conversion de 5 %, ça fait **5 à 10 réservations en plus chaque mois**, pour le prix de changer une seule photo. Ne jamais tester, c'est laisser ce genre de gain sur la table indéfiniment, par précaution excessive.
+
+:::exemple
+Une photo de couverture qui ferait passer la conversion de 2 % à 2,5 % : sur 1 000 vues par mois, c'est 5 réservations de plus par an… ou de moins, tant qu'on ne teste pas.
+:::
 
 ### La différence entre tester et improviser
 
@@ -204,6 +216,10 @@ Ne jamais empiler deux tests en même temps sur le même canal. Si tu changes la
 
 **Concrètement** : ouvre un tableau simple, une ligne par test, avec la date de lancement, l'élément modifié, la métrique suivie, et la date de décision. Ce tableau, tenu sur 6 mois, vaut plus que n'importe quel conseil générique trouvé en ligne, parce qu'il est calibré sur TON logement, TA zone, TA saisonnalité.
 
+:::erreur
+Changer la photo, le titre et le prix la même semaine. Si les réservations montent, impossible de savoir pourquoi : un seul changement par période de test.
+:::
+
 :::quiz
 ? Combien de temps laisser un test avant de conclure ?
 - Six mois
@@ -252,6 +268,10 @@ Tu peux avoir une description sans faute, complète, honnête, et pourtant sous-
 
 Le premier chiffre que voit un voyageur sert de référence pour juger tous les suivants. Si ta description mentionne d'abord un tarif "prix courant du marché dans le quartier : 140-160 €/nuit" avant d'annoncer ton propre prix à 125 €, ton offre paraît immédiatement avantageuse, même si 125 € était déjà ton prix initial.
 
+:::exemple
+Afficher d'abord le prix de la semaine en haute saison, puis « en novembre, à partir de 69 € la nuit » : le second prix paraît plus doux, car l'œil s'est ancré sur le premier.
+:::
+
 ### 2. La preuve sociale
 
 "4,9 étoiles sur 87 avis" convainc davantage que "4,9 étoiles" seul, parce que le volume rassure sur la fiabilité de la note. Si tu as peu d'avis récents, mets en avant un chiffre différent qui reste vrai et rassurant : nombre de voyageurs accueillis, ancienneté de l'activité, taux de voyageurs récurrents.
@@ -263,6 +283,10 @@ Les gens sont plus sensibles à ce qu'ils risquent de perdre qu'à ce qu'ils pou
 ### 4. La rareté douce
 
 "Dernières dates disponibles ce mois-ci" fonctionne s'il est vrai. La rareté fabriquée (fausses alertes de disponibilité) est démasquée rapidement par des voyageurs habitués aux plateformes, et détruit la confiance plus vite qu'elle ne la construit. N'utilise ce levier que lorsqu'il reflète une réalité.
+
+:::erreur
+Écrire « Plus que 2 dates ! » quand c'est faux. Le voyageur le découvre en ouvrant le calendrier, et la confiance part avec.
+:::
 
 ### 5. L'effet de cohérence
 
@@ -307,6 +331,10 @@ La plupart des hôtes cherchent l'inspiration pour leur description en lisant de
 2. **Classe ces extraits par thème** : ambiance du lieu, qualité de l'accueil, praticité de l'emplacement, détails inattendus appréciés. Tu obtiens rapidement une carte de ce qui compte vraiment pour tes voyageurs, souvent différente de ce que tu penses spontanément mettre en avant.
 
 3. **Réinjecte les formulations, pas juste les idées**, dans ta description. Si trois avis différents mentionnent spontanément "le calme malgré la proximité du centre", cette tension entre calme et proximité mérite d'être dans ta première ligne de description, dans des mots proches de ceux qu'utilisent réellement tes voyageurs.
+
+:::exemple
+Dans 30 avis, « on dort comme des bébés » revient 6 fois, « la terrasse au coucher du soleil » 5 fois. Ta nouvelle accroche : « La terrasse au coucher du soleil, et des nuits très calmes. » Écrite par tes voyageurs.
+:::
 
 ### Pourquoi ça marche mieux qu'un texte "professionnel"
 
@@ -371,6 +399,10 @@ Le SEO classique optimise pour être bien classé dans une liste de résultats q
 - Une fiche Airbnb ou Booking n'est **pas indexée** de la même façon qu'une page web classique : les IA génératives ne peuvent généralement pas la citer directement comme source, parce que ces plateformes bloquent l'indexation profonde de leur contenu par les robots IA.
 - **Ta page Driing**, elle, a sa propre URL, indépendante et non verrouillée de la même façon. C'est le terrain sur lequel tu peux effectivement jouer ce jeu-là, sans avoir à construire et maintenir un site perso pour ça, un chantier technique que la grande majorité des hôtes n'ont ni le temps ni l'envie de mener sérieusement. C'est le chantier de la leçon suivante.
 
+:::exemple
+Recherche classique : « location Annecy lac ». Question posée à une IA : « Trouve-moi un logement calme pour 4 à Annecy, avec parking, à moins de 10 minutes du lac, en juillet. » L'IA cherche des faits précis : parking, distance, capacité. Ta fiche doit les donner.
+:::
+
 ### Pourquoi 2026 est le bon moment pour s'y mettre
 
 Les études sur le sujet montrent que la présence de citations, de statistiques vérifiables et de sources externes dans un contenu peut augmenter sa visibilité dans les réponses d'IA génératives de plus de 40 %. Le terrain est encore largement ouvert dans le secteur LCD en France : très peu d'hôtes ont pensé à soigner leur page Driing pour ça, ce qui signifie qu'agir maintenant capte un avantage que la majorité n'aura pas encore commencé à chercher.
@@ -416,6 +448,10 @@ Une IA générative construit sa réponse en cherchant des sources claires, stru
 **3. Des chiffres et des faits vérifiables**, plutôt que des adjectifs. "À 8 minutes à pied de la gare" convainc et se cite mieux que "très bien situé". "Capacité 4 personnes, 2 chambres, 65 m²" se cite mieux que "spacieux et confortable". Chaque affirmation vérifiable est une prise que l'IA peut citer avec confiance.
 
 **4. Être mentionné ailleurs.** Une IA pondère davantage une page citée ou liée par d'autres sources externes (office de tourisme local, blog local, presse locale, annuaire spécialisé). Un partenariat local qui pointe vers ta page Driing, ce n'est plus seulement un levier SEO classique, c'est aussi un levier GEO, sans que tu aies besoin d'un site à toi pour en profiter.
+
+:::astuce
+Écris une courte foire aux questions sur ta page (parking, animaux, distance de la plage) avec des réponses chiffrées : c'est le format qu'une IA reprend le plus facilement.
+:::
 
 ### Ce qu'il ne faut pas faire
 
@@ -483,6 +519,10 @@ Le metasearch n'est pas un canal sur lequel investir du temps de rédaction ou d
 
 **Ne perds pas de temps à chercher comment "t'inscrire" sur Google Vacation Rentals en direct** : vérifie plutôt, dans les paramètres de ton channel manager, si cette diffusion est déjà activée.
 
+:::retenir
+Les comparateurs de prix ne sont pas une priorité pour un hôte indépendant : Google, tes anciens voyageurs et tes plateformes rapportent plus pour le même temps.
+:::
+
 :::quiz
 ? Comment un hôte indépendant apparaît-il généralement sur ces comparateurs ?
 * Via un outil de gestion partenaire
@@ -523,6 +563,10 @@ Une visite 3D professionnelle représente un coût réel (prestataire, matériel
 
 - **Fort rendement** : logements haut de gamme, logements avec agencement atypique ou spacieux difficile à saisir en photo, logements réservés majoritairement à distance et longtemps à l'avance (les voyageurs ont le temps de comparer en détail).
 - **Rendement plus faible** : logements simples et standards, réservations majoritairement de dernière minute où le temps de décision est court et où d'autres facteurs (prix, disponibilité immédiate) dominent la décision.
+
+:::exemple
+Une maison d'architecte à 400 € la nuit : une visite 3D rassure sur l'espace et se rentabilise vite. Un studio standard à 60 € : de bonnes photos suffisent souvent.
+:::
 
 ### La vidéo courte, un investissement à part
 
@@ -578,6 +622,10 @@ En 2026, un logement avec 40 avis au total mais 12 obtenus dans les 90 derniers 
 
 La logique métier derrière ce choix : un logement avec des avis anciens n'a peut-être plus la même qualité qu'il y a deux ans, changement de gestion, dégradation du logement, changement de voisinage. Des avis récents et positifs prouvent que la qualité tient **dans la durée**, pas seulement au lancement.
 
+:::astuce
+Mieux vaut un avis par mois qu'une salve de 10 avis puis plus rien : demande l'avis après chaque séjour, toute l'année.
+:::
+
 ### Le badge Coup de Cœur Voyageurs, un signal renforcé
 
 Ce badge, couvert en détail dans la formation Optimiser son annonce Airbnb, s'appuie sur une moyenne de 4,9 et plus, et pèserait aujourd'hui beaucoup dans le classement, davantage que l'ancien badge Superhost qu'il a largement supplanté comme signal de qualité dominant. Or ce badge se recalcule en continu sur une fenêtre glissante, ce qui veut dire qu'un ralentissement du rythme d'avis récents peut le faire perdre, même sans aucune baisse de la qualité réelle du séjour.
@@ -625,6 +673,10 @@ Un message de demande d'avis envoyé automatiquement dans la fenêtre officielle
 - Offrir une **contrepartie** (réduction, cadeau) explicitement en échange d'un avis positif
 - Solliciter uniquement les voyageurs dont tu sais qu'ils ont été satisfaits, et **filtrer** ceux dont le séjour s'est moins bien passé
 - Répéter la demande de façon insistante après un premier message resté sans réponse
+
+:::exemple
+Ce qui s'automatise : l'envoi du message de demande d'avis le lendemain du départ. Ce qui ne s'automatise pas : la remise ou le cadeau en échange d'une bonne note, interdits partout.
+:::
 
 ### Ce qui est encouragé et efficace
 
@@ -696,6 +748,10 @@ Pour chaque canal actif (Airbnb, Booking, Driing), réponds honnêtement à ces 
 
 Pour chaque canal, chaque question à laquelle tu réponds "non" ou "je ne sais pas" est un point d'action. Un canal avec 4 ou 5 "non" n'est pas un canal secondaire à négliger davantage, c'est probablement un canal en train de perdre du terrain sans que tu le voies, exactement le phénomène silencieux décrit au module 6.
 
+:::astuce
+Note chaque canal sur 10 avec un ami ou un autre hôte : un regard extérieur évite de se donner 8 partout.
+:::
+
 ### Prioriser par effort et impact, pas par ordre chronologique du programme
 
 Une fois l'audit fait, classe les actions possibles en deux axes : effort nécessaire (faible / élevé) et impact attendu (faible / élevé). Commence toujours par les actions à **fort impact et faible effort** : elles sont rares, mais ce sont elles qui font ressentir un résultat le plus vite, ce qui te donne l'élan pour t'attaquer ensuite aux chantiers plus lourds (channel manager, refonte GEO du site).
@@ -741,6 +797,13 @@ Tout ce que ce programme a couvert, le portefeuille de canaux, les tests continu
 **Bloc 3, Test en cours.** Si tu as un test en cours (module 2), vérifie où il en est. S'il est terminé depuis plus d'une semaine sans décision prise, décide maintenant, garder ou revenir en arrière, puis lance le test suivant de ta liste.
 
 **Bloc 4, Une seule nouvelle action.** Choisis une seule chose à améliorer ce mois-ci, tirée de ta grille d'audit du module précédent ou de ce que les chiffres du bloc 1 t'ont révélé. Une seule. La discipline vient de la régularité du rituel, pas de la quantité d'actions menées en une fois.
+
+:::chiffres
+7 min | chiffres du mois par canal
+8 min | avis et notes
+7 min | prix et calendrier
+8 min | une action pour le mois suivant
+:::
 
 ### Pourquoi 30 minutes, pas plus
 

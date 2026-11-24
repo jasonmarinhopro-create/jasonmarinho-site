@@ -46,6 +46,10 @@ Une conciergerie de tourisme relève des **Bénéfices Industriels et Commerciau
 
 > **Une conciergerie = BIC. Sans exception.**
 
+:::erreur
+Se déclarer en BNC parce que la conciergerie « vend du service ». L'administration la classe en BIC : un mauvais choix fausse ton abattement et tes cotisations.
+:::
+
 ## Les codes APE/NAF de la conciergerie
 
 Lors de ta création d'activité, l'INSEE t'attribue un **code APE**. Pour une conciergerie :
@@ -93,6 +97,10 @@ La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des
 | **Abattement micro 2026** | 30 % *(non classé)* / 50 % *(classé)* | **50 %** |
 | **Plafond micro 2026** | 15 000 € / 83 600 € | **83 600 €** |
 | **Impacté loi Le Meur fiscalement** | Oui | **Non directement** |
+
+:::retenir
+Conciergerie = BIC, que tu sois en micro-entreprise ou en société. Le code APE choisi à l'immatriculation décrit ton activité, il ne change pas cette règle.
+:::
 
 ## Exercice pratique
 
@@ -156,6 +164,11 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 - **Entre 37 500 € et 41 250 €** → franchise maintenue si c'est un **premier dépassement**.
 - **Au-dessus de 41 250 €** → TVA obligatoire dès le **1er jour du mois de dépassement**.
 
+:::exemple
+Chiffre d'affaires de 32 000 € : tu restes en franchise, tu factures sans TVA.
+Chiffre d'affaires de 45 000 € : seuil de 37 500 € dépassé, tu factures 20 % de TVA en plus de tes honoraires à partir de la date prévue par la règle de dépassement.
+:::
+
 ### Réforme TVA à 25 000 € : SUSPENDUE
 
 > L'article 32 de la LFI 2025 prévoyait d'abaisser le seuil à 25 000 € au 1er mars 2025. **Cette réforme a été officiellement suspendue le 30 avril 2025** par le Ministère de l'Économie.
@@ -197,6 +210,10 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 - ✗ Prix de 20 % plus élevés *(si clientèle non-assujettie)*
 
 > Pour une conciergerie dont les propriétaires sont souvent **non-assujettis à la TVA**, la franchise est souvent préférable tant qu'elle s'applique.
+
+:::astuce
+Note ton chiffre d'affaires cumulé chaque mois dans un tableau. Tu verras venir le seuil de TVA des mois à l'avance, au lieu de le découvrir en fin d'année.
+:::
 
 ## Exercice pratique
 
@@ -260,6 +277,10 @@ L'administration fiscale applique **automatiquement** un abattement de **50 %** 
 >
 > *(sans avoir à justifier une seule facture)*
 
+:::exemple
+Chiffre d'affaires de 40 000 € en micro-BIC (prestations de services) : abattement de 50 %, soit 20 000 € de revenu imposable, quelles que soient tes vraies charges.
+:::
+
 ### Les plafonds 2025-2026
 
 - **2025** : **77 700 €** de CA annuel maximum
@@ -316,6 +337,10 @@ Option disponible si ton **revenu fiscal de référence** de l'année N-2 est in
 ### Pas de déduction des charges réelles
 
 Si tu achètes un véhicule, du matériel, tu sous-traites… *tu ne peux rien déduire individuellement.*
+
+:::erreur
+Rester en micro avec beaucoup de frais (véhicule, sous-traitance du ménage, logiciels). Si tes charges dépassent la moitié de ton chiffre d'affaires, le régime réel peut te faire payer moins.
+:::
 
 ### Plafond bloquant
 
@@ -378,6 +403,10 @@ Même statut solo qu'en micro, mais avec **déduction des charges réelles** au 
 ### Protection du patrimoine depuis 2022
 
 > La réforme de 2022 a intégré l'EIRL dans l'EI. Ton patrimoine professionnel est **automatiquement séparé** de ton patrimoine personnel. *Avancée majeure.*
+
+:::retenir
+Depuis 2022, l'entrepreneur individuel a un patrimoine professionnel séparé de son patrimoine personnel par défaut : la société n'est plus le seul moyen de protéger ta maison.
+:::
 
 ### Cotisations sociales *(TNS)*
 
@@ -447,6 +476,11 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 | CA 60 000, 100 000 €, croissance | **EURL / IS** |
 | CA > 100 000 €, bénéfices solides | **SASU / IS** |
 | S'associer prévu | **SAS** *(pluripersonnel)* |
+
+:::exemple
+**Début d'activité, 25 000 € de CA :** micro-entreprise, simple et peu coûteuse.
+**80 000 € de CA avec un salarié en vue :** une société (EURL ou SASU) se discute avec un expert-comptable.
+:::
 
 ## Les coûts comparés sur 1 an
 
@@ -580,6 +614,10 @@ Si la SASU génère **80 000 € de bénéfice** :
 | **Zéro cotisation possible** | Non *(min. 1 200 €/an)* | **Oui** |
 | **Conseil si bénéfices élevés** | Non | **Oui** |
 
+:::retenir
+TNS : cotisations moins chères, protection sociale plus faible. Assimilé salarié : cotisations plus chères, protection proche d'un salarié (sauf le chômage). Le bon choix dépend de ce que tu veux protéger.
+:::
+
 ## Exercice pratique
 
 1. **Estime ta rémunération nette** souhaitée pour l'année.
@@ -665,6 +703,11 @@ Si la SASU génère **80 000 € de bénéfice** :
 - Formalisme comptable renforcé.
 - Moins avantageux si tu distribues l'intégralité du bénéfice.
 
+:::chiffres
+15 % | IS jusqu'à 42 500 € de bénéfice (taux réduit, sous conditions)
+25 % | IS au-delà
+:::
+
 ## Comparatif chiffré, bénéfice 60 000 €
 
 ### Scénario 1, EURL à l'IR *(célibataire sans autre revenu)*
@@ -706,6 +749,10 @@ Si la SASU génère **80 000 € de bénéfice** :
 - Tu veux **conserver des bénéfices** en société.
 - Tu utilises la stratégie **SASU + dividendes**.
 - Ton **taux marginal IR dépasse 30 %**.
+
+:::astuce
+Si tu laisses une partie du bénéfice dans la société pour investir, l'IS est souvent intéressant. Si tu prends tout pour vivre, compare les deux avec un professionnel.
+:::
 
 ## Exercice pratique
 
@@ -844,6 +891,14 @@ Pour être déductible, une charge doit être :
 - **Utilise un compte bancaire pro** distinct dès le départ.
 - **Ne mélange jamais** dépenses perso et pro.
 
+:::exemple
+Logiciel de gestion à 40 € par mois : 480 € par an déductibles au réel, avec la facture. Le même logiciel sans facture : rien à déduire en cas de contrôle.
+:::
+
+:::astuce
+Un compte bancaire dédié à la conciergerie, et chaque facture photographiée le jour même. Ta comptabilité se fait presque toute seule.
+:::
+
 ## Exercice pratique
 
 1. **Liste tes 5 principales dépenses** professionnelles des 3 derniers mois.
@@ -894,6 +949,10 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 - CA < 5 000 €/an : exonéré.
 - Zones **ZFU, ZRR, BUD** : exonérations partielles possibles.
 
+:::astuce
+La première année d'activité, la CFE n'est pas due : note la date d'immatriculation pour savoir quand arrivera le premier avis.
+:::
+
 ### Où et quand la payer
 
 - **Avis d'imposition** sur *impots.gouv.fr* *(espace pro)*.
@@ -922,6 +981,10 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 - Base de calcul : bénéfice N-1 × taux IS applicable.
 
 > La trésorerie IS reste en **société**, ne la confonds pas avec tes liquidités.
+
+:::exemple
+Tu encaisses 4 000 € d'honoraires ce mois-ci. Mets tout de suite de côté la part estimée des cotisations et de l'impôt sur un compte à part : tu ne la dépenses pas, et l'échéance n'est plus une mauvaise surprise.
+:::
 
 ## Agenda fiscal annuel d'une conciergerie
 
@@ -1016,6 +1079,10 @@ Toute location de courte durée devra être enregistrée auprès de la **commune
 - **Anticipe** dès maintenant avec tes propriétaires clients.
 - Certaines communes déploient **déjà** le dispositif.
 
+:::astuce
+Ajoute à ta liste d'accueil de chaque nouveau propriétaire : numéro d'enregistrement, DPE, accord de copropriété. Tu évites de gérer un logement qui ne peut pas légalement être loué.
+:::
+
 ## Mesure 2, DPE progressif obligatoire
 
 ### Pour les propriétaires
@@ -1064,6 +1131,10 @@ Les communes peuvent désormais :
 - ✓ Ton **régime IS/IR** n'est pas modifié.
 
 > La loi Le Meur est une loi d'**urbanisme et de régulation**. Elle ne modifie **pas** la fiscalité des prestataires de services.
+
+:::retenir
+La loi Le Meur change surtout la fiscalité des propriétaires (abattements, plafonds). Ta conciergerie reste imposée sur ses honoraires, en BIC.
+:::
 
 ## Exercice pratique
 
@@ -1146,6 +1217,10 @@ Les communes peuvent désormais :
 
 - Tu n'es **pas concerné** par les 30 % des meublés non classés.
 - Ton abattement reste **50 %** *(services BIC)*.
+
+:::exemple
+Le propriétaire d'un meublé non classé a 30 % d'abattement en micro-BIC. Ta conciergerie, elle, a l'abattement des prestations de services sur ses honoraires. Deux activités, deux calculs.
+:::
 
 ### Erreur 2, Ne pas provisionner les cotisations URSSAF
 

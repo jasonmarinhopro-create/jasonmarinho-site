@@ -107,6 +107,10 @@ Airbnb note les hôtes sur 6 dimensions :
   et l'améliorer est souvent plus efficace
   que de tout optimiser en même temps.
 
+:::astuce
+Ta sous-note la plus basse est ton meilleur levier : un point gagné en propreté pèse souvent plus qu'un nouvel équipement.
+:::
+
 ## La règle des 14 jours
 Sur Airbnb :
 → Hôte et voyageur ont 14 jours
@@ -133,6 +137,9 @@ Sur Google My Business :
   envoyée dans les 24-48h après le départ.
   Pas une semaine après.
 
+:::retenir
+Sur Airbnb, l'hôte et le voyageur ont 14 jours après le départ pour écrire leur avis. Les deux avis sont publiés ensemble, ou à la fin du délai.
+:::
 
 ## Exercice
 **Exercice pratique :** Regarde maintenant les 6 critères de ta dernière période de réservations sur Airbnb. Quel est ton critère le plus faible ? C'est là que tu dois concentrer tes efforts en premier, pas sur ce qui va déjà bien.
@@ -188,6 +195,10 @@ Sanctions possibles : suppression
 de l'annonce, suspension du compte,
 retrait de l'avis et de ta réponse.
 
+:::erreur
+Proposer une remise ou un cadeau contre un avis 5 étoiles, ou demander à un voyageur de modifier sa note. Les plateformes l'interdisent et peuvent retirer les avis ou sanctionner le compte.
+:::
+
 ## Les méthodes légitimes et efficaces
 MÉTHODE 1, La demande dans le message de check-out
 Le moment le plus naturel.
@@ -235,6 +246,10 @@ le meilleur moment :
 → Si l'expérience était bonne,
   il est dans les meilleures dispositions
   pour laisser un avis enthousiaste.
+
+:::exemple
+Le matin du départ : « Merci d'avoir pris soin du logement ! Si le séjour vous a plu, votre avis nous aide beaucoup. Bon retour ! » Un rappel simple, au moment où le souvenir est frais.
+:::
 
 ## Augmenter la qualité des avis reçus
 Un avis "super séjour !" avec 5 étoiles
@@ -349,6 +364,10 @@ ou
 "Ce serait un plaisir de l'accueillir
 à nouveau."
 
+:::exemple
+« Claire et sa famille ont été des voyageurs parfaits : communication facile, horaires respectés et logement rendu impeccable. Nous les accueillerons avec plaisir à nouveau. » Trois parties : la personne, les faits, la recommandation.
+:::
+
 ## Exemples concrets
 ✅ BON AVIS POSITIF
 
@@ -394,6 +413,9 @@ Règle générale :
   = mentionnés publiquement,
   avec des faits et sans agressivité.
 
+:::astuce
+Les remarques constructives (« pensez à sortir les poubelles ») passent mieux en note privée qu'en avis public.
+:::
 
 ## Exercice
 **Exercice pratique :** Pense à ton dernier bon voyageur. Rédige son avis maintenant en 3 phrases en suivant la structure de la slide 3. Si le délai de 14 jours n'est pas dépassé, publie-le. Sinon, conserve ce template, tu t'en serviras pour le prochain.
@@ -471,6 +493,12 @@ La communication pendant le séjour
 a été limitée. Nous ne recommandons
 pas ce voyageur."
 
+:::exemple
+**Émotionnel :** « Des voyageurs irrespectueux, à fuir ! »
+**Factuel :** « 6 personnes présentes au lieu des 4 réservées, et une fête signalée par les voisins à 1 h. Je ne recommande pas ces voyageurs pour un logement en immeuble. »
+Le second est crédible et ne te met pas en faute.
+:::
+
 ## Structure d'un avis négatif professionnel
 PARTIE 1, Constat factuel (1-2 phrases)
 Décris ce qui s'est passé,
@@ -519,6 +547,9 @@ lue par tes futurs voyageurs.
 Un hôte qui semble "difficile à vivre"
 perd des réservations.
 
+:::astuce
+Relis ton avis le lendemain, à froid. S'il contient un adjectif plutôt qu'un fait, réécris la phrase.
+:::
 
 ## Exercice
 **Exercice pratique :** Si tu as un voyageur difficile dont tu n'as pas encore laissé l'avis (et que le délai de 14 jours n'est pas dépassé) : rédige-le maintenant avec la structure de la slide 4. Factuel, court, professionnel. Pas plus de 5 lignes.
@@ -634,6 +665,10 @@ La plupart sont de type 1 ou 2.
    sur tous tes avis négatifs
    → Les futurs voyageurs le voient.
 
+:::erreur
+Accuser le voyageur ou révéler des détails privés dans ta réponse publique. Les futurs voyageurs retiennent surtout la façon dont tu réponds.
+:::
+
 ## Le délai idéal pour répondre
 Sur Airbnb :
 → Tu as 14 jours à compter de la
@@ -657,6 +692,9 @@ Sur Google My Business :
 → Google favorise les profils actifs
   dans son algorithme.
 
+:::astuce
+Réponds dans les jours qui suivent, mais jamais le soir même : écris, attends une nuit, relis, publie.
+:::
 
 ## Exercice
 **Exercice pratique :** Pense au dernier avis négatif que tu as reçu. Dans quel type tombe-t-il : légitime, excessif, ou injuste ? Cette classification change complètement la façon dont tu dois répondre. On voit ça dans la leçon suivante.
@@ -715,6 +753,13 @@ factuel qui éclaire la situation]."
 ou simplement :
 "Nous prenons note pour améliorer
 l'expérience de nos futurs voyageurs."
+
+:::chiffres
+1 | remercier
+2 | reconnaître ce qui est juste
+3 | expliquer ce que tu as changé
+4 | conclure pour les futurs voyageurs
+:::
 
 ## Exemple : avis légitime
 AVIS REÇU :
@@ -855,6 +900,10 @@ Ce qu'Airbnb NE supprime PAS :
 → Un avis qui te dérange
   mais qui respecte les règles
 
+:::exemple
+Avis qui peut être signalé : il parle d'un autre logement, contient des insultes ou des informations personnelles, ou vient d'une personne qui n'a pas séjourné. Avis qui reste : une opinion négative mais honnête sur le séjour.
+:::
+
 ## Comment signaler un avis abusif sur Airbnb
 ÉTAPE 1
 Rassemble tes preuves en amont :
@@ -903,6 +952,9 @@ Si Airbnb refuse de supprimer l'avis
 → La meilleure réponse à un mauvais avis
   reste un volume plus élevé de bons avis.
 
+:::retenir
+Quand l'avis reste, ta réponse devient ta défense : courte, calme, factuelle. Les nouveaux avis positifs feront le reste.
+:::
 
 ## Exercice
 **Exercice pratique :** As-tu un avis qui te semble vraiment injuste ou abusif ? Vérifie s'il correspond à l'un des critères de suppression d'Airbnb listés en slide 2. Si oui : prépare tes preuves et lance la contestation. Si non : concentre ton énergie sur la réponse publique et la collecte de nouveaux avis positifs. C'est plus efficace.
@@ -973,6 +1025,10 @@ Critiques fréquentes :
 "cuisine mal équipée", "bruit"
 → Ce sont tes priorités d'amélioration.
 
+:::exemple
+Sur 20 avis, « calme » revient 9 fois, « lit » 4 fois avec « un peu dur ». Le calme est ton argument à mettre dans le titre ; le matelas est ta prochaine amélioration.
+:::
+
 ## Les critiques implicites à ne pas rater
 Certaines critiques ne disent pas
 directement ce qui ne va pas.
@@ -1025,6 +1081,9 @@ NIVEAU 3, INVESTISSEMENTS LOURDS (> 500€)
   L'impact sur les avis est souvent
   disproportionné par rapport au coût.
 
+:::astuce
+Note chaque remarque d'avis dans un tableau avec sa fréquence. Ce qui revient trois fois passe en tête de liste.
+:::
 
 ## Exercice
 **Exercice pratique :** Prends tes 10 derniers avis. Note sur une feuille les 3 mots qui reviennent le plus en positif et les 3 qui reviennent en critique. Identifie une action concrète de niveau 1 (moins de 50€) que tu peux faire cette semaine pour répondre à la critique la plus fréquente.
@@ -1107,6 +1166,10 @@ N'hésitez pas à revenir !"
 → Trop générique, copié-collé,
   impersonnel. Contre-productif.
 
+:::exemple
+« Merci Paul ! Ravis que la terrasse vous ait plu au coucher du soleil. À bientôt sur la côte ! » Personnalisée, courte, avec un détail du séjour.
+:::
+
 ## La règle du 80/20 sur les réponses
 Tu n'as pas le temps de répondre
 à 100% de tes avis positifs ?
@@ -1183,6 +1246,10 @@ CHAQUE MOIS
 → 1 action d'amélioration identifiée
 → Réponses publiées sur les avis non traités
 
+:::astuce
+Garde la même routine après chaque séjour : avis sur le voyageur dans les 2 jours, réponse à son avis quand il arrive, et une note de ce qu'il faut améliorer.
+:::
+
 ## L'objectif chiffré : la note 4,8
 Sur Airbnb, 4,8 est le seuil
 qui change tout :
@@ -1230,6 +1297,10 @@ Pour développer ta note Google :
 → Mentionne ton lien GMB dans
   tes messages de fin de séjour
   pour les réservations directes
+
+:::retenir
+Les avis Google comptent aussi pour une conciergerie ou un gîte avec fiche : demande-les avec un lien direct dans le message de départ.
+:::
 
 ## Le récapitulatif de la formation
 CE QUE TU SAIS MAINTENANT FAIRE :

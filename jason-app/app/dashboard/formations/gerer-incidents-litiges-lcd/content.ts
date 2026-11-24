@@ -44,6 +44,10 @@ Le contrat de location, c'est :
 
 *Sans contrat, tu es à 100 % à la merci de la plateforme.*
 
+:::exemple
+Clause utile, en une phrase : « Le nombre de personnes présentes ne peut dépasser 4, visiteurs compris ; tout dépassement entraîne la fin du séjour sans remboursement. » Claire, chiffrée, acceptée avant l'arrivée.
+:::
+
 ## Ce que doit contenir un contrat solide
 
 Un contrat de location courte durée juridiquement valide doit comporter au minimum **12 mentions** :
@@ -168,6 +172,10 @@ La caution te protège **financièrement**.
 - Avec une caution bien sécurisée, tu prélèves le montant et tu négocies ensuite. **C'est le voyageur qui doit contester, pas toi qui dois réclamer.**
 
 > Le **type** de caution que tu choisis détermine ton **pouvoir de négociation** après l'incident.
+
+:::exemple
+Empreinte bancaire de 400 € prise la veille de l'arrivée : rien n'est prélevé. Un verre de vin sur le canapé, nettoyage à 90 € sur facture : tu prélèves 90 €, le reste est libéré.
+:::
 
 ## Le tableau comparatif des cautions
 
@@ -355,6 +363,10 @@ C'est ta **fenêtre de tir** pour vérifier qui est ce voyageur et s'il représe
 
 - La majorité des hôtes utilisent ce temps pour **zéro vérification**.
 - Pourtant, **une grande partie des incidents** en LCD se voit venir dès cette phase.
+
+:::astuce
+Envoie tes questions dans le premier message après la réservation, sur un ton accueillant : « Pour bien préparer votre arrivée, pouvez-vous me dire… ». Personne ne se sent soupçonné.
+:::
 
 ## Les 7 questions qui détectent les risques
 
@@ -549,6 +561,10 @@ Quand un voyageur cause un problème, il **prévient rarement**. À l'inverse, i
 
 Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 
+:::exemple
+Voyageur très bavard avant l'arrivée, puis plus aucune réponse pendant le séjour, alors que les voisins signalent du passage : deux signaux ensemble. Un message poli pour prendre des nouvelles s'impose.
+:::
+
 ## Signal 1, Le silence radio total
 
 **Ce qui se passe :** le voyageur ne répond plus à tes messages après l'arrivée.
@@ -707,6 +723,10 @@ Tu reçois ce message à 23h47 :
 - Peur de la police, de la copropriété, des futurs avis
 
 > **Stop.** Ce n'est pas le moment de réagir à chaud. C'est le moment de suivre une **procédure froide**.
+
+:::retenir
+Remercier le voisin, écrire au voyageur, vérifier 30 minutes après, tout garder par écrit. L'ordre compte : il évite l'escalade et te donne des preuves.
+:::
 
 ## Étape 1, Remercier le voisin (30 secondes)
 
@@ -878,6 +898,10 @@ Voici les règles que les voyageurs **enfreignent le plus**, par ordre de fréqu
 5. **Utilisation commerciale** (shoot photo, vidéo, événement)
 
 Pour chaque cas, il y a une **procédure spécifique** que voici.
+
+:::exemple
+« Bonjour, plusieurs personnes non prévues sont signalées dans le logement. La réservation est pour 2 personnes ; merci de me confirmer d'ici 1 heure que seules les 2 personnes inscrites resteront ce soir. » Un fait, une règle, un délai.
+:::
 
 ## Cas 1, Sur-occupation
 
@@ -1098,6 +1122,10 @@ C'est le **nombre minimum** de photos qu'il faut pour couvrir un T2 / T3 standar
 
 > Le voyageur qui te dit *« cette tache était déjà là »* perd toute crédibilité face à 47 photos datées et géolocalisées montrant le contraire.
 
+:::astuce
+Fais une vidéo d'une minute en traversant chaque pièce avant chaque arrivée : ton téléphone la date toute seule, et c'est plus rapide que des dizaines de photos.
+:::
+
 ## La règle d'or : photos avant CHAQUE arrivée
 
 L'inventaire photo doit être :
@@ -1299,6 +1327,10 @@ Il te faut **un acte signé** par le voyageur qui dit :
 > *« Je reconnais avoir trouvé le logement dans l'état décrit ci-dessous. Je m'engage à le restituer dans le même état. »*
 
 C'est **l'état des lieux d'arrivée**.
+
+:::erreur
+Un état des lieux « logement en bon état » sans photo ni détail. En cas de litige, il ne prouve rien : décris et photographie ce qui compte (canapé, matelas, parquet, électroménager).
+:::
 
 ## Les 3 méthodes d'EDL
 
@@ -1509,6 +1541,10 @@ C'est **faux**, voire contre-productif :
 - Si tu trouves un dégât, conflit immédiat.
 
 > La méthode professionnelle : **EDL après le départ, sans le voyageur**, en 10 minutes chrono.
+
+:::astuce
+Donne à ton équipe de ménage une consigne simple : une photo de tout dégât avant de nettoyer. Une fois nettoyé, la preuve a disparu.
+:::
 
 ## La méthode 10 minutes
 
@@ -1733,6 +1769,10 @@ Tout dégât appartient à l'une de ces 4 catégories. La procédure de chiffrag
 
 > Plus le dégât est grave, plus la **documentation** doit être rigoureuse.
 
+:::exemple
+Canapé taché, acheté 600 € il y a 5 ans. Tu ne factures pas 600 € : un nettoyage professionnel sur devis (par exemple 120 €) ou une valeur tenant compte de l'usure. Un chiffrage juste se défend mieux.
+:::
+
 ## Comment chiffrer correctement
 
 ### Règle d'or : 3 sources
@@ -1926,6 +1966,10 @@ Ce que beaucoup d'hôtes appellent "caution Airbnb" est en fait l'un de ces 2 m�
 > En réalité, **ta vraie caution = ta caution Stripe** (cf. Module 1.L2).
 > Le Resolution Center Airbnb est un **complément**, pas un remplacement.
 
+:::erreur
+Attendre une semaine pour ouvrir la demande. Ouvre-la dès que tu constates le dégât, dans le délai fixé par Airbnb, avec photos et devis : hors délai, elle est refusée.
+:::
+
 ## Le Resolution Center : procédure pas à pas
 
 ### Étape 1, Accéder au Resolution Center
@@ -2103,6 +2147,10 @@ Sur Booking, **rien de tout ça**.
 > Booking n'est qu'un **canal de réservation**. La gestion des litiges, dégâts, cautions est **100 % à ta charge**.
 
 C'est plus contraignant, mais aussi plus **flexible** : tu n'as pas à respecter les 14 jours d'Airbnb, tu peux contester sur 1 an.
+
+:::retenir
+Sur Booking, pas de garantie équivalente à celle d'Airbnb : ta caution et ton assurance sont tes vraies protections.
+:::
 
 ## La caution sur Booking : ton seul recours
 
@@ -2334,6 +2382,10 @@ Stripe envoie automatiquement un **email de notification** au voyageur :
 
 Tu peux compléter avec ton propre message (cf. Module 3.L3) pour expliquer les dégâts.
 
+:::exemple
+Message avant prélèvement : « Bonjour, lors de l'état des lieux de sortie, nous avons constaté une brûlure sur le plan de travail (photos jointes). Le devis de réparation est de 140 €, que nous prélèverons sur votre caution sous 48 h. Nous restons disponibles pour en parler. »
+:::
+
 ## Les 3 cas particuliers Stripe
 
 ### Cas 1, Le voyageur dispute (chargeback)
@@ -2484,6 +2536,10 @@ Tu n'as que **les preuves**.
 > Une preuve faible = 0 %.
 
 Voici les **5 catégories** de preuves à constituer pour chaque séjour problématique.
+
+:::astuce
+Un dossier par séjour difficile, nommé avec la date : photos avant et après, messages, devis, factures. Tout est prêt si la plateforme ou un juge te le demande.
+:::
 
 ## Catégorie 1, Les preuves visuelles
 
@@ -2715,6 +2771,10 @@ Tu reçois ce message après un litige :
 
 > **Stop.** Ce moment est **critique**. Ce que tu fais (ou ne fais pas) dans les 30 minutes qui suivent va déterminer ta gestion des 12 prochains mois.
 
+:::retenir
+Une menace d'avis négatif en échange de l'abandon d'une réclamation est contraire aux règles des plateformes : garde le message et signale-le au support.
+:::
+
 ## Pourquoi céder est une (très) mauvaise idée
 
 ### 1. Tu valides le chantage
@@ -2907,6 +2967,10 @@ Une réponse publique sur Airbnb est **définitive** et **visible par tous les f
 
 Tu as **30 jours** pour répondre. Prends-en au moins **24 heures**.
 
+:::exemple
+« Merci pour votre retour. Une retenue de 90 € a été faite pour le nettoyage du canapé, justifiée par photos et facture, comme prévu au contrat. Nous espérons que les prochains voyageurs profiteront du logement autant que les précédents. » Factuel, court, sans attaque.
+:::
+
 ## Les 4 règles d'or de la réponse publique
 
 ### Règle 1, Ne jamais nier les faits
@@ -3095,6 +3159,10 @@ Tu as suivi toute la procédure :
 - Vous n'arrivez pas à un accord.
 
 > À ce stade, **AirCover (Airbnb)** prend le relais en mode médiateur.
+
+:::astuce
+Avant de saisir la médiation, relis ton dossier comme si tu étais l'arbitre : photos avant et après, devis, messages. S'il manque une pièce, ajoute-la d'abord.
+:::
 
 ## AirCover : ce qui est couvert et ce qui ne l'est pas
 
@@ -3293,6 +3361,10 @@ Si tout échoue côté Airbnb, tu peux saisir le **médiateur du tourisme**.
 Tu as épuisé toutes les voies amiables. Le voyageur t'a causé un préjudice **non récupéré** sur la plateforme.
 
 > Avant d'aller en justice, **fais l'analyse coût/bénéfice**.
+
+:::exemple
+Dégât de 180 € non remboursé : une procédure prend du temps et de l'énergie pour un petit montant. Dégât de 3 000 € avec preuves solides et identité connue : la conciliation puis la justice se discutent.
+:::
 
 ## Le seuil critique
 
@@ -3524,6 +3596,10 @@ Voici un cas réel que tu vivras au moins une fois si tu fais de la LCD plus de 
 
 C'est sérieux. Voici comment réagir, **étape par étape**.
 
+:::astuce
+Présente-toi à tes voisins et laisse-leur ton numéro. Un voisin qui peut t'appeler directement appelle moins souvent le syndic.
+:::
+
 ## Étape 1, Réponds au syndic dans les 24 h
 
 Format type :
@@ -3707,6 +3783,10 @@ Sur 100 séjours, voici la fréquence statistique des dégâts les plus courants
 | **Vol petits objets** | 3 % | 50-200 € |
 
 > Ces 5 cas couvrent **l'essentiel des dégâts** que tu rencontreras. Voici la procédure pour chacun.
+
+:::exemple
+Drap taché irrécupérable : prix de remplacement d'un drap équivalent, ticket à l'appui, par exemple 35 €. Verre cassé à 3 € : on laisse passer, et on garde l'énergie pour ce qui compte.
+:::
 
 ## Cas 1, Drap / linge taché
 
@@ -3960,6 +4040,10 @@ Il est venu, a regardé, et est reparti en disant que le logement ne convient pa
 
 > Chacun a une **procédure différente**.
 
+:::retenir
+Ce sont tes conditions d'annulation, acceptées à la réservation, qui fixent ce qui est remboursé. Écris-les clairement, et applique-les à tout le monde de la même façon.
+:::
+
 ## Scénario 1, Le no-show complet
 
 ### Étape 1, Constate l'absence
@@ -4171,6 +4255,10 @@ Si tu fais cette formation, c'est probablement parce que tu as déjà vécu :
 Ces moments, **cumulés**, fragilisent ton **mental**.
 
 > Beaucoup d'hôtes LCD qui arrêtent citent le **stress** plutôt que le manque de rentabilité.
+
+:::astuce
+Fixe-toi une règle : aucune réponse à un message tendu avant le lendemain matin, sauf urgence de sécurité. La plupart des conflits se dégonflent avec une nuit de recul.
+:::
 
 ## Pourquoi la LCD est psychologiquement plus dure que d'autres business
 

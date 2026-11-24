@@ -84,6 +84,12 @@ Pour ça, tu dois produire chaque année une **liasse fiscale** : un mini-bilan 
 
 **Exercice pratique :** Note tes recettes LCD brutes de l'an dernier, et regarde si tu es en dessous du plafond micro-BIC qui correspond à ton logement (classé ou non classé). Si oui, tu n'as peut-être même pas besoin d'aller plus loin dans cette formation : sauf si tu es déjà au régime réel ou si tu veux évaluer si basculer serait plus avantageux. La leçon suivante t'aide à trancher.
 
+:::chiffres
+LMNP | loueur en meublé non professionnel
+Micro-BIC | abattement forfaitaire, sans justificatif
+Réel | charges et amortissements réels
+:::
+
 :::quiz
 ? Qu'est-ce qui distingue le micro-BIC du régime réel ?
 * Le micro-BIC applique un abattement forfaitaire, le réel déduit les charges réelles
@@ -166,6 +172,10 @@ Il n'y a aucune obligation de passer au réel. C'est un choix, réversible sous 
 
 **Exercice pratique :** Fais le total de tes charges réelles de l'an dernier (ménage, assurance, commissions plateformes, copropriété, taxe foncière, intérêts d'emprunt : hors capital remboursé). Compare ce total à l'abattement micro-BIC qui s'appliquerait à toi. Si tes charges réelles dépassent ce pourcentage, tu as un signal fort pour envisager le régime réel : et donc, potentiellement, un outil comme décla.fr.
 
+:::astuce
+Fais le calcul chaque année avec tes vrais chiffres : un régime avantageux l'an dernier ne l'est plus forcément après un remboursement de crédit terminé ou de gros travaux.
+:::
+
 :::quiz
 ? Quand le régime réel devient-il intéressant ?
 - Jamais
@@ -236,6 +246,12 @@ La bonne question à te poser n'est plus "le réel me fait-il économiser des im
 C'est une question de projet patrimonial, pas une question technique. Si tu comptes garder le bien longtemps (au-delà de 22-30 ans) ou ne jamais le revendre, l'impact de la réforme est marginal pour toi. Si tu envisages une revente à moyen terme, fais le calcul avant de basculer, idéalement avec un professionnel pour cette décision précise.
 
 **Exercice pratique :** Si tu envisages de revendre ton bien LCD dans les 10 prochaines années, estime tes amortissements immobiliers cumulés sur cette période (prix du bien ÷ durée d'amortissement × nombre d'années). C'est approximativement le montant qui viendra augmenter ta plus-value taxable à la revente. Garde ce chiffre en tête pour la suite de la formation.
+
+:::exemple
+Bien acheté 200 000 €, revendu 260 000 € après 10 ans, avec 50 000 € d'amortissements déduits.
+Avant la réforme : plus-value calculée sur 60 000 €.
+Aujourd'hui : prix d'achat diminué des amortissements, plus-value calculée sur 110 000 €, avant les abattements pour durée de détention.
+:::
 
 :::quiz
 ? Que change la loi de finances pour 2025 ?
@@ -313,6 +329,10 @@ Si tu loues déjà depuis un moment sans être immatriculé, régularise dès qu
 
 **Exercice pratique :** Vérifie si tu as déjà un SIRET pour ton activité de location meublée (regarde tes précédents avis d'imposition professionnels, ou cherche ton nom sur annuaire-entreprises.data.gouv.fr). Si tu n'en as pas, note dans ton agenda de faire la démarche sur formalites.entreprises.gouv.fr cette semaine : c'est un préalable obligatoire à tout le reste.
 
+:::erreur
+Payer un site privé pour ton immatriculation. La démarche sur le guichet unique officiel est gratuite.
+:::
+
 :::quiz
 ? Où s'immatriculer en LMNP ?
 - À la banque
@@ -355,6 +375,10 @@ C'est le point qui coince le plus d'hôtes : pour que l'option s'applique aux re
 En clair : si tu veux basculer au réel pour tes revenus 2026, ta lettre doit être partie avant la date limite de la déclaration des revenus 2025 : soit fin mai/début juin 2026.
 
 Attention : si tu envoies ta lettre après cette date, ton option ne prend effet que sur les revenus de l'année suivante. Il n'y a pas de rattrapage rétroactif.
+
+:::exemple
+Tu commences ta location en mars et tu veux le réel dès cette première année : coche l'option au moment de l'immatriculation. Si tu oublies, tu restes au micro-BIC pour cette année-là.
+:::
 
 ## Durée de l'option
 
@@ -436,6 +460,10 @@ Le parcours se fait en une session de saisie guidée, en environ 7 étapes :
 
 Des alertes automatiques signalent les incohérences de saisie (montants aberrants, oublis probables) avant l'envoi définitif.
 
+:::astuce
+Rassemble tout dans un seul dossier avant de commencer : relevés annuels des plateformes, factures, tableau d'emprunt, acte d'achat. La saisie va alors beaucoup plus vite.
+:::
+
 ## Ce que ça coûte en 2026
 
 | Formule | Prix 2026 |
@@ -510,6 +538,10 @@ Ce n'est pas "décla.fr est-il fiable" en général : c'est "ma situation est-el
 | Pas de montage en démembrement de propriété | Revente ou donation prévue dans l'année |
 | Pas d'opération exceptionnelle dans l'année | Tu n'es pas à l'aise à l'idée d'assumer seul la responsabilité de ta déclaration |
 
+:::exemple
+Un seul appartement au réel, sans travaux ni revente prévue : un outil en ligne suffit souvent. Trois biens, un passage possible en LMP et une revente dans 2 ans : l'économie d'un outil ne pèse pas lourd face à une erreur.
+:::
+
 ## Un point sur les CGA/OGA : une info qui a beaucoup changé
 
 Si tu as lu des guides plus anciens, tu as peut-être vu mentionné l'intérêt d'adhérer à un Centre de Gestion Agréé (CGA) pour éviter une majoration de 25% de ton bénéfice imposable, ou pour obtenir une réduction d'impôt sur les frais de comptable.
@@ -563,6 +595,10 @@ Prépare ces documents avant d'ouvrir l'outil, ça t'évitera des allers-retours
 - Ton relevé de prêt immobilier (montant des intérêts payés dans l'année, hors capital)
 - Ton avis de taxe foncière
 
+:::exemple
+Dossier type : relevés annuels Airbnb et Booking, relevé des réservations directes, factures de ménage et de travaux, taxe foncière, assurance, tableau d'amortissement du prêt, acte notarié.
+:::
+
 ## Les 7 étapes, une par une
 
 1. **Informations générales** : Identité, SIRET, adresse du ou des logements, date de début d'activité, régime (réel simplifié).
@@ -613,6 +649,10 @@ C'est le point de confusion le plus fréquent chez les hôtes qui découvrent le
 2. **Ta déclaration de revenus personnelle** (2042 + annexe 2042-C-PRO) : c'est toi qui la remplis, sur impots.gouv.fr, au moment de la campagne annuelle de déclaration. Tu y reportes le résultat fiscal calculé par la liasse, dans les cases dédiées aux revenus BIC non professionnels.
 
 Un outil de production de liasse t'aide sur la première. La seconde reste ta responsabilité, même si les chiffres à y reporter viennent directement de la liasse produite.
+
+:::erreur
+Croire que la liasse transmise suffit. Le résultat de la liasse doit aussi être reporté sur ta déclaration de revenus (2042-C-PRO) : sans ce report, il n'est pas imposé correctement.
+:::
 
 ## Ce que tu dois vérifier toi-même, dans tous les cas
 
@@ -707,6 +747,10 @@ Pour éviter le rush de mai, voici un enchaînement réaliste sur l'année :
 
 **Exercice pratique :** Ouvre ton agenda maintenant et pose 3 rappels espacés dans le temps (rassembler les documents, remplir la liasse, faire la déclaration de revenus) plutôt qu'un seul rappel la veille de la date limite. C'est la méthode la plus simple pour éviter l'erreur de saisie précipitée.
 
+:::astuce
+Fixe-toi une date personnelle deux semaines avant chaque échéance officielle : un document manquant ne devient pas une urgence.
+:::
+
 :::quiz
 ? L'enregistrement en mairie concerne qui ?
 * Tous les hôtes, au micro-BIC comme au réel
@@ -749,6 +793,10 @@ Aucune de ces erreurs n'est due à la négligence : elles viennent toutes d'un m
 
 **Exercice pratique :** Relis cette liste de 7 erreurs et identifie celle(s) que tu aurais pu commettre sans cette formation. Note-les quelque part que tu consulteras au moment de ta prochaine déclaration.
 
+:::exemple
+Recettes Airbnb versées : 9 500 €, après commission de 1 750 €. À déclarer : 11 250 € de recettes brutes, puis 1 750 € de commission en charges. Déclarer 9 500 € fausse le calcul et laisse un écart avec ce que la plateforme transmet.
+:::
+
 :::quiz
 ? Quelle partie d'un bien ne s'amortit jamais ?
 - La construction
@@ -789,6 +837,10 @@ Certaines situations méritent, sans discussion, un expert-comptable spécialis�
 - **Tu as plusieurs activités BIC/BNC croisées.** LMNP + para-hôtellerie + conciergerie enregistrée à ton nom, par exemple : les règles d'imputation des déficits et de cumul des régimes deviennent complexes.
 - **Tu as déjà reçu un courrier de l'administration.** Toute demande de justificatif, mise en demeure ou proposition de rectification doit être traitée avec un professionnel, jamais seul avec un outil de déclaration standard.
 - **Tu n'es simplement pas à l'aise.** Si après cette formation tu sens que tu n'es pas serein à l'idée d'assumer seul la responsabilité de ta déclaration, c'est un signal suffisant en soi. La sérénité a un prix, et ce n'est pas un mauvais calcul de le payer.
+
+:::retenir
+Revente prévue, passage en LMP, plusieurs biens, contrôle fiscal : un expert-comptable n'est plus un luxe.
+:::
 
 ## Le vrai calcul à faire
 

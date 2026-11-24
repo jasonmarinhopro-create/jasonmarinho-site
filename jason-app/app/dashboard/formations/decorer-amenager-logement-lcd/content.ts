@@ -75,6 +75,10 @@ sur les moindres imperfections.
   une émotion positive immédiate.
   Pas seulement être "correct".
 
+:::exemple
+Même T2, deux arrivées. **A :** murs nus, plafonnier blanc, canapé sans coussin. **B :** une lampe chaude allumée, un plaid, une plante, un cadre de la ville. Le second « fait maison » en 30 secondes, pour moins de 150 €.
+:::
+
 ## Les 3 niveaux d'impact de la décoration
 NIVEAU 1, L'IMPACT SUR LES PHOTOS
 → Un logement bien décoré se photographie
@@ -123,6 +127,9 @@ VOYAGEURS "EXPÉRIENCE"
 → Avant d'acheter quoi que ce soit :
   qui est ton voyageur idéal ?
 
+:::astuce
+Écris en une phrase qui sont tes voyageurs (« couples de 30 ans en week-end », « familles avec enfants ») et vérifie chaque achat : est-ce que ça leur sert ou leur plaît ?
+:::
 
 ## Exercice
 **Exercice pratique :** Fais le test maintenant : entre dans ton logement comme si c'était la première fois. Quelle est ta première impression en 5 secondes ? Note-la honnêtement. C'est l'impression que ressentent tes voyageurs. Est-ce qu'elle correspond à ce que tu veux qu'ils ressentent ?
@@ -219,6 +226,10 @@ La règle de l'aménagement LCD :
   pas une pièce unique)
   Sans valeur sentimentale
 
+:::exemple
+Un vase de famille sur une table basse, dans un logement qui accueille des enfants : tôt ou tard il casse, et le litige gâche l'avis. Range ce qui a de la valeur, choisis du solide.
+:::
+
 ## Erreur 4 : Le vide et le trop-plein
 Deux extrêmes qui font mauvais effet :
 
@@ -246,6 +257,9 @@ L'ÉQUILIBRE RECHERCHÉ :
   doit avoir une utilité."
   Source : Airbnb Centre de ressources
 
+:::astuce
+Règle simple : chaque surface (table, buffet, étagère) garde au moins la moitié de sa place libre pour les affaires du voyageur.
+:::
 
 ## Exercice
 **Exercice pratique :** Fais le tour de ton logement avec un sac ou une boîte. Mets dedans tout ce qui est personnel (photos, objets intimes), tout ce qui est fragile ou de valeur, et tout ce qui encombre sans utilité pour le voyageur. Tu te retrouveras probablement avec 10 à 20 objets à retirer. C'est gratuit, ça prend 30 minutes, et l'effet sur les photos est immédiat.
@@ -344,6 +358,10 @@ LUMIÈRE NATURELLE (à maximiser)
   donne l'impression d'être plus grand,
   plus propre et plus accueillant.
 
+:::exemple
+Une pièce avec un seul plafonnier blanc paraît froide le soir. Trois points de lumière chaude (lampadaire, lampe de chevet, petite lampe sur le buffet) changent l'ambiance des photos de soirée et du séjour.
+:::
+
 ## Les plantes : le détail qui change tout
 Des plantes bien choisies dans un logement LCD :
 → Créent une impression de vie et de fraîcheur
@@ -371,6 +389,9 @@ ERREURS À ÉVITER :
 → 2-3 plantes bien placées suffisent.
   Une par pièce principale maximum.
 
+:::astuce
+Si personne n'arrose entre deux séjours, choisis des plantes qui supportent l'oubli (sansevieria, zamioculcas) ou de belles plantes artificielles.
+:::
 
 ## Exercice
 **Exercice pratique :** Regarde tes photos actuelles. Sont-elles prises avec la lumière naturelle ou artificielle ? Est-ce que les couleurs des murs et des textiles sont harmonieuses ou disparates ? Identifie une action simple : changer les ampoules pour de la lumière chaude (10€), ajouter un coussin d'accent (15€), ou acheter une belle plante artificielle (20-30€). Petit investissement, grand impact sur les photos.
@@ -454,6 +475,10 @@ COUSSINS DÉCORATIFS
 → 2-4 coussins par lit = look hôtel premium.
 → Couleur accordée à la palette du logement.
 
+:::retenir
+Le lit est ce que le voyageur teste le plus longtemps : un surmatelas, deux oreillers par personne (un ferme, un moelleux) et des alèses protègent ta note et ton matelas.
+:::
+
 ## Les serviettes : le détail hôtelier
 Les serviettes sont un critère
 souvent mentionné dans les avis.
@@ -482,6 +507,9 @@ ASTUCE ÉCONOMIQUE :
   pour avoir des stocks de remplacement
   et maintenir la cohérence de couleur.
 
+:::exemple
+Serviettes blanches unies, pliées de la même façon à chaque séjour : faciles à laver ensemble, faciles à remplacer à l'identique, et l'effet « hôtel » est immédiat.
+:::
 
 ## Exercice
 **Exercice pratique :** Inspecte tes draps et serviettes maintenant comme si tu étais voyageur. Sont-ils blancs ou légèrement jaunis ? Les serviettes sont-elles douces ou râpeuses ? Y a-t-il des taches ou des bords effilochés ? Tout ce qui ne passerait pas dans un bon hôtel 3 étoiles : commande le remplacement cette semaine. C'est l'investissement avec le meilleur retour sur avis en LCD.
@@ -569,6 +597,10 @@ CONFORT SUPPLÉMENTAIRE
 □ Bouchons d'oreilles
 □ Masque de nuit
 □ Chargeur USB intégré si possible
+
+:::exemple
+Ce qu'on cherche en arrivant dans une chambre : une prise près de chaque côté du lit, une lampe de chevet, des rideaux qui occultent, des cintres, une place pour poser la valise.
+:::
 
 ## La mise en scène de la chambre
 Le lit doit être "fait pour la photo"
@@ -681,6 +713,10 @@ CE QUI GÉNÈRE DES AVIS NÉGATIFS EN CUISINE :
     dans une pièce entière, pas dans
     des tiroirs visibles et accessibles.
 
+:::erreur
+Une poêle qui accroche, un seul couteau qui ne coupe pas, pas de sel ni d'huile. Petits détails, grandes déceptions dans les avis : fais un repas dans ton logement pour tester.
+:::
+
 ## Le salon : confort et fonctionnalité
 Le salon est l'espace de vie.
 Il doit être confortable, dégagé et accueillant.
@@ -709,6 +745,9 @@ CE QUI FAIT VRAIMENT LA DIFFÉRENCE :
   (Uno, cartes, Dobble...)
 → Une bougie LED sur la table
 
+:::astuce
+Compte les places assises : autant que de voyageurs, canapé compris. Un logement pour 6 avec 4 places au salon finit en remarque dans les avis.
+:::
 
 ## Exercice
 **Exercice pratique :** Ouvre les placards de ta cuisine. Est-ce qu'il y a assez de vaisselle pour le nombre maximum de voyageurs ? Les poêles et casseroles sont-elles en bon état ? Si tu trouves des éléments défaillants, achète les remplacements cette semaine, cuisine bien équipée = avis bien notés, systématiquement.
@@ -768,6 +807,10 @@ POINTS QUI FONT LA DIFFÉRENCE :
 → Papier toilette avec extrémité en triangle
   (détail hôtelier à 0€ qui crée l'effet waouh)
 → Tapis de bain propre et moelleux
+
+:::exemple
+Joints jaunis, pommeau entartré : même propre, la salle de bain paraît sale. Un joint refait et un pommeau changé coûtent peu et améliorent la note propreté.
+:::
 
 ## L'entrée : la première impression physique
 L'entrée est la première pièce
@@ -887,6 +930,12 @@ MOINS DE 20€ :
 → Miroir rétroéclairé dans la salle de bain
 → Lampe de lecture sur pied dans le salon
 
+:::exemple
+**Moins de 100 € :** une tête de lit en tissu, un grand miroir.
+**100 à 500 € :** un mur de couleur, un luminaire marquant.
+**Plus :** une baignoire, un jacuzzi, une vue mise en valeur par une grande baie.
+:::
+
 ## L'élément local : ton avantage unique
 Ce qu'aucun hôtel ne peut reproduire :
 l'authenticité locale.
@@ -912,6 +961,9 @@ EXEMPLES :
 → Ils justifient un tarif plus élevé
   car ils différencient de l'hôtel impersonnel.
 
+:::astuce
+Une affiche d'un artiste du coin, un objet artisanal de la région : le voyageur photographie ce qui n'existe que chez toi.
+:::
 
 ## Exercice
 **Exercice pratique :** Identifie l'élément waouh que ton logement n'a pas encore. Parmi la liste de la slide 3, lequel correspond le mieux à ta cible et à ton logement ? Commande-le cette semaine. Un seul élément waouh bien choisi peut transformer des avis de 4 étoiles en avis de 5 étoiles.
@@ -999,6 +1051,10 @@ Budget moyen : 50 à 150€
 
 TOTAL : 380 à 830€ pour une transformation complète.
 Rentabilisé en 2-3 mois de meilleures notes.
+
+:::retenir
+Dans l'ordre : le lit, la lumière, les textiles, puis la décoration. On dort dans un lit, on regarde un cadre.
+:::
 
 ## Les bonnes adresses pour équiper sans surpayer
 IKEA
@@ -1094,6 +1150,10 @@ SALLE DE BAIN
 □ Serviettes blanches en bon état ?
 □ Produits d'accueil ?
 □ Sèche-cheveux fonctionnel ?
+
+:::astuce
+Fais l'audit à l'heure d'arrivée de tes voyageurs (fin d'après-midi) : c'est sous cette lumière qu'ils découvrent le logement.
+:::
 
 ## Les 10 actions classées par impact
 IMPACT IMMÉDIAT (cette semaine, < 50€) :

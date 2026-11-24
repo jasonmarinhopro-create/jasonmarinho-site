@@ -73,6 +73,10 @@ SERVICES COMPLÉMENTAIRES (optionnel)
 → Petite maintenance, déco, photo pro...
 → Améliore la marge sans nouveaux mandats
 
+:::exemple
+Logement qui encaisse 24 000 € par an, commission de 20 % : 4 800 € d'honoraires pour la conciergerie, avant ménage, déplacements et outils. Il faut plusieurs logements pour en vivre.
+:::
+
 ## Le marché en 2026 : une opportunité réelle
 En France en 2026 :
 
@@ -121,6 +125,9 @@ Si tu réponds oui aux 4 : tu peux y aller.
 Si tu réponds non à l'une : commence par
 combler ce manque avant de te lancer.
 
+:::astuce
+Avant de te lancer, liste 10 propriétaires que tu pourrais contacter dans ton secteur. Si tu n'en trouves pas 10, le territoire ou le réseau n'est pas encore prêt.
+:::
 
 ## Exercice
 **Exercice pratique :** Réponds aux 4 questions de la slide 5. Par écrit, pas dans ta tête. Les points faibles identifiés maintenant coûtent moins cher à corriger qu'une fois l'activité lancée.
@@ -199,6 +206,10 @@ Villes moyennes avec flux pro ET touristique.
 → Si 50 logements et 5 conciergeries
   → marché saturé dans cette zone précise
 
+:::astuce
+Compte les annonces actives dans ton secteur et regarde combien ont des avis récents : une zone avec beaucoup d'annonces actives et mal tenues est une opportunité.
+:::
+
 ## L'annuaire Driing : un outil de veille et de positionnement
 Avant de te lancer, consulte l'annuaire
 des conciergeries sur Driing :
@@ -240,6 +251,9 @@ Les 3 premiers mois : investissement
 et construction de réputation.
 Les 6 premiers mois : montée en charge progressive.
 
+:::exemple
+Objectif : 2 000 € de revenu par mois. Si un logement te rapporte en moyenne 250 € net par mois, il t'en faut 8. Ce chiffre te dit combien de mandats chercher la première année.
+:::
 
 ## Exercice
 **Exercice pratique :** Va sur Airbnb et compte le nombre de logements actifs dans ton secteur géographique cible (rayon de 10-15 km). Va ensuite sur l'annuaire Driing et compte les conciergeries déjà présentes dans cette zone. Le ratio logements/conciergeries te donne une première indication du potentiel.
@@ -375,6 +389,9 @@ TOTAL : ~3 000 à 5 000€ la première année
 → Prévoir 3 à 6 mois de trésorerie tampon :
   les premiers revenus arrivent avec décalage.
 
+:::astuce
+Commence avec le statut le plus simple qui te permet d'exercer légalement. Tu pourras changer quand ton chiffre d'affaires le justifiera.
+:::
 
 ## Exercice
 **Exercice pratique :** Décide maintenant de ton statut de départ. Si tu testes : micro-entreprise. Si tu es décidé avec un budget : SASU. Va sur **inpi.fr** et commence la démarche d'immatriculation. C'est la première action concrète de création de ton activité.
@@ -465,6 +482,11 @@ CAS 3, PRESTATIONS MATÉRIELLES SEULES
   Fais valider ton montage par ta CCI
   ou un avocat.
 
+:::exemple
+**Tu encaisses les loyers pour le propriétaire :** c'est de la gestion immobilière, la carte G (ou un cadre équivalent) est nécessaire.
+**Le propriétaire encaisse lui-même, tu factures tes services (ménage, accueil) :** la situation est différente. Fais valider ton cas avant de signer.
+:::
+
 ## Les 3 façons d'exercer en règle
 SOLUTION 1, LE STATUT DE CO-HÔTE AIRBNB
 Airbnb permet au propriétaire de te désigner
@@ -521,6 +543,9 @@ Investis 300 à 500€ dans un contrat
 validé par un avocat. C'est la meilleure
 dépense de démarrage.
 
+:::erreur
+Commencer à gérer un logement sur un simple accord oral. En cas de désaccord sur la commission ou un dégât, rien ne prouve ce qui était convenu.
+:::
 
 ## Exercice
 **Exercice pratique :** Décide de ton modèle légal : co-hôte Airbnb, réseau d'indépendants ou obtention de la Carte G. Si tu as le moindre doute, réserve une consultation avec un avocat spécialisé en droit immobilier (1 à 2 heures suffisent pour valider ton montage). C'est 200 à 400€ qui peuvent t'éviter des années de problèmes.
@@ -652,6 +677,10 @@ ERREUR 3, Sous-estimer l'importance des photos
   dans son offre standard se différencie
   immédiatement.
 
+:::exemple
+**Flou :** « Conciergerie tous services »
+**Clair :** « Conciergerie pour appartements du centre de Lyon, propriétaires qui vivent loin. » Le propriétaire concerné se reconnaît tout de suite.
+:::
 
 ## Exercice
 **Exercice pratique :** Rédige en 3 phrases ton positionnement : "Je suis une conciergerie spécialisée dans [type de logements] pour [type de propriétaires] dans [zone géographique]. Je me différencie par [1 ou 2 éléments clés]. Mon client idéal est [portrait précis]." Garde ces 3 phrases sous la main, elles guideront toute ta communication.
@@ -750,6 +779,10 @@ vs 1 500€ tout seul → +100€/mois
 → Tu ne coûtes rien au propriétaire.
   Tu lui rapportes du temps et souvent plus d'argent.
 
+:::exemple
+« Avec 20 % de commission, je prends en charge les messages, les arrivées, le ménage et les prix. Votre annonce a aujourd'hui 55 % d'occupation ; si elle passe à 70 %, ma commission est couverte par la hausse. » Tu parles de son résultat, pas de ton prix.
+:::
+
 ## Règles de tarification pour bien démarrer
 QUAND TU DÉMARRES (0 à 5 logements) :
 → Commence à 15-18% pour te constituer
@@ -770,6 +803,9 @@ NE JAMAIS :
 → Descendre sous 15% : non rentable
   une fois tes coûts déduits
 
+:::erreur
+Baisser ta commission pour signer ton premier mandat. Il sera difficile de la remonter, et tu travailleras à perte le temps d'apprendre.
+:::
 
 ## Exercice
 **Exercice pratique :** Calcule ton seuil de rentabilité : tes charges mensuelles (outils, déplacements, temps valorisé...) divisées par ta commission moyenne. Combien de logements te faut-il pour couvrir tes frais ? C'est ton objectif de phase 1.
@@ -870,6 +906,10 @@ Autres hôtes LCD de ta zone
 
 → LinkedIn est très efficace pour
   contacter ces profils professionnellement.
+
+:::astuce
+Parle de ton activité aux agents immobiliers, notaires et artisans du secteur : ils croisent des propriétaires qui ne savent pas quoi faire de leur bien.
+:::
 
 ## Canal 3 : L'annuaire Driing
 Driing propose un annuaire de conciergeries
@@ -1009,6 +1049,10 @@ Il cherche 3 choses :
 → Explique ta commission avec le calcul
   de gain net pour LUI
 
+:::astuce
+Arrive avec l'audit de son annonce actuelle : trois points forts, trois corrections. Tu montres ton travail avant de parler de contrat.
+:::
+
 ## Les objections les plus courantes et comment y répondre
 "C'est trop cher"
 → "Par rapport à quoi ? Calculons ensemble
@@ -1032,6 +1076,11 @@ Il cherche 3 choses :
   complète, j'ai besoin de savoir : qu'est-ce
   qui vous retient pour l'instant ?"
 → (Identifie l'objection réelle)
+
+:::exemple
+**Objection :** « 20 %, c'est cher. »
+**Réponse :** « Combien d'heures passez-vous sur votre location chaque semaine ? Et combien de nuits restent vides ? Regardons ensemble ce que vous gagnez net aujourd'hui. »
+:::
 
 ## Le contrat : ne jamais partir sans accord écrit
 Après un accord verbal, envoie toujours
@@ -1120,6 +1169,10 @@ Et pendant ce temps-là :
 → L'annuaire Driing te donne une présence
   professionnelle immédiate, sans investissement
   technique ni attente SEO.
+
+:::astuce
+Au démarrage, une page de présentation claire (services, zone, tarifs, avis, contact) suffit à rassurer un propriétaire. Le site complet viendra quand tu sauras ce que tes clients cherchent vraiment.
+:::
 
 ## Ce que l'annuaire Driing offre concrètement
 FORMULE STANDARD (Gratuite)
@@ -1311,6 +1364,10 @@ Format : un email ou un PDF.
 Pas besoin de PowerPoint.
 La régularité compte plus que le format.
 
+:::exemple
+Rapport du mois en 5 lignes : nuits louées, revenu, note moyenne, incidents réglés, une recommandation pour le mois suivant. Le propriétaire voit ton travail sans avoir à demander.
+:::
+
 ## Le moment où tout bascule
 La plupart des conciergeries abandonnent
 dans les 3 premiers mois. Pas parce que
@@ -1434,6 +1491,10 @@ NE PAS ACHETER AVANT D'EN AVOIR BESOIN :
   du temps ou de l'argent mesurable.
   Pas avant.
 
+:::erreur
+Payer un logiciel complet pour 20 logements quand tu en gères 2. Commence simple, et change d'outil quand tu sens la limite.
+:::
+
 ## Le livret d'accueil digital Driing : un outil à double valeur
 Le livret d'accueil digital Driing a
 une double utilité pour une conciergerie :
@@ -1545,6 +1606,10 @@ DÉLÉGATION 3, LA COMMUNICATION ROUTINE
   te font gagner du temps chaque semaine.
 → Configure-les dans ton PMS
   pour un envoi automatique.
+
+:::exemple
+Ordre souvent le plus utile : le ménage d'abord (le plus long), puis les arrivées, puis les messages courants. Tu gardes la relation avec les propriétaires.
+:::
 
 ## Le seuil des 10 logements : changer de mode
 Avant 10 logements :

@@ -40,6 +40,10 @@ Demande à dix hôtes ce qu'ils pensent de leur annonce, neuf te diront "ça va"
 
 **3. La comparaison à la mauvaise concurrence.** "Je suis mieux que l'annonce du voisin" ne veut rien dire si l'annonce du voisin est elle-même médiocre. Le bon repère, ce sont les 3 à 5 annonces qui trustent le haut des résultats sur tes dates et ta zone, pas n'importe quel logement croisé au hasard.
 
+:::exemple
+Le propriétaire trouve ses photos « très bien » : il connaît le logement et voit ce qui n'est pas sur la photo. Un voyageur, lui, ne voit qu'une image sombre en petit. L'audit sert à regarder avec les yeux de ce voyageur.
+:::
+
 ### Ce qu'un audit structuré change
 
 Un audit n'est pas un avis d'expert ni un ressenti amélioré. C'est une **grille appliquée de la même façon à chaque fois**, qui produit un score comparable dans le temps (as-tu progressé depuis le dernier audit ?) et comparable entre logements (lequel de tes deux biens a le plus besoin d'attention ?). C'est exactement ce que font, moyennant paiement, les services d'audit Airbnb qui existent déjà à l'international, mais avec une méthode que tu peux appliquer toi-même, gratuitement, en moins d'une heure.
@@ -101,6 +105,10 @@ Le **visuel pèse 4 fois plus que la conformité** : c'est volontaire. La photo 
 - **60-79** : des bases correctes mais au moins une catégorie qui plombe l'ensemble, souvent le visuel ou le prix.
 - **Moins de 60** : plusieurs catégories faibles simultanément, un audit complet a plus de valeur qu'une correction isolée.
 
+:::exemple
+Annonce notée 62/100 : Visuel 9/20, Texte 11/15, Prix 12/15, Avis 13/15… Le total dit « moyen » ; le détail dit « commence par les photos ». C'est la catégorie la plus basse par rapport à son maximum qui guide le plan.
+:::
+
 ### Adapter la grille à un profil particulier
 
 La pondération de base convient à la majorité des logements. Deux ajustements valent la peine d'être connus :
@@ -109,6 +117,10 @@ La pondération de base convient à la majorité des logements. Deux ajustements
 - **Colocation ou logement partagé** : monte la Conformité à /10 (règles de vie commune, respect des espaces partagés) et baisse le Visuel à /15.
 
 **Concrètement** : imprime ou copie cette grille avant de passer au module suivant. Chaque leçon qui suit correspond à une ou plusieurs de ces 8 catégories.
+
+:::astuce
+Note toujours dans les mêmes conditions (navigation privée, mêmes dates de recherche) : deux audits comparables valent mieux qu'un audit parfait.
+:::
 
 :::quiz
 ? Pourquoi les catégories ne pèsent-elles pas toutes pareil ?
@@ -169,6 +181,10 @@ Un score sous 12/20 signale presque toujours la même cause : des photos prises 
 
 **Concrètement** : note la photo de couverture actuelle sur ces 6 critères avant de continuer. Si le score est sous 12/20, c'est la première action à corriger, avant même de retoucher le texte.
 
+:::exemple
+Couverture prise de nuit avec le flash, 12 photos dont 4 de la salle de bain : 8/20. Trois corrections suffisent souvent à gagner plusieurs points : une couverture de jour, un ordre logique, des photos en paysage.
+:::
+
 :::quiz
 ? Qu'est-ce que le test du pouce ?
 - Prendre la photo d'une main
@@ -205,6 +221,11 @@ Même logique que la leçon précédente : un protocole de notation rapide, pas 
 - **Adapté à la cible réelle (2 pts)** : le titre parle-t-il à la clientèle qui réserve effectivement ce logement (famille, couple, business), ou à une cible différente de celle qui réserve vraiment ?
 - **Longueur utilisée à bon escient (2 pts)** : les caractères disponibles sont-ils remplis d'information utile, ou coupés à mi-mot par une formule trop longue ?
 
+:::exemple
+« Bel appartement » : 2/7, rien ne le distingue.
+« T2 avec balcon, vue sur le Vieux-Port » : 6/7, type, atout et lieu en une ligne.
+:::
+
 ### Noter la description (répartition suggérée : /8)
 
 - **Première ligne qui accroche (3 pts)** : la phrase visible avant clic donne-t-elle une raison concrète de cliquer, ou se contente-t-elle de lister des équipements ?
@@ -216,6 +237,10 @@ Même logique que la leçon précédente : un protocole de notation rapide, pas 
 Ne cherche pas à réécrire le titre ou la description pendant que tu notes : sépare strictement le diagnostic de la correction. Un audit qui se transforme en session de réécriture perd le fil, et le score obtenu devient peu fiable puisqu'il note un texte à moitié modifié plutôt que l'existant.
 
 **Concrètement** : note le titre et la description actuels sans les toucher. Garde la correction pour après l'audit complet, une fois que tu sais si le texte est vraiment le problème principal ou juste un symptôme secondaire.
+
+:::erreur
+Réécrire toute la description pendant l'audit. L'audit note et explique ; la correction vient après, avec l'accord du propriétaire.
+:::
 
 :::quiz
 ? Qu'est-ce qui rapporte des points dans un titre ?
@@ -272,6 +297,10 @@ Trois catégories regroupées dans cette leçon parce qu'elles partagent un poin
 - **Horizon d'ouverture du calendrier (6 pts)** : un calendrier ouvert sur moins de 3 mois pénalise lourdement le classement sur la plupart des plateformes. L'idéal se situe entre 6 et 12 mois.
 - **Durée minimum de séjour adaptée (4 pts)** : un minimum de 7 nuits en pleine semaine basse saison ferme la porte à une grande partie de la demande réelle.
 
+:::exemple
+Calendrier ouvert sur 2 mois et minimum de 4 nuits en novembre : la disponibilité perd des points avant même que le voyageur voie le prix.
+:::
+
 ### Noter le Comportement hôte (/10)
 
 - **Taux de réponse (5 pts)** : sous 90 %, la plupart des algorithmes commencent à pénaliser visiblement l'annonce.
@@ -282,6 +311,10 @@ Trois catégories regroupées dans cette leçon parce qu'elles partagent un poin
 Contrairement aux photos ou au texte, personne ne "voit" un mauvais taux de réponse ou un calendrier trop court en consultant sa propre annonce, ces données sont dans les statistiques de la plateforme, pas dans la fiche elle-même. C'est exactement pour ça qu'elles font l'objet d'un audit à part : elles se dégradent silencieusement.
 
 **Concrètement** : ouvre les statistiques de ton compte hôte (Airbnb, Booking) et note ces trois catégories avant de continuer, plutôt que de te fier à ton impression générale.
+
+:::astuce
+Ces trois catégories se corrigent souvent en une heure de réglages, sans photo ni travaux : ce sont les premiers gains rapides à proposer.
+:::
 
 :::quiz
 ? Pourquoi ces trois catégories sont-elles souvent négligées ?
@@ -322,6 +355,10 @@ La formation Écrire des avis et répondre aux voyageurs couvre la rédaction et
 ### Comment noter la vélocité concrètement
 
 Compte le nombre d'avis reçus dans les 90 derniers jours et compare-le au rythme de séjours sur la même période. Un écart important, beaucoup de séjours mais peu d'avis, signale un problème de sollicitation, pas un problème de satisfaction : les deux causes appellent des corrections très différentes, d'où l'intérêt de bien distinguer ces deux points dans le score plutôt que de les mélanger.
+
+:::exemple
+Deux annonces notées 4,9. L'une a 3 avis sur les 6 derniers mois, l'autre 25. La seconde inspire beaucoup plus confiance : c'est ce que mesure la vélocité.
+:::
 
 ### Le badge comme signal composite, pas comme catégorie séparée
 
@@ -384,6 +421,10 @@ Un équipement coché mais absent, en panne, ou différent de la photo est l'une
 - **Équipements réels non déclarés (2 pts)** : à l'inverse, un équipement présent mais non mentionné dans l'annonce fait perdre une opportunité de conversion, sans faire perdre de confiance, mais ça reste un point d'amélioration à noter.
 - **Fraîcheur de la vérification (1 pt)** : la dernière vérification complète remonte-t-elle à moins de 6 mois ?
 
+:::erreur
+Déclarer « wifi rapide » sans l'avoir mesuré, ou un sèche-cheveux qui n'est plus là. Un équipement absent à l'arrivée coûte une étoile en « exactitude ».
+:::
+
 ### Le cas particulier des logements gérés à distance
 
 Pour un hôte qui ne visite plus son logement régulièrement, ou pour une conciergerie qui audite le bien d'un client, cette catégorie demande une vérification sur place ou via la personne en charge du ménage, pas uniquement une relecture de l'annonce depuis un ordinateur. C'est la seule catégorie du Score Annonce qui ne peut pas se noter entièrement à distance avec un niveau de confiance élevé.
@@ -430,6 +471,10 @@ Seulement 5 points sur 100, mais une catégorie qui protège contre un risque di
 ### Pourquoi ce point pèse peu mais coûte cher s'il est ignoré
 
 Un règlement flou ne fait pas directement baisser un classement, mais il augmente la probabilité d'un incident (voyageur non déclaré, fête surprise, dégât contesté) qui, lui, dégrade ensuite la catégorie Avis pendant des mois. La formation Gérer les incidents et litiges en LCD détaille la gestion d'un incident une fois qu'il survient ; cette catégorie de l'audit sert à réduire la fréquence à laquelle ça arrive.
+
+:::exemple
+Photo de la piscine de la résidence, sans préciser qu'elle est fermée d'octobre à mai : un voyageur de novembre se sent trompé et le dit dans son avis.
+:::
 
 ### Un score de 5/5 ne dispense pas de vigilance
 
@@ -490,9 +535,17 @@ Un bon rapport d'audit tient sur une seule page, structurée en 4 blocs :
 3. **3 points faibles**, ceux dont le score est le plus bas rapporté à leur pondération, pas simplement les moins bons en valeur absolue. Une catégorie à 3/5 en Conformité est moins urgente qu'une catégorie à 8/20 en Visuel, même si l'écart en points semble comparable.
 4. **Une action immédiate**, une seule, celle qui a le meilleur ratio impact/effort. Le module suivant détaille comment la choisir.
 
+:::exemple
+Une page : le score et sa répartition en haut, les 3 points forts, les 3 corrections prioritaires avec le gain attendu, puis la suite proposée. Rien de plus.
+:::
+
 ### L'erreur du rapport de 40 lignes
 
 Un audit exhaustif qui liste chaque défaut détecté, remarque par remarque, produit un document que personne ne termine de lire, encore moins d'appliquer. Le score sur 100 sert précisément à ça : il absorbe le détail dans une seule grille, et le rapport n'a besoin de développer en texte que ce qui sort vraiment du lot.
+
+:::retenir
+Un rapport se lit en 2 minutes ou ne se lit pas. Moins d'actions, mieux expliquées.
+:::
 
 ### Adapter le ton selon le destinataire
 
@@ -538,6 +591,12 @@ Un rapport d'audit qui présente 12 actions à mener dans le désordre a le mêm
 **Moyen (quelques heures à quelques jours, effet sous 1 à 2 mois).** Réécrire la description, refaire une session photo complète, ajuster la structure tarifaire sur plusieurs semaines.
 
 **Structurel (investissement ou changement d'organisation, effet sur plusieurs mois).** Rénover un espace, changer de channel manager, mettre en place un système de sollicitation d'avis automatisé, ce dernier point détaillé dans Annonce 360°.
+
+:::exemple
+**Rapide (moins d'une heure) :** changer la photo de couverture, ouvrir le calendrier à 12 mois.
+**Moyen (une journée) :** refaire les photos.
+**Structurel (des semaines) :** remplacer la literie, rénover la salle de bain.
+:::
 
 ### La règle de classement
 
@@ -620,6 +679,10 @@ Rien n'empêche de combiner les deux : un audit payant pour les hôtes autonomes
 
 **Concrètement** : détermine dès maintenant lequel des deux objectifs correspond à ta situation, cette décision conditionne directement la façon de présenter l'audit, traitée dans la dernière leçon.
 
+:::astuce
+Si l'audit gratuit sert à trouver des clients, limite-le à 3 recommandations : assez pour prouver ta valeur, pas assez pour faire le travail gratuitement.
+:::
+
 :::quiz
 ? À quoi sert un audit gratuit pour une conciergerie ?
 * Ouvrir la discussion vers un mandat de gestion
@@ -660,11 +723,19 @@ Un audit techniquement irréprochable peut échouer complètement s'il est mal p
 
 **4. Laisse la porte ouverte sans forcer.** Termine toujours par une question, pas une offre commerciale directe : "Tu veux qu'on regarde ensemble comment mettre ça en place, ou tu préfères essayer seul dans un premier temps ?" Un propriétaire qui se sent poussé se braque, un propriétaire à qui on laisse le choix revient plus souvent de lui-même.
 
+:::exemple
+« Votre annonce a de vrais atouts : les avis sur l'accueil sont excellents. Trois points freinent les réservations, et deux se corrigent cette semaine. » On commence par ce qui va bien, puis on chiffre ce qui peut changer.
+:::
+
 ### Transformer un audit en mandat, sans forcer la main
 
 Si l'objectif est la prospection (leçon précédente), la transition vers un mandat de gestion se fait presque toujours après, pas pendant la restitution de l'audit lui-même. Un audit qui se termine par un pitch commercial immédiat perd la confiance installée dans les 3 premières étapes. Le bon rythme : restitution de l'audit, un délai de quelques jours pour que le propriétaire digère l'information, puis une relance qui propose explicitement la gestion complète, en s'appuyant sur les points faibles identifiés ensemble.
 
 > Un audit qui débouche sur un mandat n'est jamais celui qui a le rapport le plus complet. C'est celui dont la restitution a le mieux respecté ces 4 étapes.
+
+:::erreur
+Proposer ton mandat avant d'avoir expliqué le diagnostic. Le propriétaire doit d'abord comprendre ce qui coince, puis voir comment tu peux l'aider.
+:::
 
 ### La boucle complète
 

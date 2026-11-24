@@ -48,6 +48,10 @@ Le titre vient en **dernier**. La description ? Il ne la lira pas si la photo ne
 
 > **Conclusion :** ta photo de couverture fait à elle seule 60 % du travail.
 
+:::exemple
+Ouvre Airbnb sur ton téléphone, cherche ta ville et ta date, et fais défiler les résultats : en combien d'annonces ton pouce s'arrête-t-il ? Celles qui t'arrêtent ont presque toutes une photo lumineuse, large et claire.
+:::
+
 ## Ce qu'une photo médiocre te coûte
 
 Sur une page de résultats, le voyageur compare des vignettes. Une photo sombre, de travers ou encombrée le fait passer à l'annonce suivante avant même d'avoir vu ton prix.
@@ -147,6 +151,10 @@ Toutes les autres servent à confirmer ou à infirmer la promesse de la premièr
 - Sur **Google** (résultats de recherche), c'est 100 %, il n'y en a qu'une.
 
 > Ta photo de couverture, c'est ton vendeur. *Si elle dort, ton annonce ne reçoit rien.*
+
+:::exemple
+Appartement avec balcon sur la mer : couverture = le salon ouvert sur la mer, prise depuis le fond de la pièce. Pas la salle de bain refaite, même si elle t'a coûté cher : la couverture vend la promesse.
+:::
 
 ## Les 3 critères d'une photo de couverture qui convertit
 
@@ -264,6 +272,10 @@ Le piège : tu vois ton logement tous les jours. Tu ne vois **plus** ses défaut
 > **Méthode :** ouvre ton annonce dans une fenêtre privée *(Ctrl+Shift+N)*. Imagine que tu cherches un logement. Note ta première impression brute.
 
 C'est cette impression que les voyageurs ont.
+
+:::astuce
+Note chaque photo de 0 à 2 (0 à refaire, 1 correcte, 2 excellente). Refais d'abord les photos à 0 parmi tes 5 premières : ce sont elles qui comptent.
+:::
 
 ## Erreur 1, La photo "constat d'huissier"
 
@@ -390,6 +402,10 @@ Voici ce que les smartphones modernes font mieux qu'un reflex pour la photo LCD 
 
 > **Conclusion :** pour la plupart des hôtes LCD, le smartphone est la **meilleure** option, pas une option de repli.
 
+:::retenir
+La lumière, l'angle et la préparation font l'essentiel d'une bonne photo. Un téléphone récent bien utilisé bat un reflex mal utilisé.
+:::
+
 ## Quand un reflex devient pertinent
 
 Il y a **2 cas** où un appareil pro fait vraiment une différence :
@@ -498,6 +514,10 @@ Un petit trépied de table avec rotule inclinable. Hauteur 20-30 cm dépliée, s
 Cherche **"trépied flexible smartphone"** ou *"Joby GorillaPod Mobile"* *(~25 €)*. Pieds flexibles = tu peux le poser sur une rampe d'escalier, accrocher à une chaise, l'incliner partout.
 
 > Ne dépense pas plus de **25 €**. Au-delà, c'est du gadget.
+
+:::astuce
+Avant d'acheter une lentille grand-angle, regarde si ton téléphone a déjà un mode ultra grand-angle (« 0,5× ») : c'est souvent le cas depuis quelques années.
+:::
 
 ## Accessoire 2, La lentille grand-angle clipsable *(20-30 €)*
 
@@ -622,6 +642,10 @@ Un magazine de déco ne photographie jamais un salon "tel quel". Le décorateur 
 
 Voici ta checklist exhaustive, pièce par pièce.
 
+:::exemple
+Avant / après en 30 minutes : télécommandes rangées, câbles cachés, coussins alignés, plaid plié, une plante ajoutée, rideaux ouverts. La pièce est la même, la photo n'a plus rien à voir.
+:::
+
 ## Entrée / couloir *(3 points)*
 
 1. **Range chaussures, manteaux, sacs.** Si tu en gardes, choisis 2 paires élégantes alignées au sol.
@@ -720,6 +744,10 @@ Canapé, table, lit, chaises. *Rien à faire avec eux, ils sont là, point.*
 1 à 2 objets vivants qui suggèrent une vie quotidienne : livre ouvert, tasse de café, plaid froissé volontairement.
 
 > **Tout le reste = à cacher** pendant la séance photo.
+
+:::erreur
+Vider complètement la pièce pour « faire propre ». Une pièce vide paraît froide et plus petite : garde 2 ou 3 objets choisis qui racontent la vie.
+:::
 
 ## Ce qu'on cache toujours
 
@@ -854,6 +882,10 @@ Cette déco peut être achetée juste pour la séance photo, et rangée ensuite.
 > **Coût total :** moins de 15 €.
 
 Liste de courses ci-dessous, pièce par pièce.
+
+:::astuce
+Garde ta déco de séance photo dans un sac à part : tu la ressors à chaque nouvelle série de photos, en été comme en hiver.
+:::
 
 ## Pour le salon *(3-4 €)*
 
@@ -1019,6 +1051,10 @@ La règle des tiers est la base de toute photographie professionnelle **depuis 2
 
 > Sur Airbnb, ça se traduit par **20-30 %** de clics supplémentaires.
 
+:::exemple
+Active la grille. Place le canapé sur la ligne verticale de gauche, la fenêtre sur celle de droite, l'horizon sur la ligne du bas : la photo respire et guide l'œil.
+:::
+
 ## En quoi ça consiste exactement
 
 Imagine ta photo divisée en **9 cases égales** par 2 lignes verticales et 2 lignes horizontales, soit une **grille 3 x 3**.
@@ -1124,6 +1160,10 @@ La même pièce photographiée à la **bonne heure** semble lumineuse, accueilla
 > **Aucune retouche** ne récupère une mauvaise lumière de départ.
 
 > La bonne heure de prise de vue fait **50 % du résultat final**.
+
+:::exemple
+Ton salon donne à l'ouest : séance vers 16 h ou 17 h. Ta chambre donne à l'est : le lendemain matin. Une séance photo peut se faire en deux fois pour avoir la bonne lumière partout.
+:::
 
 ## Identifier l'orientation de chaque pièce
 
@@ -1264,6 +1304,10 @@ Une photo prise au flash dans une pièce :
 - **Couleurs faussées** *(souvent verdâtres)*
 - Reflets disgracieux sur les surfaces brillantes
 - Ambiance *« scène de crime »*, pas magazine
+
+:::erreur
+Utiliser le flash « pour éclairer ». Il crée des ombres dures, des reflets sur les surfaces brillantes et des couleurs fausses. Allume plutôt toutes les lampes et utilise le mode HDR.
+:::
 
 ## Pourquoi le flash ne marche pas en photo de pièce
 
@@ -1425,6 +1469,10 @@ Les agences immobilières et photographes pro **n'utilisent jamais** cette haute
 Ils utilisent **3 hauteurs spécifiques** selon la pièce, et chacune crée un effet d'agrandissement différent.
 
 > Une bonne hauteur = **+20 à 40 %** de surface perçue dans la même pièce.
+
+:::astuce
+Tiens le téléphone bien droit : si les murs « tombent » sur la photo, la pièce paraît de travers. Les murs verticaux doivent rester verticaux.
+:::
 
 ## Hauteur 1, Hauteur de table basse *(60-80 cm du sol)*
 
@@ -1628,6 +1676,10 @@ Avant chaque photo, exécute ce **mini-rituel** :
 
 > Sans ces 6 étapes, **ne déclenche pas**. Tu auras une photo correcte mais jamais une photo qui fait cliquer.
 
+:::astuce
+Prends chaque photo deux fois, en paysage et en portrait : le paysage sert pour l'annonce, le portrait pour les réseaux sociaux.
+:::
+
 ## Le salon
 
 ### Angle 1, La photo "principale du salon"
@@ -1794,6 +1846,10 @@ C'est pour ça que la majorité des annonces LCD ont une **mauvaise** photo de s
 
 > **Bonne nouvelle :** si **toi** tu réussis à bien la photographier, tu te démarques immédiatement. *C'est un avantage facile à prendre.*
 
+:::exemple
+Salle de bain de 4 m² : photo depuis la porte, téléphone à hauteur de poitrine, serviettes blanches pliées, lumière allumée, couvercle des toilettes baissé ou toilettes hors du cadre.
+:::
+
 ## La règle absolue : ne JAMAIS photographier le miroir
 
 Le miroir capte ton reflet, ton téléphone, ton trépied, et n'importe quel élément qui se trouve derrière toi.
@@ -1945,6 +2001,10 @@ Les voyageurs choisissent autant un **lieu** qu'un logement.
 > Si tu as 1 photo extérieure **forte**, elle peut devenir ta **couverture**.
 
 > Cette photo seule peut justifier **+20-30 €** par nuit sur ton tarif.
+
+:::astuce
+Photographie ta terrasse à la golden hour avec la table dressée : deux verres, une carafe, un plaid. Le voyageur s'y voit déjà.
+:::
 
 ## La terrasse / balcon
 
@@ -2122,6 +2182,10 @@ Il achète :
 
 > Si tes photos suggèrent l'**expérience**, tu vends un **moment**. *Tarif premium.*
 
+:::exemple
+Un plateau de petit-déjeuner au soleil sur la table de la terrasse, une tasse fumante, la vue derrière : une seule photo qui donne envie de réserver le séjour.
+:::
+
 ## Qu'est-ce qu'une "lifestyle shot" ?
 
 Une lifestyle shot est une photo qui :
@@ -2294,6 +2358,10 @@ Tu peux retoucher tes photos LCD avec :
 
 > Télécharge **Snapseed** maintenant *(App Store ou Google Play)*.
 
+:::erreur
+Pousser la saturation pour que « ça pète ». Les couleurs deviennent fausses, et le voyageur déçu à l'arrivée le dit dans son avis.
+:::
+
 ## L'erreur à éviter : sur-retoucher
 
 Avant de plonger dans les réglages, **règle d'or absolue** :
@@ -2452,6 +2520,10 @@ Tu peux avoir **30 superbes photos**. Si la 1ère est mauvaise, le voyageur ne v
 
 > Donc tes **5 premières photos** ont **95 % du poids** de conversion.
 
+:::retenir
+Les 5 premières photos racontent ton logement à elles seules. Les suivantes servent à confirmer ; elles ne rattrapent pas un mauvais début.
+:::
+
 ## L'ordre optimal pour Airbnb / Booking
 
 ### Photo 1, La couverture *(vue d'ensemble pièce de vie)*
@@ -2589,6 +2661,10 @@ Ce qu'on n'a pas dit :
 - Une **couverture excellente** peut le multiplier **par 1,5 à 2**.
 
 > Donc tester ta couverture, **méthodiquement**, est l'action **la plus rentable** de toute ta gestion d'annonce.
+
+:::exemple
+Photo A pendant 14 jours : 820 vues, 4 réservations. Photo B pendant 14 jours à période comparable : 910 vues, 6 réservations. On garde B, et on teste une photo C le mois suivant.
+:::
 
 ## La méthode A/B en 4 étapes
 
