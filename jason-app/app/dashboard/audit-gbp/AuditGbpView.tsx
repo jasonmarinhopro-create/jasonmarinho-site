@@ -29,7 +29,7 @@ export default function AuditGbpView({ userId, initialSession, pastAudits }: {
   const scoreDelta = lastAudit && done[1] ? (lastAudit.score_global as number) - (done[1].score_global as number) : null
   return (
     <>
-      <div style={s.page}>
+      <div style={s.page} className="communaute-no-fade">
 
 
         {/* ── Hero (sept. 2026) : pourquoi, comment, et ton score. Avant : trois

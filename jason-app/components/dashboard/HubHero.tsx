@@ -3,6 +3,8 @@
 // Toujours aux couleurs de la marque (vert + touche de jaune), jamais le bleu
 // des plateformes : demande de Jason. Une promesse, 3 étapes, une action,
 // et une carte à droite (score, reprise, chiffres).
+// Pas d'animation d'apparition (24/11/2026) : à la navigation dans l'app,
+// l'animation fade-up laissait le bandeau invisible un instant (page vide).
 
 type Step = [verb: string, rest: string]
 
@@ -18,7 +20,7 @@ export default function HubHero({ eyebrowIcon, eyebrow, title, desc, steps, chil
   aside?: React.ReactNode
 }) {
   return (
-    <section style={s.hero} className="fade-up">
+    <section style={s.hero}>
       <div style={{ flex: '1 1 440px', minWidth: 0 }}>
         <div style={s.eyebrow}>{eyebrowIcon}{eyebrow}</div>
         <h1 style={s.title}>{title}</h1>

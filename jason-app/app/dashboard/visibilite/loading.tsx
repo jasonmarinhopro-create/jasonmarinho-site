@@ -1,2 +1,3 @@
-// Même squelette que la page des groupes Facebook.
-export { default } from '../communaute/loading'
+// Squelette de « Trouver des voyageurs » (forme réelle des pages, 24/11/2026)
+import HubPageSkeleton from '@/components/dashboard/HubPageSkeleton'
+export default function Loading() { return <HubPageSkeleton /> }

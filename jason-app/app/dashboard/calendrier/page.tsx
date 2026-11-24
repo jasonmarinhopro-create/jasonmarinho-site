@@ -1,6 +1,7 @@
 import { icalOccupationsForMenage } from '@/lib/menage/ical-occupations'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
+import { allRows } from '@/lib/supabase/all-rows'
 import CalendrierView from './CalendrierView'
 import CalendrierTabBar from './CalendrierTabBar'
 import OnboardingTour, { CALENDRIER_STEPS } from '../OnboardingTour'
@@ -78,9 +79,13 @@ export interface LogementOption {
 export type { MenageSlot } from '@/lib/menage/compute'
 
 export default async function CalendrierPage() {
-  const profile = await getProfile()
-  const supabase = await createClient()
+  const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   const userId = profile?.userId ?? ''
+  // Fenêtre (24/11/2026) : 24 mois en arrière et tout l'avenir. Avant, tout
+  // l'historique était lu à chaque ouverture (lent pour un compte ancien),
+  // et coupé à 1 000 lignes sans le dire. Les tables qui peuvent dépasser
+  // 1 000 lignes sont lues page par page (allRows).
+  const since = new Date(Date.now() - 730 * 86400000).toISOString().slice(0, 10)
 
   const [
     { data: events },
@@ -92,26 +97,33 @@ export default async function CalendrierPage() {
     { data: voyageursRaw },
     { data: logementsRaw },
   ] = await Promise.all([
-    supabase
+    allRows(async (from, to) => await supabase
       .from('calendar_events')
       .select('id, title, date, end_date, start_time, end_time, description, category')
       .eq('user_id', userId)
+      .gte('date', since)
       .order('date')
-      .order('start_time'),
+      .order('start_time')
+      .order('id')
+      .range(from, to)).then(r => ({ data: r.rows })),
     supabase
       .from('contracts')
       .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, sejour_id')
       .eq('user_id', userId)
-      .neq('statut', 'annule'),
+      .neq('statut', 'annule')
+      .gte('date_depart', since),
     supabase
       .from('ical_feeds')
       .select('id, name, url, color, last_synced')
       .eq('user_id', userId)
       .order('created_at'),
-    supabase
+    allRows(async (from, to) => await supabase
       .from('ical_events')
       .select('id, feed_id, title, start_date, end_date, start_time, end_time, description, ical_feeds(color, url, name)')
-      .eq('user_id', userId),
+      .eq('user_id', userId)
+      .gte('end_date', since)
+      .order('id')
+      .range(from, to)).then(r => ({ data: r.rows })),
     supabase
       .from('profiles')
       .select('ical_token')
@@ -123,7 +135,7 @@ export default async function CalendrierPage() {
       .eq('user_id', userId)
       .is('annule_at', null)
       .not('date_arrivee', 'is', null)
-      .not('date_depart', 'is', null),
+      .gte('date_depart', since),
     supabase
       .from('voyageurs')
       .select('id, prenom, nom, email, telephone')

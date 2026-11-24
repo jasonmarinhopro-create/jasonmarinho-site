@@ -489,3 +489,14 @@ Jason : « quand je me connecte et que je suis directement en admin, il y a 3 ch
 ## Page Ménage du calendrier (24/11/2026)
 
 Jason : « ça prend beaucoup de temps à charger, j'ai peur qu'il y ait trop d'appels pour rien ». Constaté : `loadHostMenageSlots` lisait **tout l'historique** des contrats et des séjours de l'hôte pour afficher 2 semaines (et pareil pour le flux iCal des équipes et l'espace de l'équipe). Désormais : départs à partir du début de la fenêtre, arrivées jusqu'à 60 jours après la fin (pour savoir si le ménage tombe un jour d'arrivée). Page : `menage_links` lu en même temps que le reste (3 allers-retours avec la base au lieu de 4).
+
+## Audit des lectures « tout l'historique » (24/11/2026)
+
+Suite de la page Ménage (Jason : « vérifie les autres pages lentes de la même façon »). Relevé de toutes les lectures de grandes tables sans borne de date ni limite (`.from()` sur contrats, séjours, événements, réservations iCal…), hors admin. Corrigé :
+- **Calendrier** : événements, contrats, séjours et réservations iCal limités à 24 mois en arrière et tout l'avenir ; événements et réservations iCal lus page par page (`allRows`) : avant, tout l'historique, coupé sans le dire à 1 000 lignes. Profil et client en parallèle.
+- **Mes réservations** : contrats et séjours sur 24 mois et à venir, ménages saisis à la main sur 30 jours et à venir (réservations iCal : déjà 12 mois).
+- **Accueil** (`home_state`, migration `20261124_198`) : séjours limités à ceux arrivés depuis le début de la période du chiffre d'affaires ou pas encore terminés (seuls utilisés par la page).
+- Laissés tels quels (listes qui doivent tout montrer ou tables petites) : Voyageurs, Contrats, fiche d'un logement, contrats de l'Accueil (alertes de caution et paiements anciens).
+- À surveiller : `lib/finances/load.ts` met `.limit(3000)` mais PostgREST plafonne à 1 000 lignes ; au-delà (compte très actif sur la période), passer à `allRows`.
+
+Trouver des voyageurs (Groupes Facebook, Fiche Google) : squelette générique remplacé par `HubPageSkeleton` (forme réelle de la page), `revalidate` retiré de ces pages personnelles, et plus d'animation `fade-up` sur `HubHero` (le bandeau restait invisible un instant à la navigation : page « vide » avec seulement « Communauté Driing »).

@@ -32,6 +32,11 @@ export default async function ReservationsPage() {
   // - sejours n'a PAS : logement_id, nb_voyageurs — logement est en texte libre
   // - voyageurs.source contient la plateforme (Airbnb/Booking/Direct/...)
   //   → source de verite fiable pour badger la source de la resa.
+  // Fenêtre (24/11/2026, audit des lenteurs) : séjours et contrats des 24
+  // derniers mois et à venir (avant : tout l'historique, coupé à 1 000 lignes) ;
+  // ménages saisis à la main des 30 derniers jours et à venir.
+  const since2y = new Date(Date.now() - 730 * 86_400_000).toISOString().slice(0, 10)
+  const since30d = new Date(Date.now() - 30 * 86_400_000).toISOString().slice(0, 10)
   const [
     { data: contracts },
     { data: sejoursRaw },
@@ -47,14 +52,14 @@ export default async function ReservationsPage() {
       .eq('user_id', userId)
       .neq('statut', 'annule')
       .not('date_arrivee', 'is', null)
-      .not('date_depart', 'is', null),
+      .gte('date_depart', since2y),
     supabase
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_plateforme, voyageurs(prenom, nom, email, telephone, source)')
       .eq('user_id', userId)
       .is('annule_at', null)
       .not('date_arrivee', 'is', null)
-      .not('date_depart', 'is', null),
+      .gte('date_depart', since2y),
     // Logements avec settings menage (heure defaut, duree, notes) — necessaires
     // pour computeMenageSlots + le modal Planning menage.
     supabase
@@ -67,7 +72,8 @@ export default async function ReservationsPage() {
       .from('calendar_events')
       .select('id, title, date, end_date, start_time, end_time, description, category')
       .eq('user_id', userId)
-      .eq('category', 'menage'),
+      .eq('category', 'menage')
+      .gte('date', since30d),
     // Voyageurs existants pour « Nouvelle réservation » et « Ajouter le
     // voyageur » d'une réservation synchronisée (même modale que Contrats).
     supabase
