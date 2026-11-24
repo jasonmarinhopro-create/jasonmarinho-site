@@ -316,6 +316,7 @@ function report(results, stuck = new Set()) {
 // seule) et relève toutes les 100 ms ce qui est à l'écran : écran de
 // lancement, squelette, zone vide, ancienne page, contenu. Compte les
 // rechargements complets. Aucun texte ni capture : des états et des durées.
+const NAV_TARGETS = ['/dashboard/calendrier', '/dashboard/reservations', '/dashboard/voyageurs', '/dashboard/apprendre/formations', '/dashboard/visibilite/facebook', '/dashboard']
 async function navTimeline() {
   const browser = await chromium.launch()
   const cookies = await appSessionCookies()
@@ -327,13 +328,22 @@ async function navTimeline() {
   const out = []
   let t0 = Date.now()
   const fullNavs = []
-  page.on('framenavigated', f => { if (f === page.mainFrame()) fullNavs.push(`${((Date.now() - t0) / 1000).toFixed(1)} s ${pattern(f.url())}`) })
+  // Vrais chargements du document seulement (pas les changements d'adresse de l'app)
+  page.on('domcontentloaded', () => fullNavs.push(`${((Date.now() - t0) / 1000).toFixed(1)} s ${pattern(page.url())}`))
   const sample = () => page.evaluate(() => {
     const main = document.querySelector('.dash-main')
     const splash = document.querySelector('.jm-splash:not(.jm-splash--out)')
-    const skel = document.querySelector('[data-page-skel], [aria-busy="true"]')
+    // Squelette : repère explicite, ou blocs animés « shimmer » / « pulse » visibles dans la page
+    let skel = !!document.querySelector('[data-page-skel], [aria-busy="true"]')
+    if (!skel && main) {
+      const els = main.querySelectorAll('div, span')
+      for (let i = 0; i < els.length && i < 4000; i++) {
+        const an = getComputedStyle(els[i]).animationName || ''
+        if (/shimmer|pulse|skel/i.test(an)) { const r = els[i].getBoundingClientRect(); if (r.width > 20 && r.height > 8) { skel = true; break } }
+      }
+    }
     const txt = main ? (main.innerText || '').replace(/\s+/g, ' ').trim().length : -1
-    return { splash: !!splash, skel: !!skel, txt, path: location.pathname }
+    return { splash: !!splash, skel, txt, path: location.pathname }
   }).catch(() => ({ splash: false, skel: false, txt: -2, path: '?' }))
   const label = (st, fromPath) => st.txt === -2 ? 'chargement du document' : st.splash ? 'écran de lancement' : st.skel ? 'squelette' : st.path === fromPath ? 'ancienne page' : st.txt < 40 ? 'zone vide' : 'contenu'
   async function watch(name, fromPath, toPath, maxMs = 15000) {
@@ -352,7 +362,7 @@ async function navTimeline() {
   await page.goto('https://app.jasonmarinho.com/dashboard', { waitUntil: 'commit' })
   await watch('Ouverture de l’Accueil (chargement complet)', '', '/dashboard', 20000)
   await page.waitForTimeout(2500)
-  for (const href of ['/dashboard/calendrier', '/dashboard/reservations', '/dashboard/voyageurs', '/dashboard/apprendre/formations', '/dashboard/visibilite/facebook', '/dashboard']) {
+  for (const href of [...NAV_TARGETS, ...NAV_TARGETS]) {
     const from = await page.evaluate(() => location.pathname)
     const link = page.locator(`.dash-sidebar a[href="${href}"]`).first()
     if (!(await link.count())) { out.push(`- ${href} : lien absent du menu`); continue }
