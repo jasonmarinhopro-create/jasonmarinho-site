@@ -70,6 +70,7 @@ L'environnement de Claude ne joint pas Supabase : l'audit du dashboard tourne da
 - Accord de Jason requis avant le premier lancement (session sur son compte).
 - Écrans sans page à part (24/11/2026) : `EXTRA_APP_SCREENS` dans le script (onglets Parcours / Catalogue / Moi de Formations, étapes d'une leçon, écran de fin), ajoutés quand `only` les vise ; le rapport garde alors les paramètres `onglet`, `lecon`, `etape`, `fin`, `view` dans l'adresse.
 - `repeat` (champ du workflow, `--repeat N`) : chaque page ouverte N fois à la suite (un seul navigateur), tableau « 1re ouverture / 2e ouverture » pour séparer un chargement à froid d'une vraie lenteur. Les défauts ne sont relevés qu'à la 1re ouverture.
+- `net` : pages que chaque page fait précharger au serveur. `nav` : parcours (Accueil puis 6 clics du menu, deux passages) avec, toutes les 100 ms, l'état à l'écran (lancement, squelette reconnu à son animation, zone vide, ancienne page, contenu) et le nombre de vrais chargements du document. Aucun texte ni capture. Relevé du 24/11/2026 : squelette à chaque clic, contenu en 0,5 à 2,7 s au 1er passage, immédiat au 2e, un seul chargement du document. Une page blanche ou un rechargement vu par un membre juste après un déploiement vient du changement de version (Vercel Hobby n'a pas la protection contre l'écart de versions) : regrouper les envois sur main.
 
 ---
 
