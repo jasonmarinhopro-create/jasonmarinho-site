@@ -87,7 +87,27 @@ function publicText(t) {
 }
 
 // Adresse sans identifiant (rien de personnel dans le rapport)
-const pattern = u => new URL(u).pathname.replace(/\/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, '/[id]').replace(/\/\d{2,}(?=\/|$)/g, '/[n]')
+// Les écrans choisis par l'adresse (onglet, leçon, étape, fin) gardent ces paramètres
+const SCREEN_KEYS = ['onglet', 'lecon', 'etape', 'fin', 'view']
+const pattern = u => {
+  const x = new URL(u)
+  const q = [...x.searchParams].filter(([k]) => SCREEN_KEYS.includes(k)).map(([k, v]) => `${k}=${v}`).join('&')
+  return x.pathname.replace(/\/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, '/[id]').replace(/\/\d{2,}(?=\/|$)/g, '/[n]') + (q ? `?${q}` : '')
+}
+
+// Écrans du dashboard qui ne sont pas des pages à part (24/11/2026) : onglets
+// de l'espace Formations, étapes d'une leçon, écran de fin. Ajoutés quand le
+// filtre --only les vise. Lecture seule comme le reste.
+const EXTRA_APP_SCREENS = [
+  '/dashboard/formations?onglet=parcours',
+  '/dashboard/formations?onglet=catalogue',
+  '/dashboard/formations?onglet=moi',
+  '/dashboard/formations/mettre-le-bon-prix-lcd?lecon=1&etape=0',
+  '/dashboard/formations/mettre-le-bon-prix-lcd?lecon=1&etape=2',
+  '/dashboard/formations/google-my-business-lcd?lecon=5&etape=1',
+  '/dashboard/formations/annonce-directe?lecon=5&etape=1',
+  '/dashboard/formations/mettre-le-bon-prix-lcd?fin=1',
+]
 
 // ── Session du dashboard (mode app) ─────────────────────────────────────────
 let closeSession = async () => {}
@@ -144,6 +164,8 @@ async function main() {
   } else {
     cookies = await appSessionCookies()
     jobs = appStaticRoutes().filter(r => !r.includes('[')).map(r => 'https://app.jasonmarinho.com' + r)
+    const extras = EXTRA_APP_SCREENS.filter(r => ONLY.length && ONLY.some(o => (o.startsWith('=') ? r === o.slice(1) : r.includes(o))))
+    jobs.push(...extras.map(r => 'https://app.jasonmarinho.com' + r))
   }
   const dynamicSeen = new Set()
   const dynamicFrom = new Set()
