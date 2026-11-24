@@ -26,7 +26,11 @@ export default async function MenagePage() {
   const toDate = iso(new Date(today.getTime() + DAYS_AHEAD * 86_400_000))
 
   // Données de l'hôte lui-même : client utilisateur (RLS).
-  const [slots, { data: completions }, { data: doneEvents }, { data: prof }] = await Promise.all([
+  // Équipes qui suivent ce planning : comptes d'autres utilisateurs, non
+  // lisibles via la RLS de l'hôte → service role, filtré explicitement sur
+  // cet hôte. Lu en même temps que le reste (24/11/2026 : un aller-retour en moins).
+  const db = getServiceClient()
+  const [slots, { data: completions }, { data: doneEvents }, { data: prof }, { data: links }] = await Promise.all([
     loadHostMenageSlots(supabase, userId, fromDate, toDate),
     supabase.from('menage_completions')
       .select('id, logement_nom, date, cleaner_user_id, photos')
@@ -38,17 +42,11 @@ export default async function MenagePage() {
       .gte('date', fromDate).lte('date', toDate)
       .ilike('description', '%[FAIT]%'),
     supabase.from('profiles').select('ical_token').eq('id', userId).maybeSingle(),
+    db.from('menage_links').select('cleaner_user_id, host_token').eq('host_user_id', userId),
   ])
   const icalToken = (prof?.ical_token as string | null) ?? null
 
-  // Équipes qui suivent ce planning + noms de qui a validé : comptes d'autres
-  // utilisateurs, non lisibles via la RLS de l'hôte → service role, filtré
-  // explicitement sur cet hôte.
-  const db = getServiceClient()
-  const { data: links } = await db
-    .from('menage_links')
-    .select('cleaner_user_id, host_token')
-    .eq('host_user_id', userId)
+  // Noms de qui a validé (service role, filtré sur ces équipes)
   const cleanerIds = Array.from(new Set([
     ...(links ?? []).map(l => l.cleaner_user_id as string),
     ...(completions ?? []).map(c => c.cleaner_user_id as string | null).filter((v): v is string => !!v),

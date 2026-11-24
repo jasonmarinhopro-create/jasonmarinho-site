@@ -484,3 +484,8 @@ Jason : « quand je me connecte et que je suis directement en admin, il y a 3 ch
 - La copie reste affichée tant que `.dash-main` contient `[data-page-skel]` **ou** `[aria-busy=true]` (15 s au plus, `ShellFallback`), puis un seul fondu vers la page complète.
 - `LaunchSnapshotRecorder` ne prend la copie que sur une page sans squelette : essai à 2,5 s puis toutes les 2 s pendant 30 s.
 - L'audit responsive mesure aussi le temps d'affichage jusqu'à la fin de ces cartes.
+
+
+## Page Ménage du calendrier (24/11/2026)
+
+Jason : « ça prend beaucoup de temps à charger, j'ai peur qu'il y ait trop d'appels pour rien ». Constaté : `loadHostMenageSlots` lisait **tout l'historique** des contrats et des séjours de l'hôte pour afficher 2 semaines (et pareil pour le flux iCal des équipes et l'espace de l'équipe). Désormais : départs à partir du début de la fenêtre, arrivées jusqu'à 60 jours après la fin (pour savoir si le ménage tombe un jour d'arrivée). Page : `menage_links` lu en même temps que le reste (3 allers-retours avec la base au lieu de 4).

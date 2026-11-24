@@ -29,6 +29,7 @@ import { LAUNCH_MESSAGE } from '@/components/layout/launch-message'
 import MenuLivePush from '@/components/layout/MenuLive'
 import PerfReporter from '@/components/perf/PerfReporter'
 import LastSeenPing from '@/components/layout/LastSeenPing'
+import LessonReturnPill from '@/components/formations/LessonReturnPill'
 import { perfTimer } from '@/lib/perf/server-timing'
 import { getQgCount } from '@/lib/admin/qg-count'
 
@@ -171,6 +172,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
         <main style={styles.main} className="dash-main">
           <Suspense fallback={<DashboardLoading />}>
             <PageFadeWrapper>{children}</PageFadeWrapper>
+            <LessonReturnPill />
           </Suspense>
         </main>
         {/* Compteurs du menu, cloche et parcours : après le cadre et la page */}

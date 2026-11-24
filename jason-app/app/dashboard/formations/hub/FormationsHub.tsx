@@ -15,7 +15,7 @@ import { usePathname } from 'next/navigation'
 import {
   Sun, Path, SquaresFour, UserCircle, ArrowRight, CalendarCheck, MagnifyingGlass,
   Check, Lock, Certificate, BookmarkSimple, NotePencil, BookOpen, Trophy, Target, Sparkle, Clock,
-  Medal, Lightning, Fire,
+  Medal, Lightning, Fire, CaretDown,
 } from '@phosphor-icons/react/dist/ssr'
 import InlineStyle from '@/components/ui/InlineStyle'
 import HubTabBar from '@/components/layout/HubTabBar'
@@ -474,6 +474,7 @@ const LEVELS = [
 ]
 
 function Moi({ data }: { data: HubData }) {
+  const [skill, setSkill] = useState<string | null>(null)
   const finished = data.formations.filter(f => f.progress >= 100)
   const inProgress = data.formations.filter(f => f.progress > 0 && f.progress < 100).sort((x, y) => y.progress - x.progress)
   const doneActions = data.actions.filter(a => a.doneAt)
@@ -583,7 +584,7 @@ function Moi({ data }: { data: HubData }) {
             {data.byObjectif.map(o => {
               const pct = o.total ? Math.round((o.done / o.total) * 100) : 0
               return (
-                <div key={o.key} className="fm-skill">
+                <button key={o.key} type="button" className={`fm-skill${skill === o.key ? ' on' : ''}`} onClick={() => setSkill(skill === o.key ? null : o.key)} aria-expanded={skill === o.key}>
                   <span className="fm-skill-cov" style={{ background: coverBackground(OBJ_SLUG[o.key] ?? '', 0.25) }} aria-hidden="true" />
                   <span className="fh-row-m">
                     <b>{o.label}</b>
@@ -591,10 +592,36 @@ function Moi({ data }: { data: HubData }) {
                     <span className="fh-mini" style={{ marginTop: 6 }}><i style={{ width: `${pct}%` }} /></span>
                   </span>
                   <span className="fm-skill-p">{pct} %</span>
-                </div>
+                  <CaretDown size={14} className="fm-skill-c" style={{ transform: skill === o.key ? 'rotate(180deg)' : 'none' }} />
+                </button>
               )
             })}
           </div>
+          {skill && (
+            <div className="fm-skill-list">
+              <div className="fh-sect-h">
+                <b>{data.byObjectif.find(o => o.key === skill)?.label}</b>
+                <button type="button" className="fh-more" onClick={() => setSkill(null)}>Fermer</button>
+              </div>
+              <div className="fh-list">
+                {data.formations.filter(f => f.objectifKey === skill).map(f => {
+                  const done = Math.round(f.lessons * Math.max(0, f.progress) / 100)
+                  return (
+                    <Link key={f.slug} href={lessonHref(f.slug)} className="fh-saved fm-sk-row">
+                      <span className="fh-cov" style={{ background: f.cover }} aria-hidden="true" />
+                      <span className="fh-row-m">
+                        <b>{f.title}</b>
+                        <small>{f.progress >= 100 ? 'Terminée' : f.progress > 0 ? `${done} leçon${done > 1 ? 's' : ''} sur ${f.lessons}` : `${f.lessons} leçons · ${f.duration}`}</small>
+                        <span className="fh-mini" style={{ marginTop: 6, maxWidth: 320 }}><i style={{ width: `${Math.max(0, f.progress)}%` }} /></span>
+                      </span>
+                      <Status f={f} />
+                      <ArrowRight size={15} className="fh-go" />
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </section>
       )}
 
@@ -888,7 +915,13 @@ a.fh-hero:hover { transform: translateY(-2px); box-shadow: 0 24px 48px -26px rgb
 .fm-ring::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(#E5B53F calc(var(--p) * 1%), var(--surface-2) 0); -webkit-mask: radial-gradient(closest-side, transparent 78%, #000 79%); mask: radial-gradient(closest-side, transparent 78%, #000 79%); }
 .fm-ring b { font-family: var(--font-fraunces), serif; font-weight: 500; font-size: 19px; color: var(--text); }
 .fm-skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.fm-skill { display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); }
+.fm-skill { display: flex; gap: 12px; align-items: center; padding: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); font: inherit; text-align: left; cursor: pointer; width: 100%; transition: border .15s, box-shadow .15s, transform .15s; }
+.fm-skill:hover { border: 1px solid var(--accent-border); transform: translateY(-1px); }
+.fm-skill.on { border: 1px solid var(--accent-text); box-shadow: 0 0 0 3px var(--accent-bg); }
+.fm-skill-c { color: var(--text-3); flex-shrink: 0; transition: transform .2s; }
+.fm-skill-list { display: flex; flex-direction: column; gap: 10px; animation: fhIn .25s ease both; }
+.fm-skill-list .fh-sect-h b { font-size: 15px; color: var(--text); }
+.fm-sk-row { gap: 12px; }
 .fm-skill-cov { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; }
 .fm-skill-p { font-family: var(--font-fraunces), serif; font-size: 20px; color: var(--text); flex-shrink: 0; }
 .fm-ms { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 10px; }

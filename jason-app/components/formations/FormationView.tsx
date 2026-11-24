@@ -847,6 +847,7 @@ function LessonPlayer(p: {
                   quiz={{}} onAnswer={() => {}}
                   action={p.action}
                   onAction={(t, h, w) => p.onAction(t, h, w)}
+                  returnLabel={`${p.formationTitle} · ${lesson.title}`}
                 />
               </>
             )}

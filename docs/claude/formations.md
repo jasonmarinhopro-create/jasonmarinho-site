@@ -92,6 +92,11 @@ Jason : la fiche « ne donne pas du tout envie sur ordinateur », « la partie M
 - **Moi** : bandeau niveau (Curieux 0, Apprenti 5, Confirmé 20, Expert 50, Maître hôte 120 leçons) + 5 chiffres (temps d'apprentissage = durées des leçons faites, leçons, formations, actions, bonnes réponses) ; activité sur 12 semaines (`user_lesson_completion_log`) avec résumé ; prochaine attestation (formation en cours la plus avancée) ; compétences par objectif ; 9 jalons à débloquer ; en cours ; réussites, enregistré, attestations. Données ajoutées dans `page.tsx` (`activity`, `byObjectif`, `stats.good/answered/minutes`).
 - Anneaux en `mask` (et non un disque de `var(--surface)` par-dessus) : `--surface` est transparente en sombre.
 
+## Retour à la leçon et compétences cliquables (24/11/2026)
+
+- **« Revenir à ta leçon »** (`components/formations/LessonReturnPill.tsx`, monté dans `app/dashboard/layout.tsx`) : le bouton d'une action de leçon note l'adresse exacte (leçon et étape, `sessionStorage`, 3 heures) ; sur la page ouverte (Mes prix, calendrier…), une pastille verte en bas ramène à l'étape. Disparaît en revenant sur la formation ou à la croix. Sous le bouton de l'action : « un bouton Revenir à ta leçon te ramène ici ». Cause : Jason, sorti de sa formation par « calculer des prix », « je ne comprenais plus rien ».
+- **Moi > Tes compétences** : chaque objectif s'ouvre sur ses formations (avancement, état, lien).
+
 ## Faits vérifiés le 23/11/2026 (à réutiliser dans les autres formations)
 
 - **Airbnb** : frais uniques à la charge de l'hôte, 15,5 %, pour tous les hôtes de l'UE depuis le 13/10/2026 (plus de frais voyageur à part ; avant : environ 3 % hôte + frais voyageur). Sans numéro de TVA, la TVA de 20 % s'ajoute aux frais : 18,6 % ; 100 € affichés = 81,40 € reçus (84,50 € avec un numéro de TVA). Une autre session avait déjà corrigé les autres formations sur ce point le 23/11 (commit « commission Airbnb à jour »). Toute formation qui parle de « 3 % » ou « 4 % hôte » ou de « frais de service voyageur 14 % » est à corriger. Sources : Airbnb « Simplifying Airbnb service fees », Hostfully, Smoobu.

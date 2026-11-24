@@ -10,6 +10,7 @@ import {
   Target, Check, CalendarCheck, ChatCircleText, Copy, PencilSimpleLine, ThumbsUp, ThumbsDown, FileText,
 } from '@phosphor-icons/react/dist/ssr'
 import InlineStyle from '@/components/ui/InlineStyle'
+import { rememberLessonReturn } from './LessonReturnPill'
 import { plainText, type Block, type CardBlock } from '@/lib/formations/blocks'
 
 function escapeHtml(s: string): string {
@@ -72,8 +73,10 @@ export type QuizState = Record<number, { picked: number; correct: boolean }>
 export type ActionWhen = 'done' | 'ce-soir' | 'demain' | 'week-end'
 
 export default function LessonContent({
-  blocks, quiz, onAnswer, action, onAction,
+  blocks, quiz, onAnswer, action, onAction, returnLabel,
 }: {
+  /** Libellé de la pastille « Revenir à ta leçon » (titre de la leçon) */
+  returnLabel?: string
   blocks: Block[]
   quiz: QuizState
   onAnswer: (index: number, picked: number, correct: boolean) => void
@@ -83,7 +86,7 @@ export default function LessonContent({
 }) {
   return (
     <div className="lc">
-      {blocks.map((b, i) => <BlockView key={i} b={b} quiz={quiz} onAnswer={onAnswer} action={action} onAction={onAction} />)}
+      {blocks.map((b, i) => <BlockView key={i} b={b} quiz={quiz} onAnswer={onAnswer} action={action} onAction={onAction} returnLabel={returnLabel} />)}
       <InlineStyle css={LC_CSS} />
     </div>
   )
@@ -96,7 +99,8 @@ const CALLOUT_META = {
   astuce: { title: 'Astuce', Icon: Lightbulb },
 } as const
 
-function BlockView({ b, quiz, onAnswer, action, onAction }: {
+function BlockView({ b, quiz, onAnswer, action, onAction, returnLabel }: {
+  returnLabel?: string
   b: Block
   quiz: QuizState
   onAnswer: (index: number, picked: number, correct: boolean) => void
@@ -213,7 +217,7 @@ function BlockView({ b, quiz, onAnswer, action, onAction }: {
         </div>
       )
     case 'quiz': return <QuizView b={b} state={quiz[b.index]} onAnswer={onAnswer} />
-    case 'action': return <ActionView b={b} state={action} onAction={onAction} />
+    case 'action': return <ActionView b={b} state={action} onAction={onAction} returnLabel={returnLabel} />
   }
 }
 
@@ -252,7 +256,8 @@ const WHEN_LABEL: Record<Exclude<ActionWhen, 'done'>, string> = {
   'ce-soir': 'Ce soir', demain: 'Demain', 'week-end': 'Ce week-end',
 }
 
-function ActionView({ b, state, onAction }: {
+function ActionView({ b, state, onAction, returnLabel }: {
+  returnLabel?: string
   b: Extract<Block, { type: 'action' }>
   state: { when: ActionWhen; dueLabel?: string } | null
   onAction: (title: string, href: string | null, when: ActionWhen) => void
@@ -266,7 +271,10 @@ function ActionView({ b, state, onAction }: {
       {b.text && <Html as="p" text={b.text} />}
       {b.href && (
         b.href.startsWith('/') && !b.href.startsWith('//')
-          ? <Link prefetch={false} href={b.href} className="lc-btn" onClick={() => { if (!state) onAction(b.title, b.href, 'done') }}>{b.button || 'J\'y vais'} <ArrowRight size={15} weight="bold" /></Link>
+          ? <>
+              <Link prefetch={false} href={b.href} className="lc-btn" onClick={() => { rememberLessonReturn(returnLabel ?? b.title); if (!state) onAction(b.title, b.href, 'done') }}>{b.button || 'J\'y vais'} <ArrowRight size={15} weight="bold" /></Link>
+              <small className="lc-return-hint">La page s&apos;ouvre dans l&apos;app ; un bouton « Revenir à ta leçon » te ramène ici.</small>
+            </>
           : null
       )}
       {!b.href && !state && (
@@ -352,6 +360,7 @@ const LC_CSS = `
         .lc-when { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; }
         .lc-chip { border: 1px solid var(--border); background: var(--bg); color: var(--text-2); border-radius: 999px; padding: 6px 13px; font: inherit; font-size: 13.5px; cursor: pointer; }
         .lc-chip:hover { border: 1px solid var(--accent-border); color: var(--accent-text); }
+        .lc-return-hint { font-size: 12.5px; color: var(--text-3); margin-top: -4px; }
         .lc-planned { display: flex; align-items: center; gap: 8px; font-size: 14.5px; color: var(--text); font-weight: 500; animation: lcIn .35s ease both; }
         .lc-planned svg { color: var(--success-1); flex-shrink: 0; }
         .lc-mark { color: var(--text); font-weight: 600; background: linear-gradient(180deg, transparent 58%, rgba(255,213,107,.38) 58%); padding: 0 1px; border-radius: 2px; }

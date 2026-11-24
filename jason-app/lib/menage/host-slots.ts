@@ -27,15 +27,21 @@ export async function loadHostMenageSlots(
   ] = await Promise.all([
     // Statut filtré en JS : .neq('statut', 'annule') excluait aussi les
     // contrats au statut NULL (NULL <> 'annule' vaut NULL en SQL).
+    // Fenêtre de dates (24/11/2026) : avant, tout l'historique des contrats et
+    // séjours était lu pour afficher 2 semaines. Il faut les départs de la
+    // fenêtre et l'arrivée suivante (jusqu'à 60 jours après) pour savoir si
+    // le ménage tombe le jour d'une arrivée.
     db.from('contracts')
       .select('id, logement_nom, date_arrivee, date_depart, sejour_id, statut')
-      .eq('user_id', hostId),
+      .eq('user_id', hostId)
+      .gte('date_depart', fromDate)
+      .lte('date_arrivee', addDays(toDate, 60)),
     db.from('sejours')
       .select('id, logement, date_arrivee, date_depart')
       .eq('user_id', hostId)
       .is('annule_at', null)
-      .not('date_arrivee', 'is', null)
-      .not('date_depart', 'is', null),
+      .gte('date_depart', fromDate)
+      .lte('date_arrivee', addDays(toDate, 60)),
     db.from('logements')
       .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage, ical_airbnb, ical_booking, ical_vrbo, ical_autre')
       .eq('user_id', hostId),
@@ -118,4 +124,11 @@ export function buildHostMenageSlots(raw: HostMenageRaw, fromDate: string, toDat
 /** Clé de rapprochement d'un créneau : date + nom de logement normalisé. */
 export function menageKey(date: string, logementName: string): string {
   return `${date}|${logementName.trim().toLowerCase()}`
+}
+
+/** AAAA-MM-JJ + n jours (calcul en UTC, sans décalage d'heure) */
+function addDays(date: string, n: number): string {
+  const d = new Date(date + 'T00:00:00Z')
+  d.setUTCDate(d.getUTCDate() + n)
+  return d.toISOString().slice(0, 10)
 }
