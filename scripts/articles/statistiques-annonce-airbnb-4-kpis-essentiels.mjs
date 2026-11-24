@@ -1,7 +1,8 @@
 export default {
   slug: 'statistiques-annonce-airbnb-4-kpis-essentiels',
   title: 'Statistiques Airbnb : les 4 KPIs essentiels que les hôtes ignorent',
-  description: 'Airbnb te donne accès à des statistiques détaillées sur ton annonce. Voici les 4 KPIs à suivre chaque semaine pour identifier ce qui marche et ce qui bloque.',
+  seoTitle: 'Statistiques Airbnb : les 4 KPI essentiels',
+  description: 'Airbnb te donne des statistiques détaillées sur ton annonce. Voici les 4 KPIs à suivre chaque semaine pour voir ce qui marche et ce qui bloque.',
   keywords: 'statistiques Airbnb, KPIs annonce Airbnb, taux clic Airbnb, taux conversion annonce, performance Airbnb 2026',
   date: '2026-04-25',
   categorySlug: 'visibilite',

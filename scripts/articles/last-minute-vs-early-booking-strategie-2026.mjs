@@ -1,6 +1,7 @@
 export default {
   slug: 'last-minute-vs-early-booking-strategie-2026',
   title: 'Last-minute vs early booking : la stratégie de remises temporelles en 2026',
+  seoTitle: 'Last-minute vs early booking : quelle remise en 2026 ?',
   description: 'Remise dernière minute ou réservation anticipée : comment combiner les deux pour maximiser ton remplissage sans sacrifier ton revenu net.',
   keywords: 'last minute Airbnb, early booking LCD, remise dernière minute, prix anticipé location courte durée',
   date: '2026-04-25',

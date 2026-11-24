@@ -1,6 +1,7 @@
 export default {
   slug: 'refacturer-degat-voyageur-airbnb-procedure',
   title: 'Refacturer un dégât voyageur : procédure Airbnb, Booking et direct (2026)',
+  seoTitle: 'Refacturer un dégât voyageur Airbnb : la procédure',
   description: 'Un voyageur a cassé ou taché. Procédure étape par étape pour faire payer le dégât sur Airbnb (AirCover), Booking, ou via SwikLy/Youka en direct.',
   keywords: 'refacturer dégât Airbnb, AirCover procédure, caution voyageur dégât, retenue caution LCD',
   date: '2026-04-25',

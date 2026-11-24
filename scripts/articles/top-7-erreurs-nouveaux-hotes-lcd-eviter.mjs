@@ -1,6 +1,7 @@
 export default {
   slug: 'top-7-erreurs-nouveaux-hotes-lcd-eviter',
   title: 'Top 7 des erreurs des nouveaux hôtes LCD (et comment les éviter)',
+  seoTitle: '7 erreurs des nouveaux hôtes LCD à éviter',
   description: 'Les 7 erreurs récurrentes des nouveaux hôtes Airbnb qui plombent leur démarrage. Listes des pièges, leurs conséquences chiffrées et comment les éviter.',
   keywords: 'erreurs hôte Airbnb débutant, pièges LCD nouveau, conseils démarrer location courte durée 2026',
   date: '2026-04-25',

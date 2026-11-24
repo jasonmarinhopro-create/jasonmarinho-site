@@ -1,6 +1,7 @@
 export default {
   slug: 'bail-mobilite-vs-courte-duree-differences',
   title: 'Bail mobilité vs location courte durée : les vraies différences pour un hôte',
+  seoTitle: 'Bail mobilité vs location courte durée : différences',
   description: 'Le bail mobilité (1 à 10 mois) est-il une alternative à la LCD ? Comparatif fiscal, contractuel et pratique pour décider quel format choisir.',
   keywords: 'bail mobilité 2026, location courte durée vs longue, bail meublé étudiant, alternative Airbnb LCD',
   date: '2026-04-25',

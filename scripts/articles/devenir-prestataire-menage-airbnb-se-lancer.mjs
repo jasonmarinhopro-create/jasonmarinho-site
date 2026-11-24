@@ -1,6 +1,7 @@
 export default {
   slug: 'devenir-prestataire-menage-airbnb-se-lancer',
   title: 'Ménage Airbnb : se lancer comme prestataire en 2026 (marché, tarifs, premiers clients)',
+  seoTitle: 'Devenir prestataire ménage Airbnb en 2026',
   description: 'Se lancer dans le ménage de turnover en location courte durée : statut, matériel, tarifs par passage et premiers clients. Le guide pour démarrer.',
   keywords: 'devenir prestataire ménage Airbnb, créer entreprise ménage location courte durée, ménage turnover métier, travailler avec des hôtes Airbnb',
   date: '2026-07-05',

@@ -2,7 +2,9 @@ export default {
   slug: 'video-annonce-airbnb-6-regles-tour-video-conversion-2026',
 
   title: 'Vidéo d\'annonce Airbnb : 6 règles pour tourner un tour vidéo qui booste ta conversion en 2026',
-  description: 'Préparation, matériel, séquence, cadrage, montage, publication : 6 règles concrètes pour tourner une vidéo d\'annonce Airbnb qui augmente ta conversion en 2026.',
+
+  seoTitle: 'Vidéo d\'annonce Airbnb : 6 règles pour convertir',
+  description: 'Préparation, matériel, séquence, cadrage, montage, publication : 6 règles pour tourner une vidéo d\'annonce Airbnb qui augmente ta conversion en 2026.',
   keywords: 'vidéo annonce airbnb, tour vidéo airbnb, filmer logement airbnb, video listing airbnb, ratio conversion airbnb vidéo, montage vidéo airbnb, format vidéo airbnb 2026',
   date: '2026-08-24',
 

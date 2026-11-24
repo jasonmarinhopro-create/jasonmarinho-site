@@ -1,6 +1,7 @@
 export default {
   slug: 'profil-hote-airbnb-bio-photo-confiance',
   title: 'Profil hôte Airbnb : photo et bio qui inspirent confiance et augmentent les réservations',
+  seoTitle: 'Profil hôte Airbnb : photo et bio qui rassurent',
   description: 'Ton profil hôte Airbnb : photo, présentation, badges. Comment l\'optimiser pour inspirer confiance aux voyageurs avant qu\'ils réservent.',
   keywords: 'profil hôte Airbnb, bio Airbnb, photo de profil hôte, superhost confiance voyageur',
   date: '2026-04-25',

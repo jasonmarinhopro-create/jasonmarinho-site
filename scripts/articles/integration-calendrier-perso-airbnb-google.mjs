@@ -1,6 +1,7 @@
 export default {
   slug: 'integration-calendrier-perso-airbnb-google',
   title: 'Intégrer ton calendrier Airbnb dans Google Calendar perso : 5 minutes',
+  seoTitle: 'Synchroniser Airbnb avec Google Agenda en 5 minutes',
   description: 'Avoir tes réservations Airbnb visibles dans ton Google Calendar perso évite les conflits et te fait gagner 1h/semaine. Voici comment l\'intégrer en 5 min.',
   keywords: 'calendrier Airbnb Google, synchroniser Airbnb Calendar, iCal Google Calendar, calendrier perso hôte LCD',
   date: '2026-04-25',

@@ -1,6 +1,7 @@
 export default {
   slug: 'numero-enregistrement-lcd-20-mai-2026-demarches',
   title: 'Numéro d\'enregistrement LCD obligatoire dès le 20 mai 2026 : les démarches à faire maintenant',
+  seoTitle: 'Numéro d\'enregistrement LCD obligatoire le 20 mai 2026',
   description: 'Numéro d\'enregistrement obligatoire pour la location courte durée depuis le 20 mai 2026 (loi Le Meur) : qui est concerné, comment l\'obtenir, sanctions.',
   keywords: 'numéro enregistrement location courte durée, loi Le Meur 2026, déclaration LCD obligatoire, Airbnb enregistrement France, télédéclaration meublé tourisme',
   date: '2026-04-24',

@@ -1,6 +1,7 @@
 export default {
   slug: 'early-check-in-lcd-6-solutions-accueillir-voyageur-avant-heure',
   title: 'Early check-in en LCD : 6 solutions pour accueillir un voyageur avant l\'heure sans épuiser ton équipe ménage',
+  seoTitle: 'Early check-in en LCD : 6 solutions pratiques',
   description: 'Un voyageur arrive à 11 h pour un check-in à 15 h ? 6 solutions pour gérer l\'arrivée anticipée sans casser ton turnover ni ton avis.',
   keywords: 'early check-in LCD, check-in matinal Airbnb, accueil voyageur avant l\'heure, turnover location courte durée, arrivée voyageur anticipée',
   date: '2026-09-18',

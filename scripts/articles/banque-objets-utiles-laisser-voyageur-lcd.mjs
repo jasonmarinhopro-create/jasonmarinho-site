@@ -1,6 +1,7 @@
 export default {
   slug: 'banque-objets-utiles-laisser-voyageur-lcd',
   title: '15 objets utiles à laisser à tes voyageurs LCD : kit oubli, dépannage, plaisir',
+  seoTitle: '15 objets utiles à laisser à tes voyageurs LCD',
   description: 'Au-delà du basique, voici 15 objets utiles à laisser à tes voyageurs : kit oubli, kit dépannage, petits plaisirs. Coût total ~80€, retour avis +0.2★.',
   keywords: 'objets utiles voyageurs Airbnb, kit dépannage logement LCD, attentions hôte 2026, fournitures voyageur',
   date: '2026-04-25',

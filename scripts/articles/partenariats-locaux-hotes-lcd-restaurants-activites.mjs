@@ -1,6 +1,7 @@
 export default {
   slug: 'partenariats-locaux-hotes-lcd-restaurants-activites',
   title: 'Partenariats locaux LCD : 7 types à mettre en place pour booster les avis',
+  seoTitle: 'Partenariats locaux en LCD : 7 idées pour les avis',
   description: 'Restaurants, activités, commerces : 7 partenariats locaux qui enrichissent le séjour de tes voyageurs et peuvent te rapporter des commissions.',
   keywords: 'partenariats locaux Airbnb, commerçants Airbnb, commission restaurant hôte, expérience voyageur LCD',
   date: '2026-04-25',

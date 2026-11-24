@@ -4,7 +4,7 @@ slug: "gerer-mauvais-avis-airbnb-reponse-hote"
 category: "Expérience"
 date: "2026-03-25"
 readTime: "6 min de lecture"
-description: "Un avis négatif sur Airbnb, ça arrive même aux meilleurs hôtes. Ce qui compte, c'est comment tu y réponds. Méthode, exemples de réponses et erreurs à éviter."
+description: "Un avis négatif sur Airbnb, ça arrive même aux meilleurs hôtes. Ce qui compte, c'est ta réponse. Méthode, exemples de réponses et erreurs à éviter."
 ---
 
 # Comment gérer un mauvais avis sur Airbnb sans perdre ton classement

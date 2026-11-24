@@ -1,6 +1,7 @@
 export default {
   slug: 'marge-nette-par-nuitee-suivi-precis',
   title: 'Marge nette par nuitée : le seul KPI qui compte vraiment en LCD',
+  seoTitle: 'Marge nette par nuitée : le KPI qui compte en LCD',
   description: 'Le revenu brut Airbnb ne dit rien de ta vraie rentabilité. Apprends à calculer ta marge nette par nuitée et à l\'optimiser sans toucher à ton tarif affiché.',
   keywords: 'marge nette par nuitée, rentabilité par nuit Airbnb, RevPAR LCD, profit par nuitée location courte durée',
   date: '2026-04-25',

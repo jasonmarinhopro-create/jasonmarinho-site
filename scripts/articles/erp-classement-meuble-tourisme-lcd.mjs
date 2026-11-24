@@ -1,6 +1,7 @@
 export default {
   slug: 'erp-classement-meuble-tourisme-lcd',
   title: 'ERP et meublé de tourisme classé : faut-il faire les démarches en 2026 ?',
+  seoTitle: 'ERP et meublé de tourisme classé en 2026',
   description: 'Le classement meublé de tourisme et le statut ERP ont des implications fiscales et opérationnelles. Voici quand il vaut le coup et quand c\'est inutile.',
   keywords: 'classement meublé tourisme, ERP location courte durée, étoiles meublé tourisme, abattement fiscal classement',
   date: '2026-04-25',

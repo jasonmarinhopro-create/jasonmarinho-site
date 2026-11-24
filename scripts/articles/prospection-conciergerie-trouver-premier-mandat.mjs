@@ -1,7 +1,8 @@
 export default {
   slug: 'prospection-conciergerie-trouver-premier-mandat',
   title: 'Conciergerie LCD : 7 stratégies pour décrocher ton premier mandat',
-  description: 'Tu lances ta conciergerie Airbnb mais aucun client ne signe ? Voici 7 stratégies de prospection éprouvées pour décrocher tes 3 premiers mandats en 60 jours.',
+  seoTitle: 'Conciergerie LCD : trouver son premier mandat',
+  description: 'Tu lances ta conciergerie Airbnb mais aucun client ne signe ? Voici 7 stratégies de prospection pour décrocher tes 3 premiers mandats en 60 jours.',
   keywords: 'prospection conciergerie LCD, premier mandat Airbnb conciergerie, trouver clients conciergerie, démarrer conciergerie 2026',
   date: '2026-04-25',
   categorySlug: 'conciergerie',

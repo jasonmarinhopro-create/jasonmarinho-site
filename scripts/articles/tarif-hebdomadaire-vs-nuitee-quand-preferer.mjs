@@ -1,6 +1,7 @@
 export default {
   slug: 'tarif-hebdomadaire-vs-nuitee-quand-preferer',
   title: 'Tarif hebdomadaire vs nuitée : quand préférer chaque modèle (avec calculs)',
+  seoTitle: 'Tarif à la semaine ou à la nuit en LCD ?',
   description: 'Tarif à la nuit ou à la semaine : la décision dépend de ton volume, ton type de logement et ta saison. Voici la matrice de décision avec calculs concrets.',
   keywords: 'tarif hebdomadaire LCD, tarif nuit Airbnb, remise semaine Airbnb, prix séjour long location courte durée',
   date: '2026-04-25',

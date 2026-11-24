@@ -1,6 +1,7 @@
 export default {
   slug: 'prix-min-max-airbnb-fourchette-tarifaire',
   title: 'Prix min / prix max Airbnb : la fourchette tarifaire qui maximise ton revenu',
+  seoTitle: 'Prix min et max Airbnb : la bonne fourchette',
   description: 'Définir un prix min ET un prix max sur Airbnb encadre la tarification dynamique. Voici la méthode pour fixer ces 2 bornes sans plomber ton revenu net.',
   keywords: 'prix minimum Airbnb, prix maximum Airbnb, fourchette tarif LCD, encadrer pricing Airbnb',
   date: '2026-04-25',

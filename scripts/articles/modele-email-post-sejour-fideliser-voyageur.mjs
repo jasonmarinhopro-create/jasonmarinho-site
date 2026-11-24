@@ -1,6 +1,7 @@
 export default {
   slug: 'modele-email-post-sejour-fideliser-voyageur',
   title: 'Email post-séjour Airbnb : 4 modèles testés pour avoir 5★ et fidéliser',
+  seoTitle: 'Email post-séjour Airbnb : 4 modèles pour fidéliser',
   description: 'L\'email post-séjour est la dernière chance d\'obtenir un avis 5★ et un retour fidèle. Voici 4 modèles testés selon le profil voyageur.',
   keywords: 'email post-séjour Airbnb, modèle email après check-out, fidéliser voyageurs LCD, demande avis email',
   date: '2026-04-25',

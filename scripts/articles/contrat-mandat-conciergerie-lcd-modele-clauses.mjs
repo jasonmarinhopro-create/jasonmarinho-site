@@ -1,6 +1,7 @@
 export default {
   slug: 'contrat-mandat-conciergerie-lcd-modele-clauses',
   title: 'Contrat de mandat conciergerie LCD : les 8 clauses indispensables en 2026',
+  seoTitle: 'Mandat de conciergerie LCD : les 8 clauses clés',
   description: 'Un contrat de mandat solide te protège des litiges propriétaires. Voici les 8 clauses essentielles à intégrer, modèle commenté et pièges à éviter.',
   keywords: 'contrat conciergerie Airbnb, mandat gestion locative LCD, contrat conciergerie modèle, clauses gestion Airbnb',
   date: '2026-04-25',

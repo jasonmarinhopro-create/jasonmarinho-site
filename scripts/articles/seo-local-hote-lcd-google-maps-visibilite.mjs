@@ -1,7 +1,7 @@
 export default {
   slug: 'seo-local-hote-lcd-google-maps-visibilite',
   title: 'SEO local pour hôte LCD : ressortir sur Google Maps en 2026',
-  description: 'Apparaître sur Google Maps quand un voyageur cherche "appartement [ta ville]" est l\'un des leviers les plus rentables. Voici la méthode SEO local pas à pas.',
+  description: 'Apparaître sur Google Maps quand un voyageur cherche un appartement dans ta ville est un levier très rentable. Voici la méthode SEO local pas à pas.',
   keywords: 'SEO local LCD, Google Maps hôte Airbnb, ressortir Google ville, référencement local 2026',
   date: '2026-04-25',
   categorySlug: 'visibilite',

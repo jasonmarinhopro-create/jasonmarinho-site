@@ -1,6 +1,7 @@
 export default {
   slug: 'reclamation-voyageur-pendant-sejour-methode-5-etapes',
   title: 'Réclamation voyageur pendant le séjour : la méthode en 5 étapes pour désamorcer et sauver l\'avis',
+  seoTitle: 'Réclamation voyageur en séjour : la méthode en 5 étapes',
   description: 'Un voyageur se plaint pendant son séjour ? La méthode en 5 étapes pour désamorcer, éviter le mauvais avis et parfois finir sur un 5 étoiles.',
   keywords: 'réclamation voyageur airbnb, plainte pendant séjour lcd, gérer voyageur mécontent, éviter mauvais avis airbnb, geste commercial location courte durée',
   date: '2026-09-25',

@@ -1,6 +1,7 @@
 export default {
   slug: 'co-hote-airbnb-6-regles-ajouter-cohote-annonce-sans-risque-2026',
   title: 'Co-hôte Airbnb : 6 règles pour ajouter un co-hôte à ton annonce sans risque juridique ni fiscal en 2026',
+  seoTitle: 'Co-hôte Airbnb : 6 règles pour l\'ajouter sans risque',
   description: 'Rôle, autorisations, rémunération, contrat, fiscalité, sortie : 6 règles pour ajouter un co-hôte à ton annonce Airbnb en 2026 sans mauvaise surprise.',
   keywords: 'co-hôte Airbnb, cohôte Airbnb 2026, ajouter co-hôte annonce, rémunération co-hôte, contrat co-hôte Airbnb, fiscalité co-hôte, conciergerie Airbnb',
   date: '2026-09-09',

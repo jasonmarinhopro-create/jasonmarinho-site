@@ -1,7 +1,8 @@
 export default {
   slug: 'chambres-hotes-vs-meuble-tourisme-differences',
   title: 'Chambres d\'hôtes vs meublé de tourisme : 7 différences que les hôtes ignorent',
-  description: 'Chambres d\'hôtes et meublé de tourisme sont 2 régimes différents. Voici les 7 différences (statut, fiscalité, obligations) pour bien choisir et te conformer.',
+  seoTitle: 'Chambres d\'hôtes vs meublé de tourisme : 7 différences',
+  description: 'Chambres d\'hôtes et meublé de tourisme sont 2 régimes différents. Les 7 différences (statut, fiscalité, obligations) pour bien choisir et te conformer.',
   keywords: 'chambres d\'hôtes vs meublé tourisme, différence statut LCD, classement chambres hôtes 2026',
   date: '2026-04-25',
   categorySlug: 'experience',

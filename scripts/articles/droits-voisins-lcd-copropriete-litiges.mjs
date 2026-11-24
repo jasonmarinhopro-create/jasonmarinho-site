@@ -1,6 +1,7 @@
 export default {
   slug: 'droits-voisins-lcd-copropriete-litiges',
   title: 'Droits des voisins en LCD : éviter et gérer les litiges en copropriété',
+  seoTitle: 'Voisins et copropriété en LCD : éviter les litiges',
   description: 'Les voisins peuvent bloquer ton activité LCD si tu ne respectes pas certaines règles. Voici tes droits, leurs droits, et comment éviter les litiges.',
   keywords: 'voisins LCD copropriété, droit copropriété Airbnb, litige voisin location courte durée, règlement copropriété LCD',
   date: '2026-04-25',

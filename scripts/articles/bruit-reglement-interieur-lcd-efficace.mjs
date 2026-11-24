@@ -1,6 +1,7 @@
 export default {
   slug: 'bruit-reglement-interieur-lcd-efficace',
   title: 'Bruit voyageur : le règlement intérieur LCD qui fait baisser les plaintes de 70 %',
+  seoTitle: 'Bruit en LCD : le règlement intérieur qui marche',
   description: 'Le bruit est la première cause de plaintes voisins en LCD. Voici la formulation exacte du règlement intérieur qui fonctionne, testée sur 100 hôtes.',
   keywords: 'règlement intérieur Airbnb bruit, voisins location courte durée, plaintes copropriété LCD, gestion bruit voyageurs',
   date: '2026-04-25',

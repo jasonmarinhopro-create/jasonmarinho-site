@@ -1,6 +1,7 @@
 export default {
   slug: 'demande-reduction-prix-airbnb-7-reponses-hote',
   title: 'Demande de réduction de prix Airbnb : 7 réponses pour préserver tes marges',
+  seoTitle: 'Demande de réduction Airbnb : 7 réponses d\'hôte',
   description: 'Un voyageur te demande une réduction ? 7 réponses pour préserver ta marge sans couper la conversation, avec des exemples à reprendre.',
   keywords: 'demande de réduction Airbnb, négociation prix Airbnb, répondre voyageur prix, marge hôte LCD, tarif Airbnb négociation',
   date: '2026-05-15',

@@ -1,6 +1,7 @@
 export default {
   slug: 'accueillir-voyageur-business-lcd-essentiels',
   title: 'Accueillir un voyageur business : les 10 essentiels qui boostent ton ADR',
+  seoTitle: 'Voyageur business en LCD : les 10 essentiels',
   description: 'Les voyageurs business paient 25-40% plus cher que les voyageurs loisir. Voici les 10 équipements et services à mettre en place pour les capter.',
   keywords: 'voyageur business Airbnb, hôte business LCD, ADR Airbnb, location business 2026',
   date: '2026-04-25',

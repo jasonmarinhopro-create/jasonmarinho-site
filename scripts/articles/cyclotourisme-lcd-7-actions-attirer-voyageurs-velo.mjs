@@ -2,6 +2,8 @@ export default {
   slug: 'cyclotourisme-lcd-7-actions-attirer-voyageurs-velo',
 
   title: 'Cyclotourisme en LCD : 7 actions pour attirer les voyageurs à vélo et booster ton taux d\'occupation',
+
+  seoTitle: 'Cyclotourisme en LCD : attirer les voyageurs à vélo',
   description: 'Local vélo, kit de réparation, label Accueil Vélo, partenaires, tarifs : 7 actions pour faire de ton logement une étape pour les cyclotouristes.',
   keywords: 'cyclotourisme LCD, accueil vélo Airbnb, voyageur vélo location courte durée, étape vélo hôte, label Accueil Vélo, stockage vélo location',
   date: '2026-06-12',

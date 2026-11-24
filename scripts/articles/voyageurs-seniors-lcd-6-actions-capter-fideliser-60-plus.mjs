@@ -1,6 +1,7 @@
 export default {
   slug: 'voyageurs-seniors-lcd-6-actions-capter-fideliser-60-plus',
   title: 'Voyageurs seniors en LCD : 6 actions pour capter et fidéliser la clientèle 60+ hors saison',
+  seoTitle: 'Voyageurs seniors en LCD : capter les 60 ans et plus',
   description: 'Accessibilité, literie, communication, séjours longs : 6 actions pour accueillir les voyageurs seniors en LCD et remplir ta basse saison.',
   keywords: 'voyageurs seniors lcd, clientele 60 ans airbnb, accessibilite logement courte duree, basse saison hors saison hote, location longue duree retraites, fidelisation voyageur senior',
   date: '2026-06-24',

@@ -1,6 +1,7 @@
 export default {
   slug: 'trousse-premier-secours-lcd-equipement-obligatoire',
   title: 'Trousse de premier secours LCD : la liste obligatoire et les bonus à ajouter',
+  seoTitle: 'Trousse de premier secours en LCD : la liste',
   description: 'En 2026, une trousse de premier secours est obligatoire en LCD française. Voici le contenu réglementaire, les bonus utiles, et les contrôles à prévoir.',
   keywords: 'trousse premiers secours Airbnb, kit pharmacie location courte durée, équipement obligatoire LCD 2026',
   date: '2026-04-25',

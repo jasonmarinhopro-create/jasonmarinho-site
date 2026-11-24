@@ -1,6 +1,7 @@
 export default {
   slug: 'photos-airbnb-computer-vision-ia-optimiser',
   title: 'Photos Airbnb et Computer Vision : comment l\'IA juge tes images et ce qu\'il faut changer',
+  seoTitle: 'Photos Airbnb : comment l\'IA juge tes images',
   description: 'Airbnb analyse tes photos avec une IA : qualité, cohérence, format. Ce qu\'elle regarde et 5 actions pour améliorer les photos de ton annonce en 2026.',
   keywords: 'photos Airbnb Computer Vision, optimiser photos annonce Airbnb, IA analyse photos Airbnb 2026, qualité photos location courte durée, classement Airbnb photos',
   date: '2026-04-24',

@@ -1,6 +1,7 @@
 export default {
   slug: 'messagerie-unifiee-3-plateformes-tester',
   title: 'Messagerie unifiée Airbnb + Booking + direct : 3 outils à tester en 2026',
+  seoTitle: 'Messagerie unifiée Airbnb et Booking : 3 outils',
   description: 'Gérer 3 plateformes = 3 boîtes mail à surveiller. Voici les 3 outils qui unifient ta messagerie LCD avec auto-replies intelligents et vrai gain de temps.',
   keywords: 'messagerie unifiée Airbnb, inbox LCD, Hospitable Smoobu Lodgify messages, communication multi-plateformes',
   date: '2026-04-25',

@@ -1,6 +1,7 @@
 export default {
   slug: 'duree-minimum-sejour-airbnb-criteres-choisir',
   title: 'Durée minimum de séjour Airbnb : 5 critères pour choisir entre 1, 2 ou 3 nuits',
+  seoTitle: 'Durée minimum de séjour Airbnb : 1, 2 ou 3 nuits ?',
   description: 'Une, deux ou trois nuits ? 5 critères pour fixer ta durée minimum de séjour sur Airbnb et remplir ton calendrier sans épuiser ton logement.',
   keywords: 'durée minimum séjour Airbnb, nuit minimum Airbnb, min stay LCD, taux occupation Airbnb, paramètres Airbnb',
   date: '2026-05-18',

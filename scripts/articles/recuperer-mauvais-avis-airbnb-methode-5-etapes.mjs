@@ -1,7 +1,8 @@
 export default {
   slug: 'recuperer-mauvais-avis-airbnb-methode-5-etapes',
   title: 'Récupérer un mauvais avis Airbnb : la méthode en 5 étapes pour limiter les dégâts',
-  description: 'Un avis 1 ou 2 étoiles peut faire chuter ta note moyenne et ton classement. Voici la méthode pas à pas pour le contester, y répondre et récupérer rapidement.',
+  seoTitle: 'Récupérer après un mauvais avis Airbnb : 5 étapes',
+  description: 'Un avis 1 ou 2 étoiles peut faire chuter ta note moyenne et ton classement. La méthode pas à pas pour le contester, y répondre et remonter rapidement.',
   keywords: 'mauvais avis Airbnb, contester avis Airbnb, supprimer avis 1 étoile, gérer avis négatif LCD',
   date: '2026-04-25',
   categorySlug: 'experience',

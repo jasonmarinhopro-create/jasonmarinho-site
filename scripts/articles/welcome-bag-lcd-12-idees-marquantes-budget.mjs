@@ -1,6 +1,7 @@
 export default {
   slug: 'welcome-bag-lcd-12-idees-marquantes-budget',
   title: 'Welcome bag LCD : 12 idées qui marquent les voyageurs (avec budget)',
+  seoTitle: 'Welcome bag LCD : 12 idées avec budget',
   description: 'Le welcome bag est l\'attention qui transforme un séjour normal en avis 5 étoiles. Voici 12 idées éprouvées par profil de voyageur, du gratuit aux 25 €.',
   keywords: 'welcome bag Airbnb, panier de bienvenue LCD, attentions hôte voyageur, fidéliser Airbnb 5 étoiles',
   date: '2026-04-25',

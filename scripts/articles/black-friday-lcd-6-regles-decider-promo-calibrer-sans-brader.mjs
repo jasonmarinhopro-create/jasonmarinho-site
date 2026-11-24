@@ -2,7 +2,7 @@ export default {
   slug: 'black-friday-lcd-6-regles-decider-promo-calibrer-sans-brader',
   title: 'Black Friday en LCD : 6 règles pour décider si tu fais une promo en 2026 et la calibrer sans brader',
   seoTitle: 'Black Friday LCD 2026 : promo ou pas et comment calibrer',
-  description: 'Black Friday 2026 tombe le 27 novembre. En LCD, faut-il faire une promo ? À qui, à quel taux, sur quelles dates : 6 règles concrètes pour décider et calibrer.',
+  description: 'Black Friday 2026 tombe le 27 novembre. En LCD, faut-il faire une promo ? À qui, à quel taux, sur quelles dates : 6 règles pour décider et calibrer.',
   keywords: 'Black Friday LCD 2026, promotion Airbnb, promo location courte durée, remise voyageurs, Travel Tuesday LCD, Cyber Monday Airbnb',
   date: '2026-10-26',
   categorySlug: 'revenus',

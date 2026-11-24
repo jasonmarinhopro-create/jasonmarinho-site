@@ -1,6 +1,7 @@
 export default {
   slug: 'programme-parrainage-voyageurs-fidelisation-lcd',
   title: 'Programme de parrainage voyageurs LCD : fidéliser et acquérir gratuitement',
+  seoTitle: 'Parrainage voyageurs en LCD : fidéliser gratuitement',
   description: 'Un programme de parrainage simple peut générer 10-15% de tes nouvelles réservations en direct. Voici comment le mettre en place en 30 min.',
   keywords: 'programme parrainage Airbnb, fidélisation voyageurs LCD, code promo voyageur, acquisition gratuite hôte',
   date: '2026-04-25',

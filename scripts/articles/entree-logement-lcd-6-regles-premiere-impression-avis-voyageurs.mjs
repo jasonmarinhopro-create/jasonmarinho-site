@@ -1,6 +1,7 @@
 export default {
   slug: 'entree-logement-lcd-6-regles-premiere-impression-avis-voyageurs',
   title: 'Entrée d\'un logement LCD : 6 règles pour transformer la première impression en avis 5 étoiles',
+  seoTitle: 'Entrée du logement LCD : réussir la première impression',
   description: 'Signalétique, éclairage, tapis, vide-poche, mot d\'accueil : 6 règles pour soigner l\'entrée de ta LCD et réussir les 30 premières secondes du voyageur.',
   keywords: 'entrée logement lcd, hall entrée airbnb, première impression location courte durée, accueil voyageur airbnb, tapis entrée lcd, signalétique logement airbnb',
   date: '2026-08-14',

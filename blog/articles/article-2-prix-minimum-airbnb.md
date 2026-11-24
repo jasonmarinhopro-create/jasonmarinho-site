@@ -4,7 +4,7 @@ slug: "fixer-prix-minimum-airbnb-lcd"
 category: "Revenus"
 date: "2026-03-25"
 readTime: "7 min de lecture"
-description: "Charges, seuil de rentabilité, saisonnalité : méthode concrète pour calculer ton prix minimum en location courte durée et ne plus jamais travailler à perte."
+description: "Charges, seuil de rentabilité, saisonnalité : la méthode pour calculer ton prix minimum en location courte durée et ne plus jamais travailler à perte."
 ---
 
 # Comment fixer son prix minimum sur Airbnb sans se brader

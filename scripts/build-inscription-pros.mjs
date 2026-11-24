@@ -87,7 +87,7 @@ const MENAGE = {
   key: 'menage',
   dir: 'menage',
   title: 'Inscription ménage Airbnb : crée ta fiche pro',
-  desc: 'Crée la fiche de ton équipe de ménage location courte durée : site vitrine sur Google, demandes d’hôtes en direct, planning de tes clients. Sans commission.',
+  desc: 'Crée la fiche de ton équipe de ménage LCD : site vitrine sur Google, demandes d’hôtes en direct, planning de tes clients. Sans commission.',
   metier: 'Équipe de ménage',
   h1: 'Trouve des hôtes <em>près de chez toi</em>',
   lead: 'Ta fiche sert de site vitrine sur Google : tes prestations, tes prix, ta zone. Les hôtes te contactent directement, les demandes de ta zone arrivent chez toi et tu retrouves le planning de tes clients au même endroit.',

@@ -2,6 +2,8 @@ export default {
   slug: 'photos-nocturne-crepuscule-lcd-airbnb-differenciation',
 
   title: 'Photos d\'ambiance nocturne en LCD : 6 techniques pour capturer ton logement en soirée et te démarquer sur Airbnb',
+
+  seoTitle: 'Photos de nuit en LCD : 6 techniques pour Airbnb',
   description: 'Heure bleue, éclairage en couches, trépied, retouche légère : 6 techniques pour des photos de crépuscule qui font ressortir ton annonce Airbnb.',
   keywords: 'photos nocturnes airbnb, crépuscule bleu location, twilight photography lcd, photos ambiance soir logement, se démarquer airbnb photos, photographier logement lcd smartphone soir, blue hour location courte durée',
   date: '2026-09-02',

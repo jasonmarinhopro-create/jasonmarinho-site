@@ -1,6 +1,7 @@
 export default {
   slug: 'numero-enregistrement-lcd-obtenir-etapes-pratiques',
   title: 'Numéro d\'enregistrement LCD : 8 étapes pratiques pour l\'obtenir avant mai 2026',
+  seoTitle: 'Obtenir son numéro d\'enregistrement LCD : 8 étapes',
   description: 'Le numéro d\'enregistrement national LCD devient obligatoire le 20 mai 2026. Voici la procédure étape par étape, les documents requis et les délais réels.',
   keywords: 'numéro enregistrement LCD, déclaration meublé tourisme 2026, loi Le Meur enregistrement, télédéclaration hôte',
   date: '2026-04-25',

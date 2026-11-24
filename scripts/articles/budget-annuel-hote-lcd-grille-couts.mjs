@@ -1,6 +1,7 @@
 export default {
   slug: 'budget-annuel-hote-lcd-grille-couts',
   title: 'Budget annuel d\'un hôte LCD : la grille de coûts complète pour anticiper',
+  seoTitle: 'Budget annuel d\'un hôte LCD : la grille des coûts',
   description: 'Tous les postes de coûts annuels d\'un hôte LCD français en 2026, avec fourchettes par taille de logement. Le tableau qu\'aucun hôte ne te montre.',
   keywords: 'budget annuel hôte LCD, coûts location courte durée, charges Airbnb, grille tarifaire hôte 2026',
   date: '2026-04-25',

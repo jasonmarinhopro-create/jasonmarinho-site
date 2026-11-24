@@ -1,6 +1,7 @@
 export default {
   slug: 'algorithme-airbnb-2026-criteres-classement',
   title: 'Algorithme Airbnb 2026 : les 4 critères qui décident vraiment de ton classement',
+  seoTitle: 'Algorithme Airbnb 2026 : les 4 critères de classement',
   description: 'Analyse des photos, annulations, délai de réponse, avis : comment fonctionne l\'algorithme Airbnb en 2026 et ce qu\'il faut changer pour remonter.',
   keywords: 'algorithme Airbnb 2026, classement annonce Airbnb, référencement Airbnb, computer vision photos, visibilité Airbnb hôte',
   date: '2026-04-24',

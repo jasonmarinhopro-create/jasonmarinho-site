@@ -1,6 +1,7 @@
 export default {
   slug: 'accueillir-groupe-lcd-7-regles-preserver-logement-voisins',
   title: 'Accueillir un groupe en LCD : les 7 règles pour préserver ton logement et tes voisins',
+  seoTitle: 'Accueillir un groupe en LCD : 7 règles à respecter',
   description: 'Enterrements de vie de garçon, amis, séminaires : 7 règles pour accueillir un groupe dans ta location courte durée sans dégâts ni voisins fâchés.',
   keywords: 'accueillir groupe airbnb, location courte durée groupes, fete logement airbnb, evjf evg lcd, voisinage location courte duree, caution groupe airbnb',
   date: '2026-06-15',

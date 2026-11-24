@@ -1,6 +1,7 @@
 export default {
   slug: 'trouver-equipe-menage-airbnb-fiable',
   title: 'Comment trouver une équipe de ménage fiable pour ta location courte durée',
+  seoTitle: 'Trouver une équipe de ménage Airbnb fiable',
   description: 'Où chercher, 6 questions à poser, tarifs habituels, signaux d\'alerte : la méthode pour trouver une équipe de ménage de turnover fiable en LCD.',
   keywords: 'ménage Airbnb, équipe ménage location courte durée, femme de ménage Airbnb, ménage turnover, prestataire ménage LCD',
   date: '2026-07-05',

@@ -1,6 +1,7 @@
 export default {
   slug: 'scripts-check-out-automatique-lcd',
   title: 'Scripts de check-out automatiques : 6 messages à programmer pour zéro friction',
+  seoTitle: 'Check-out LCD : 6 messages automatiques à programmer',
   description: 'Le départ est le dernier contact avec ton voyageur et pèse sur l\'avis : 6 messages programmés pour une fin de séjour fluide et automatique.',
   keywords: 'check-out automatique Airbnb, messages programmés LCD, automatiser fin séjour, scripts voyageurs',
   date: '2026-04-25',

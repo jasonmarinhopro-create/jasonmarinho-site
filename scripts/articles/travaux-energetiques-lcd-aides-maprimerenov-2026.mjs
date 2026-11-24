@@ -1,6 +1,7 @@
 export default {
   slug: 'travaux-energetiques-lcd-aides-maprimerenov-2026',
   title: 'Travaux énergétiques en LCD : MaPrimeRénov 2026 et autres aides pour ton DPE',
+  seoTitle: 'Travaux énergétiques LCD : MaPrimeRénov 2026 et aides',
   description: 'Anticiper le DPE D obligatoire en 2034 demande des travaux. Voici les aides MaPrimeRénov, CEE, éco-PTZ disponibles aux hôtes LCD en 2026.',
   keywords: 'MaPrimeRénov 2026 LCD, travaux énergétiques Airbnb, DPE D 2034 hôte, aides rénovation location courte durée',
   date: '2026-04-25',

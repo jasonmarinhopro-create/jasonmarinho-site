@@ -1,6 +1,7 @@
 export default {
   slug: 'description-airbnb-500-caracteres-convertit-2026',
   title: 'Description Airbnb : les 500 premiers caractères qui décident de la réservation',
+  seoTitle: 'Description Airbnb : les 500 caractères qui convertissent',
   description: 'Les 500 premiers caractères de ta description Airbnb sont les plus lus : la structure qui donne envie de réserver, avec des exemples pour 2026.',
   keywords: 'description Airbnb 2026, optimiser description annonce, 500 caractères Airbnb, taux clic annonce Airbnb, structure description LCD',
   date: '2026-04-25',

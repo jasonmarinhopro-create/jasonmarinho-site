@@ -2,7 +2,7 @@ export default {
   slug: 'artisan-depannage-trouver-clients-hotes-airbnb',
   title: 'Plombier, électricien, multiservice : 6 façons de travailler avec les hôtes Airbnb de ta ville',
   seoTitle: 'Artisan dépannage : trouver des clients hôtes Airbnb',
-  description: 'Les hôtes Airbnb ont des pannes toute l\'année et peu de temps pour chercher. 6 façons concrètes pour un artisan du dépannage de devenir leur pro de confiance.',
+  description: 'Les hôtes Airbnb ont des pannes toute l\'année et peu de temps pour chercher. 6 façons concrètes pour un artisan de devenir leur pro de confiance.',
   keywords: 'artisan dépannage airbnb, plombier location courte durée, clients hôtes airbnb, électricien conciergerie, multiservice location saisonnière',
   date: '2026-10-31',
   categorySlug: 'ressources',

@@ -8,6 +8,7 @@
 // Gabarit et styles repris des pages de ville (photographe-lcd-rennes).
 // Idempotent, sans données en ligne :
 //   node scripts/build-villes-regions.mjs [--check]
+import { descSeo } from './lib/seo-texte.mjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -50,7 +51,7 @@ function page(reg, villes, cities, tpl) {
   const fullTitle = `${title} · guides`.length <= 60 ? `${title} · guides` : title
   const annonces = villes.reduce((t, v) => t + n(cities[v.slug]?.ann), 0)
   const deps = new Set(villes.map(v => v.departement.code))
-  const desc = `Devenir hôte Airbnb ${en} : ${villes.length} guides de ville, règles locales, taxe de séjour officielle, temps forts de l’année et repères du marché de la location courte durée.`
+  const desc = descSeo(`Devenir hôte Airbnb ${en}`, [`${villes.length} guide${villes.length > 1 ? 's' : ''} de ville`, 'règles locales', 'taxe de séjour officielle', 'temps forts de l’année'], 'repères du marché')
   const chemin = [{ nom: 'Accueil', url: '/' }, MERES.hote, { nom: reg.nom, url }]
   const counts = new Map()
   const revenus = villesRegistre().filter(v => v.region?.code === reg.code && v.pages.revenus).sort((a, b) => a.nom.localeCompare(b.nom, 'fr'))

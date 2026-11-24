@@ -1,6 +1,7 @@
 export default {
   slug: 'tarif-conciergerie-lcd-grille-marche-2026',
   title: 'Tarif conciergerie LCD 2026 : la grille du marché par zone et prestation',
+  seoTitle: 'Tarif conciergerie LCD 2026 : la grille du marché',
   description: 'Combien facturer en conciergerie Airbnb en 2026 ? Grille de tarifs par zone (Paris, province, rural), pourcentages standards et options à proposer.',
   keywords: 'tarif conciergerie Airbnb, prix conciergerie LCD 2026, commission conciergerie, gestion locative tarif',
   date: '2026-04-25',

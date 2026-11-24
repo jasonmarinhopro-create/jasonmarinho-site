@@ -1,6 +1,7 @@
 export default {
   slug: 'airdna-mode-emploi-hote-lcd-debutant',
   title: 'AirDNA mode d\'emploi : utiliser les data marché pour optimiser ton tarif LCD',
+  seoTitle: 'AirDNA mode d\'emploi pour hôte LCD débutant',
   description: 'AirDNA agrège les données Airbnb/VRBO de ta zone. Voici comment t\'en servir pour fixer ton tarif, identifier la concurrence et anticiper les saisons.',
   keywords: 'AirDNA mode emploi, données marché Airbnb, benchmark concurrence LCD, MarketMinder hôte',
   date: '2026-04-25',

@@ -1,6 +1,7 @@
 export default {
   slug: 'linge-de-maison-lcd-7-regles-draps-impeccables-budget',
   title: 'Linge de maison en LCD : 7 règles pour des draps impeccables sans exploser ton budget',
+  seoTitle: 'Linge de maison en LCD : 7 règles à petit budget',
   description: 'Draps, serviettes, rotation, blanchisserie, renouvellement : 7 règles pour un linge de maison impeccable en location courte durée sans te ruiner.',
   keywords: 'linge de maison location courte durée, draps Airbnb, serviettes hôtelières, linge LCD, blanchisserie location saisonnière, location courte durée',
   date: '2026-05-29',

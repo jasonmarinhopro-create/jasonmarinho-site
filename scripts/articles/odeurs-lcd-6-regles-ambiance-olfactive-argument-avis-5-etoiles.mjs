@@ -1,6 +1,7 @@
 export default {
   slug: 'odeurs-lcd-6-regles-ambiance-olfactive-argument-avis-5-etoiles',
   title: 'Odeurs en LCD : 6 règles pour transformer l\'ambiance olfactive de ton logement en argument à 5 étoiles',
+  seoTitle: 'Odeurs en LCD : 6 règles pour une ambiance parfaite',
   description: 'Siphons, poubelles, textiles, ventilation, diffuseurs : 6 règles concrètes pour supprimer les mauvaises odeurs en LCD et déclencher les avis 5 étoiles.',
   keywords: 'odeurs lcd, ambiance olfactive location courte durée, mauvaises odeurs airbnb, diffuseur parfum airbnb, ventilation logement lcd, textiles odeurs location',
   date: '2026-08-17',

@@ -22,7 +22,7 @@ export default {
   slug: 'indy-lmnp-location-courte-duree-avis-2026',
   title: 'Indy pour ta location courte durée : compta LMNP, déclaration et facture électronique (mon avis 2026)',
   seoTitle: 'Indy LMNP : mon avis pour ta location courte durée',
-  description: 'Indy pour un hôte LMNP en 2026 : ce qui est gratuit, la liasse 2031 au réel, la facture électronique obligatoire depuis septembre, le vrai prix et ses limites.',
+  description: 'Indy pour un hôte LMNP en 2026 : ce qui est gratuit, la liasse 2031 au réel, la facture électronique obligatoire, le vrai prix et ses limites.',
   keywords: 'Indy LMNP, Indy avis, comptabilité LMNP, liasse 2031 LMNP, facture électronique LMNP, plateforme agréée, location meublée de tourisme, déclaration LMNP 2026',
   date: '2026-09-30',
   categorySlug: 'fiscalite',

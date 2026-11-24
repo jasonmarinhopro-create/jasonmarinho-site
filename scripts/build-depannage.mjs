@@ -25,6 +25,7 @@ import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact
 import { METIERS, SPECIALITES_DEPANNAGE } from './lib/metiers.mjs'
 import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 import { writeRegionPages, sitemapAvec } from './lib/annuaire-region.mjs'
+import { titreSeo, descSeo } from './lib/seo-texte.mjs'
 
 const M = METIERS.depannage
 const API = M.api // /api/pro/depannage
@@ -145,7 +146,8 @@ export function buildFichePage(c) {
   const displayName = nomAffiche(c.pseudo || c.full_name)
   const specialites = (c.specialites || []).map(p => SPECIALITES_LABELS[p] || p)
   const metierCourt = specialites.length === 1 ? specialites[0] : 'Dépannage'
-  const title = `${displayName} · ${metierCourt} ${c.ville} | Jason Marinho`
+  // 60 caractères au plus (scripts/lib/seo-texte.mjs, 24/11/2026)
+  const title = titreSeo([`${displayName} · ${metierCourt} ${c.ville} | Jason Marinho`, `${displayName} · ${metierCourt} ${c.ville}`, `${displayName} · Dépannage ${c.ville}`, `${displayName}, ${c.ville}`])
   const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
   const deplacement = c.deplacement_prix === 0 ? 'déplacement offert' : c.deplacement_prix ? `déplacement ${c.deplacement_prix} €` : null
   const desc = `${displayName}, dépannage et maintenance pour la location courte durée à ${c.ville}${c.zone_couverte ? ' et ' + c.zone_couverte : ''}.${specialites.length ? ' ' + specialites.slice(0, 4).join(', ') + '.' : ''}${heure ? ' Tarif horaire ' + heure + '.' : ''}`

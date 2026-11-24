@@ -1,6 +1,7 @@
 export default {
   slug: 'voyageurs-surnumeraires-lcd-6-actions-personnes-en-plus-non-declarees',
   title: 'Voyageurs surnuméraires en LCD : 6 actions pour repérer, encadrer et facturer les personnes en plus non déclarées',
+  seoTitle: 'Voyageurs en surnombre en LCD : 6 actions',
   description: 'Réservé à 2, arrivés à 6 ? 6 actions pour prévenir, repérer et facturer les voyageurs non déclarés dans ta location courte durée.',
   keywords: 'voyageurs supplémentaires Airbnb, personnes en plus LCD, sur-occupation location courte durée, facturer voyageur non déclaré, règlement intérieur capacité',
   date: '2026-07-13',

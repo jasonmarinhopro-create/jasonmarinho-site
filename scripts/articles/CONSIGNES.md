@@ -83,7 +83,7 @@ Exemples de sujets « pros » (à adapter, jamais copier un sujet existant) :
 - `title` long possible, mais si le titre fait plus de 60 caractères, ajoute
   `seoTitle` (60 caractères au plus, mot-clé en tête) : c'est lui qui va dans
   la balise title.
-- `description` : 150 à 160 caractères.
+- `description` : 140 à 155 caractères (le générateur refuse moins de 70 ou plus de 155).
 
 ## 4. Règles éditoriales
 
@@ -174,7 +174,7 @@ export default {
   slug: 'mon-article',
   title: 'Titre complet (H1)',
   seoTitle: 'Titre de 60 caractères au plus', // seulement si title > 60
-  description: 'Meta description de 150 à 160 caractères',
+  description: 'Meta description de 140 à 155 caractères',
   keywords: 'mot-clé 1, mot-clé 2, location courte durée',
   date: 'YYYY-MM-DD',
   categorySlug: 'ressources',

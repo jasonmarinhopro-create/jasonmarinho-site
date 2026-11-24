@@ -1,6 +1,7 @@
 export default {
   slug: 'point-mort-lcd-calcul-rentabilite-hote',
   title: 'Calculer son point mort en location courte durée : la méthode en 4 lignes',
+  seoTitle: 'Calculer son point mort en location courte durée',
   description: 'Le point mort, c\'est le nombre de nuits pour couvrir tes coûts : comment le calculer, savoir si ton logement est rentable et combien de nuits viser.',
   keywords: 'point mort LCD, rentabilité location courte durée, seuil rentabilité Airbnb, calculer rentabilité gîte, marge LCD',
   date: '2026-04-25',
