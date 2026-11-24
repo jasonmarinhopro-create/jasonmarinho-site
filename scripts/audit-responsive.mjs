@@ -39,6 +39,9 @@ const WIDTHS = (opt('--widths', MODE === 'app' ? '1920,1280,768,390,320' : '320,
 const ONLY = (opt('--only', '') || '').split(',').filter(Boolean)
 const OUT = opt('--out', '')
 const CONC = Number(opt('--conc', MODE === 'app' ? '2' : '6'))
+// --repeat N (24/11/2026) : chaque page ouverte N fois, pour distinguer une
+// lenteur réelle d'un premier chargement à froid (1re ouverture vs suivantes).
+const REPEAT = Math.max(1, Number(opt('--repeat', '1')) || 1)
 const ADMIN_EMAIL = 'djason.marinho@gmail.com' // même constante que jason-app/lib/queries/profile.ts
 
 // Faux positifs connus, jamais signalés
@@ -166,7 +169,9 @@ async function main() {
     jobs = appStaticRoutes().filter(r => !r.includes('[')).map(r => 'https://app.jasonmarinho.com' + r)
     const extras = EXTRA_APP_SCREENS.filter(r => ONLY.length && ONLY.some(o => (o.startsWith('=') ? r === o.slice(1) : r.includes(o))))
     jobs.push(...extras.map(r => 'https://app.jasonmarinho.com' + r))
+    if (REPEAT > 1) { const once = [...jobs]; for (let k = 1; k < REPEAT; k++) jobs.push(...once) }
   }
+  const seenPass = new Map()
   const dynamicSeen = new Set()
   const dynamicFrom = new Set()
 
@@ -180,6 +185,8 @@ async function main() {
     }
     while (jobs.length) {
       const u = jobs.shift()
+      const pass = (seenPass.get(u) ?? 0) + 1
+      seenPass.set(u, pass)
       const t0 = Date.now()
       // Page neuve à chaque adresse : une redirection côté navigateur de la
       // page précédente ne peut plus interrompre la suivante (1er audit du 20/11)
@@ -209,18 +216,20 @@ async function main() {
         await page.waitForTimeout(500)
         const loadMs = readyMs || (Date.now() - t0)
         // Pages de détail : une seule par modèle d'adresse, prise dans la liste
-        if (MODE === 'app' && !dynamicFrom.has(u)) {
+        if (MODE === 'app' && !dynamicFrom.has(u) && !ONLY.every(o => o.startsWith('='))) {
           dynamicFrom.add(u)
           const links = await page.evaluate(() => [...document.querySelectorAll('a[href^="/dashboard/"]')].map(a => a.getAttribute('href')).filter(h => /\/[0-9a-f]{8}-[0-9a-f-]{27,}|\/\d{2,}(\/|$)/i.test(h) && !h.includes('?')))
           for (const h of links) { const full = 'https://app.jasonmarinho.com' + h; const k = pattern(full); if (!dynamicSeen.has(k)) { dynamicSeen.add(k); jobs.push(full) } }
         }
+        // Ouvertures suivantes : seul le temps compte (les défauts sont déjà relevés)
+        if (pass > 1) { results.push({ u: MODE === 'app' ? pattern(page.url()) : page.url(), w: 0, pass, status: resp?.status(), ttfb, loadMs, timing: true }); await page.close().catch(() => {}); continue }
         for (const w of WIDTHS) {
           if (w !== WIDTHS[0]) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(450) }
           const r = await page.evaluate(`(${detect.toString()})(true)`)
           for (const c of [...r.cut, ...r.clipped]) c.text = publicText(c.text)
           for (const o of r.overlap) { o.ta = publicText(o.ta); o.tb = publicText(o.tb) }
           r.overflow = r.overflow.filter(o => !IGNORE.some(re => re.test(o.el)))
-          results.push({ u: MODE === 'app' ? pattern(page.url()) : page.url(), w, status: resp?.status(), ttfb, loadMs, ...r })
+          results.push({ u: MODE === 'app' ? pattern(page.url()) : page.url(), w, pass, status: resp?.status(), ttfb, loadMs, ...r })
         }
       } catch (e) {
         results.push({ u: MODE === 'app' ? pattern(u) : u, w: 0, error: String(e.message || e).split('\n')[0].slice(0, 140) })
@@ -232,7 +241,8 @@ async function main() {
     await ctx.close()
   }
   const stuck = new Set()
-  await Promise.all(Array.from({ length: CONC }, worker))
+  // Ouvertures répétées : un seul navigateur, pour que la 2e ouverture suive vraiment la 1re
+  await Promise.all(Array.from({ length: REPEAT > 1 ? 1 : CONC }, worker))
   await browser.close()
   await closeSession()
   report(results, stuck)
@@ -241,7 +251,8 @@ async function main() {
 function report(results, stuck = new Set()) {
   if (OUT) fs.writeFileSync(OUT, JSON.stringify(results, null, 1))
   const lines = []
-  const ok = results.filter(r => !r.error)
+  const timings = results.filter(r => r.timing)
+  const ok = results.filter(r => !r.error && !r.timing)
   const bad = ok.filter(r => r.docOverflow || r.overflow.length || r.cut.length || r.overlap.length || r.clipped.some(c => c.how === 'coupé' || c.how === 'coupé-bas'))
   lines.push(`## Audit responsive (${MODE === 'app' ? 'dashboard' : 'site'})`, '')
   lines.push(`${new Set(ok.map(r => r.u)).size} pages, ${ok.length} contrôles (largeurs ${WIDTHS.join(', ')} px), ${bad.length} avec défaut, ${results.filter(r => r.error).length} erreur(s).`, '')
@@ -250,6 +261,15 @@ function report(results, stuck = new Set()) {
     lines.push('### Pages les plus lentes à s’afficher (chargement complet)', '', '| Page | 1er octet | Affichée |', '|---|---|---|')
     for (const r of times.slice(0, 12)) lines.push(`| ${r.u} | ${(r.ttfb / 1000).toFixed(1)} s | ${(r.loadMs / 1000).toFixed(1)} s |`)
     lines.push('')
+    if (REPEAT > 1) {
+      const firstByU = new Map(ok.map(r => [r.u, r]))
+      lines.push(`### Ouvertures successives (--repeat ${REPEAT})`, '', `| Page | 1re ouverture | ${Array.from({ length: REPEAT - 1 }, (_, k) => `${k + 2}e ouverture`).join(' | ')} |`, `|---|---|${'---|'.repeat(REPEAT - 1)}`)
+      for (const [u, f] of firstByU) {
+        const next = Array.from({ length: REPEAT - 1 }, (_, k) => timings.find(t => t.u === u && t.pass === k + 2))
+        lines.push(`| ${u} | ${(f.loadMs / 1000).toFixed(1)} s (1er octet ${(f.ttfb / 1000).toFixed(1)} s) | ${next.map(t => t ? `${(t.loadMs / 1000).toFixed(1)} s (1er octet ${(t.ttfb / 1000).toFixed(1)} s)` : '-').join(' | ')} |`)
+      }
+      lines.push('')
+    }
     if (stuck.size) lines.push(`Squelette encore affiché après 45 s (page bloquée ou squelette jamais retiré) : ${[...stuck].join(', ')}`, '')
   }
   if (bad.length) {

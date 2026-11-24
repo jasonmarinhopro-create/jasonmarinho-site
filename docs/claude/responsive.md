@@ -69,6 +69,7 @@ L'environnement de Claude ne joint pas Supabase : l'audit du dashboard tourne da
 - Pages : toutes les `page.tsx` de `app/dashboard` sans paramètre, puis une page de détail par modèle d'adresse trouvée dans les listes. Chaque page est chargée une fois (1920 px) puis la fenêtre est rétrécie (1280, 768, 390, 320).
 - Accord de Jason requis avant le premier lancement (session sur son compte).
 - Écrans sans page à part (24/11/2026) : `EXTRA_APP_SCREENS` dans le script (onglets Parcours / Catalogue / Moi de Formations, étapes d'une leçon, écran de fin), ajoutés quand `only` les vise ; le rapport garde alors les paramètres `onglet`, `lecon`, `etape`, `fin`, `view` dans l'adresse.
+- `repeat` (champ du workflow, `--repeat N`) : chaque page ouverte N fois à la suite (un seul navigateur), tableau « 1re ouverture / 2e ouverture » pour séparer un chargement à froid d'une vraie lenteur. Les défauts ne sont relevés qu'à la 1re ouverture.
 
 ---
 

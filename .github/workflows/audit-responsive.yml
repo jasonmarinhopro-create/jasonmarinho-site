@@ -20,6 +20,10 @@ on:
         description: 'Facultatif : morceaux d’adresse séparés par des virgules (ex. admin,finances)'
         required: false
         default: ''
+      repeat:
+        description: 'Nombre d’ouvertures de chaque page (2 = compare 1re et 2e ouverture)'
+        required: false
+        default: '1'
 
 permissions:
   contents: read
@@ -45,5 +49,6 @@ jobs:
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ONLY: ${{ inputs.only }}
+          REPEAT: ${{ inputs.repeat }}
         run: |
-          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --out /tmp/audit.json
+          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --repeat "${REPEAT:-1}" --out /tmp/audit.json
