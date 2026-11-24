@@ -428,7 +428,7 @@ module.exports = async function handler(req, res) {
           title: `${fullName} rejoint l’annuaire`,
           intro: 'Inscription photographe reçue. Le paiement Stripe est en cours : la fiche s’active au paiement.',
           rows: [['Métier', 'Photographe LCD'], ['Ville', String(ville || '')], ['E-mail', String(email || '')], ['Formule', String(tier || '')]],
-          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/photographes', label: 'Voir les photographes' },
+          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/pros?metier=photographe', label: 'Voir les photographes' },
         }),
       }),
     }).catch(err => console.warn('[photographer/signup] notify email failed', err))

@@ -103,7 +103,7 @@ async function applyFiche(payload: DepannagePayload, target: core.Target): Promi
     log.error('enregistrement de la fiche', { err: error.message })
     return { error: 'Erreur lors de la sauvegarde.' }
   }
-  if (target.isAdminEdit) revalidatePath('/dashboard/admin/depannage')
+  if (target.isAdminEdit) revalidatePath('/dashboard/admin/pros')
   return { success: true }
 }
 

@@ -108,7 +108,7 @@ async function applyPhotographerFiche(payload: PhotographerPayload, target: core
   await admin.from('photographers').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.proId)
   if (Array.isArray(payload.clienteles)) await admin.from('photographers').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.proId)
 
-  if (target.isAdminEdit) revalidatePath('/dashboard/admin/photographes')
+  if (target.isAdminEdit) revalidatePath('/dashboard/admin/pros')
   return { success: true, warning }
 }
 

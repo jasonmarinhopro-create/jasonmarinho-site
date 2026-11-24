@@ -126,7 +126,7 @@ async function applyCleanerFiche(payload: CleanerPayload, target: core.Target): 
   // Clientèles (migration 154) : même principe
   if (Array.isArray(payload.clienteles)) await admin.from('cleaners').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.proId)
 
-  if (target.isAdminEdit) revalidatePath('/dashboard/admin/menage')
+  if (target.isAdminEdit) revalidatePath('/dashboard/admin/pros')
   return { success: true, warning }
 }
 

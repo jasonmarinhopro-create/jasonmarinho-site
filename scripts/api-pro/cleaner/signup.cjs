@@ -453,7 +453,7 @@ module.exports = async function handler(req, res) {
           title: `${fullName} rejoint l’annuaire`,
           intro: 'Inscription équipe ménage reçue. Le paiement Stripe est en cours : la fiche s’active au paiement.',
           rows: [['Métier', 'Équipe de ménage LCD'], ['Ville', String(ville || '')], ['E-mail', String(email || '')], ['Formule', String(tier || '')]],
-          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/menage', label: 'Voir les équipes ménage' },
+          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/pros?metier=menage', label: 'Voir les équipes ménage' },
         }),
       }),
     }).catch(err => console.warn('[cleaner/signup] notify email failed', err))

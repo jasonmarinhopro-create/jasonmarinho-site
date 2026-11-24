@@ -238,12 +238,12 @@ function Chart({ series }: { series: AudienceSide['series'] }) {
 // ── Membres par espace ────────────────────────────────────────────────────
 
 const SPACES: Array<{ key: MemberSpace; label: string; color: string; href: string; cta: string }> = [
-  { key: 'tous', label: 'Tous', color: 'var(--accent-text)', href: '/dashboard/admin/membres', cta: 'Tous les membres' },
-  { key: 'hote', label: 'Hôtes', color: 'var(--accent-text)', href: '/dashboard/admin/membres', cta: 'Tous les membres' },
+  { key: 'tous', label: 'Tous', color: 'var(--accent-text)', href: '/dashboard/admin/membres', cta: 'Voir les hôtes' },
+  { key: 'hote', label: 'Hôtes', color: 'var(--accent-text)', href: '/dashboard/admin/membres', cta: 'Voir les hôtes' },
   { key: 'investisseur', label: 'Investisseurs', color: AMBER, href: '/dashboard/admin/investisseurs', cta: 'Page Investisseurs' },
-  { key: 'photographe', label: 'Photographes', color: PINK, href: '/dashboard/admin/photographes', cta: 'Page Photo & vidéo' },
-  { key: 'menage', label: 'Ménage', color: BROWN, href: '/dashboard/admin/menage', cta: 'Page Équipes de ménage' },
-  { key: 'depannage', label: 'Dépannage', color: RUST, href: '/dashboard/admin/depannage', cta: 'Page Dépannage' },
+  { key: 'photographe', label: 'Photographes', color: PINK, href: '/dashboard/admin/pros?metier=photographe', cta: 'Voir les pros' },
+  { key: 'menage', label: 'Ménage', color: BROWN, href: '/dashboard/admin/pros?metier=menage', cta: 'Voir les pros' },
+  { key: 'depannage', label: 'Dépannage', color: RUST, href: '/dashboard/admin/pros?metier=depannage', cta: 'Voir les pros' },
 ]
 const PRO_LABEL = { photographe: 'Photographe', menage: 'Ménage', depannage: 'Dépannage' } as const
 const PLAN_LABEL: Record<string, string> = { standard: 'Standard', driing: 'Driing', decouverte: 'Découverte' }
@@ -264,7 +264,7 @@ export function MembersCard({ spaces }: { spaces: Record<MemberSpace, SpaceSumma
     <section className="fade-up" style={c.card}>
       <header style={c.head}>
         <span style={c.label}><UsersThree size={14} /> Membres</span>
-        <Link href={cfg.href} style={c.headLink}>{cfg.cta} <ArrowRight size={12} weight="bold" /></Link>
+        <Link prefetch={false} href={cfg.href} style={c.headLink}>{cfg.cta} <ArrowRight size={12} weight="bold" /></Link>
       </header>
       <div style={c.chips} role="tablist" aria-label="Espace">
         {SPACES.map(s => (

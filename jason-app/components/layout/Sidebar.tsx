@@ -165,8 +165,8 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
   },
   {
     key: 'comptes', label: 'Utilisateurs', items: [
-      { href: '/dashboard/admin/membres', label: 'Membres', Icon: UsersThree, activeMatch: ['/dashboard/admin/membres', '/dashboard/admin/investisseurs'] },
-      { href: '/dashboard/admin/photographes', label: 'Pros', Icon: Briefcase, activeMatch: ['/dashboard/admin/photographes', '/dashboard/admin/menage', '/dashboard/admin/depannage'] },
+      { href: '/dashboard/admin/membres', label: 'Hôtes', Icon: UsersThree, activeMatch: ['/dashboard/admin/membres', '/dashboard/admin/investisseurs'] },
+      { href: '/dashboard/admin/pros', label: 'Pros', Icon: Briefcase, activeMatch: ['/dashboard/admin/pros', '/dashboard/admin/photographes', '/dashboard/admin/menage', '/dashboard/admin/depannage'] },
     ],
   },
   {

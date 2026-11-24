@@ -111,10 +111,8 @@ export default function AdminUI({
       { href: '/dashboard/admin/signalements', Icon: Warning, color: AMBER, title: 'Signalements', info: stats.pendingReports > 0 ? `${stats.pendingReports} à valider` : 'Rien à valider', alert: stats.pendingReports > 0 },
     ] },
     { label: 'Utilisateurs', items: [
-      { href: '/dashboard/admin/membres', Icon: UsersThree, color: 'var(--accent-text)', title: 'Membres', info: `${stats.totalUsers} comptes, +${stats.newThisMonth} ce mois-ci` },
-      { href: '/dashboard/admin/photographes', Icon: Camera, color: PINK, title: 'Photo & vidéo', info: plural(stats.photographersCount, 'fiche') },
-      { href: '/dashboard/admin/menage', Icon: Broom, color: BROWN, title: 'Équipes de ménage', info: plural(stats.cleanersCount, 'fiche') },
-      { href: '/dashboard/admin/depannage', Icon: Wrench, color: RUST, title: 'Dépannage', info: plural(stats.depannageCount, 'fiche') },
+      { href: '/dashboard/admin/membres', Icon: UsersThree, color: 'var(--accent-text)', title: 'Hôtes', info: `+${stats.newThisMonth} inscrits ce mois-ci` },
+      { href: '/dashboard/admin/pros', Icon: Briefcase, color: PINK, title: 'Pros', info: `${plural(stats.photographersCount + stats.cleanersCount + stats.depannageCount, 'fiche')} : photo, ménage, dépannage` },
       { href: '/dashboard/admin/investisseurs', Icon: Briefcase, color: AMBER, title: 'Investisseurs', info: `${memberSpaces.investisseur.count} comptes` },
     ] },
     { label: 'Acquisition', items: [
@@ -162,7 +160,8 @@ export default function AdminUI({
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' }}>
           <Link href="/dashboard/admin/qg" style={heroCta}><ShieldCheck size={17} weight="bold" /> Ouvrir le QG demandes</Link>
-          <Link href="/dashboard/admin/membres" style={heroLink}>Membres</Link>
+          <Link href="/dashboard/admin/membres" style={heroLink}>Hôtes</Link>
+          <Link prefetch={false} href="/dashboard/admin/pros" style={heroLink}>Pros</Link>
           <Link href="/dashboard/admin/social" style={heroLink}>Réseaux sociaux</Link>
         </div>
       </HubHero>

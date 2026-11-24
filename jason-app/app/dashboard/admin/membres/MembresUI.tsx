@@ -49,6 +49,9 @@ interface MemberDetails {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+/** Hôte qui a aussi une fiche pro (les comptes seulement pros sont sur la page Pros) */
+const isPro = (m: Member) => !!(m.is_photographer || m.is_cleaner || m.is_depannage)
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 }
@@ -266,9 +269,7 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
       (filterPlan === 'driing'       && m.plan === 'driing') ||
       (filterPlan === 'contrib'      && m.is_contributor) ||
       (filterPlan === 'investor'     && !!m.is_investor) ||
-      (filterPlan === 'photographer' && !!m.is_photographer) ||
-      (filterPlan === 'cleaner'      && !!m.is_cleaner) ||
-      (filterPlan === 'depannage'    && !!m.is_depannage) ||
+      (filterPlan === 'pro'          && isPro(m)) ||
       (filterPlan === 'sans-logement' && m.role !== 'admin' && m.has_logement === false)
     return matchSearch && matchPlan
   })
@@ -283,19 +284,17 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
   const totalDecouv    = members.filter(m => m.plan !== 'driing' && m.plan !== 'standard').length
   const totalContrib   = members.filter(m => m.is_contributor).length
   const totalInvestors = members.filter(m => m.is_investor).length
-  const totalPhotographers = members.filter(m => m.is_photographer).length
-  const totalCleaners  = members.filter(m => m.is_cleaner).length
-  const totalDepannage = members.filter(m => m.is_depannage).length
+  const totalPros      = members.filter(isPro).length
   const totalSansLogement = members.filter(m => m.role !== 'admin' && m.has_logement === false).length
 
   return (
     <div style={s.wrap}>
       {dialog}
       <AdminHero
-        section="Membres"
-        title="Tous tes membres,"
+        section="Hôtes"
+        title="Tes hôtes,"
         em="au même endroit"
-        desc={`${members.length} comptes, dont ${totalStandard} en Standard et ${totalDriing} Driing. Clique sur un membre pour voir son activité, changer sa formule ou ses accès.`}
+        desc={`${members.length} comptes hôtes, dont ${totalStandard} en Standard et ${totalDriing} Driing. Les comptes qui n’ont qu’une fiche pro sont dans Pros. Clique sur un hôte pour voir son activité, changer sa formule ou ses accès.`}
       />
       {/* dangerouslySetInnerHTML : React échappe les apostrophes/quotes du CSS
           en texte JSX → mismatch d'hydratation (même fix que le check-in) */}
@@ -331,14 +330,12 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
       {/* ── Stats (cliquables : chaque tuile applique le filtre correspondant) ── */}
       <div className="jm-stats-row" style={s.statsRow}>
         {[
-          { filter: 'all',          icon: <Users size={16} />,                     value: members.length,     label: 'membres',       color: 'var(--text)' },
+          { filter: 'all',          icon: <Users size={16} />,                     value: members.length,     label: 'hôtes',         color: 'var(--text)' },
           { filter: 'standard',     icon: <Star size={16} weight="fill" />,        value: totalStandard,      label: 'Standard',      color: 'var(--accent-text)' },
           { filter: 'driing',       icon: <Lightning size={16} weight="fill" />,   value: totalDriing,        label: 'Driing',        color: '#B7791F' },
           { filter: 'contrib',      icon: <Heart size={16} weight="fill" />,       value: totalContrib,       label: 'contributeurs', color: '#B83A7C' },
           { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#6E5446' },
-          { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#B7791F' },
-          { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--accent-text)' },
-          { filter: 'depannage',    icon: <Wrench size={16} weight="fill" />,      value: totalDepannage,     label: 'dépannage',     color: '#A4502A' },
+          { filter: 'pro',          icon: <Camera size={16} weight="fill" />,      value: totalPros,          label: 'aussi pros',    color: '#A4502A' },
           { filter: 'sans-logement', icon: <House size={16} weight="fill" />,      value: totalSansLogement,  label: 'sans logement', color: '#B7791F' },
           { filter: null,           icon: <CurrencyEur size={16} />,               value: `${monthlyRevenue.toFixed(2).replace('.', ',')} €`, label: 'par mois', color: 'var(--accent-text)' },
         ].map(({ filter: f, icon, value, label, color }) => {
@@ -428,9 +425,7 @@ export default function MembresUI({ members, monthlyRevenue, initialFilter = 'al
             { v: 'standard',     l: 'Standard',      count: totalStandard },
             { v: 'driing',       l: 'Driing',        count: totalDriing },
             { v: 'investor',     l: 'Investisseur',  count: totalInvestors },
-            { v: 'photographer', l: 'Photographe',   count: totalPhotographers },
-            { v: 'cleaner',      l: 'Ménage',        count: totalCleaners },
-            { v: 'depannage',    l: 'Dépannage',     count: totalDepannage },
+            { v: 'pro',          l: 'Aussi pro',     count: totalPros },
           ].map(f => (
             <button
               key={f.v}

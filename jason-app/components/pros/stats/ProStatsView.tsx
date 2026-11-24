@@ -67,7 +67,7 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
           <span><strong>Aperçu admin :</strong> statistiques de la fiche de <strong>{d.fiche.name}</strong>, telles que le pro les voit.</span>
           <span style={{ marginLeft: 'auto', display: 'inline-flex', gap: 14, flexWrap: 'wrap' }}>
             <Link href={fichePath} style={{ color: AMBER_DARK, textDecoration: 'underline' }}>Sa fiche</Link>
-            <Link href={photo ? '/dashboard/admin/photographes' : `/dashboard/admin/${d.metier}`} style={{ color: AMBER_DARK, textDecoration: 'underline' }}>Retour à l&apos;admin</Link>
+            <Link prefetch={false} href={`/dashboard/admin/pros?metier=${d.metier}`} style={{ color: AMBER_DARK, textDecoration: 'underline' }}>Retour à l&apos;admin</Link>
           </span>
         </div>
       )}

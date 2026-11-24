@@ -519,7 +519,7 @@ export default function MaFicheDepannage({ pro, kpis, isAdminPreview = false, vi
         <div style={adminBanner}>
           <Star size={14} weight="fill" />
           <span><strong>Mode admin :</strong> tu modifies la fiche de <strong>{displayName}</strong>. « Mettre en ligne » et le portail Stripe agissent au nom du pro. Ses demandes reçues et ses clients restent privés.</span>
-          <Link href="/dashboard/admin/depannage" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</Link>
+          <Link prefetch={false} href="/dashboard/admin/pros?metier=depannage" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</Link>
         </div>
       )}
       {isPending && paymentNotice === 'paid' && (

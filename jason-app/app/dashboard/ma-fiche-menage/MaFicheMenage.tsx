@@ -535,7 +535,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         <div style={adminBanner}>
           <Star size={14} weight="fill" />
           <span><strong>Mode admin :</strong> tu modifies la fiche de <strong>{displayName}</strong>. « Mettre en ligne » et le portail Stripe agissent au nom de l’équipe. Ses demandes reçues et ses clients restent privés.</span>
-          <Link href="/dashboard/admin/menage" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</Link>
+          <Link prefetch={false} href="/dashboard/admin/pros?metier=menage" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</Link>
         </div>
       )}
       {isPending && paymentNotice === 'paid' && (

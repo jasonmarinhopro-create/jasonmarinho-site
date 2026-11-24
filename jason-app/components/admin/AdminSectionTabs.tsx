@@ -2,28 +2,21 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { UsersThree, Briefcase, Camera, Sparkle, Wrench, Binoculars, LinkSimple, MagnifyingGlass, PaperPlaneTilt, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
+import { UsersThree, Briefcase, Binoculars, LinkSimple, MagnifyingGlass, PaperPlaneTilt, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
 
 /**
  * Onglets des pages admin regroupées (18/11/2026, maquette validée par Jason) :
  * une entrée du menu = un sujet, les pages du sujet en onglets. Affichés
  * seulement sur les pages d'entrée (pas sur une fiche membre ou une fiche pro).
+ * Pros : une seule page à onglets par métier (/dashboard/admin/pros, 24/11/2026).
  */
 type Tab = { href: string; label: string; Icon: React.ElementType }
 const SECTIONS: Array<{ label: string; tabs: Tab[] }> = [
   {
-    label: 'Membres',
+    label: 'Hôtes',
     tabs: [
-      { href: '/dashboard/admin/membres', label: 'Membres', Icon: UsersThree },
+      { href: '/dashboard/admin/membres', label: 'Hôtes', Icon: UsersThree },
       { href: '/dashboard/admin/investisseurs', label: 'Investisseurs', Icon: Briefcase },
-    ],
-  },
-  {
-    label: 'Pros',
-    tabs: [
-      { href: '/dashboard/admin/photographes', label: 'Photo & vidéo', Icon: Camera },
-      { href: '/dashboard/admin/menage', label: 'Ménage', Icon: Sparkle },
-      { href: '/dashboard/admin/depannage', label: 'Dépannage', Icon: Wrench },
     ],
   },
   {

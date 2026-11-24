@@ -466,7 +466,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         <div style={adminBanner}>
           <Star size={14} weight="fill" />
           <span><strong>Mode admin :</strong> tu modifies la fiche de <strong>{photographer.full_name}</strong>. « Mettre en ligne » et le portail Stripe agissent au nom du photographe. Ses demandes reçues et ses clients restent privés.</span>
-          <Link href="/dashboard/admin/photographes" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</Link>
+          <Link prefetch={false} href="/dashboard/admin/pros?metier=photographe" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</Link>
         </div>
       )}
       {isPending && paymentNotice === 'paid' && (

@@ -5,10 +5,9 @@ import MembresUI from './MembresUI'
 import { allRows } from '@/lib/supabase/all-rows'
 import { perfTimer } from '@/lib/perf/server-timing'
 import { loadMemberActivity } from '@/lib/admin/activity-load'
-import { computeRevenue, type ProRow } from '@/lib/admin/revenue'
-import { splitDemo } from '@/lib/pros/demo'
+import { computeRevenue } from '@/lib/admin/revenue'
 
-export const metadata = { title: 'Membres, Jason Marinho' }
+export const metadata = { title: 'Hôtes, Jason Marinho' }
 
 export default async function MembresPage({ searchParams }: { searchParams?: { filtre?: string } }) {
   // getProfile : session et profil déjà lus par le layout (dédupliqués)
@@ -26,9 +25,8 @@ export default async function MembresPage({ searchParams }: { searchParams?: { f
         id, email, full_name, role, driing_status, plan, stripe_price_id, is_contributor, is_investor, created_at,
         user_formations(id, progress, enrolled_at, formation:formations(id, title, slug))
       `)
-      // Exclut les comptes pros annuaire qui ont leur propre admin
-      // (/dashboard/admin/photographes et /dashboard/admin/menage).
-      // La page Membres reste centrée sur les hôtes LCD (role user/admin).
+      // Anciens rôles pros exclus ; les comptes qui n'ont qu'une fiche pro
+      // sont retirés plus bas (page Hôtes, 24/11/2026 : ils ont la page Pros).
       .not('role', 'in', '("photographer","cleaner")')
       .order('created_at', { ascending: false }),
     // Les inscriptions annuaire gardent role='user' (multi-espaces) : le
@@ -44,26 +42,35 @@ export default async function MembresPage({ searchParams }: { searchParams?: { f
 
   timer.mark('membres')
   timer.done()
-  // Revenu : même calcul que la Vue d'ensemble (Standard au prix réel de chaque abonné +
-  // fiches photographes et ménage payées, fiches d'exemple écartées). Avant le 20/10/2026 :
-  // Standard × 19,98 € seulement, bloqué à 5 € alors que les fiches pros payaient.
-  // Comptes admin pris dans la liste déjà lue (avant : une lecture de plus, après les autres)
-  const admins = new Set((members ?? []).filter((m: { role: string | null }) => m.role === 'admin').map((m: { id: string }) => m.id))
+  // Revenu des hôtes : Standard au prix réel de chaque abonné (même calcul que la Vue
+  // d'ensemble). Les fiches pros payées sont comptées sur la page Pros (24/11/2026).
   const revenue = computeRevenue({
     standardMembers: 0,
     standardPriceIds: (members ?? []).filter((m: { plan: string | null }) => m.plan === 'standard').map((m: { stripe_price_id?: string | null }) => m.stripe_price_id ?? null),
-    photographers: splitDemo((photographers ?? []) as ProRow[], admins).real,
-    cleaners: splitDemo((cleaners ?? []) as ProRow[], admins).real,
-    depannage: splitDemo((depannage ?? []) as ProRow[], admins).real,
+    // Page Hôtes : seulement les abonnements hôtes (les fiches pros sont sur la page Pros)
+    photographers: [],
+    cleaners: [],
+    depannage: [],
   })
   const photographerIds = new Set((photographers ?? []).map(p => p.user_id))
   const cleanerIds = new Set((cleaners ?? []).map(c => c.user_id))
   const depannageIds = new Set((depannage ?? []).map(c => c.user_id))
   const withLogement = new Set(logementsRes.rows.map(r => r.user_id))
 
+  // Page Hôtes (24/11/2026, option A validée par Jason) : un compte qui n'a
+  // qu'une fiche pro (ni logement, ni abonnement hôte, pas admin) est sur la
+  // page Pros. Un compte à la fois hôte et pro reste ici avec « Aussi pro ».
+  // Logements illisibles : personne n'est retiré (on ne sait pas trancher).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isProOnly = (m: any) =>
+    !logementsRes.error && m.role !== 'admin' && !withLogement.has(m.id) &&
+    m.plan !== 'standard' && m.plan !== 'driing' && !m.is_investor &&
+    (photographerIds.has(m.id) || cleanerIds.has(m.id) || depannageIds.has(m.id))
+  const hosts = (members ?? []).filter(m => !isProOnly(m))
+
   // Normalize Supabase join result: formation relation comes as array from generic client
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const normalized = (members ?? []).map((m: any) => ({
+  const normalized = hosts.map((m: any) => ({
     ...m,
     is_photographer: photographerIds.has(m.id),
     is_cleaner: cleanerIds.has(m.id),

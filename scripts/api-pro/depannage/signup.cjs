@@ -433,7 +433,7 @@ module.exports = async function handler(req, res) {
           title: `${fullName} rejoint l’annuaire`,
           intro: 'Inscription dépannage reçue. Le paiement Stripe est en cours : la fiche s’active au paiement.',
           rows: [['Métier', 'Dépannage et maintenance'], ['Ville', String(ville || '')], ['E-mail', String(email || '')], ['Formule', String(tier || '')]],
-          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/depannage', label: 'Voir les pros du dépannage' },
+          btn: { href: 'https://app.jasonmarinho.com/dashboard/admin/pros?metier=depannage', label: 'Voir les pros du dépannage' },
         }),
       }),
     }).catch(err => console.warn('[depannage/signup] notify email failed', err))
