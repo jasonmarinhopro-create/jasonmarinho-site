@@ -828,7 +828,7 @@ EXEMPLE DE PAGE LINKTREE POUR UN HÔTE :
   ta bio Instagram.
 
 :::exemple
-Dans ton lien en bio, trois choix au plus : « Réserver en direct », « Voir les disponibilités », « Nous écrire ». Au-delà, le visiteur hésite et ne clique sur rien.
+Dans ton lien en bio, trois choix au plus : « Réserver en direct » (ta page Driing, par exemple : je suis co-fondateur, et c'est la façon la plus simple d'avoir une page de réservation sans créer de site), « Voir les disponibilités », « Nous écrire ». Au-delà, le visiteur hésite et ne clique sur rien.
 :::
 
 ## Les stories à la une : ta vitrine permanente

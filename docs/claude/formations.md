@@ -36,6 +36,7 @@ Principes retenus (sources dans la page de propositions publiée le 23/11) : se 
 - Dernière leçon de chaque module : un `:::action` relié à l'app quand c'est possible (calculateurs `#mes-prix`, `/dashboard/calendrier`, `/dashboard/performances`, logements, fiche Google…). Vérifier que l'adresse existe.
 - Module : 1 à 5 leçons. Formation : 3 objectifs au moins, rédigés comme « ce que tu sauras faire ».
 - Identifiants de leçon uniques dans la formation ; **ne jamais changer l'identifiant d'une leçon existante** (progression et réponses des membres).
+- **Réservation directe (Jason, 24/11/2026)** : « quand on parle de réservation en direct, il faut toujours mettre Driing en avant […] créer un site internet c'est super fastidieux, il faut aussi s'y connaître en SEO ». Driing d'abord (annonce prête, voyageurs déjà sur la plateforme, pas de commission, abonnement hôte), le site personnel et le référencement ensuite, pour qui a plusieurs logements et du temps. Formation « Réservation directe » reprise dans ce sens (leçons 2, 4, 5, 6, 7, 8, 10, 11).
 - Chiffres vérifiés par recherche web, sourcés (`> Source : …`) et datés ; aucun chiffre sans source. Pas de tiret cadratin, pas d'émoji, tutoiement. Driing présenté avec « je suis co-fondateur ».
 - Après modification d'un `content.ts` : workflow « Publier le contenu des formations » (aperçu, puis « Écrire en base »), sinon l'app continue d'afficher la version en base. Le script publie aussi objectifs, description et durée totale (23/11/2026).
 

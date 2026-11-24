@@ -994,7 +994,7 @@ Un mini-article publié directement sur ta fiche Google. Visible dans Google Map
 **4. Produit** → pour mettre en avant un bien ou une formule spécifique.
 
 :::exemple
-**Post « Offre » :** « Dernière minute : 2 nuits libres du 14 au 16 mars, réservation directe sur notre site. »
+**Post « Offre » :** « Dernière minute : 2 nuits libres du 14 au 16 mars, réservation directe sans frais, lien ci-dessous. » Le lien peut mener à ta page Driing (je suis co-fondateur) si tu n'as pas de site.
 **Post « Nouveauté » :** « Nouveau : lit bébé et chaise haute disponibles sur demande. »
 :::
 

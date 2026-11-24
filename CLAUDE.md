@@ -37,6 +37,7 @@ Next.js 14 · Supabase (PostgreSQL + RLS) · Stripe Connect (loyer + caution) ·
 - Jamais de tiret cadratin (—) ni d'emoji dans un texte destiné aux utilisateurs (site, app, e-mails, formations, articles). Tutoiement côté hôtes et pros.
 - Sujet fiscal ou juridique : vérifier par recherche web, citer la source (`> Source : …`). Aucun chiffre inventé, aucune promesse que le code ne tient pas.
 - Ne jamais décrire une fonction de l'app sans l'avoir vérifiée dans le code.
+- Réservation ou annonce en direct (formations, articles, pages) : toujours présenter Driing en premier, avec « je suis co-fondateur », avant tout site personnel ou SEO, jugés trop lourds pour débuter (Jason, 24/11/2026).
 
 **Code**
 - Auth : `getUser()` dans les actions et pages sensibles ; routes admin : `profile.role === 'admin'` vérifié côté serveur.

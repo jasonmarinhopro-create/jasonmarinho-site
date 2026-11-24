@@ -121,7 +121,8 @@ Soit près de **1 900€ de plus** pour les mêmes nuits. En direct, tu peux aus
 :::exemple
 Séjour de 700 € (7 nuits à 100 €).
 Sur Airbnb, sans numéro de TVA : 700 × 18,6 % = 130,20 € de frais, tu reçois 569,80 €.
-En direct avec Stripe : 700 × 1,5 % + 0,25 € = 10,75 €, tu reçois 689,25 €.
+En direct, encaissé avec Stripe : 700 × 1,5 % + 0,25 € = 10,75 €, tu reçois 689,25 €.
+Sur Driing (je suis co-fondateur), pas de commission sur la réservation : l'hôte paie un abonnement, le même quel que soit le nombre de séjours.
 Écart : 119,45 € sur un seul séjour.
 :::
 
@@ -230,7 +231,7 @@ Une offre de bienvenue bien construite peut multiplier par 3 ton taux de convers
 **L'urgence** : une date d'expiration douce, "offre valable pour les réservations avant le [date]", augmente le taux de conversion sans créer de friction.
 
 :::exemple
-« Réservez directement sur notre site : 5 % de moins qu'ailleurs, et le panier petit-déjeuner du premier matin est offert. »
+« Réservez en direct sur Driing : 5 % de moins qu'ailleurs, et le panier petit-déjeuner du premier matin est offert. »
 Une offre courte, chiffrée, que le voyageur comprend en une seconde.
 :::
 
@@ -270,19 +271,31 @@ bouton: Créer mon affiche
       lessons: [
         {
           id: 5,
-          title: 'Choisir la bonne solution de site de réservation directe',
+          title: 'Choisir sa solution de réservation directe',
           duration: '20 min',
           content: `:::bref
-- Quatre familles de solutions : gestionnaire de canaux avec site, WordPress, constructeur de site, plateforme de réservation directe.
-- Le bon choix dépend de ton nombre de logements, de ton budget et de ton aisance technique.
-- La synchronisation des calendriers est indispensable pour éviter les doubles réservations.
+- Pour démarrer sans créer de site ni faire de référencement : Driing, la plateforme de réservation directe sans commission (je suis co-fondateur).
+- Ton propre site vient plus tard : il est long à construire, technique, et personne ne le trouve sans référencement.
+- Quelle que soit la solution, synchronise tes calendriers pour éviter les doubles réservations.
 :::
 
-## Les options pour ton site de réservation directe
+## Les options pour réserver en direct
 
-Il n'existe pas une seule solution, la bonne dépend de ton volume, ton budget et tes compétences techniques.
+Il n'existe pas une seule solution, mais il y a un ordre logique : commencer simple, puis construire ton propre site si ton activité le justifie.
 
-### Les 4 catégories de solutions
+### Pour commencer : Driing
+
+Je vais être transparent : je suis co-fondateur de Driing, et je te le recommande parce que je le pense vraiment. Créer un site internet est fastidieux, et un site neuf n'apparaît pas sur Google sans des mois de référencement : ce n'est pas un bon point de départ pour un débutant.
+
+Sur Driing, ton annonce est prête sans site à construire, les voyageurs qui cherchent à éviter les commissions te trouvent sur la plateforme, et il n'y a pas de commission sur les réservations : l'hôte paie un abonnement. Le voyageur paie le prix affiché, avec la comparaison face aux autres plateformes.
+
+:::retenir
+Driing ne remplace pas Airbnb ou Booking : tu y mets ton logement en plus, pour gagner des réservations sans commission sans devoir devenir webmaster.
+:::
+
+### Plus tard : ton propre site, 4 familles de solutions
+
+Quand tu as plusieurs logements, des voyageurs fidèles et du temps à y consacrer, un site à toi peut compléter Driing. Les options :
 
 **1. Channel managers avec site intégré** (Lodgify, Hostaway, Smoobu)
 - Prix : 15-50€/mois
@@ -302,22 +315,22 @@ Il n'existe pas une seule solution, la bonne dépend de ton volume, ton budget e
 **4. Page de réservation simple** (Superhote, Guesties)
 - Prix : inclus dans certains channel managers
 - Avantages : démarrage rapide, 0 compétences techniques
-- Idéal pour : tester avant d'investir
+- Limite : comme pour tout site à toi, c'est à toi d'y amener des visiteurs
 
 :::astuce
-Avant de choisir, liste ce dont tu as vraiment besoin : calendrier synchronisé avec Airbnb, paiement en ligne, caution. Tout le reste est du confort.
+Avant d'investir dans un site, pose-toi une question : d'où viendront les visiteurs ? Sans référencement ni communauté, un site reste vide. C'est pour ça qu'une plateforme où les voyageurs cherchent déjà est le meilleur départ.
 :::
 
 :::erreur
-Ouvrir un site de réservation sans synchroniser les calendriers. Une même nuit vendue deux fois, c'est un voyageur à reloger en urgence.
+Ouvrir un canal direct sans synchroniser tes calendriers. Une même nuit vendue deux fois, c'est un voyageur à reloger en urgence.
 :::
 
 :::quiz
-? Pour un hôte avec plusieurs logements, quelle solution est la plus adaptée ?
-* Un gestionnaire de canaux avec site intégré
-- Un simple formulaire de contact
-- Une page Facebook
-= Il synchronise les calendriers de toutes les plateformes et intègre un moteur de réservation.
+? Tu débutes en réservation directe, sans compétence technique. Par quoi commencer ?
+* Une plateforme de réservation directe comme Driing
+- Construire ton propre site WordPress
+- Acheter des publicités Google
+= Ton annonce est prête sans site ni référencement, et les voyageurs te trouvent sur la plateforme.
 :::
 
 :::quiz
@@ -341,6 +354,10 @@ Ouvrir un site de réservation sans synchroniser les calendriers. Une même nuit
 ## La page de réservation directe parfaite
 
 Une page de réservation directe efficace suit une structure précise. Voici les éléments indispensables.
+
+:::astuce
+Sur Driing (je suis co-fondateur), la structure de ta page d'annonce est déjà en place : photos, description, disponibilités, avis. Ces 7 blocs te servent à bien la remplir, et te serviront si un jour tu crées ton propre site.
+:::
 
 ### Les 7 blocs d'une page qui convertit
 
@@ -394,7 +411,11 @@ Le système de paiement est un point de friction majeur de la réservation direc
 
 ### Stripe : la référence pour les hôtes
 
-Stripe est la solution la plus utilisée par les hôtes en réservation directe. Commission : 1,5% + 0,25€ pour les cartes européennes (2,9% + 0,30€ pour les cartes US).
+Stripe est la solution la plus utilisée par les hôtes qui encaissent eux-mêmes. Commission : 1,5 % + 0,25 € pour une carte européenne standard, plus pour les cartes hors d'Europe.
+
+:::retenir
+Sur Driing (je suis co-fondateur), le paiement passe par les outils intégrés à la plateforme. Ce qui suit te sert quand tu encaisses toi-même : réservation reçue par message, ancien voyageur, site à toi. Dans l'app, « Contrats & paiements » s'en charge avec ton compte Stripe.
+:::
 
 **Ce qu'il faut configurer :**
 - Compte Stripe Verified (KYC complet)
@@ -447,14 +468,18 @@ bouton: Ouvrir mes contrats
           title: 'SEO local : apparaître sur Google quand les voyageurs cherchent',
           duration: '15 min',
           content: `:::bref
-- Le référencement local apporte du trafic gratuit et très qualifié.
+- Le référencement local demande du temps et de la technique : ce n'est pas la priorité d'un débutant.
 - Trois types de pages : la principale, les quartiers, les saisons ou événements.
 - Titre, description, données structurées et vitesse font la différence.
 :::
 
 ## Le SEO local pour les hébergements LCD
 
-Le SEO local est le canal d'acquisition le plus rentable pour un hôte LCD, trafic gratuit, intent élevé, concurrence faible hors des grandes villes.
+Le SEO local peut apporter des visiteurs gratuits et motivés, mais un site neuf met des mois à apparaître sur Google, et le travail est technique.
+
+:::erreur
+Commencer la réservation directe par un site et du référencement. Pendant des mois, personne ne le trouve. Pour démarrer, mets ton logement sur Driing (je suis co-fondateur), où les voyageurs cherchent déjà, et soigne ta fiche Google si tu y as droit. Le SEO devient utile quand tu as ton propre site et du temps à y consacrer.
+:::
 
 ### Les 3 pages SEO indispensables
 
@@ -566,6 +591,10 @@ Publication dans un groupe local : « Disponible du 10 au 14 mai, T2 au centre d
 Copier le même message dans vingt groupes le même jour. Les administrateurs suppriment, et tu risques d'être exclu.
 :::
 
+:::astuce
+Le lien que tu partages doit mener à une page où l'on peut réserver tout de suite. Sans site à toi, ta page Driing (je suis co-fondateur) fait ce travail.
+:::
+
 :::quiz
 ? Comment se comporter dans un groupe Facebook local ?
 - Contacter chaque membre en privé
@@ -623,7 +652,7 @@ Même avec un beau site et un bon prix, certains visiteurs n'osent pas réserver
 **5. L'habitude**, "Je réserve toujours sur Airbnb." → Offre exclusive direct + avantages concrets pour briser l'habitude.
 
 :::exemple
-Le frein le plus fréquent : « Est-ce que je peux faire confiance à ce site ? » Réponse : mentions légales, avis vérifiables, paiement sécurisé avec le cadenas, numéro joignable. Quatre éléments qui rassurent avant le paiement.
+Le frein le plus fréquent : « Est-ce que je peux faire confiance ? » Sur une plateforme comme Driing, le cadre (paiement sécurisé, avis, conditions) rassure déjà. Sur un site à toi, il faut tout prouver : mentions légales, avis vérifiables, paiement sécurisé, numéro joignable.
 :::
 
 :::astuce
