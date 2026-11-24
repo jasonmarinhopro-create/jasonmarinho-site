@@ -309,4 +309,61 @@ function report(results, stuck = new Set()) {
   if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + '\n')
 }
 
-main().catch(e => { console.error('Audit impossible :', e.message); process.exit(1) })
+
+// ── Parcours de navigation (--nav, 24/11/2026) ─────────────────────────────
+// Jason : « plus de squelettes, l'accueil s'est actualisé 3 fois, les autres
+// pages sont blanches jusqu'au chargement ». Ouvre l'app comme lui (lecture
+// seule) et relève toutes les 100 ms ce qui est à l'écran : écran de
+// lancement, squelette, zone vide, ancienne page, contenu. Compte les
+// rechargements complets. Aucun texte ni capture : des états et des durées.
+async function navTimeline() {
+  const browser = await chromium.launch()
+  const cookies = await appSessionCookies()
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+  await ctx.addCookies(cookies)
+  await ctx.addInitScript(() => { try { localStorage.setItem('cookie_consent_v2', JSON.stringify({ essential: true, analytics: false, t: Date.now() })) } catch { /* ignore */ } })
+  await ctx.route('**/*', route => (route.request().method() === 'GET' ? route.continue() : route.abort()))
+  const page = await ctx.newPage()
+  const out = []
+  let t0 = Date.now()
+  const fullNavs = []
+  page.on('framenavigated', f => { if (f === page.mainFrame()) fullNavs.push(`${((Date.now() - t0) / 1000).toFixed(1)} s ${pattern(f.url())}`) })
+  const sample = () => page.evaluate(() => {
+    const main = document.querySelector('.dash-main')
+    const splash = document.querySelector('.jm-splash:not(.jm-splash--out)')
+    const skel = document.querySelector('[data-page-skel], [aria-busy="true"]')
+    const txt = main ? (main.innerText || '').replace(/\s+/g, ' ').trim().length : -1
+    return { splash: !!splash, skel: !!skel, txt, path: location.pathname }
+  }).catch(() => ({ splash: false, skel: false, txt: -2, path: '?' }))
+  const label = (st, fromPath) => st.txt === -2 ? 'chargement du document' : st.splash ? 'écran de lancement' : st.skel ? 'squelette' : st.path === fromPath ? 'ancienne page' : st.txt < 40 ? 'zone vide' : 'contenu'
+  async function watch(name, fromPath, toPath, maxMs = 15000) {
+    const start = Date.now(); let segs = []; let stableSince = 0
+    while (Date.now() - start < maxMs) {
+      const st = await sample()
+      const l = label(st, fromPath)
+      const t = (Date.now() - start) / 1000
+      if (!segs.length || segs[segs.length - 1].l !== l) segs.push({ l, from: t })
+      if (l === 'contenu' && st.path === toPath) { if (!stableSince) stableSince = Date.now(); if (Date.now() - stableSince > 1500) break } else stableSince = 0
+      await page.waitForTimeout(100)
+    }
+    out.push(`- **${name}** : ` + segs.map((x, i) => `${x.l} ${x.from.toFixed(1)}${segs[i + 1] ? `-${segs[i + 1].from.toFixed(1)}` : '+'} s`).join(' → '))
+  }
+  t0 = Date.now()
+  await page.goto('https://app.jasonmarinho.com/dashboard', { waitUntil: 'commit' })
+  await watch('Ouverture de l’Accueil (chargement complet)', '', '/dashboard', 20000)
+  await page.waitForTimeout(2500)
+  for (const href of ['/dashboard/calendrier', '/dashboard/reservations', '/dashboard/voyageurs', '/dashboard/apprendre/formations', '/dashboard/visibilite/facebook', '/dashboard']) {
+    const from = await page.evaluate(() => location.pathname)
+    const link = page.locator(`.dash-sidebar a[href="${href}"]`).first()
+    if (!(await link.count())) { out.push(`- ${href} : lien absent du menu`); continue }
+    await link.click()
+    await watch(`Clic menu ${pattern('https://app.jasonmarinho.com' + href)}`, from, href)
+    await page.waitForTimeout(2000)
+  }
+  console.log(['## Parcours de navigation (états à l’écran)', '', ...out, '', `Chargements complets de la page (navigations du document) : ${fullNavs.length}`, ...fullNavs.map(x => `  - ${x}`)].join('\n'))
+  await browser.close()
+  await closeSession()
+}
+
+if (process.argv.includes('--nav')) navTimeline().catch(e => { console.error('Parcours impossible :', e.message); process.exit(1) })
+else main().catch(e => { console.error('Audit impossible :', e.message); process.exit(1) })

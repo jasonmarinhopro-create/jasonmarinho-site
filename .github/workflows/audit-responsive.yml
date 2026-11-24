@@ -29,6 +29,11 @@ on:
         required: false
         default: false
         type: boolean
+      nav:
+        description: 'Parcours de navigation : états à l’écran (lancement, squelette, vide, contenu) au fil des clics'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -56,5 +61,6 @@ jobs:
           ONLY: ${{ inputs.only }}
           REPEAT: ${{ inputs.repeat }}
           NET: ${{ inputs.net && '1' || '' }}
+          NAV: ${{ inputs.nav && '1' || '' }}
         run: |
-          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --repeat "${REPEAT:-1}" ${NET:+--net} --out /tmp/audit.json
+          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --repeat "${REPEAT:-1}" ${NET:+--net} ${NAV:+--nav} --out /tmp/audit.json
