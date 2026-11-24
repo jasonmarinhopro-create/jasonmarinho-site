@@ -237,3 +237,8 @@ Pousse sur la branche de la session (une branche `claude/...`) : le workflow
 - `generate-article.mjs` échoue : afficher l'erreur, ne pas commiter.
 - Ne modifier aucun autre fichier du dépôt (ni ce fichier, ni les pages, ni les
   scripts).
+
+
+## Image de partage (24/11/2026)
+
+Après la génération et la photo de couverture, créer la carte de partage de l'article : `node scripts/build-images-partage.mjs --seul=blog/<slug>/index.html` (Playwright est installé dans les sessions cloud), puis committer `img/partage/blog--<slug>.jpg`. Si la commande échoue, l'article garde sa photo de couverture comme image de partage : ne pas bloquer la publication.

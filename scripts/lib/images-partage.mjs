@@ -29,6 +29,12 @@ export function repli(fichier) {
   return 'accueil'
 }
 
+// Pages qui avaient leur propre image avant les cartes (portrait, photo d'exemple)
+const PHOTOS = {
+  'qui-suis-je/index.html': 'jason-marinho.webp',
+  'photographe-hotel/index.html': 'img/exemple-fiches/photo-salon-4.jpg',
+}
+
 const VILLE = /^(devenir-hote-airbnb|photographe-lcd|menage-lcd|depannage-lcd)-([a-z0-9-]+)\//
 
 function rubrique(f) {
@@ -50,7 +56,10 @@ function rubrique(f) {
   if (f.startsWith('partenaires')) return ['Partenaires', 'Outils et offres pour hôtes']
   if (f.startsWith('comparatif-')) return ['Comparatif', 'Outils pour hôtes LCD']
   if (/^(lodgify|hospitable|code-promo|tutoriel)/.test(f)) return ['Outils LCD', 'Mon avis et mes offres']
-  if (f.startsWith('blog/')) return ['Blog', 'Conseils pour hôtes LCD']
+  if (f.startsWith('blog/categorie/') || f === 'blog/index.html') return ['Blog', 'Conseils pour hôtes LCD']
+  if (f.startsWith('blog/')) return ['Article', 'Conseils pour hôtes LCD']
+  if (f.startsWith('qui-suis-je')) return ['Qui suis-je', 'Co-fondateur de Driing']
+  if (f.startsWith('photographe-hotel')) return ['Photographe pour hôtel', 'Contact direct, sans commission']
   if (f.startsWith('pour-qui')) return ['Pour qui', 'Pros, formations et outils pour la LCD']
   if (f.startsWith('sos-hote')) return ['SOS hôte', 'Le guide d’urgence des hôtes']
   if (f.startsWith('tarifs')) return ['Tarifs', 'Pros, formations et outils pour la LCD']
@@ -76,6 +85,11 @@ function titre(f, h) {
     const og = (h.match(/<meta property="og:title" content="([^"]*)"/) || [])[1] || ''
     t = og.replace(/\s*\|\s*Jason Marinho\s*$/, '')
   }
+  // Sans partie mise en valeur : ce qui suit « : » passe en jaune italique
+  if (!/<em>/.test(t)) {
+    const i = t.indexOf(' : ')
+    if (i > 0 && t.length - i > 6) t = `${t.slice(0, i)} : <em>${t.slice(i + 3)}</em>`
+  }
   return t
 }
 
@@ -97,11 +111,15 @@ export function pagesPartage(ROOT) {
     const h = fs.readFileSync(path.join(ROOT, f), 'utf8')
     if (/<meta name="robots" content="[^"]*noindex/.test(h)) return []
     if (!/<meta property="og:image"/.test(h)) return []
+    // Photo à droite de la carte : couverture de l'article, photo de la ville,
+    // ou image propre déjà choisie pour la page (portrait, photo d'exemple).
     const art = f.match(/^blog\/([^/]+)\/index\.html$/)
-    if (art && art[1] !== 'categorie' && covers[art[1]]) return []
+    const couv = art && covers[art[1]] && fs.existsSync(path.join(ROOT, 'img/blog', `${art[1]}.webp`)) ? `img/blog/${art[1]}.webp` : ''
+    const propre = PHOTOS[f] && fs.existsSync(path.join(ROOT, PHOTOS[f])) ? PHOTOS[f] : ''
     const [rub, pied] = rubrique(f)
     const v = (f.match(VILLE) || [])[2] || (f.match(/^services\/simulateurs\/revenus-lcd\/([a-z0-9-]+)\//) || [])[1]
-    const photo = v && fs.existsSync(path.join(ROOT, 'img/villes/large', `${v}.webp`)) ? `img/villes/large/${v}.webp` : ''
+    const ville = v && fs.existsSync(path.join(ROOT, 'img/villes/large', `${v}.webp`)) ? `img/villes/large/${v}.webp` : ''
+    const photo = couv || ville || propre
     return [{ fichier: f, cle: cle(f), rubrique: rub, pied, titre: titre(f, h), photo }]
   })
 }

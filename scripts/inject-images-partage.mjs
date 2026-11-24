@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // Branche chaque page sur son image de partage (og:image, twitter:image),
 // créée par scripts/build-images-partage.mjs dans img/partage (24/11/2026).
-// Remplace l'ancienne capture couverture-jason.webp : image propre à la page
-// si elle existe, sinon image de la famille (fiches des pros créées au build),
-// sinon celle de l'accueil. Les autres images (photo d'article, de ville, de
-// fiche d'exemple) ne sont pas touchées. Idempotent, lancé au build après les
+// Image propre à la page si elle existe (la photo d'article ou de ville est
+// dans la carte), sinon image de la famille (fiches des pros créées au build)
+// à la place de l'ancienne capture couverture-jason.webp, sinon l'accueil.
+// L'image des données structurées d'un article reste sa photo (Google Discover). Idempotent, lancé au build après les
 // générateurs.   node scripts/inject-images-partage.mjs [--check]
 import fs from 'node:fs'
 import path from 'node:path'
@@ -33,13 +33,19 @@ let n = 0, propres = 0, replis = 0
 for (const f of fichiers) {
   const file = path.join(ROOT, f)
   const html = fs.readFileSync(file, 'utf8')
-  if (!html.includes(ancienne) && !html.includes(`/${DOSSIER}/`)) continue
-  const k = existe(cle(f)) ? cle(f) : repli(f)
+  if (!/<meta property="og:image"/.test(html)) continue
+  // Image propre de la page : elle remplace toute image de partage (photo
+  // d'article ou de ville comprise, qui est déjà dans la carte). Image de
+  // famille : seulement à la place de l'ancienne capture.
+  const propre = existe(cle(f))
+  const k = propre ? cle(f) : repli(f)
   if (!existe(k)) continue
+  if (!propre && !html.includes(ancienne) && !html.includes(`/${DOSSIER}/`)) continue
   const url = `${SITE}/${DOSSIER}/${k}.jpg`
+  const cible = propre ? '[^"]*' : '[^"]*(?:couverture-jason\\.webp|\\/img\\/partage\\/[^"]*\\.jpg)'
   let out = html
-    .replace(/(<meta property="og:image" content=")[^"]*(couverture-jason\.webp|\/img\/partage\/[^"]*\.jpg)(")/g, `$1${url}$3`)
-    .replace(/(<meta (?:name|property)="twitter:image" content=")[^"]*(couverture-jason\.webp|\/img\/partage\/[^"]*\.jpg)(")/g, `$1${url}$3`)
+    .replace(new RegExp(`(<meta property="og:image" content=")${cible}(")`, 'g'), `$1${url}$2`)
+    .replace(new RegExp(`(<meta (?:name|property)="twitter:image" content=")${cible}(")`, 'g'), `$1${url}$2`)
     // Image des données structurées (Article, WebPage) : la même que le partage
     .replace(/("image":\s*")https:\/\/jasonmarinho\.com\/(?:couverture-jason\.webp|img\/partage\/[^"]*\.jpg)(")/g, `$1${url}$2`)
   // Taille déclarée (Facebook l'utilise pour afficher la grande image dès le premier partage)
