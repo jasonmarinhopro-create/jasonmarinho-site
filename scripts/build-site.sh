@@ -21,6 +21,8 @@ node scripts/inject-liens-services.mjs
 node scripts/build-accueil-annuaire.mjs
 node scripts/inject-photos-villes.mjs
 node scripts/inject-blog-covers.mjs
+# Images de partage dans le style de l'accueil (img/partage, 24/11/2026)
+node scripts/inject-images-partage.mjs
 node scripts/inject-font-loading.mjs
 node scripts/build-phosphor-subset.mjs
 # Pied de page écrit dans chaque page (liens lisibles sans JavaScript, 09/11/2026)

@@ -72,6 +72,7 @@ Next.js 14 · Supabase (PostgreSQL + RLS) · Stripe Connect (loyer + caution) ·
 - Aucun e-mail envoyé à des tiers (pros, membres) sans l'accord de Jason.
 
 **SEO et affiliation**
+- Nouvelle page : son image de partage avec `node scripts/build-images-partage.mjs --seul=<page>` (`docs/claude/visibilite-acquisition.md`).
 - `<title>` ≤ 60 caractères. Lien affilié : `rel="sponsored noopener"` + mention visible « Lien affilié ». Vérifier qu'une URL interne existe avant de la citer.
 
 ---
