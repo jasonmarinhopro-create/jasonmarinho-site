@@ -1,0 +1,18 @@
+[
+  {
+    "title": "LCD 2026 : au-delà de 23 000 euros de recettes, tu dois des cotisations sociales",
+    "summary": "En 2026, si tes recettes de location courte durée dépassent 23 000 euros, tu es redevable de cotisations sociales Urssaf, en plus des prélèvements sociaux habituels, même si tu restes en LMNP. Vérifie ton total annuel maintenant : si tu franchis ce seuil pour la première fois cette année, rapproche-toi de l'Urssaf pour t'affilier au régime social des indépendants. Ne pas le faire expose à une régularisation des cotisations sur les années concernées.",
+    "category": "fiscalite",
+    "audience": ["hote"],
+    "source_url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34102",
+    "read_time_minutes": 2
+  },
+  {
+    "title": "Travaux en logement loué : vérifie ta décennale avant le 1er janvier 2027",
+    "summary": "Quand tu interviens chez un hôte pour des travaux de plomberie, d'électricité ou d'installation de chauffage, tu dois justifier d'une assurance décennale en cours de validité à l'ouverture de chaque chantier. La plupart des contrats expirent le 31 décembre : si c'est ton cas, renouvelle-la avant le 1er janvier pour ne pas te retrouver sans couverture au démarrage des chantiers de janvier. Travailler sans décennale expose à des sanctions pénales et à des recours civils pendant 10 ans.",
+    "category": "entreprise",
+    "audience": ["depannage"],
+    "source_url": "https://entreprendre.service-public.gouv.fr/vosdroits/F23667",
+    "read_time_minutes": 2
+  }
+]
