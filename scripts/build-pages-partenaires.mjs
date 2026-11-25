@@ -702,7 +702,8 @@ document.addEventListener('click', function(e){
       <ul class="pts">
 ${o.points.map((t, i) => `        <li><i class="ph-bold ph-check-circle"></i><span>${bfSwap(t, p.bf && p.bf.points && p.bf.points[i])}</span></li>`).join('\n')}
       </ul>
-      <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
+      ${p.bf && p.bf.cta ? `<div class="cta-row" ${bfAttr(true)}>${sponsored(p.bf.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${p.bf.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>` : ''}
+      <div class="cta-row"${p.bf && p.bf.cta ? ` ${bfAttr(false)}` : ''}>${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
       <p class="note2">${o.note}</p>
     </aside>
   </div>
@@ -768,7 +769,8 @@ ${p.limites.map(t => `    <div class="er"><b><i class="ph-bold ph-warning-circle
   <div class="go">
     <h3>${bfSwap(o.titre, p.bf && (p.bf.code ? `${p.bf.pct} avec ${p.bf.code}` : p.bf.titre))}</h3>
     <p>${bfSwap(`${o.sous}.`, p.bf && p.bf.sous)}</p>
-    <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
+    ${p.bf && p.bf.cta ? `<div class="cta-row" ${bfAttr(true)}>${sponsored(p.bf.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${p.bf.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>` : ''}
+    <div class="cta-row"${p.bf && p.bf.cta ? ` ${bfAttr(false)}` : ''}>${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
     ${p.bf && p.bf.code ? `<div class="code" ${bfAttr(true)}><strong>${p.bf.code}</strong><span>${p.bf.texte}</span></div>` : ''}
     ${o.code ? `<div class="code"${p.bf && p.bf.code ? ` ${bfAttr(false)}` : ''}><strong>${o.code}</strong><span>${o.codeTexte}</span></div>` : ''}
     ${bfLine}${p.bf && !p.bf.code && p.bf.titre ? `<p class="bfl" ${bfAttr(true)}>${p.bf.texte}</p>` : ''}

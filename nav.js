@@ -1589,35 +1589,62 @@
   } catch (e) { /* fail-silent */ }
 }());
 
-/* ── Black Week JD2M (e-mail Affilae du 25/11/2026) ──
-   1 année achetée, la 2e offerte : l'année fiscale 2026 au tarif habituel,
-   2027 offerte. Offres Essentielle et Intégrale (hors Prestige), nouveaux
-   clients, 1re année souscrite et payée jusqu'au 30/11/2026 inclus. Affiché
-   du 23/11 au 30/11 inclus, retiré seul ensuite. Encart posé avant chaque
-   encadré JD2M des articles (.aff-jd2m) ; carte du catalogue /partenaires et
-   tuile de l'accueil changées pendant l'offre. La page /partenaires/jd2m a son
-   propre affichage (champ bf de scripts/data/partenaires-pages.mjs). */
+/* ── Offres partenaires datées (Black Week JD2M, Black Friday Shine) ──
+   Chaque offre s'affiche entre `du` et `au` (heure de Paris), puis disparaît
+   seule. Pendant l'offre : texte de la carte du catalogue /partenaires et de la
+   tuile de l'accueil changé, encart posé avant chaque encadré du partenaire
+   dans les articles (`box`). `lien` : lien de l'offre ; `lienPromo`, s'il est
+   rempli, remplace le lien habituel (`lienNormal`, repéré par son numéro
+   d'affilié) dans toute la page pendant l'offre, et le lien habituel revient
+   seul ensuite (Shine l'exige dès la fin de l'offre).
+   Les pages /partenaires/<nom> ont leur propre affichage (champ bf de
+   scripts/data/partenaires-pages.mjs) ; l'accueil a sa diapo (data-du / data-au).
+   - JD2M (e-mail Affilae reçu le 25/11/2026) : 1 année achetée, la 2e offerte,
+     offres Essentielle et Intégrale (hors Prestige), nouveaux clients, payée
+     jusqu'au 30/11/2026 inclus.
+   - Shine (e-mail de Thibaut, Affilae, 25/11/2026) : nouveaux comptes Start
+     3 mois offerts, Plus 4 mois, Business 6 mois, jusqu'au 30/11 23:59:59. */
 (function () {
   try {
+    var PROMOS = [
+      {
+        nom: 'JD2M', du: '2026-11-23T00:00:00+01:00', au: '2026-12-01T00:00:00+01:00', etiquette: 'Black Week', box: '.aff-jd2m',
+        offre: '2e année offerte (Black Week)', titre: '1 année achetée, la 2e offerte, jusqu’au 30 novembre',
+        texte: '<strong style="color:#0F1A0D">JD2M : 1 année achetée, la 2e offerte</strong>, jusqu’au 30 novembre. Tu souscris pour l’année fiscale 2026 au tarif habituel, l’année 2027 t’est offerte. Offres Essentielle et Intégrale, nouveaux clients.',
+        lien: 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244'
+      },
+      {
+        nom: 'Shine', du: '2026-11-25T00:00:00+01:00', au: '2026-12-01T00:00:00+01:00', etiquette: 'Black Friday', box: '.aff-shine',
+        offre: 'Jusqu’à 6 mois offerts (Black Friday)', titre: 'Compte pro Shine : jusqu’à 6 mois offerts, jusqu’au 30 novembre',
+        texte: '<strong style="color:#0F1A0D">Black Friday Shine : jusqu’à 6 mois offerts</strong> sur ton compte pro, jusqu’au 30 novembre. Start : 3 mois offerts, Plus : 4 mois, Business : 6 mois. Pour les nouveaux comptes.',
+        lienNormal: 'ae=2249',
+        lienPromo: '', // lien de l'offre (Affilae > Profil > Élément pub > Élément créatif) ; vide = lien habituel
+        lien: 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
+      }
+    ];
     var now = Date.now();
-    if (now < Date.parse('2026-11-23T00:00:00+01:00') || now >= Date.parse('2026-12-01T00:00:00+01:00')) return;
-    var LIEN = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244';
+    var actives = PROMOS.filter(function (p) { return now >= Date.parse(p.du) && now < Date.parse(p.au); });
+    if (!actives.length) return;
     function pose() {
-      document.querySelectorAll('.mk-card,.pa-c,.pt').forEach(function (c) {
-        var o = c.querySelector('.mk-offre,.pa-o,.pt-o');
-        var nom = c.querySelector('h3,b,.mk-nom');
-        if (o && nom && /JD2M/.test(nom.textContent) && o.getAttribute('data-bw') !== '1') { o.textContent = '2e année offerte (Black Week)'; o.title = '1 année achetée, la 2e offerte, jusqu’au 30 novembre'; o.setAttribute('data-bw', '1'); }
-      });
-      document.querySelectorAll('.aff-jd2m').forEach(function (b) {
-        if (b.previousElementSibling && b.previousElementSibling.classList.contains('bw-jd2m')) return;
-        var box = document.createElement('aside');
-        box.className = 'bw-jd2m';
-        box.setAttribute('aria-label', 'Offre Black Week JD2M');
-        box.style.cssText = 'margin:18px 0 0;padding:16px 18px;border-radius:16px;background:#FFF4D2;border:1px solid #F2E2A8;color:#4A4022;font-family:Outfit,Outfit Fallback,system-ui,sans-serif;font-size:14.5px;line-height:1.55;text-align:left;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px';
-        box.innerHTML = '<span style="flex:none;padding:4px 10px;border-radius:99px;background:#FFD56B;color:#3D2E00;font-size:12px;font-weight:600">Black Week</span>'
-          + '<span style="flex:1 1 280px;min-width:0"><strong style="color:#0F1A0D">JD2M : 1 année achetée, la 2e offerte</strong>, jusqu’au 30 novembre. Tu souscris pour l’année fiscale 2026 au tarif habituel, l’année 2027 t’est offerte. Offres Essentielle et Intégrale, nouveaux clients.</span>'
-          + '<span style="display:flex;flex-direction:column;gap:4px;align-items:flex-start"><a href="' + LIEN + '" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;height:42px;padding:0 16px;border-radius:10px;background:#0F1A0D;color:#fff;font-weight:600;text-decoration:none">Profiter de l’offre</a><span style="font-size:12px;color:#6B5F3A">Lien affilié</span></span>';
-        b.parentNode.insertBefore(box, b);
+      actives.forEach(function (p) {
+        var lien = p.lienPromo || p.lien;
+        if (p.lienPromo && p.lienNormal) document.querySelectorAll('a[href*="' + p.lienNormal + '"]').forEach(function (a) { a.href = p.lienPromo; });
+        document.querySelectorAll('.mk-card,.pa-c,.pt').forEach(function (c) {
+          var o = c.querySelector('.mk-offre,.pa-o,.pt-o');
+          var nom = c.querySelector('h3,b,.mk-nom');
+          if (o && nom && nom.textContent.trim() === p.nom && o.getAttribute('data-promo') !== '1') { o.textContent = p.offre; o.title = p.titre; o.setAttribute('data-promo', '1'); }
+        });
+        document.querySelectorAll(p.box).forEach(function (b) {
+          if (b.previousElementSibling && b.previousElementSibling.getAttribute('data-promo-box') === p.nom) return;
+          var box = document.createElement('aside');
+          box.setAttribute('data-promo-box', p.nom);
+          box.setAttribute('aria-label', 'Offre ' + p.etiquette + ' ' + p.nom);
+          box.style.cssText = 'margin:18px 0 0;padding:16px 18px;border-radius:16px;background:#FFF4D2;border:1px solid #F2E2A8;color:#4A4022;font-family:Outfit,Outfit Fallback,system-ui,sans-serif;font-size:14.5px;line-height:1.55;text-align:left;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px';
+          box.innerHTML = '<span style="flex:none;padding:4px 10px;border-radius:99px;background:#FFD56B;color:#3D2E00;font-size:12px;font-weight:600">' + p.etiquette + '</span>'
+            + '<span style="flex:1 1 280px;min-width:0">' + p.texte + '</span>'
+            + '<span style="display:flex;flex-direction:column;gap:4px;align-items:flex-start"><a href="' + lien + '" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;height:42px;padding:0 16px;border-radius:10px;background:#0F1A0D;color:#fff;font-weight:600;text-decoration:none">Profiter de l’offre</a><span style="font-size:12px;color:#6B5F3A">Lien affilié</span></span>';
+          b.parentNode.insertBefore(box, b);
+        });
       });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pose); else pose();

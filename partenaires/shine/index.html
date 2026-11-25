@@ -160,6 +160,9 @@
   .cp-r{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 22px;background:var(--cr);border-left:2px dashed rgba(0,76,63,.22);min-width:132px;text-align:center}
   .cp-pct{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2.2rem,4vw,2.8rem);line-height:1;color:var(--g)}
   .cp-r small{font-size:12px;color:var(--tl);margin-top:6px}
+  [data-bf][hidden],[data-nbf][hidden]{display:none!important}
+  .vcard.ofc-bf{background:var(--yl)}
+  .vcard.ofc-bf .k{color:#6B5300}
   .cp.bf{background:var(--yl)}
   .cp.bf .cp-r{background:var(--y);border-left-color:rgba(61,46,0,.25)}
   .cp.bf .cp-pct{color:var(--gd)}
@@ -457,17 +460,20 @@
       </nav>
       <div class="duo" aria-hidden="true"><span class="lg">S</span><span class="x">×</span><span class="jm">JM</span></div>
       <span class="lbl"><i class="ph-bold ph-handshake"></i>Partenaire · Banque & facturation</span>
-      <h1 class="h1">Shine : un compte pro et <em>des factures gratuites</em></h1>
-      <p class="lead">Shine est une néobanque pro française, filiale de la Société Générale, utilisée par plus de 120 000 entreprises. Je la conseille pour séparer tes revenus de location de ton compte perso, et Shine Facture pour les conciergeries, équipes de ménage et photographes qui font des devis et des factures.</p>
+      <h1 class="h1"><span data-nbf hidden>Shine : un compte pro et <em>des factures gratuites</em></span><span data-bf>Shine : ton compte pro, <em>jusqu’à 6 mois offerts</em></span></h1>
+      <p class="lead"><span data-nbf hidden>Shine est une néobanque pro française, filiale de la Société Générale, utilisée par plus de 120 000 entreprises. Je la conseille pour séparer tes revenus de location de ton compte perso, et Shine Facture pour les conciergeries, équipes de ménage et photographes qui font des devis et des factures.</span><span data-bf>Shine est une néobanque pro française, filiale de la Société Générale, utilisée par plus de 120 000 entreprises. Jusqu'au 30 novembre, Shine offre jusqu'à 6 mois d'abonnement aux nouveaux comptes : le bon moment pour séparer tes revenus de location de ton compte perso.</span></p>
     </div>
     <aside class="offer2" aria-label="Offre Shine">
-      <div class="vcard ofc"><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">Compte pro dès 0 €</p><p class="ofc-s">Ouverture en ligne en quelques minutes, sans engagement</p></div>
+      
+      <div class="vcard ofc ofc-bf" data-bf><div class="k"><i class="ph-bold ph-timer"></i>Black Friday · jusqu’au 30 novembre</div><p class="ofc-t">Jusqu’à 6 mois offerts</p><p class="ofc-s">Sur ton compte pro Shine, pour les nouveaux comptes : 3 mois offerts sur Start, 4 mois sur Plus, 6 mois sur Business.</p></div>
+      <div class="vcard ofc" data-nbf hidden><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">Compte pro dès 0 €</p><p class="ofc-s">Ouverture en ligne en quelques minutes, sans engagement</p></div>
       <ul class="pts">
-        <li><i class="ph-bold ph-check-circle"></i><span>Carte Mastercard Business et IBAN français</span></li>
-        <li><i class="ph-bold ph-check-circle"></i><span>Shine Facture : devis et factures gratuits</span></li>
-        <li><i class="ph-bold ph-check-circle"></i><span>Service client 7 jours sur 7</span></li>
+        <li><i class="ph-bold ph-check-circle"></i><span><span data-nbf hidden>Carte Mastercard Business et IBAN français</span><span data-bf>Start : 3 mois offerts</span></span></li>
+        <li><i class="ph-bold ph-check-circle"></i><span><span data-nbf hidden>Shine Facture : devis et factures gratuits</span><span data-bf>Plus : 4 mois offerts · Business : 6 mois offerts</span></span></li>
+        <li><i class="ph-bold ph-check-circle"></i><span><span data-nbf hidden>Service client 7 jours sur 7</span><span data-bf>Nouveaux comptes, jusqu'au 30 novembre inclus</span></span></li>
       </ul>
-      <div class="cta-row"><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Ouvrir mon compte Shine</a><a href="https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&amp;utm_medium=affiliation&amp;utm_campaign=jason-marinho&amp;utm_content=2226&amp;ae=2226" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Essayer Shine Facture</a></div>
+      <div class="cta-row" data-bf><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Profiter de l’offre</a><a href="https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&amp;utm_medium=affiliation&amp;utm_campaign=jason-marinho&amp;utm_content=2226&amp;ae=2226" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Essayer Shine Facture</a></div>
+      <div class="cta-row" data-nbf hidden><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Ouvrir mon compte Shine</a><a href="https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&amp;utm_medium=affiliation&amp;utm_campaign=jason-marinho&amp;utm_content=2226&amp;ae=2226" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Essayer Shine Facture</a></div>
       <p class="note2">Lien affilié : Shine me verse une commission si tu ouvres un compte ou utilises Shine Facture via ces liens, sans aucun surcoût pour toi.</p>
     </aside>
   </div>
@@ -543,11 +549,13 @@
 
 <section id="essayer">
   <div class="go">
-    <h3>Compte pro dès 0 €</h3>
-    <p>Ouverture en ligne en quelques minutes, sans engagement.</p>
-    <div class="cta-row"><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Ouvrir mon compte Shine</a><a href="https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&amp;utm_medium=affiliation&amp;utm_campaign=jason-marinho&amp;utm_content=2226&amp;ae=2226" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Essayer Shine Facture</a></div>
+    <h3><span data-nbf hidden>Compte pro dès 0 €</span><span data-bf>Jusqu’à 6 mois offerts</span></h3>
+    <p><span data-nbf hidden>Ouverture en ligne en quelques minutes, sans engagement.</span><span data-bf>Sur ton compte pro Shine, pour les nouveaux comptes : 3 mois offerts sur Start, 4 mois sur Plus, 6 mois sur Business.</span></p>
+    <div class="cta-row" data-bf><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Profiter de l’offre</a><a href="https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&amp;utm_medium=affiliation&amp;utm_campaign=jason-marinho&amp;utm_content=2226&amp;ae=2226" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Essayer Shine Facture</a></div>
+    <div class="cta-row" data-nbf hidden><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Ouvrir mon compte Shine</a><a href="https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&amp;utm_medium=affiliation&amp;utm_campaign=jason-marinho&amp;utm_content=2226&amp;ae=2226" target="_blank" rel="sponsored noopener" class="b2"><i class="ph-bold ph-video-camera"></i>Essayer Shine Facture</a></div>
     
     
+    <p class="bfl" data-bf><strong>Black Friday Shine :</strong> offre réservée aux nouveaux comptes ouverts jusqu'au lundi 30 novembre 2026 à minuit. Déjà client ? Passer à une offre supérieure te donne -30 % pendant 3 mois sur Start, -40 % sur Plus et -50 % sur Business.</p>
     <p class="aff-n">Lien affilié : Shine me verse une commission si tu ouvres un compte ou utilises Shine Facture via ces liens, sans aucun surcoût pour toi.</p>
   </div>
 </section>
@@ -587,7 +595,15 @@
 
 <div id="footer-mount"></div>
 
-
+<script>
+(function(){
+  try {
+    var now = Date.now(), on = now >= Date.parse('2026-11-25T00:00:00+01:00') && now < Date.parse('2026-12-01T00:00:00+01:00');
+    document.querySelectorAll('[data-bf]').forEach(function(el){ el.hidden = !on; });
+    document.querySelectorAll('[data-nbf]').forEach(function(el){ el.hidden = on; });
+  } catch (e) {}
+})();
+</script>
 <script src="/nav.js" defer></script>
 <script src="/footer.js" defer></script>
 <script src="/cookie-banner.js" defer></script>

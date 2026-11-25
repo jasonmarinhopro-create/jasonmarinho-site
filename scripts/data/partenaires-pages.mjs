@@ -44,6 +44,10 @@ const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 
 // ── Shine (Affilae, 10/10/2026) : compte pro (2249) et Shine Facture (2226) ──
 const SHINE_PRO = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
+// Lien de l'offre Black Friday Shine (Affilae > Profil > Élément pub > Élément
+// créatif) : à coller ici et dans nav.js (lienPromo). Vide = lien habituel.
+// Après le 30/11 le lien habituel revient seul (Shine l'exige).
+const SHINE_BF = ''
 const SHINE_FACTURE = 'https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&utm_medium=affiliation&utm_campaign=jason-marinho&utm_content=2226&ae=2226'
 
 // ── JD2M (Affilae, numéro d'affilié 244, 17/10/2026) ──
@@ -719,6 +723,23 @@ export const PAGES = [
       cta: { label: 'Ouvrir mon compte Shine', href: SHINE_PRO },
       cta2: { label: 'Essayer Shine Facture', href: SHINE_FACTURE },
       note: 'Lien affilié : Shine me verse une commission si tu ouvres un compte ou utilises Shine Facture via ces liens, sans aucun surcoût pour toi.',
+    },
+    // Black Friday Shine (e-mail de Thibaut, Affilae, 25/11/2026) : nouveaux
+    // comptes, jusqu'au lundi 30/11 23:59:59, puis la page revient seule.
+    bf: {
+      du: '2026-11-25T00:00:00+01:00', au: '2026-12-01T00:00:00+01:00',
+      tag: 'Black Friday · jusqu’au 30 novembre',
+      titre: 'Jusqu’à 6 mois offerts',
+      sous: 'Sur ton compte pro Shine, pour les nouveaux comptes : 3 mois offerts sur Start, 4 mois sur Plus, 6 mois sur Business.',
+      h1: 'Shine : ton compte pro, <em>jusqu’à 6 mois offerts</em>',
+      lead: "Shine est une néobanque pro française, filiale de la Société Générale, utilisée par plus de 120 000 entreprises. Jusqu'au 30 novembre, Shine offre jusqu'à 6 mois d'abonnement aux nouveaux comptes : le bon moment pour séparer tes revenus de location de ton compte perso.",
+      points: [
+        'Start : 3 mois offerts',
+        'Plus : 4 mois offerts · Business : 6 mois offerts',
+        "Nouveaux comptes, jusqu'au 30 novembre inclus",
+      ],
+      cta: { label: 'Profiter de l’offre', href: SHINE_BF || SHINE_PRO },
+      texte: "<strong>Black Friday Shine :</strong> offre réservée aux nouveaux comptes ouverts jusqu'au lundi 30 novembre 2026 à minuit. Déjà client ? Passer à une offre supérieure te donne -30 % pendant 3 mois sur Start, -40 % sur Plus et -50 % sur Business.",
     },
     pourquoi: {
       titre: 'Pourquoi je recommande <em>Shine</em>',
