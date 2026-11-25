@@ -186,6 +186,9 @@ export interface ProNav {
 }
 
 interface SidebarProps {
+  /** Mode admin de l'appareil lu par le serveur (cookie jm-admin-mode) : le
+   *  menu admin est rendu tout de suite, sans bascule après le chargement */
+  initialAdminMode?: boolean
   mobileOpen?: boolean
   onClose?: () => void
   isAdmin?: boolean
@@ -218,7 +221,7 @@ interface SidebarProps {
   contratsTodo?: number
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, newFormationAt = null, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav: proNavProp, contratsTodo: contratsTodoProp = 0 }: SidebarProps) {
+export default function Sidebar({ initialAdminMode = false, mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, newFormationAt = null, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav: proNavProp, contratsTodo: contratsTodoProp = 0 }: SidebarProps) {
   const pathname = usePathname()
   // Compteurs arrivés après le cadre (MenuLive), sinon ceux passés en props
   const live = useMenuLive()
@@ -278,7 +281,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   // ── Mode Admin toggle ──
   // Quand actif (admin uniquement), remplace la sidebar hôte par une
   // sidebar admin dédiée. Persisté en localStorage. Toggle depuis menu user.
-  const [adminMode, setAdminMode] = useState(false)
+  // 25/11/2026 (« 3 flashs » à l'ouverture en mode admin) : état initial lu
+  // par le serveur dans le cookie. Avant : toujours faux au premier rendu, le
+  // menu hôte s'affichait puis basculait sur le menu admin après le chargement.
+  const [adminMode, setAdminMode] = useState(initialAdminMode && !!isAdmin)
   const [contentOpen, setContentOpen] = useState(false)
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('admin-mode') : null

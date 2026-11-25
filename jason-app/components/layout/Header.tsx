@@ -129,6 +129,8 @@ function computeReadIds(lastSeenAt: string | null | undefined): Set<string> {
 }
 
 interface HeaderProps {
+  /** Mode admin de l'appareil (cookie), transmis au menu du téléphone */
+  initialAdminMode?: boolean
   /** Optionnel : titre forcé. Si absent, dérivé du pathname (+ override via TitleSetter pour les routes dynamiques). */
   title?: string
   userName?: string
@@ -169,7 +171,7 @@ interface HeaderProps {
   activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, newFormationAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav: proNavProp, contratsTodo: contratsTodoProp = 0, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
+export default function Header({ initialAdminMode = false, title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, newFormationAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav: proNavProp, contratsTodo: contratsTodoProp = 0, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
   // Compteurs du menu arrivés après le cadre (MenuLive, 14/11/2026)
   const live = useMenuLive()
   const proNav = live?.proNav ?? proNavProp
@@ -371,6 +373,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             le drawer mobile affichait "Mon compte / Découverte" au lieu du
             vrai nom + plan car les props étaient tronqués). */}
         <Sidebar
+          initialAdminMode={initialAdminMode}
           mobileOpen={mobileOpen}
           onClose={() => setMobileOpen(false)}
           isAdmin={isAdmin}
