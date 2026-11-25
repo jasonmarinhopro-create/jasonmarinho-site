@@ -433,7 +433,7 @@ async function launchTimeline() {
     page.on('domcontentloaded', () => { if (!page.url().startsWith('about:')) docs++ })
     const t0 = Date.now()
     await go(page, ctx)
-    const segs = []; const flashes = []; let prev = null; let stable = 0
+    const segs = []; const flashes = []; const frames = []; let prev = null; let stable = 0
     while (Date.now() - t0 < 20_000) {
       const st = await state(page)
       const shot = await page.screenshot({ type: 'png', timeout: 3000 }).catch(() => null)
@@ -445,12 +445,22 @@ async function launchTimeline() {
         const d = g.reduce((a, v, i) => a + Math.abs(v - prev[i]), 0) / g.length
         if (d >= 6) flashes.push(`${t.toFixed(1)} s Δ${Math.round(d)} (${l})`)
       }
-      if (g) prev = g
+      if (g) { prev = g; frames.push({ t, g, l }) }
       if (l === 'page') { stable++; if (stable >= 25) break } else stable = 0
       await page.waitForTimeout(60)
     }
     lines.push(`- **${name}** : ` + segs.map((x, i) => `${x.l} ${x.from.toFixed(1)}${segs[i + 1] ? `-${segs[i + 1].from.toFixed(1)}` : '+'} s`).join(' → '))
     lines.push(`  - changements visuels marqués (Δ ≥ 6 sur 255) : ${flashes.length ? flashes.join(' · ') : 'aucun'}`)
+    // Distance de chaque image à l'image finale : un « flash » = l'écran
+    // s'éloigne de la page finale après s'en être rapproché (même en fondu)
+    if (frames.length > 2) {
+      const fin = frames[frames.length - 1].g
+      const dist = frames.map(f => ({ t: f.t, l: f.l, d: f.g.reduce((a, v, i) => a + Math.abs(v - fin[i]), 0) / fin.length }))
+      const backs = []; let low = Infinity
+      for (const x of dist) { if (x.d < low) low = x.d; else if (x.d - low >= 8) { backs.push(`${x.t.toFixed(1)} s (+${Math.round(x.d - low)}, ${x.l})`); low = x.d } }
+      lines.push(`  - retours en arrière de l’écran (s’éloigne de la page finale de ≥ 8) : ${backs.length ? backs.join(' · ') : 'aucun'}`)
+      lines.push(`  - distance à la page finale : ${dist.filter((_, i) => i % 2 === 0).map(x => `${x.t.toFixed(1)}:${Math.round(x.d)}`).join(' ')}`)
+    }
     lines.push(`  - navigations du document : ${docs}`)
     await ctx.close()
   }

@@ -24,6 +24,15 @@ export default function LaunchSplashOut() {
     return () => window.clearInterval(t)
   }, [gone])
 
+  // Animations d'apparition de nouveau normales 2 s après le fondu final :
+  // celles déjà lancées sont finies depuis longtemps, rien ne se rejoue
+  // (durée réduite puis rétablie, jamais animation:none, qui les relancerait)
+  useEffect(() => {
+    if (!gone) return
+    const t = window.setTimeout(() => document.documentElement.classList.remove('jm-calm'), 2000)
+    return () => window.clearTimeout(t)
+  }, [gone])
+
   if (gone) return null
   return (
     <div ref={ref} style={{ display: 'contents' }} onAnimationEnd={e => {

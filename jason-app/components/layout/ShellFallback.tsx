@@ -33,6 +33,7 @@ const CSS = `
 @keyframes jmHold{0%,97%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
 .jm-snap{position:absolute;inset:0;z-index:2;overflow:hidden;background:var(--bg);color:var(--text);text-align:start;pointer-events:none}
 .jm-snap:empty{display:none}
+.jm-snap *{animation:none!important;transition:none!important}
 .jm-snap:not(:empty)::after{content:"Mise à jour…";position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;padding:7px 14px;border-radius:999px;background:#004C3F;color:#fff;font-size:13px;font-family:var(--font-outfit),system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.18)}
 @media (prefers-reduced-motion: reduce){.jm-splash>img,.jm-splash-bar span{animation:none}}
 `
@@ -65,6 +66,12 @@ export default function ShellFallback({
       {/* 20/11/2026 : copie de la dernière page d'arrivée par-dessus le logo
           (ouverture de l'app seulement, lib/launch-snapshot.ts) */}
       {snap && <SnapLayer />}
+      {/* 25/11/2026 (Jason : « la page se charge 3 fois, 3 flashs ») : les blocs
+          .fade-up de la page démarrent invisibles et rejouaient leur apparition
+          à chaque insertion (copie, 2e copie, vraie page). Pendant l'ouverture,
+          leurs animations se terminent tout de suite (html.jm-calm, globals.css) ;
+          LaunchSplashOut retire la classe 2 s après le fondu final. */}
+      {snap && <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('jm-calm')" }} />}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/icon-192.png" alt="" width={88} height={88} />
       <p className="jm-splash-name">Jason <em>Marinho</em></p>
