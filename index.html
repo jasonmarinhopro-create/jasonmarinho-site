@@ -1058,10 +1058,16 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
     var dots=f.querySelector('[data-pdots]'),kk=f.querySelector('[data-pk]'),cur=0,t,red=matchMedia('(prefers-reduced-motion:reduce)').matches;
     dots.innerHTML=S.map(function(_,i){return '<button type="button" data-pgo="'+i+'" aria-label="Offre '+(i+1)+'"><i></i></button>'}).join('');
     var D=dots.querySelectorAll('button');
-    function go(n){cur=n;S.forEach(function(x,i){x.hidden=i!==n});D.forEach(function(x,i){x.classList.remove('on');x.classList.toggle('done',i<n);void x.offsetWidth;if(i===n)x.classList.add('on')});kk.textContent=S[n].getAttribute('data-k')||'Offre partenaire';clearTimeout(t);if(!red)t=setTimeout(function(){go((cur+1)%S.length)},7000)}
+    // Pause au survol (souris seulement : sur téléphone, un toucher bloquait la rotation
+    // pour de bon) : la barre s'arrête où elle en est et repart d'où elle s'est arrêtée.
+    var DUREE=7000,reste=DUREE,depart=0,hover=matchMedia('(hover:hover) and (pointer:fine)').matches;
+    function lance(ms){clearTimeout(t);reste=ms;depart=Date.now();if(!red)t=setTimeout(function(){go((cur+1)%S.length)},ms)}
+    function go(n){cur=n;S.forEach(function(x,i){x.hidden=i!==n});D.forEach(function(x,i){x.classList.remove('on');x.querySelector('i').style.animationPlayState='';x.classList.toggle('done',i<n);void x.offsetWidth;if(i===n)x.classList.add('on')});kk.textContent=S[n].getAttribute('data-k')||'Offre partenaire';lance(DUREE)}
     dots.addEventListener('click',function(e){var b=e.target.closest('[data-pgo]');if(b)go(+b.getAttribute('data-pgo'))});
-    f.addEventListener('mouseenter',function(){clearTimeout(t);D[cur].classList.remove('on');D[cur].classList.add('done')});
-    f.addEventListener('mouseleave',function(){go(cur)});
+    if(hover){
+      f.addEventListener('mouseenter',function(){clearTimeout(t);reste=Math.max(0,reste-(Date.now()-depart));D[cur].querySelector('i').style.animationPlayState='paused'});
+      f.addEventListener('mouseleave',function(){D[cur].querySelector('i').style.animationPlayState='running';lance(reste)});
+    }
     go(0);
     var cd=f.querySelector('[data-pcd]');
     if(cd&&bf){var E=Date.parse('2026-12-13T00:00:00+01:00'),B=cd.querySelectorAll('b');(function tick(){var d=Math.max(0,E-Date.now()),v=[Math.floor(d/864e5),Math.floor(d/36e5)%24,Math.floor(d/6e4)%60,Math.floor(d/1e3)%60];B.forEach(function(b,i){b.textContent=String(v[i]).padStart(2,'0')});setTimeout(tick,1000)})()}
