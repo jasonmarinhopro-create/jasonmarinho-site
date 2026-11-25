@@ -1855,3 +1855,12 @@ a { color: inherit; }
   .txt-long { display: none; }
   .txt-court { display: inline; }
 }
+
+/* Ouverture de l'app (25/11/2026, « 3 flashs ») : pendant que la copie de la
+   page d'arrivée est affichée, les apparitions en fondu de la page se
+   terminent tout de suite (sous la copie). Durée réduite et non
+   animation:none : rétablir la durée ne relance pas une animation finie. */
+html.jm-calm .fade-up {
+  animation-duration: 1ms !important;
+  animation-delay: 0s !important;
+}

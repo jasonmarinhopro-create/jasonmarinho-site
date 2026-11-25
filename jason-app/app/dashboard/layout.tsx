@@ -31,6 +31,7 @@ import PerfReporter from '@/components/perf/PerfReporter'
 import LastSeenPing from '@/components/layout/LastSeenPing'
 import LessonReturnPill from '@/components/formations/LessonReturnPill'
 import { perfTimer } from '@/lib/perf/server-timing'
+import { ADMIN_MODE_COOKIE } from '@/lib/admin-mode'
 import { getQgCount } from '@/lib/admin/qg-count'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): string {
@@ -118,6 +119,8 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   timer.done()
 
   const isAdmin = profile.role === 'admin'
+  // Mode admin de l'appareil : menu admin rendu dès le serveur (25/11/2026)
+  const adminModeCookie = isAdmin && cookies().get(ADMIN_MODE_COOKIE)?.value === '1'
   const planLabel = planToLabel(profile.plan, profile.role)
 
   // Point « du neuf » du menu hôte : actualités des hôtes seulement
@@ -138,6 +141,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
     <ThemeProvider>
       <div style={styles.layout} className="dash-layout">
         <Sidebar
+          initialAdminMode={adminModeCookie}
           isAdmin={isAdmin}
           isContributor={profile.is_contributor ?? false}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
@@ -152,6 +156,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           spaces={spacesResult.spaces}
         />
         <Header
+          initialAdminMode={adminModeCookie}
           userName={profile.full_name ?? undefined}
           currentPlan={planLabel}
           isAdmin={isAdmin}

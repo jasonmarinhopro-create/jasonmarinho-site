@@ -34,6 +34,11 @@ on:
         required: false
         default: false
         type: boolean
+      launch:
+        description: 'Ouverture après connexion : logo, copie, squelette, page et changements visuels (sans capture)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -52,7 +57,7 @@ jobs:
         with: { node-version: 22 }
       - name: Playwright
         run: |
-          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.47.2 pngjs@7.0.0 >/dev/null && npx playwright install --with-deps chromium >/dev/null
       - name: Audit
         env:
           NODE_PATH: /tmp/pw/node_modules
@@ -62,5 +67,6 @@ jobs:
           REPEAT: ${{ inputs.repeat }}
           NET: ${{ inputs.net && '1' || '' }}
           NAV: ${{ inputs.nav && '1' || '' }}
+          LAUNCH: ${{ inputs.launch && '1' || '' }}
         run: |
-          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --repeat "${REPEAT:-1}" ${NET:+--net} ${NAV:+--nav} --out /tmp/audit.json
+          node scripts/audit-responsive.mjs --${{ inputs.mode }} ${ONLY:+--only "$ONLY"} --repeat "${REPEAT:-1}" ${NET:+--net} ${NAV:+--nav} ${LAUNCH:+--launch} --out /tmp/audit.json

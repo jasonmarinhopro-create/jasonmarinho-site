@@ -375,5 +375,122 @@ async function navTimeline() {
   await closeSession()
 }
 
-if (process.argv.includes('--nav')) navTimeline().catch(e => { console.error('Parcours impossible :', e.message); process.exit(1) })
+// ── Ouverture après connexion (--launch, 25/11/2026) ───────────────────────
+// Jason : « je me connecte et je vois la page d'accueil se charger 3 fois avec
+// 3 flashs d'affilée ». Rejoue, en lecture seule, (1) une première visite de
+// l'Accueil (qui enregistre la copie de la page d'arrivée), puis (2) la
+// connexion (cookie jm-launch + chargement complet de /dashboard, comme
+// goToApp) et (3) le lancement de l'app installée (/ouverture). Toutes les
+// ~100 ms : ce qui est à l'écran (logo, copie, squelette, page) et l'ampleur
+// du changement visuel d'une image à l'autre (luminosité moyenne d'une grille
+// 12 × 24, un nombre de 0 à 255 : aucune capture ni aucun texte dans le rapport).
+async function launchTimeline() {
+  const { PNG } = require('pngjs')
+  const browser = await chromium.launch()
+  const cookies = await appSessionCookies()
+  const lines = ['## Ouverture après connexion (états à l’écran et changements visuels)', '']
+  const grid = buf => {
+    const png = PNG.sync.read(buf); const gw = 12, gh = 24; const out = new Array(gw * gh).fill(0); const cnt = new Array(gw * gh).fill(0)
+    for (let y = 0; y < png.height; y += 3) for (let x = 0; x < png.width; x += 3) {
+      const i = (y * png.width + x) * 4; const l = 0.299 * png.data[i] + 0.587 * png.data[i + 1] + 0.114 * png.data[i + 2]
+      const k = Math.min(gh - 1, Math.floor(y / png.height * gh)) * gw + Math.min(gw - 1, Math.floor(x / png.width * gw)); out[k] += l; cnt[k]++
+    }
+    return out.map((v, k) => v / Math.max(1, cnt[k]))
+  }
+  const state = page => page.evaluate(() => {
+    const vis = e => { const cs = getComputedStyle(e); return cs.visibility !== 'hidden' && cs.display !== 'none' && parseFloat(cs.opacity) > 0.05 }
+    let overlay = ''
+    for (const sp of document.querySelectorAll('.jm-splash')) {
+      if (!vis(sp)) continue
+      const snap = sp.querySelector('.jm-snap')
+      const kind = snap && snap.innerHTML && vis(snap) ? 'copie' : 'logo'
+      const v = sp.classList.contains('jm-splash--out') ? ' (fondu)' : sp.classList.contains('jm-splash--delayed') ? ' (différé)' : ''
+      overlay = kind + v + ` ${Math.round(parseFloat(getComputedStyle(sp).opacity) * 100)} %`
+    }
+    const main = document.querySelector('.dash-main')
+    let skel = !!document.querySelector('.dash-main [data-page-skel], .dash-main [aria-busy="true"]')
+    const txt = main ? (main.innerText || '').replace(/\s+/g, ' ').trim().length : -1
+    return { overlay, skel, txt, path: location.pathname, splashes: document.querySelectorAll('.jm-splash').length }
+  }).catch(() => ({ overlay: '', skel: false, txt: -2, path: '?', splashes: 0 }))
+  const label = st => st.txt === -2 ? 'document en chargement' : st.overlay ? st.overlay.replace(/ \d+ %$/, '') : st.skel ? 'squelette' : st.txt < 0 ? 'pas de cadre' : st.txt < 40 ? 'zone vide' : 'page'
+
+  async function scenario(name, viewport, go, withCopy, admin = false) {
+    const ctx = await browser.newContext({ viewport })
+    await ctx.addCookies(cookies)
+    // Mode admin resté actif sur l'appareil (cookie lu par le serveur, réglage lu par le menu)
+    if (admin) await ctx.addCookies([{ name: 'jm-admin-mode', value: '1', domain: 'app.jasonmarinho.com', path: '/', secure: true, sameSite: 'Lax' }])
+    await ctx.addInitScript(a => { try { localStorage.setItem('cookie_consent_v2', JSON.stringify({ essential: true, analytics: false, t: Date.now() })); if (a) localStorage.setItem('admin-mode', 'true') } catch { /* ignore */ } }, admin)
+    await ctx.route('**/*', route => (route.request().method() === 'GET' ? route.continue() : route.abort()))
+    const page = await ctx.newPage()
+    if (withCopy) {
+      // 1re visite : la copie de l'Accueil s'enregistre dans le navigateur
+      const key = admin ? 'jm-snap:admin' : 'jm-snap:user'
+      await page.goto(`https://app.jasonmarinho.com${admin ? '/dashboard/admin' : '/dashboard'}`, { waitUntil: 'load', timeout: 60_000 })
+      const ok = await page.waitForFunction(k => { try { return !!localStorage.getItem(k) } catch { return false } }, key, { timeout: 60_000, polling: 500 }).then(() => true).catch(() => false)
+      const size = await page.evaluate(k => (localStorage.getItem(k) || '').length, key)
+      lines.push(`- ${name} : copie enregistrée ${ok ? `(${Math.round(size / 1024)} Ko)` : 'NON (45 s)'}`)
+      await page.goto('about:blank')
+    }
+    let docs = 0
+    // Vrais chargements du document (pas les changements d'adresse de l'app)
+    page.on('domcontentloaded', () => { if (!page.url().startsWith('about:')) docs++ })
+    const t0 = Date.now()
+    await go(page, ctx)
+    const segs = []; const flashes = []; const frames = []; let prev = null; let stable = 0
+    while (Date.now() - t0 < 20_000) {
+      const st = await state(page)
+      const shot = await page.screenshot({ type: 'png', timeout: 3000 }).catch(() => null)
+      const g = shot ? grid(shot) : null
+      const t = (Date.now() - t0) / 1000
+      const l = label(st)
+      if (!segs.length || segs[segs.length - 1].l !== l) segs.push({ l, from: t })
+      if (g && prev) {
+        const d = g.reduce((a, v, i) => a + Math.abs(v - prev[i]), 0) / g.length
+        if (d >= 6) flashes.push(`${t.toFixed(1)} s Δ${Math.round(d)} (${l})`)
+      }
+      if (g) { prev = g; frames.push({ t, g, l }) }
+      if (l === 'page') { stable++; if (stable >= 35) break } else stable = 0
+      await page.waitForTimeout(60)
+    }
+    lines.push(`- **${name}** : ` + segs.map((x, i) => `${x.l} ${x.from.toFixed(1)}${segs[i + 1] ? `-${segs[i + 1].from.toFixed(1)}` : '+'} s`).join(' → '))
+    lines.push(`  - changements visuels marqués (Δ ≥ 6 sur 255) : ${flashes.length ? flashes.join(' · ') : 'aucun'}`)
+    // Distance de chaque image à l'image finale : un « flash » = l'écran
+    // s'éloigne de la page finale après s'en être rapproché (même en fondu)
+    if (frames.length > 2) {
+      const fin = frames[frames.length - 1].g
+      const dist = frames.map(f => ({ t: f.t, l: f.l, d: f.g.reduce((a, v, i) => a + Math.abs(v - fin[i]), 0) / fin.length }))
+      const backs = []; let low = Infinity
+      for (const x of dist) { if (x.d < low) low = x.d; else if (x.d - low >= 8) { backs.push(`${x.t.toFixed(1)} s (+${Math.round(x.d - low)}, ${x.l})`); low = x.d } }
+      lines.push(`  - retours en arrière de l’écran (s’éloigne de la page finale de ≥ 8) : ${backs.length ? backs.join(' · ') : 'aucun'}`)
+      lines.push(`  - distance à la page finale : ${dist.filter((_, i) => i % 2 === 0).map(x => `${x.t.toFixed(1)}:${Math.round(x.d)}`).join(' ')}`)
+    }
+    lines.push(`  - navigations du document : ${docs}`)
+    await ctx.close()
+  }
+  const login = async page => {
+    await page.context().addCookies([{ name: 'jm-launch', value: '1', domain: 'app.jasonmarinho.com', path: '/', secure: true, sameSite: 'Lax' }])
+    const admin = (await page.context().cookies('https://app.jasonmarinho.com')).some(c => c.name === 'jm-admin-mode' && c.value === '1')
+    await page.goto(`https://app.jasonmarinho.com${admin ? '/dashboard/admin' : '/dashboard'}`, { waitUntil: 'commit', timeout: 60_000 })
+  }
+  const ouverture = async page => { await page.goto('https://app.jasonmarinho.com/ouverture', { waitUntil: 'commit', timeout: 60_000 }) }
+  // « only » = admin dans le workflow : seulement les scénarios du mode admin
+  const ADMIN_ONLY = process.argv.includes('--admin') || ONLY.includes('admin')
+  for (const [vn, vp] of [['téléphone', { width: 390, height: 844 }], ['ordinateur', { width: 1440, height: 900 }]]) {
+    if (!ADMIN_ONLY) {
+      await scenario(`Connexion, ${vn}, sans copie`, vp, login, false)
+      await scenario(`Connexion, ${vn}, avec copie`, vp, login, true)
+      await scenario(`Lancement de l’app, ${vn}, avec copie`, vp, ouverture, true)
+    }
+    await scenario(`ADMIN connexion, ${vn}, sans copie`, vp, login, false, true)
+    await scenario(`ADMIN connexion, ${vn}, avec copie`, vp, login, true, true)
+    await scenario(`ADMIN lancement de l’app, ${vn}, avec copie`, vp, ouverture, true, true)
+  }
+  console.log(lines.join('\n'))
+  if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n')
+  await browser.close()
+  await closeSession()
+}
+
+if (process.argv.includes('--launch')) launchTimeline().catch(e => { console.error('Relevé impossible :', e.message); process.exit(1) })
+else if (process.argv.includes('--nav')) navTimeline().catch(e => { console.error('Parcours impossible :', e.message); process.exit(1) })
 else main().catch(e => { console.error('Audit impossible :', e.message); process.exit(1) })
