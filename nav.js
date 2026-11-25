@@ -1618,7 +1618,7 @@
         offre: 'Jusqu’à 6 mois offerts (Black Friday)', titre: 'Compte pro Shine : jusqu’à 6 mois offerts, jusqu’au 30 novembre',
         texte: '<strong style="color:#0F1A0D">Black Friday Shine : jusqu’à 6 mois offerts</strong> sur ton compte pro, jusqu’au 30 novembre. Start : 3 mois offerts, Plus : 4 mois, Business : 6 mois. Pour les nouveaux comptes.',
         lienNormal: 'ae=2249',
-        lienPromo: '', // lien de l'offre (Affilae > Profil > Élément pub > Élément créatif) ; vide = lien habituel
+        lienPromo: 'https://www.shine.fr/tarifs-black-week/?cycle=mensuel&utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249', // lien de l'offre (Affilae > Profil > Élément pub > Élément créatif) ; vide = lien habituel
         lien: 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
       }
     ];

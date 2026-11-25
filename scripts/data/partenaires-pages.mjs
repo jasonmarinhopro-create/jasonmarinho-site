@@ -47,7 +47,7 @@ const SHINE_PRO = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affil
 // Lien de l'offre Black Friday Shine (Affilae > Profil > Élément pub > Élément
 // créatif) : à coller ici et dans nav.js (lienPromo). Vide = lien habituel.
 // Après le 30/11 le lien habituel revient seul (Shine l'exige).
-const SHINE_BF = ''
+const SHINE_BF = 'https://www.shine.fr/tarifs-black-week/?cycle=mensuel&utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
 const SHINE_FACTURE = 'https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&utm_medium=affiliation&utm_campaign=jason-marinho&utm_content=2226&ae=2226'
 
 // ── JD2M (Affilae, numéro d'affilié 244, 17/10/2026) ──
