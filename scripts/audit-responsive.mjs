@@ -414,17 +414,20 @@ async function launchTimeline() {
   }).catch(() => ({ overlay: '', skel: false, txt: -2, path: '?', splashes: 0 }))
   const label = st => st.txt === -2 ? 'document en chargement' : st.overlay ? st.overlay.replace(/ \d+ %$/, '') : st.skel ? 'squelette' : st.txt < 0 ? 'pas de cadre' : st.txt < 40 ? 'zone vide' : 'page'
 
-  async function scenario(name, viewport, go, withCopy) {
+  async function scenario(name, viewport, go, withCopy, admin = false) {
     const ctx = await browser.newContext({ viewport })
     await ctx.addCookies(cookies)
-    await ctx.addInitScript(() => { try { localStorage.setItem('cookie_consent_v2', JSON.stringify({ essential: true, analytics: false, t: Date.now() })) } catch { /* ignore */ } })
+    // Mode admin resté actif sur l'appareil (cookie lu par le serveur, réglage lu par le menu)
+    if (admin) await ctx.addCookies([{ name: 'jm-admin-mode', value: '1', domain: 'app.jasonmarinho.com', path: '/', secure: true, sameSite: 'Lax' }])
+    await ctx.addInitScript(a => { try { localStorage.setItem('cookie_consent_v2', JSON.stringify({ essential: true, analytics: false, t: Date.now() })); if (a) localStorage.setItem('admin-mode', 'true') } catch { /* ignore */ } }, admin)
     await ctx.route('**/*', route => (route.request().method() === 'GET' ? route.continue() : route.abort()))
     const page = await ctx.newPage()
     if (withCopy) {
       // 1re visite : la copie de l'Accueil s'enregistre dans le navigateur
-      await page.goto('https://app.jasonmarinho.com/dashboard', { waitUntil: 'load', timeout: 60_000 })
-      const ok = await page.waitForFunction(() => { try { return !!localStorage.getItem('jm-snap:user') } catch { return false } }, null, { timeout: 45_000, polling: 500 }).then(() => true).catch(() => false)
-      const size = await page.evaluate(() => (localStorage.getItem('jm-snap:user') || '').length)
+      const key = admin ? 'jm-snap:admin' : 'jm-snap:user'
+      await page.goto(`https://app.jasonmarinho.com${admin ? '/dashboard/admin' : '/dashboard'}`, { waitUntil: 'load', timeout: 60_000 })
+      const ok = await page.waitForFunction(k => { try { return !!localStorage.getItem(k) } catch { return false } }, key, { timeout: 60_000, polling: 500 }).then(() => true).catch(() => false)
+      const size = await page.evaluate(k => (localStorage.getItem(k) || '').length, key)
       lines.push(`- ${name} : copie enregistrée ${ok ? `(${Math.round(size / 1024)} Ko)` : 'NON (45 s)'}`)
       await page.goto('about:blank')
     }
@@ -446,7 +449,7 @@ async function launchTimeline() {
         if (d >= 6) flashes.push(`${t.toFixed(1)} s Δ${Math.round(d)} (${l})`)
       }
       if (g) { prev = g; frames.push({ t, g, l }) }
-      if (l === 'page') { stable++; if (stable >= 25) break } else stable = 0
+      if (l === 'page') { stable++; if (stable >= 35) break } else stable = 0
       await page.waitForTimeout(60)
     }
     lines.push(`- **${name}** : ` + segs.map((x, i) => `${x.l} ${x.from.toFixed(1)}${segs[i + 1] ? `-${segs[i + 1].from.toFixed(1)}` : '+'} s`).join(' → '))
@@ -466,13 +469,21 @@ async function launchTimeline() {
   }
   const login = async page => {
     await page.context().addCookies([{ name: 'jm-launch', value: '1', domain: 'app.jasonmarinho.com', path: '/', secure: true, sameSite: 'Lax' }])
-    await page.goto('https://app.jasonmarinho.com/dashboard', { waitUntil: 'commit', timeout: 60_000 })
+    const admin = (await page.context().cookies('https://app.jasonmarinho.com')).some(c => c.name === 'jm-admin-mode' && c.value === '1')
+    await page.goto(`https://app.jasonmarinho.com${admin ? '/dashboard/admin' : '/dashboard'}`, { waitUntil: 'commit', timeout: 60_000 })
   }
   const ouverture = async page => { await page.goto('https://app.jasonmarinho.com/ouverture', { waitUntil: 'commit', timeout: 60_000 }) }
+  // « only » = admin dans le workflow : seulement les scénarios du mode admin
+  const ADMIN_ONLY = process.argv.includes('--admin') || ONLY.includes('admin')
   for (const [vn, vp] of [['téléphone', { width: 390, height: 844 }], ['ordinateur', { width: 1440, height: 900 }]]) {
-    await scenario(`Connexion, ${vn}, sans copie`, vp, login, false)
-    await scenario(`Connexion, ${vn}, avec copie`, vp, login, true)
-    await scenario(`Lancement de l’app, ${vn}, avec copie`, vp, ouverture, true)
+    if (!ADMIN_ONLY) {
+      await scenario(`Connexion, ${vn}, sans copie`, vp, login, false)
+      await scenario(`Connexion, ${vn}, avec copie`, vp, login, true)
+      await scenario(`Lancement de l’app, ${vn}, avec copie`, vp, ouverture, true)
+    }
+    await scenario(`ADMIN connexion, ${vn}, sans copie`, vp, login, false, true)
+    await scenario(`ADMIN connexion, ${vn}, avec copie`, vp, login, true, true)
+    await scenario(`ADMIN lancement de l’app, ${vn}, avec copie`, vp, ouverture, true, true)
   }
   console.log(lines.join('\n'))
   if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n')
