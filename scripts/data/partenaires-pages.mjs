@@ -918,6 +918,22 @@ export const PAGES = [
       cta: { label: 'Voir les offres JD2M', href: JD2M },
       note: "Lien affilié : JD2M me verse une commission si tu souscris via ce lien, sans aucun surcoût pour toi.",
     },
+    // Black Week JD2M (e-mail Affilae du 25/11/2026) : du 23 au 30/11/2026 inclus,
+    // affichée seule entre ces dates, puis la page revient à l'offre habituelle.
+    bf: {
+      du: '2026-11-23T00:00:00+01:00', au: '2026-12-01T00:00:00+01:00',
+      tag: 'Black Week · jusqu’au 30 novembre',
+      titre: '1 année achetée, la 2e offerte',
+      sous: "Tu souscris ton accompagnement pour l'année fiscale 2026 au tarif habituel, l'année fiscale 2027 t'est offerte. Offres Essentielle et Intégrale, pour les nouveaux clients.",
+      h1: 'JD2M : ta compta LMNP 2026, <em>et 2027 offerte</em>',
+      lead: "Jusqu'au 30 novembre, JD2M (Jedeclaremonmeuble.com) offre l'année fiscale 2027 à ceux qui souscrivent leur accompagnement LMNP pour 2026. Tu as commencé à louer en meublé cette année ? Ta première déclaration LMNP arrive au printemps 2027 : t'organiser maintenant t'évite le rush de mai.",
+      points: [
+        "Année fiscale 2027 offerte, sans date limite d'utilisation",
+        'Offres Essentielle et Intégrale (hors Prestige), nouveaux clients',
+        "Souscription et paiement jusqu'au 30 novembre inclus",
+      ],
+      texte: "<strong>Black Week JD2M :</strong> offre réservée aux nouveaux clients, sur l'Offre Essentielle et l'Offre Intégrale (hors Offre Prestige), pour une 1re année souscrite et payée jusqu'au 30 novembre 2026 inclus. Tu hésites entre micro-BIC et réel ? Les conseillers JD2M font une simulation pour comparer les deux régimes.",
+    },
     pourquoi: {
       titre: 'Pourquoi je recommande <em>JD2M</em>',
       items: [

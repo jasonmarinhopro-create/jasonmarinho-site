@@ -160,6 +160,9 @@
   .cp-r{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 22px;background:var(--cr);border-left:2px dashed rgba(0,76,63,.22);min-width:132px;text-align:center}
   .cp-pct{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2.2rem,4vw,2.8rem);line-height:1;color:var(--g)}
   .cp-r small{font-size:12px;color:var(--tl);margin-top:6px}
+  [data-bf][hidden],[data-nbf][hidden]{display:none!important}
+  .vcard.ofc-bf{background:var(--yl)}
+  .vcard.ofc-bf .k{color:#6B5300}
   .cp.bf{background:var(--yl)}
   .cp.bf .cp-r{background:var(--y);border-left-color:rgba(61,46,0,.25)}
   .cp.bf .cp-pct{color:var(--gd)}
@@ -457,15 +460,17 @@
       </nav>
       <div class="duo" aria-hidden="true"><span class="lg">J</span><span class="x">×</span><span class="jm">JM</span></div>
       <span class="lbl"><i class="ph-bold ph-handshake"></i>Partenaire · Comptabilité LMNP</span>
-      <h1 class="h1">JD2M : ta déclaration LMNP au réel, <em>avec un spécialiste à côté de toi</em></h1>
-      <p class="lead">JD2M (Jedeclaremonmeuble.com) accompagne les loueurs en meublé depuis 2012 et ne fait que ça : la comptabilité LMNP au régime réel. Je le conseille aux hôtes qui veulent passer au réel sans tout faire seuls, ou qui préfèrent confier leur dossier à un expert-comptable du début à la fin.</p>
+      <h1 class="h1"><span data-nbf hidden>JD2M : ta déclaration LMNP au réel, <em>avec un spécialiste à côté de toi</em></span><span data-bf>JD2M : ta compta LMNP 2026, <em>et 2027 offerte</em></span></h1>
+      <p class="lead"><span data-nbf hidden>JD2M (Jedeclaremonmeuble.com) accompagne les loueurs en meublé depuis 2012 et ne fait que ça : la comptabilité LMNP au régime réel. Je le conseille aux hôtes qui veulent passer au réel sans tout faire seuls, ou qui préfèrent confier leur dossier à un expert-comptable du début à la fin.</span><span data-bf>Jusqu'au 30 novembre, JD2M (Jedeclaremonmeuble.com) offre l'année fiscale 2027 à ceux qui souscrivent leur accompagnement LMNP pour 2026. Tu as commencé à louer en meublé cette année ? Ta première déclaration LMNP arrive au printemps 2027 : t'organiser maintenant t'évite le rush de mai.</span></p>
     </div>
     <aside class="offer2" aria-label="Offre JD2M">
-      <div class="vcard ofc"><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">Offre Essentielle dès 299 € TTC/an</p><p class="ofc-s">Une liasse fiscale par an, relevé d'octobre 2026</p></div>
+      
+      <div class="vcard ofc ofc-bf" data-bf><div class="k"><i class="ph-bold ph-timer"></i>Black Week · jusqu’au 30 novembre</div><p class="ofc-t">1 année achetée, la 2e offerte</p><p class="ofc-s">Tu souscris ton accompagnement pour l'année fiscale 2026 au tarif habituel, l'année fiscale 2027 t'est offerte. Offres Essentielle et Intégrale, pour les nouveaux clients.</p></div>
+      <div class="vcard ofc" data-nbf hidden><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">Offre Essentielle dès 299 € TTC/an</p><p class="ofc-s">Une liasse fiscale par an, relevé d'octobre 2026</p></div>
       <ul class="pts">
-        <li><i class="ph-bold ph-check-circle"></i><span>Logiciel guidé et conseillers spécialisés LMNP</span></li>
-        <li><i class="ph-bold ph-check-circle"></i><span>Offre Intégrale : un expert-comptable fait tout pour toi</span></li>
-        <li><i class="ph-bold ph-check-circle"></i><span>Frais de comptabilité déductibles de tes recettes au réel</span></li>
+        <li><i class="ph-bold ph-check-circle"></i><span><span data-nbf hidden>Logiciel guidé et conseillers spécialisés LMNP</span><span data-bf>Année fiscale 2027 offerte, sans date limite d'utilisation</span></span></li>
+        <li><i class="ph-bold ph-check-circle"></i><span><span data-nbf hidden>Offre Intégrale : un expert-comptable fait tout pour toi</span><span data-bf>Offres Essentielle et Intégrale (hors Prestige), nouveaux clients</span></span></li>
+        <li><i class="ph-bold ph-check-circle"></i><span><span data-nbf hidden>Frais de comptabilité déductibles de tes recettes au réel</span><span data-bf>Souscription et paiement jusqu'au 30 novembre inclus</span></span></li>
       </ul>
       <div class="cta-row"><a href="https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&amp;utm_campaign=partenariat&amp;utm_content=244&amp;ae=244" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Voir les offres JD2M</a></div>
       <p class="note2">Lien affilié : JD2M me verse une commission si tu souscris via ce lien, sans aucun surcoût pour toi.</p>
@@ -543,11 +548,12 @@
 
 <section id="essayer">
   <div class="go">
-    <h3>Offre Essentielle dès 299 € TTC/an</h3>
-    <p>Une liasse fiscale par an, relevé d'octobre 2026.</p>
+    <h3><span data-nbf hidden>Offre Essentielle dès 299 € TTC/an</span><span data-bf>1 année achetée, la 2e offerte</span></h3>
+    <p><span data-nbf hidden>Une liasse fiscale par an, relevé d'octobre 2026.</span><span data-bf>Tu souscris ton accompagnement pour l'année fiscale 2026 au tarif habituel, l'année fiscale 2027 t'est offerte. Offres Essentielle et Intégrale, pour les nouveaux clients.</span></p>
     <div class="cta-row"><a href="https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&amp;utm_campaign=partenariat&amp;utm_content=244&amp;ae=244" target="_blank" rel="sponsored noopener" class="b1"><i class="ph-bold ph-rocket"></i>Voir les offres JD2M</a></div>
     
     
+    <p class="bfl" data-bf><strong>Black Week JD2M :</strong> offre réservée aux nouveaux clients, sur l'Offre Essentielle et l'Offre Intégrale (hors Offre Prestige), pour une 1re année souscrite et payée jusqu'au 30 novembre 2026 inclus. Tu hésites entre micro-BIC et réel ? Les conseillers JD2M font une simulation pour comparer les deux régimes.</p>
     <p class="aff-n">Lien affilié : JD2M me verse une commission si tu souscris via ce lien, sans aucun surcoût pour toi.</p>
   </div>
 </section>
@@ -587,7 +593,15 @@
 
 <div id="footer-mount"></div>
 
-
+<script>
+(function(){
+  try {
+    var now = Date.now(), on = now >= Date.parse('2026-11-23T00:00:00+01:00') && now < Date.parse('2026-12-01T00:00:00+01:00');
+    document.querySelectorAll('[data-bf]').forEach(function(el){ el.hidden = !on; });
+    document.querySelectorAll('[data-nbf]').forEach(function(el){ el.hidden = on; });
+  } catch (e) {}
+})();
+</script>
 <script src="/nav.js" defer></script>
 <script src="/footer.js" defer></script>
 <script src="/cookie-banner.js" defer></script>

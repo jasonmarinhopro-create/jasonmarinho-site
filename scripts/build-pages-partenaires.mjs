@@ -338,6 +338,8 @@ const CSS2 = `
   .cp-pct{font-family:'Fraunces','Fraunces Fallback',serif;font-size:clamp(2.2rem,4vw,2.8rem);line-height:1;color:var(--g)}
   .cp-r small{font-size:12px;color:var(--tl);margin-top:6px}
   [data-bf][hidden],[data-nbf][hidden]{display:none!important}
+  .vcard.ofc-bf{background:var(--yl)}
+  .vcard.ofc-bf .k{color:#6B5300}
   .cp.bf{background:var(--yl)}
   .cp.bf .cp-r{background:var(--y);border-left-color:rgba(61,46,0,.25)}
   .cp.bf .cp-pct{color:var(--gd)}
@@ -639,8 +641,11 @@ function pageV2(p) {
   const bfNow = Date.now()
   const bfOn = !!(p.bf && bfNow >= Date.parse(p.bf.du) && bfNow < Date.parse(p.bf.au))
   const bfAttr = (promo) => promo ? `data-bf${bfOn ? '' : ' hidden'}` : `data-nbf${bfOn ? ' hidden' : ''}`
-  const bfSwap = (normal, promo, tag = 'span') => (p.bf && p.bf.code && promo) ? `<${tag} ${bfAttr(false)}>${normal}</${tag}><${tag} ${bfAttr(true)}>${promo}</${tag}>` : normal
-  const bfLine = p.bf && !p.bf.code ? `<p class="bfl" data-bf data-bf-from="${p.bf.du}" data-bf-to="${p.bf.au}" hidden>${p.bf.texte}</p>` : ''
+  // Offre temporaire complète : avec un code (Lodgify JASON65) ou sans code, avec
+  // un titre d'offre (JD2M Black Week, 2e année offerte).
+  const bfPlein = !!(p.bf && (p.bf.code || p.bf.titre))
+  const bfSwap = (normal, promo, tag = 'span') => (bfPlein && promo) ? `<${tag} ${bfAttr(false)}>${normal}</${tag}><${tag} ${bfAttr(true)}>${promo}</${tag}>` : normal
+  const bfLine = p.bf && !bfPlein ? `<p class="bfl" data-bf data-bf-from="${p.bf.du}" data-bf-to="${p.bf.au}" hidden>${p.bf.texte}</p>` : ''
   const bfScript = p.bf ? `<script>
 (function(){
   try {
@@ -685,6 +690,7 @@ document.addEventListener('click', function(e){
         </div>
         <div class="cp-r"><div class="cp-pct">${p.bf.pct}</div><small>${p.bf.pctSous}</small></div>
       </div>` : ''}
+      ${p.bf && !p.bf.code && p.bf.titre ? `<div class="vcard ofc ofc-bf" ${bfAttr(true)}><div class="k"><i class="ph-bold ph-timer"></i>${p.bf.tag}</div><p class="ofc-t">${p.bf.titre}</p><p class="ofc-s">${p.bf.sous}</p></div>` : ''}
       ${o.code ? `<div class="cp" id="code"${p.bf && p.bf.code ? ` ${bfAttr(false)}` : ''}>
         <div class="cp-l">
           <span class="cp-tag"><i class="ph-bold ph-gift"></i> Offre partenaire</span>
@@ -692,7 +698,7 @@ document.addEventListener('click', function(e){
           <p class="cp-sub">${o.sous}</p>
         </div>
         <div class="cp-r">${o.pct ? `<div class="cp-pct">${o.pct}</div>` : '<div class="cp-pct"><i class="ph-bold ph-tag"></i></div>'}<small>${o.pctSous}</small></div>
-      </div>` : `<div class="vcard ofc"><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">${o.titre}</p><p class="ofc-s">${o.sous}</p></div>`}
+      </div>` : `<div class="vcard ofc"${bfPlein ? ` ${bfAttr(false)}` : ''}><div class="k"><i class="ph-bold ph-gift"></i>Offre partenaire</div><p class="ofc-t">${o.titre}</p><p class="ofc-s">${o.sous}</p></div>`}
       <ul class="pts">
 ${o.points.map((t, i) => `        <li><i class="ph-bold ph-check-circle"></i><span>${bfSwap(t, p.bf && p.bf.points && p.bf.points[i])}</span></li>`).join('\n')}
       </ul>
@@ -760,12 +766,12 @@ ${p.limites.map(t => `    <div class="er"><b><i class="ph-bold ph-warning-circle
 
 <section id="essayer">
   <div class="go">
-    <h3>${bfSwap(o.titre, p.bf && p.bf.code && `${p.bf.pct} avec ${p.bf.code}`)}</h3>
-    <p>${bfSwap(`${o.sous}.`, p.bf && p.bf.code && `${p.bf.sous}`)}</p>
+    <h3>${bfSwap(o.titre, p.bf && (p.bf.code ? `${p.bf.pct} avec ${p.bf.code}` : p.bf.titre))}</h3>
+    <p>${bfSwap(`${o.sous}.`, p.bf && p.bf.sous)}</p>
     <div class="cta-row">${sponsored(o.cta.href, 'b1', `<i class="ph-bold ph-rocket"></i>${o.cta.label}`)}${o.cta2 ? sponsored(o.cta2.href, 'b2', `<i class="ph-bold ph-${o.cta2.icon || 'video-camera'}"></i>${o.cta2.label}`) : ''}</div>
     ${p.bf && p.bf.code ? `<div class="code" ${bfAttr(true)}><strong>${p.bf.code}</strong><span>${p.bf.texte}</span></div>` : ''}
     ${o.code ? `<div class="code"${p.bf && p.bf.code ? ` ${bfAttr(false)}` : ''}><strong>${o.code}</strong><span>${o.codeTexte}</span></div>` : ''}
-    ${bfLine}
+    ${bfLine}${p.bf && !p.bf.code && p.bf.titre ? `<p class="bfl" ${bfAttr(true)}>${p.bf.texte}</p>` : ''}
     <p class="aff-n">${o.note}</p>
   </div>
 </section>

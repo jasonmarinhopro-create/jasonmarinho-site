@@ -1588,3 +1588,38 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pose); else pose();
   } catch (e) { /* fail-silent */ }
 }());
+
+/* ── Black Week JD2M (e-mail Affilae du 25/11/2026) ──
+   1 année achetée, la 2e offerte : l'année fiscale 2026 au tarif habituel,
+   2027 offerte. Offres Essentielle et Intégrale (hors Prestige), nouveaux
+   clients, 1re année souscrite et payée jusqu'au 30/11/2026 inclus. Affiché
+   du 23/11 au 30/11 inclus, retiré seul ensuite. Encart posé avant chaque
+   encadré JD2M des articles (.aff-jd2m) ; carte du catalogue /partenaires et
+   tuile de l'accueil changées pendant l'offre. La page /partenaires/jd2m a son
+   propre affichage (champ bf de scripts/data/partenaires-pages.mjs). */
+(function () {
+  try {
+    var now = Date.now();
+    if (now < Date.parse('2026-11-23T00:00:00+01:00') || now >= Date.parse('2026-12-01T00:00:00+01:00')) return;
+    var LIEN = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244';
+    function pose() {
+      document.querySelectorAll('.mk-card,.pa-c,.pt').forEach(function (c) {
+        var o = c.querySelector('.mk-offre,.pa-o,.pt-o');
+        var nom = c.querySelector('h3,b,.mk-nom');
+        if (o && nom && /JD2M/.test(nom.textContent) && o.getAttribute('data-bw') !== '1') { o.textContent = '2e année offerte (Black Week)'; o.title = '1 année achetée, la 2e offerte, jusqu’au 30 novembre'; o.setAttribute('data-bw', '1'); }
+      });
+      document.querySelectorAll('.aff-jd2m').forEach(function (b) {
+        if (b.previousElementSibling && b.previousElementSibling.classList.contains('bw-jd2m')) return;
+        var box = document.createElement('aside');
+        box.className = 'bw-jd2m';
+        box.setAttribute('aria-label', 'Offre Black Week JD2M');
+        box.style.cssText = 'margin:18px 0 0;padding:16px 18px;border-radius:16px;background:#FFF4D2;border:1px solid #F2E2A8;color:#4A4022;font-family:Outfit,Outfit Fallback,system-ui,sans-serif;font-size:14.5px;line-height:1.55;text-align:left;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px';
+        box.innerHTML = '<span style="flex:none;padding:4px 10px;border-radius:99px;background:#FFD56B;color:#3D2E00;font-size:12px;font-weight:600">Black Week</span>'
+          + '<span style="flex:1 1 280px;min-width:0"><strong style="color:#0F1A0D">JD2M : 1 année achetée, la 2e offerte</strong>, jusqu’au 30 novembre. Tu souscris pour l’année fiscale 2026 au tarif habituel, l’année 2027 t’est offerte. Offres Essentielle et Intégrale, nouveaux clients.</span>'
+          + '<span style="display:flex;flex-direction:column;gap:4px;align-items:flex-start"><a href="' + LIEN + '" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;height:42px;padding:0 16px;border-radius:10px;background:#0F1A0D;color:#fff;font-weight:600;text-decoration:none">Profiter de l’offre</a><span style="font-size:12px;color:#6B5F3A">Lien affilié</span></span>';
+        b.parentNode.insertBefore(box, b);
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pose); else pose();
+  } catch (e) { /* fail-silent */ }
+}());
