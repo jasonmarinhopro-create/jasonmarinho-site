@@ -4,8 +4,9 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-25 03:31 UTC.
+Mis à jour le 2026-11-25 10:39 UTC.
 
+- 2026-11-26 · stories (4 écrans) · stories-kit-hiver-confort · FB - · IG - · stories FB pending IG pending · « Stories : Le froid arrive : ton logement est prêt ? / Ton kit d’hiver / Un guide à l’abri / Et toi, tu offres  »
 - 2026-11-25 · carrousel · colmar-marches-de-noel · FB pending · IG pending · stories FB pending IG pending · « Ton logement est à Colmar ? Les marchés de Noël commencent, et c’est maintenant que se jouent tes avis de l’hi »
 - 2026-11-24 · stories (4 écrans) · stories-menage-messages-turnover · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Moins d’appels, plus de ménages bien faits / Trois messages suffisent / La photo avant le nettoyage  »
 - 2026-11-23 · photo · calendrier-fetes-ouvert · FB published 0 j'aime 0 comm. · IG published 4 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton 24, ton 25 et ton 31 décembre sont vraiment ouverts à la réservation ? »
