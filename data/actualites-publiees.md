@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-27 · plateformes · Airbnb bascule à 15,5 % côté hôte le 13 octobre 2026 (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-09-27 · fiscalite · Micro-BIC 2026 : classé ou non classé, l'abattement change (https://declarer-ma-location-meublee.com/fiscalite-meuble-tourisme-2026/)
 - 2026-09-28 · reglementation · Voyageur qui refuse de partir : la loi Ripost permet l'expulsion en 72h (https://www.meuble-tourisme-76.fr/news/loi-ripost-et-meuble-de-tourisme)
 - 2026-09-29 · fiscalite · Taxe d'habitation 2027 : les meublés classés peuvent être exonérés (https://www.impots.gouv.fr/formulaire/1205-gd-sd/taxe-dhabitation-demande-dexoneration-pour-meubles-de-tourisme-et-chambres-dh)
 - 2026-09-30 · plateformes · Booking.com : tes virements sont mensuels depuis juillet (https://partner.booking.com/fr/aide/conditions-paiements/produits-paiements/d%C3%A9couvrez-les-paiements-par-bookingcom)
@@ -72,3 +70,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-24 · fiscalite · LCD 2026 : au-delà de 23 000 euros de recettes, tu dois des cotisations sociales (https://www.service-public.gouv.fr/particuliers/vosdroits/F34102)
 - 2026-11-24 · entreprise · Travaux en logement loué : vérifie ta décennale avant le 1er janvier 2027 · pour depannage (https://entreprendre.service-public.gouv.fr/vosdroits/F23667)
 - 2026-11-25 · entreprise · PASS 2027 à 48 900 euros : mets tes bulletins de paie à jour avant janvier · pour menage, depannage (https://fiche-paie.fr/blog/plafond-securite-sociale-2027)
+- 2026-11-26 · entreprise · Versement libératoire de l'IR : opte pour 2027 avant le 31 décembre · pour photographe, menage, depannage (https://www.portail-autoentrepreneur.fr/academie/statut-auto-entrepreneur/versement-liberatoire)
