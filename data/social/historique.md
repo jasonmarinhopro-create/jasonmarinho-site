@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 1 (nouveaux 1, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-26 19:30 UTC.
+Mis à jour le 2026-11-27 01:10 UTC.
 
 - 2026-11-26 · stories demande (4 écrans) · demande-93ee5151 · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Demande : Une équipe de ménage recherchée à Chamonix / Ce qu’il faut / Pas encore d’équipes de ménage dans le  »
 - 2026-11-27 · reel · menage-planning-automatique · FB pending · IG pending · stories FB pending IG pending · « Le planning de la semaine reçu par SMS la veille, puis corrigé deux fois : chaque équipe de ménage connaît. »
