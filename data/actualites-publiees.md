@@ -11,7 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-28 · reglementation · Voyageur qui refuse de partir : la loi Ripost permet l'expulsion en 72h (https://www.meuble-tourisme-76.fr/news/loi-ripost-et-meuble-de-tourisme)
 - 2026-09-29 · fiscalite · Taxe d'habitation 2027 : les meublés classés peuvent être exonérés (https://www.impots.gouv.fr/formulaire/1205-gd-sd/taxe-dhabitation-demande-dexoneration-pour-meubles-de-tourisme-et-chambres-dh)
 - 2026-09-30 · plateformes · Booking.com : tes virements sont mensuels depuis juillet (https://partner.booking.com/fr/aide/conditions-paiements/produits-paiements/d%C3%A9couvrez-les-paiements-par-bookingcom)
 - 2026-10-01 · plateformes · Google Vacation Rentals disparaît des recherches en France (https://www.phocuswire.com/news/distribution/google-removes-vacation-rentals-search-results-eea)
