@@ -2490,63 +2490,69 @@
   <!-- ── Blog ── -->
   <url>
     <loc>https://jasonmarinho.com/blog</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/revenus</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/visibilite</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/experience</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/ressources</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/automatisation</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/reglementation</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-09-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/conciergerie</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/fiscalite</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/driing</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2025-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/reveillon-31-decembre-lcd-7-regles-cadrer-soiree-logement</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/logement-lcd-ski-7-regles-saison-2026-2027-fideliser-voyageurs</loc>
