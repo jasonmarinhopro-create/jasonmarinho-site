@@ -16,6 +16,9 @@ name: Réseaux sociaux
 #                     d'hôtes récentes annoncées tout de suite (demandes.mjs).
 #                     Chromium installé seulement s'il y en a une. File
 #                     d'attente à part, pour ne pas retarder les autres passages.
+#                     Depuis le 28/11/2026, l'app lance aussi cette tâche à
+#                     chaque demande (workflow_dispatch, taches=demandes, jeton
+#                     GITHUB_DISPATCH_TOKEN), de 8 h à 21 h (Paris).
 # Journaux : nombres et noms de fichiers seulement (dépôt public).
 
 on:
@@ -40,7 +43,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: reseaux-sociaux-${{ github.event.schedule == '25 7-20 * * *' && 'demandes' || 'file' }}
+  group: reseaux-sociaux-${{ (github.event.schedule == '25 7-20 * * *' || github.event.inputs.taches == 'demandes') && 'demandes' || 'file' }}
   cancel-in-progress: false
 
 jobs:

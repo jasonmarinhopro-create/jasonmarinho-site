@@ -123,3 +123,17 @@ reconnaissait pas. `syncComments` (`lib/social/comments.ts`) écarte aussi les
 commentaires dont l'identifiant est un `reply_external_id` déjà envoyé, ou
 dont le texte est exactement une réponse envoyée (`isOwnReply`,
 `lib/social/comment-rules.ts`, testée).
+
+## Stories de demande lancées par l'app (28/11/2026)
+
+Les passages planifiés de GitHub partaient avec des heures de retard (la
+première story de demande, Chamonix, est partie le 26/11 bien après la
+demande). Accord de Jason : à chaque demande (`POST /api/demandes`), l'app
+appelle l'API GitHub `workflow_dispatch` de `reseaux-sociaux.yml` avec
+`taches=demandes` (`lib/social/dispatch-demandes.ts`, testé ; 5 s au plus, ne
+lève jamais). De 8 h à 21 h (Paris) seulement ; la nuit, le passage horaire
+du matin prend le relais. Variable Vercel du dashboard `GITHUB_DISPATCH_TOKEN` :
+jeton GitHub « fine-grained » limité au dépôt, droit « Actions : lecture et
+écriture » seulement. Sans elle, rien ne change. File d'attente
+`reseaux-sociaux-demandes` aussi pour ces lancements (une demande ne remplace
+jamais un passage de la file en attente).

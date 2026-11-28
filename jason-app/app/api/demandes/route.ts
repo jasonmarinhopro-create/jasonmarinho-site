@@ -9,6 +9,7 @@ import { creerDemandeMultiVilles } from '@/lib/demandes/send'
 import { cleanAcquisition } from '@/lib/acquisition/rules'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { cors } from './cors'
+import { lancerStoriesDemandes } from '@/lib/social/dispatch-demandes'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -33,5 +34,7 @@ export async function POST(req: Request) {
   if ('error' in res) return NextResponse.json({ error: res.error }, { status: 500, headers })
   // Compteur public de /chiffres à jour tout de suite
   revalidateTag('public-demandes')
+  // Story « Nouvelle demande » publiée tout de suite (sans nom ni contact), 5 s au plus
+  await lancerStoriesDemandes()
   return NextResponse.json(res, { headers })
 }
