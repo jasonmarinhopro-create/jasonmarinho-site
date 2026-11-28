@@ -103,10 +103,15 @@ export async function rateLimit(
 
 export function getClientIp(req: Request | { headers: Headers }): string {
   const h = req.headers
+  // On privilégie `x-real-ip`, posé par l'infrastructure Vercel avec la vraie
+  // IP du client et non falsifiable par l'appelant. `x-forwarded-for` est
+  // laissé en dernier recours (dev local / autres hébergeurs) : son premier
+  // élément est contrôlable par le client et servirait sinon à contourner le
+  // rate-limiting en changeant l'en-tête à chaque requête.
   return (
+    h.get('x-real-ip')?.trim() ||
+    h.get('cf-connecting-ip')?.trim() ||
     h.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    h.get('x-real-ip') ||
-    h.get('cf-connecting-ip') ||
     'unknown'
   )
 }

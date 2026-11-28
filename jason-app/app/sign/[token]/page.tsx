@@ -37,7 +37,6 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
     title: 'Contrat de location, Signature',
     description: 'Signez votre contrat de location électroniquement.',
     robots: 'noindex, nofollow',
-    other: { token },
   }
 }
 
@@ -175,10 +174,17 @@ export default async function SignPage({
   const montantAcompte = Number(contract.montant_loyer) * acomptePercent / 100
   const montantSolde = Number(contract.montant_loyer) - montantAcompte
 
+  // Ne jamais exposer au navigateur les champs d'audit de signature (IP et
+  // user-agent du signataire) : ils ne servent qu'à la preuve côté serveur et
+  // ContractView ne les affiche pas. Le reste de la ligne reste nécessaire au
+  // rendu du contrat.
+  const { signature_ip: _sigIp, signature_user_agent: _sigUa, ...contractForClient } = contract as Record<string, unknown>
+  void _sigIp; void _sigUa
+
   return (
     <ContractView
       token={token}
-      contract={contract}
+      contract={contractForClient as typeof contract}
       contractPays={contractPays}
       initialLang={initialLang}
       isViewerBailleur={isViewerBailleur}

@@ -57,35 +57,61 @@ const FIELD_MASK = [
 ].join(',')
 
 // ─── Suit les redirections (share.google, goo.gl, maps.app.goo.gl) ───
+// Protection SSRF : un raccourcisseur Google (goo.gl / g.co) a historiquement
+// pu pointer vers n'importe quelle URL. Plutôt que de laisser fetch suivre
+// aveuglément les redirections (redirect: 'follow') vers une éventuelle IP
+// interne, on les suit nous-mêmes (redirect: 'manual') et on refuse de
+// contacter tout hôte qui n'appartient pas à Google.
+const RESOLVE_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+
+function isGoogleFamilyHost(host: string): boolean {
+  const h = host.toLowerCase()
+  // Tout sous-domaine de google.<tld> (www., maps., consent., ...) plus les
+  // raccourcisseurs Google connus.
+  return /(^|\.)google\.[a-z.]{2,6}$/.test(h)
+    || h === 'maps.app.goo.gl' || h === 'goo.gl' || h === 'g.co'
+    || h === 'share.google' || h === 'g.page'
+}
+
 export async function resolveMapsUrl(url: string): Promise<string> {
   // Si c'est déjà une URL longue, retourne tel quel
   if (/google\.com\/maps/.test(url)) return url
 
+  let current: string
   try {
-    const res = await fetch(url, {
-      method: 'HEAD',
-      redirect: 'follow',
-      // Headers minimalistes pour éviter les blocages
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-      },
-    })
-    return res.url || url
+    current = new URL(url).toString()
+    if (!isGoogleFamilyHost(new URL(current).hostname)) return url
   } catch {
-    // Si HEAD échoue, on essaie un GET (certains serveurs refusent HEAD)
+    return url
+  }
+
+  // Au plus 6 sauts, chacun validé comme hôte Google avant d'être suivi.
+  for (let i = 0; i < 6; i++) {
+    let res: Response
     try {
-      const res = await fetch(url, {
+      res = await fetch(current, {
         method: 'GET',
-        redirect: 'follow',
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-        },
+        redirect: 'manual',
+        headers: { 'User-Agent': RESOLVE_UA },
       })
-      return res.url || url
     } catch {
       return url
     }
+    // Pas une redirection : on a atteint l'URL finale.
+    if (res.status < 300 || res.status >= 400) return current
+    const loc = res.headers.get('location')
+    if (!loc) return current
+    let next: URL
+    try {
+      next = new URL(loc, current)
+    } catch {
+      return url
+    }
+    // Refuse tout saut hors HTTPS ou vers un hôte non-Google (anti-SSRF).
+    if (next.protocol !== 'https:' || !isGoogleFamilyHost(next.hostname)) return url
+    current = next.toString()
   }
+  return current
 }
 
 // ─── Extrait un place_id d'une URL Google Maps si possible ───
