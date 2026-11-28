@@ -11,7 +11,7 @@
 //   node scripts/inject-hotel-villes.mjs
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { officialGrid, fmtTotal, TAXE_SOURCE_URL } from './lib/taxe-officielle.mjs'
+import { officialGrid, fmtTotal, fmtTarif, phraseAdditions, TAXE_SOURCE_URL } from './lib/taxe-officielle.mjs'
 
 const ROOT = new URL('..', import.meta.url).pathname
 const START = '<!-- HOTEL:START -->'
@@ -24,7 +24,7 @@ function block(slug, aVille) {
   const g = officialGrid(slug)
   const trois = g?.lignes.find(l => /3 étoiles/.test(l.label) && l.unite === '€')
   const taxe = trois
-    ? `<p style="margin-top:14px">Bon à savoir ${aVille} : la taxe de séjour d’un établissement 3 étoiles (hôtel, résidence ou meublé de tourisme, même catégorie dans la loi) est de <strong>${nb(fmtTotal(trois))}</strong> par personne et par nuit en ${g.annee}, taxes additionnelles comprises. <span style="font-size:13px;color:var(--tl)">Source : <a href="${TAXE_SOURCE_URL}" rel="noopener" target="_blank" style="color:inherit">délibérations DGFiP</a>, relevé d’octobre 2026 ; article L2333-30 du CGCT.</span></p>`
+    ? `<p style="margin-top:14px">Bon à savoir ${aVille} : la taxe de séjour d’un établissement 3 étoiles (hôtel, résidence ou meublé de tourisme, même catégorie dans la loi) est de <strong>${nb(fmtTarif(trois))}</strong> par personne et par nuit en ${g.annee}${phraseAdditions(g) && Math.abs(trois.total - trois.tarif) >= 0.005 ? `, soit ${nb(fmtTotal(trois))} à collecter avec ${phraseAdditions(g)}` : ''}. <span style="font-size:13px;color:var(--tl)">Source : <a href="${TAXE_SOURCE_URL}" rel="noopener" target="_blank" style="color:inherit">délibérations DGFiP</a>, relevé d’octobre 2026 ; article L2333-30 du CGCT.</span></p>`
     : ''
   return `${START}
 <section class="sec">

@@ -112,3 +112,19 @@ export function officialGrid(slug) {
 const fr = (n, d = 2) => n.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d })
 export const fmtTarif = l => (l.unite === '%' ? `${fr(l.tarif, l.tarif % 1 ? 2 : 0)} %` : `${fr(l.tarif)} €`)
 export const fmtTotal = l => (l.unite === '%' ? `${fr(l.total, l.total % 1 ? 2 : 0)} %` : `${fr(l.total)} €`)
+
+/** « la taxe additionnelle départementale de 10 % », « les taxes additionnelles
+ *  (départementale 10 %, régionale 34 %) », ou null sans taxe additionnelle.
+ *  Le tarif voté est celui de taxesejour.impots.gouv.fr ; le voyageur paie en
+ *  plus ces taxes additionnelles (Jason, 28/11/2026 : « 1,85 € à Colmar alors
+ *  que c'est 1,68 € » : les deux sont justes, il faut dire lequel est lequel). */
+export function phraseAdditions(g) {
+  if (g.lignes.every(l => Math.abs(l.total - l.tarif) < 0.005)) return null
+  if (!g.additions || !g.additions.length) return 'les taxes additionnelles'
+  if (g.additions.length === 1) {
+    const [nom, taux] = g.additions[0].split(/ (?=[\d,.]+ %$)/)
+    return taux ? `la taxe additionnelle ${nom} de ${taux}` : `la taxe additionnelle ${g.additions[0]}`
+  }
+  return `les taxes additionnelles (${g.additions.join(', ')})`
+}
+export const TAXE_IMPOTS_URL = 'https://taxesejour.impots.gouv.fr/'
