@@ -1,0 +1,12 @@
+{
+  "format": "stories",
+  "slug": "stories-early-check-in",
+  "jour": "2026-11-28",
+  "photo": "pexels:suitcase apartment door arrival",
+  "frames": [
+    { "type": "couverture", "kicker": "Arrivée en avance", "titre": "« On arrive à 11 h, *c’est possible* ? »", "sous_titre": "Ce qu’on répond sans casser le ménage." },
+    { "type": "liste", "kicker": "Dès la réservation", "titre": "Pose la question *tôt*", "items": ["L’heure d’arrivée réelle", "Le plus tôt n’est pas garanti", "Une note pour ton équipe de ménage"] },
+    { "type": "astuce", "kicker": "Plan B", "titre": "Les bagages, *pas les clés*", "texte": "Un endroit pour déposer les valises en attendant : le voyageur visite, ton équipe finit tranquille." },
+    { "type": "question", "titre": "Tu acceptes les arrivées *en avance* ?" }
+  ]
+}
