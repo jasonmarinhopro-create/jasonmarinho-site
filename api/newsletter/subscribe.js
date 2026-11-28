@@ -2,6 +2,8 @@
 // Keeps the API key server-side. The static site calls this endpoint from
 // /index.html and all blog pages via same-origin fetch.
 
+const { sameOriginOk } = require('../../scripts/lib/same-origin.cjs')
+
 const rateLimitMap = new Map()
 
 function isRateLimited(key, max, windowMs) {
@@ -58,6 +60,11 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  // Refuse un POST déclenché depuis un autre site (abus du quota Brevo).
+  if (!sameOriginOk(req)) {
+    return res.status(403).json({ error: 'Origine non autorisée.' })
   }
 
   const ip = getClientIp(req)

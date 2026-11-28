@@ -4,6 +4,7 @@
 // email au photographe + accusé de réception au demandeur.
 
 const { contactEmails, cleanPhone } = require('../../lib/pro-contact-email.cjs')
+const { sameOriginOk } = require('../../lib/same-origin.cjs')
 
 const rateLimitMap = new Map()
 function isRateLimited(key, max, windowMs) {
@@ -30,6 +31,11 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  // Refuse un POST declenche depuis un autre site (abus du quota Resend).
+  if (!sameOriginOk(req)) {
+    return res.status(403).json({ error: 'Origine non autorisee.' })
   }
 
   const ip = getClientIp(req)
