@@ -47,10 +47,10 @@ export default {
           "Compare sur Airbnb les tarifs affichés dans ton quartier pour un week-end de marché puis positionne-toi à prix égal ou légèrement au-dessus si tes photos et avis sont solides.",
           "Monte le prix par paliers hebdomadaires plutôt que d'un coup : le premier week-end sert d'étalon.",
           "Impose une durée minimum de 2 nuits sur les vendredis au dimanches concernés. Garde une nuit possible en semaine pour capter les voyages d'affaires de fin d'année.",
-          "Vérifie la taxe de séjour applicable à ton logement : à Paris, elle peut atteindre 15,93 € par personne et par nuit sur un meublé de tourisme non classé en 2026, et doit être affichée clairement au voyageur.",
+          "Vérifie la taxe de séjour applicable à ton logement : à Paris, sur un meublé de tourisme non classé, elle peut atteindre 15,93 € par personne et par nuit en 2026 (plafond de 4,90 € voté par la Ville, plus les taxes additionnelles départementale et régionales), et doit être affichée clairement au voyageur.",
         ]},
         { type: 'p', text: "Si tu utilises un outil de tarification dynamique, surveille ses recommandations sans les suivre les yeux fermés : les marchés de Noël sont trop locaux pour que l'algorithme les capte parfaitement. Pour choisir entre les principales solutions du marché, lis le comparatif sur <a href=\"/blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif\" style=\"color:var(--g);font-weight:500\">Pricelabs, Wheelhouse et Beyond</a>." },
-        { type: 'p', text: "> Source : site de la Ville de Paris, barème taxe de séjour au 1er janvier 2026, publié sur paris.fr. Les tarifs varient selon la ville et la catégorie du logement ; vérifier auprès de ta mairie ou de l'EPCI." },
+        { type: 'p', text: "> Source : taxesejour.impots.gouv.fr, délibération de la Ville de Paris applicable en 2026. Les tarifs varient selon la ville et la catégorie du logement ; vérifier auprès de ta mairie ou de l'EPCI." },
       ],
     },
     {
