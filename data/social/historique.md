@@ -3,8 +3,8 @@
 Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier à la main). Les plus récentes en premier.
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
-Commentaires des 30 derniers jours : 2 (nouveaux 1, réponses en attente d'envoi 0, envoyées 1, ignorés 0, échecs 0).
-Mis à jour le 2026-11-28 18:06 UTC.
+Commentaires des 30 derniers jours : 2 (nouveaux 0, réponses en attente d'envoi 0, envoyées 1, ignorés 1, échecs 0).
+Mis à jour le 2026-11-28 18:38 UTC.
 
 - 2026-11-29 · carrousel · reclamation-voyageur-5-etapes · FB pending · IG pending · stories FB pending IG pending · « Un voyageur qui se plaint pendant son séjour, c’est rarement une bonne nouvelle. Mais c’est ta façon de réagir »
 - 2026-11-29 · stories (4 écrans) · stories-early-check-in · FB - · IG - · stories FB pending IG pending · « Stories : « On arrive à 11 h, c’est possible ? » / Pose la question tôt / Les bagages, pas les clés / Tu accep »
