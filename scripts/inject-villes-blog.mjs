@@ -73,7 +73,7 @@ const GROUPS = {
     href: s => `/devenir-hote-airbnb-${s}`,
     label: v => `Taxe de séjour ${aVille(v)}`,
     titre: 'Le tarif 2026 de ta ville',
-    texte: 'Chaque guide de ville donne la grille officielle 2026 (DGFiP), du meublé non classé au 5 étoiles, taxes additionnelles comprises.',
+    texte: 'Chaque guide de ville donne la grille officielle 2026 (DGFiP), du meublé non classé au 5 étoiles : le tarif voté, celui de taxesejour.impots.gouv.fr, et le montant à collecter, taxes additionnelles comprises.',
     tous: ['/services/simulateurs/taxe-de-sejour', 'Calculer la taxe d’un séjour'],
     icone: 'ph-receipt',
   },

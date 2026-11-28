@@ -9,6 +9,7 @@
 // Idempotent, sans données en ligne :
 //   node scripts/build-villes-regions.mjs [--check]
 import { descSeo } from './lib/seo-texte.mjs'
+import { cle as cleImage, DOSSIER as DOSSIER_IMAGES } from './lib/images-partage.mjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -101,6 +102,8 @@ function page(reg, villes, cities, tpl) {
     .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${SITE}${url}">`)
     .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(title)}">`)
     .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${esc(desc)}">`)
+    // Image de partage de la région (img/partage), pas celle de la page modèle (Rennes)
+    .replace(/(<meta (?:property|name)="(?:og|twitter):image" content=")[^"]*(")/g, `$1${SITE}/${DOSSIER_IMAGES}/${cleImage(url.slice(1) + '/index.html')}.jpg$2`)
     .replace('</head>', `<script type="application/ld+json">\n${jsonLd(chemin)}\n</script>\n<script type="application/ld+json">\n${faqLd}\n</script>\n</head>`)
 
   return { url, html: `${head}<header class="hero">

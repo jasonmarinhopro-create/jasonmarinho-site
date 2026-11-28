@@ -1106,8 +1106,8 @@ export const VILLES_LOCAL = {
 
   versailles: ville({
     ville: 'Versailles',
-    taxe: "Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus la taxe additionnelle départementale et, depuis 2024, une <strong>taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>, comme dans toute l'Île-de-France.",
-    faqTaxe: "Pour un meublé non classé, le taux est voté localement entre 1 % et 5 % du prix HT de la nuitée par personne, dans la limite d'un plafond, auxquels s'ajoutent la taxe additionnelle départementale et, depuis 2024, <strong>une taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à Versailles Grand Parc.",
+    taxe: "Logement non classé : <strong>5 % du prix HT de la nuitée par personne</strong>, plafonné à 4,80 €, tarifs votés par Versailles Grand Parc (délibération du 25/06/2024). S'y ajoutent les taxes additionnelles départementale (10 %), du Grand Paris (15 %) et d'Île-de-France Mobilités (200 %) : le voyageur paie 16,25 % du prix HT par personne, et 15,60 € au plus par nuit.",
+    faqTaxe: "Pour un meublé non classé, la taxe de séjour votée à Versailles est de <strong>5 % du prix HT de la nuitée par personne, plafonnée à 4,80 €</strong>. Avec les taxes additionnelles (départementale 10 %, Grand Paris 15 %, Île-de-France Mobilités 200 %), le voyageur paie 16,25 % du prix HT, et 15,60 € au plus par personne et par nuit. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à Versailles Grand Parc.",
     pics: [
       "Grandes Eaux musicales du château, d'avril à octobre",
       "Toute l'année : visiteurs du château, à 30 minutes de Paris",
@@ -1438,8 +1438,8 @@ export const VILLES_LOCAL = {
   meaux: {
     ...ville({
       ville: 'Meaux',
-      taxe: "Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus une éventuelle taxe additionnelle départementale et, depuis 2024, une <strong>taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>, comme dans toute l'Île-de-France.",
-      faqTaxe: "Pour un meublé non classé, le taux est voté localement entre 1 % et 5 % du prix HT de la nuitée par personne, dans la limite d'un plafond, auxquels s'ajoutent une éventuelle taxe additionnelle départementale et, depuis 2024, <strong>une taxe additionnelle de 200 % au profit d'Île-de-France Mobilités</strong>. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à la collectivité de Meaux.",
+      taxe: "Logement non classé : <strong>3 % du prix HT de la nuitée par personne</strong>, plafonné à 4,30 €, tarifs votés par la Communauté d'agglomération du Pays de Meaux (délibération du 14/06/2024). S'y ajoutent les taxes additionnelles départementale (10 %), du Grand Paris (15 %) et d'Île-de-France Mobilités (200 %) : le voyageur paie 9,75 % du prix HT par personne, et 13,98 € au plus par nuit.",
+      faqTaxe: "Pour un meublé non classé, la taxe de séjour votée à Meaux est de <strong>3 % du prix HT de la nuitée par personne, plafonnée à 4,30 €</strong>. Avec les taxes additionnelles (départementale 10 %, Grand Paris 15 %, Île-de-France Mobilités 200 %), le voyageur paie 9,75 % du prix HT, et 13,98 € au plus par personne et par nuit. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à la collectivité de Meaux.",
       pics: [
         "Toute l'année : Disneyland Paris à une vingtaine de kilomètres, des familles qui cherchent un logement autour du parc, surtout pendant les vacances scolaires",
         "De fin mai à début juillet : « Meaux remonte le temps », des week-ends d'animations historiques dans la ville (du 30 mai au 4 juillet en 2026)",

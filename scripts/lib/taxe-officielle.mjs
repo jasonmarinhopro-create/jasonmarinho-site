@@ -32,9 +32,41 @@ export const COMMUNES = {
   quimper: ['Quimper|29', 'QUIMPER'], nancy: ['Nancy|54', 'NANCY'], troyes: ['Troyes|10', 'TROYES'], bastia: ['Bastia|2B', 'BASTIA'],
   'clermont-ferrand': ['Clermont|63', 'CLERMONT FERRAND CLT FD'], poitiers: ['Poitiers|86', 'POITIERS'], roanne: ['Roanne|42', 'ROANNE'],
   'les-sables-d-olonne': ['Les Sables|85', "LES SABLES-D'OLONNE"],
-  // Versailles : la base ne porte que la part départementale, pas les taxes
-  // d'Île-de-France (15 % et 200 %) : grille non affichée, texte local gardé.
-  // Meaux (20/11/2026) : même cas (Île-de-France), texte local de villes-local.mjs.
+  // Versailles et Meaux : absentes ou incomplètes dans la base (taxes
+  // d'Île-de-France manquantes) : grilles lues sur taxesejour.impots.gouv.fr
+  // (GRILLES_IMPOTS, plus bas).
+}
+
+/** Grilles relevées à la main sur taxesejour.impots.gouv.fr (28/11/2026, Jason :
+ *  « ajoute Versailles et Meaux »), quand la base DGFiP ne suffit pas. Tarifs
+ *  votés tels qu'affichés ; le total ajoute les taxes additionnelles marquées
+ *  OUI (même calcul que la base : arrondi au centime, 1,70 € x 3,25 = 5,53 €). */
+const GRILLES_IMPOTS = {
+  versailles: {
+    deliberation: '25/06/2024, CA Versailles Grand Parc', releve: '2026-11-28',
+    additions: [['départementale 10 %', 10], ['Île-de-France 15 %', 15], ['Île-de-France Mobilités 200 %', 200]],
+    tarifs: { nc: 5, e1: 0.8, e2: 1, e3: 1.7, e4: 2.6, e5: 3.5, palace: 4.8 },
+  },
+  meaux: {
+    deliberation: "14/06/2024, Communauté d'agglomération du Pays de Meaux", releve: '2026-11-28',
+    additions: [['départementale 10 %', 10], ['Île-de-France 15 %', 15], ['Île-de-France Mobilités 200 %', 200]],
+    tarifs: { nc: 3, e1: 0.8, e2: 0.9, e3: 1.5, e4: 2, e5: 3.1, palace: 4.3 },
+  },
+}
+
+function grilleImpots(slug) {
+  const m = GRILLES_IMPOTS[slug]
+  if (!m) return null
+  const k = 1 + m.additions.reduce((t, [, pc]) => t + pc, 0) / 100
+  const tot = v => Math.round(v * k * 100 + 1e-9) / 100
+  const t = m.tarifs
+  const ligne = (label, v, unite = '€') => ({ label, tarif: v, total: tot(v), unite })
+  return {
+    annee: ANNEE_TARIFS, releve: m.releve, source: 'impots', deliberation: m.deliberation,
+    lignes: [ligne('Meublé non classé', t.nc, '%'), ligne("Chambres d'hôtes", t.e1), ligne('Meublé 1 étoile', t.e1), ligne('Meublé 2 étoiles', t.e2),
+      ligne('Meublé 3 étoiles', t.e3), ligne('Meublé 4 étoiles', t.e4), ligne('Meublé 5 étoiles', t.e5)],
+    additions: m.additions.map(([l]) => l),
+  }
 }
 
 const LIGNES = [
@@ -77,6 +109,8 @@ function additions(r) {
  * { annee, releve, lignes: [{ label, tarif, total, unite }], additions: [] }
  */
 export function officialGrid(slug) {
+  const manuelle = grilleImpots(slug)
+  if (manuelle) return manuelle
   const d = load()
   const c = COMMUNES[slug]
   if (!d || !c) return null

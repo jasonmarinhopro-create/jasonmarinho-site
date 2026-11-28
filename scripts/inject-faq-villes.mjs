@@ -21,7 +21,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
-import { officialGrid, fmtTotal } from './lib/taxe-officielle.mjs'
+import { officialGrid, fmtTotal, fmtTarif, phraseAdditions } from './lib/taxe-officielle.mjs'
 import { ANNEE_TARIFS } from './lib/annee.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -83,7 +83,11 @@ function taxe(slug, v) {
   if (!g || !l4 || !g.lignes[0]?.label.toLowerCase().includes('non class')) return null
   const guide = `/devenir-hote-airbnb-${slug}`
   if (!fs.existsSync(path.join(ROOT, guide.slice(1), 'index.html'))) return null
-  return nb(`En ${ANNEE_TARIFS} ${v.a}, d'après la base officielle de la DGFiP : <strong>${fmtTotal(g.lignes[0])}</strong> du prix HT par personne et par nuit pour un meublé non classé, <strong>${fmtTotal(l4)}</strong> par personne et par nuit en 4 étoiles, taxes additionnelles comprises. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez. Toute la grille : ${lien(guide, `taxe de séjour ${v.a}`)}.`)
+  // Tarif voté d'abord (celui de taxesejour.impots.gouv.fr), montant à collecter
+  // ensuite (Jason, 28/11/2026 : le total seul ne se retrouvait pas sur le site officiel)
+  const add = phraseAdditions(g)
+  const coll = add ? ` Avec ${add}, le voyageur paie ${fmtTotal(g.lignes[0])} et ${fmtTotal(l4)}.` : ''
+  return nb(`En ${ANNEE_TARIFS} ${v.a}, d'après la base officielle de la DGFiP (tarifs publiés sur taxesejour.impots.gouv.fr), la taxe de séjour votée est de <strong>${fmtTarif(g.lignes[0])}</strong> du prix HT par personne et par nuit pour un meublé non classé et de <strong>${fmtTarif(l4)}</strong> par personne et par nuit en 4 étoiles.${coll} Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez. Toute la grille : ${lien(guide, `taxe de séjour ${v.a}`)}.`)
 }
 
 // Met à jour la FAQ HTML (details) et le JSON-LD (FAQPage)
