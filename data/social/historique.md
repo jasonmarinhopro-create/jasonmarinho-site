@@ -4,8 +4,9 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 1 (nouveaux 1, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-28 01:28 UTC.
+Mis à jour le 2026-11-28 01:33 UTC.
 
+- 2026-11-28 · stories demande (4 écrans) · demande-d42ffbdb · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Demande : Une équipe de ménage recherchée à La Rochelle / Ce qu’il faut / Pas encore d’équipes de ménage dans  »
 - 2026-11-26 · stories demande (4 écrans) · demande-93ee5151 · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Demande : Une équipe de ménage recherchée à Chamonix / Ce qu’il faut / Pas encore d’équipes de ménage dans le  »
 - 2026-11-27 · reel · menage-planning-automatique · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Le planning de la semaine reçu par SMS la veille, puis corrigé deux fois : chaque équipe de ménage connaît. »
 - 2026-11-26 · stories (4 écrans) · stories-kit-hiver-confort · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Le froid arrive : ton logement est prêt ? / Ton kit d’hiver / Un guide à l’abri / Et toi, tu offres  »
