@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Taxe de séjour 2027 : le tarif voté par ta commune s'applique au 1er janvier",
+    "summary": "Ta commune devait délibérer avant le 31 décembre pour fixer les tarifs de la taxe de séjour 2027. La plupart ont déjà voté leurs nouvelles grilles. Dès le 1er janvier, tu dois collecter le montant exact délibéré, sous peine de réclamation des voyageurs ou de l'administration fiscale. Vérifie la délibération sur le site de ta mairie ou auprès de l'office de tourisme local : certaines communes augmentent leurs tarifs chaque année.",
+    "category": "communes",
+    "audience": ["hote"],
+    "source_url": "https://www.service-public.fr/particuliers/vosdroits/F2048",
+    "read_time_minutes": 2
+  },
+  {
+    "title": "Urssaf trimestrielle : ton T4 est à déclarer avant le 31 janvier 2027",
+    "summary": "Si tu déclares ton chiffre d'affaires chaque trimestre à l'Urssaf, le T4 (octobre, novembre, décembre 2026) sera à déclarer avant le 31 janvier 2027. C'est l'échéance à ne pas manquer pour commencer l'année sans retard ni pénalité. Anticipe dès maintenant sur ton espace autoentrepreneur.urssaf.fr pour vérifier ta périodicité et préparer ta déclaration.",
+    "category": "entreprise",
+    "audience": ["photographe", "menage", "depannage"],
+    "source_url": "https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut/declarer-et-payer-mes-cotisations.html",
+    "read_time_minutes": 1
+  }
+]
