@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cleanReply, isOwnComment, isPostGone } from './comment-rules'
+import { cleanReply, isOwnComment, isOwnReply, isPostGone } from './comment-rules'
 
 describe('réponses aux commentaires', () => {
   it('reconnaît nos propres commentaires', () => {
@@ -7,6 +7,13 @@ describe('réponses aux commentaires', () => {
     expect(isOwnComment({ authorId: '178', authorName: null }, acc)).toBe(true)
     expect(isOwnComment({ authorId: null, authorName: 'Jason_Marinho_LCD' }, acc)).toBe(true)
     expect(isOwnComment({ authorId: '99', authorName: 'marie' }, acc)).toBe(false)
+  })
+  it('reconnaît nos réponses revenues sans auteur (28/11/2026)', () => {
+    const sent = { ids: new Set(['111_222']), texts: ['Merci pour ton retour !  On revérifie.'] }
+    expect(isOwnReply({ commentId: '111_222', text: 'autre' }, sent)).toBe(true)
+    expect(isOwnReply({ commentId: '333', text: 'Merci pour ton retour ! On revérifie.' }, sent)).toBe(true)
+    expect(isOwnReply({ commentId: '333', text: 'C’est 1,76 € à Colmar' }, sent)).toBe(false)
+    expect(isOwnReply({ commentId: '333', text: '  ' }, { ids: new Set(), texts: [''] })).toBe(false)
   })
   it('refuse ce qui enfreint les règles de la marque', () => {
     expect(cleanReply('Merci Marie, contente que ça t’aide !')).toBe('Merci Marie, contente que ça t’aide !')

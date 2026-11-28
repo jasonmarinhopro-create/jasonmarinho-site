@@ -113,3 +113,13 @@ une story à chaque demande reçue).
   crête sous -2 dBFS). `render.mjs` (`musiqueDuReel`) en prend une d'après le
   slug, ou celle du champ `musique` (`false` : muet) ; boucle si le Reel est
   plus long, fondus d'entrée et de fin.
+
+## Nos réponses revenues comme commentaires (correctif du 28/11/2026)
+
+La réponse de la Page sous le commentaire Colmar est revenue dans la relève
+comme un « nouveau » commentaire : Facebook ne renvoie ni `from` ni `parent`
+pour la réponse de la Page sans permission en plus, donc `isOwnComment` ne la
+reconnaissait pas. `syncComments` (`lib/social/comments.ts`) écarte aussi les
+commentaires dont l'identifiant est un `reply_external_id` déjà envoyé, ou
+dont le texte est exactement une réponse envoyée (`isOwnReply`,
+`lib/social/comment-rules.ts`, testée).

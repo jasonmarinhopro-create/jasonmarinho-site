@@ -8,7 +8,7 @@
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
 import { listFacebookComments, listInstagramComments, replyToComment } from '@/lib/social/meta'
-import { cleanReply, isOwnComment, isPostGone } from '@/lib/social/comment-rules'
+import { cleanReply, isOwnComment, isOwnReply, isPostGone } from '@/lib/social/comment-rules'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/social/comments')
@@ -47,10 +47,16 @@ async function activeAccounts() {
 export async function syncComments(): Promise<{ posts: number; added: number; errors: number }> {
   const db = serviceClient()
   const since = new Date(Date.now() - 21 * 86_400_000).toISOString()
-  const [{ data: targets }, accounts] = await Promise.all([
+  const [{ data: targets }, accounts, { data: sentRows }] = await Promise.all([
     db.from('social_post_targets').select('platform, external_post_id').in('platform', ['facebook', 'instagram']).eq('status', 'published').gte('published_at', since).not('external_post_id', 'is', null),
     activeAccounts(),
+    // Nos réponses envoyées : elles reviennent dans la relève sans auteur sur Facebook
+    db.from('social_comments').select('reply_external_id, reply_text').eq('reply_status', 'envoye').gte('created_at', since).limit(1000),
   ])
+  const sent = {
+    ids: new Set(((sentRows ?? []) as Array<{ reply_external_id: string | null }>).map(r => r.reply_external_id).filter((x): x is string => !!x)),
+    texts: ((sentRows ?? []) as Array<{ reply_text: string | null }>).map(r => r.reply_text ?? '').filter(Boolean),
+  }
   let added = 0, errors = 0
   for (const t of (targets ?? []) as Array<{ platform: Platform; external_post_id: string }>) {
     const account = accounts.find(a => a.platform === t.platform)
@@ -58,7 +64,7 @@ export async function syncComments(): Promise<{ posts: number; added: number; er
     try {
       const token = decryptToken(account.access_token)
       const list = t.platform === 'facebook' ? await listFacebookComments(t.external_post_id, token) : await listInstagramComments(t.external_post_id, token)
-      const fresh = list.filter(c => c.text.trim() && !isOwnComment(c, account))
+      const fresh = list.filter(c => c.text.trim() && !isOwnComment(c, account) && !isOwnReply(c, sent))
       added += await storeComments(fresh.map(c => ({ platform: t.platform, commentId: c.commentId, parentId: c.parentId, postExternalId: t.external_post_id, text: c.text, authorName: c.authorName, createdAt: c.createdAt })))
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)

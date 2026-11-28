@@ -10,6 +10,20 @@ export function isOwnComment(
   return !!own && (c.authorName ?? '').replace(/^@/, '').toLowerCase() === own
 }
 
+// Une de nos réponses déjà envoyées, revenue dans la relève (28/11/2026) :
+// Facebook ne renvoie ni l'auteur ni le parent de la réponse de la Page sans
+// permission en plus, isOwnComment ne la voyait pas et la routine la recevait
+// comme un nouveau commentaire. On la reconnaît par son identifiant Meta
+// (reply_external_id) ou, à défaut, par son texte exact.
+const sameText = (a: string, b: string) => a.replace(/\s+/g, ' ').trim() === b.replace(/\s+/g, ' ').trim()
+export function isOwnReply(
+  c: { commentId: string; text: string },
+  sent: { ids: Set<string>; texts: string[] },
+): boolean {
+  if (sent.ids.has(c.commentId)) return true
+  return !!c.text.trim() && sent.texts.some(t => !!t && sameText(t, c.text))
+}
+
 /**
  * Texte d'une réponse prêt à publier, ou null s'il enfreint les règles de la
  * marque : vide, trop long, tiret cadratin, emoji, lien hors de nos domaines.
