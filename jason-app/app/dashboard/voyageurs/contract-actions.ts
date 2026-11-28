@@ -4,6 +4,7 @@ import { hasStandardAccess, CONTRACTS_STANDARD_ONLY_MESSAGE } from '@/lib/plans/
 import { revalidatePath } from 'next/cache'
 import { buildEtatDescriptif, cleanCgv, soldeDelai, type ContractDetails, type LogementForContract } from '@/lib/contracts/details'
 import { createClient } from '@/lib/supabase/server'
+import { getServiceClient } from '@/lib/supabase/service'
 import { Resend } from 'resend'
 import { htmlToText } from '@/lib/email/template'
 import { contractFrom, contractInviteEmail } from '@/lib/email/contract-emails'
@@ -340,7 +341,12 @@ export async function issueInvoice(contractId: string, voyageurId: string): Prom
     mentionTva = mentionTva ?? profile?.mention_tva ?? null
   }
 
-  const { data: numeroData, error: rpcError } = await supabase
+  // Appel via le service role : l'appartenance du contrat est déjà vérifiée
+  // plus haut (contract filtré sur user.id). La fonction SQL conserve son
+  // contrôle interne (auth.uid() = p_user_id OU service_role) en défense en
+  // profondeur, et n'est plus exposée au rôle `authenticated` via /rpc
+  // (avertissement Security Advisor Supabase 0029).
+  const { data: numeroData, error: rpcError } = await getServiceClient()
     .rpc('issue_next_invoice_number', { p_user_id: user.id })
 
   if (rpcError || !numeroData) return { error: rpcError?.message ?? 'Impossible de générer le numéro de facture.' }

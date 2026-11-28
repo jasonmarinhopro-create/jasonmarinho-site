@@ -31,10 +31,15 @@ export async function POST(request: NextRequest) {
     .eq('id', user.id)
     .single()
 
-  // Bloque si déjà abonné et actif
+  // Bloque si un abonnement est déjà vivant. On ne se limite pas à `active` :
+  // un abonnement `trialing` / `past_due` / `unpaid` existe toujours côté
+  // Stripe et en créer un second double-prélèverait le client. Les statuts
+  // terminaux (`canceled`, `incomplete_expired`) ou `incomplete` (paiement
+  // jamais finalisé) laissent au contraire re-souscrire.
+  const LIVE_SUB_STATUSES = new Set(['active', 'trialing', 'past_due', 'unpaid'])
   if (
     profile?.stripe_subscription_id &&
-    profile?.stripe_subscription_status === 'active'
+    LIVE_SUB_STATUSES.has(profile?.stripe_subscription_status ?? '')
   ) {
     return NextResponse.json({ error: 'Abonnement déjà actif.' }, { status: 400 })
   }
